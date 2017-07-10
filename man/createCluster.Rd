@@ -5,7 +5,7 @@
 \title{Create a thermal cluster}
 \usage{
 createCluster(area, cluster_name, ..., time_series = NULL,
-  prepro_data = NULL, prepro_modulation = NULL,
+  prepro_data = NULL, prepro_modulation = NULL, overwrite = FALSE,
   opts = antaresRead::simOptions())
 }
 \arguments{
@@ -20,6 +20,8 @@ createCluster(area, cluster_name, ..., time_series = NULL,
 \item{prepro_data}{Preprocess data}
 
 \item{prepro_modulation}{Preprocess modulation}
+
+\item{overwrite}{Logical, overwrite the cluster or not.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}

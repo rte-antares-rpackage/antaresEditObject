@@ -6,6 +6,7 @@
 #' @param time_series Cluster's time series
 #' @param prepro_data Preprocess data
 #' @param prepro_modulation Preprocess modulation
+#' @param overwrite Logical, overwrite the cluster or not.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
@@ -24,10 +25,14 @@
 #' }
 createCluster <- function(area, cluster_name, ..., time_series = NULL,
                           prepro_data = NULL, prepro_modulation = NULL,
+                          overwrite = FALSE,
                           opts = antaresRead::simOptions()) {
 
   # Input path
   inputPath <- opts$inputPath
+  
+  if (!area %in% opts$areaList)
+    stop(paste(area, "is not a valid area"))
 
   # Cluster's parameters
   params_cluster <- list(...)
@@ -42,6 +47,10 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
+  
+  if (cluster_name %in% names(previous_params) & !overwrite)
+    stop(paste(cluster_name, "already exist"))
+  
   params_cluster <- c(previous_params, params_cluster)
 
   writeIni(
