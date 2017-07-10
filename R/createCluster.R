@@ -11,7 +11,7 @@
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
 #'
-#' @return Nothing
+#' @return An upddated list containing various information about the simulation.
 #' @export
 #' 
 #' @importFrom antaresRead simOptions
@@ -86,7 +86,10 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   )
 
 
-  invisible()
+  # Maj simulation
+  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = opts$name)
+  
+  invisible(res)
 }
 
 

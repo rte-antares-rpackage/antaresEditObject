@@ -27,7 +27,7 @@ createCluster(area, cluster_name, ..., time_series = NULL,
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-Nothing
+An upddated list containing various information about the simulation.
 }
 \description{
 Create a thermal cluster
