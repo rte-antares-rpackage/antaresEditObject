@@ -313,6 +313,16 @@ initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255)
 
 
 
+#' Output profile options for creating an area
+#'
+#' @param filter_synthesis Output synthesis
+#' @param filter_year_by_year Output Year-by-year
+#'
+#' @return a named list
+#' @export
+#'
+#' @examples
+#' filteringOptions()
 filteringOptions <- function(filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
                              filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
   list(
@@ -322,6 +332,19 @@ filteringOptions <- function(filter_synthesis = c("hourly", "daily", "weekly", "
 }
 
 
+#' Nodal optimization paramameters for creating an area
+#'
+#' @param non_dispatchable_power logical, default to FALSE
+#' @param dispatchable_hydro_power logical, default to FALSE
+#' @param other_dispatchable_power logical, default to FALSE
+#' @param spread_unsupplied_energy_cost numeric, default to 0
+#' @param spread_spilled_energy_cost numeric, default to 0
+#'
+#' @return a named list
+#' @export
+#'
+#' @examples
+#' nodalOptimizationOptions()
 nodalOptimizationOptions <- function(non_dispatchable_power = TRUE,
                                      dispatchable_hydro_power = TRUE,
                                      other_dispatchable_power = TRUE,
