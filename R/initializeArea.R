@@ -15,6 +15,7 @@
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath
 #' @importFrom utils read.table write.table
+#' @importFrom assertthat assert_that
 #'
 #' @examples
 #' \dontrun{
@@ -29,6 +30,8 @@ initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255)
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
 
+  assertthat::assert_that(class(opts) == "simOption")
+  
   if (name %in% opts$areaList & !overwrite)
     stop("Area already exist")
 
