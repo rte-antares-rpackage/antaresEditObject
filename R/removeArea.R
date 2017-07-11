@@ -100,3 +100,69 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
   invisible(res)
 }
+
+
+
+
+
+
+#' @title Seek for a removed area
+#'
+#' @description Check if it remains trace of a deleted area in the input folder
+#'
+#' @param area An area
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   \code{antaresRead::setSimulationPath}
+#'
+#' @return a named list with two elements
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' checkRemoveArea("myarea")
+#' }
+checkRemoveArea <- function(area, opts = antaresRead::simOptions()) {
+  
+  # Input path
+  inputPath <- opts$inputPath
+  
+  
+  # Search for files or directories named after the area searched
+  inputFiles <- list.files(
+    path = inputPath,
+    pattern = area,
+    recursive = TRUE, include.dirs = TRUE, full.names = TRUE
+  )
+  
+  areaResiduFiles <- grep(
+    pattern = sprintf("[[:punct:]]+%s[[:punct:]]+|%s$", area, area), 
+    x = inputFiles, 
+    value = TRUE
+  )
+  
+  
+  # Check files content
+  areaResidus <- vector(mode = "character")
+  for (i in inputFiles) {
+    if (!is.dir(i)) {
+      suppressWarnings({tmp <- readLines(con = i)})
+      tmp <- paste(tmp, collapse = "\n")
+      if (grepl(pattern = area, x = tmp)) {
+        areaResidus <- append(areaResidus, i)
+      }
+    }
+  }
+  
+  list(
+    areaResiduFiles = areaResiduFiles,
+    areaResidus = areaResidus
+  )
+  
+}
+
+
+
+
+
+

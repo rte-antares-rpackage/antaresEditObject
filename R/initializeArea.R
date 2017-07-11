@@ -1,6 +1,6 @@
 #' Create An Area In An Antares Study
 #'
-#' @param name Name of the area
+#' @param name Name of the area as a character, without space or ponctuation.
 #' @param color Color of the node
 #' @param localization Localization on the map
 #' @param nodalOptimization Nodal optimization parameters
@@ -31,6 +31,9 @@ initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255)
                        opts = antaresRead::simOptions()) {
 
   assertthat::assert_that(class(opts) == "simOptions")
+  
+  if (grepl(pattern = "[[:punct:]]", x = area) | grepl(pattern = "[[:space:]]", x = area)) 
+    stop("Area's name must not contain space or ponctuation")
   
   if (opts$mode != "Input") 
     stop("You can initialize an area only in 'Input' mode")
