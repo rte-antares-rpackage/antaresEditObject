@@ -30,7 +30,7 @@ initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255)
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
 
-  assertthat::assert_that(class(opts) == "simOption")
+  assertthat::assert_that(class(opts) == "simOptions")
   
   if (name %in% opts$areaList & !overwrite)
     stop("Area already exist")

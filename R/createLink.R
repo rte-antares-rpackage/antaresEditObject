@@ -39,7 +39,7 @@
 #' }
 createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = NULL, overwrite = FALSE, opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOption")
+  assertthat::assert_that(class(opts) == "simOptions")
   if (!is.null(dataLink)) 
     assertthat::assert_that(ncol(dataLink) == 5)
   
