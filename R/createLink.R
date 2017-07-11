@@ -89,7 +89,7 @@ createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = N
   )
   
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = opts$name)
+  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   
   invisible(res)
 }

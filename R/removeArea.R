@@ -96,7 +96,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
 
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = opts$name)
+  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "Input")
 
   invisible(res)
 }

@@ -32,6 +32,9 @@ initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255)
 
   assertthat::assert_that(class(opts) == "simOptions")
   
+  if (opts$mode != "Input") 
+    stop("You can initialize an area only in 'Input' mode")
+  
   if (name %in% opts$areaList & !overwrite)
     stop("Area already exist")
 
@@ -307,7 +310,7 @@ initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255)
 
 
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = opts$name)
+  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
 
   invisible(res)
 }
