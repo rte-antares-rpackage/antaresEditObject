@@ -4,6 +4,7 @@ context("Function initializeArea")
 
 
 path <- tempdir()
+# Unzip the study
 setup_study(path, sourcedir)
 
 opts <- antaresRead::setSimulationPath(studyPath)
@@ -21,5 +22,8 @@ test_that("Initialize a new area", {
   expect_equal(n_before + 1, n_after)
 })
 
+
+
+# remove temporary study
 unlink(x = file.path(path, "test_case"), recursive = TRUE)
 

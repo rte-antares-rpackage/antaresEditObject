@@ -25,11 +25,11 @@ prepSimulationWV <- function(area, fictive_area = paste0("WaterValue_", area), o
   inputPath <- opts$inputPath
 
 
-  # Create fictive area
+  # Create fictive area ----
   initializeArea(name = fictive_area, overwrite = TRUE, opts = opts)
 
 
-  # Hydro storage
+  # Hydro storage ----
   path_hydro_storage <- file.path(inputPath, "hydro", "series", area, "mod.txt")
 
   if (file.exists(path_hydro_storage)) {
@@ -54,7 +54,7 @@ prepSimulationWV <- function(area, fictive_area = paste0("WaterValue_", area), o
   }
 
 
-  # Create thermal cluster
+  # Create thermal cluster ----
   hydro_storage_max <- utils::read.table(
     file = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", area, ".txt"))
   )
@@ -77,5 +77,20 @@ prepSimulationWV <- function(area, fictive_area = paste0("WaterValue_", area), o
     file = file.path(inputPath, "thermal", "series", area, fictive_area, "series.txt")
   )
 
+  
+  # Create link ----
+  
+  dagtaLink <- matrix(
+    data = c(rep(0, 8760), rep(max(hydro_storage_max), 8760), rep(0, 8760*3)),
+    ncol = 5
+  )
+  
+  createLink(
+    from = area, 
+    to = fictive_area, 
+    propertiesLink = propertiesLink(hurdles_cost = FALSE, transmission_capacities = "enabled"), 
+    dataLink = dataLink,
+    opts = opts
+  )
 }
 

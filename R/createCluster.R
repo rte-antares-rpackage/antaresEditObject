@@ -3,7 +3,7 @@
 #' @param area The area where to create the cluster
 #' @param cluster_name cluster name
 #' @param ... Parameters to write in the Ini file
-#' @param time_series Cluster's time series
+#' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes
 #' @param prepro_data Preprocess data
 #' @param prepro_modulation Preprocess modulation
 #' @param overwrite Logical, overwrite the cluster or not.
@@ -33,6 +33,17 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   
   if (!area %in% opts$areaList)
     stop(paste(area, "is not a valid area"))
+  
+  if (! NROW(time_series) %in% c(0, 8760)) {
+    stop("Number of rows for time series must be 0 or 8760")
+  }
+  
+  if (! NROW(prepro_modulation) %in% c(0, 8760)) {
+    stop("Number of rows for modulation data must be 0 or 8760")
+  }
+  if (! NROW(prepro_modulation) %in% c(0, 4)) {
+    stop("Number of cols for modulation data must be 0 or 8760")
+  }
 
   # Cluster's parameters
   params_cluster <- list(...)
@@ -61,9 +72,12 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
 
   # initialize series
-  dir.create(path = file.path(inputPath, "thermal", "series", area, cluster_name), showWarnings = FALSE)
+  dir.create(path = file.path(inputPath, "thermal", "series", area, cluster_name), recursive = TRUE, showWarnings = FALSE)
+  
   if (is.null(time_series))
     time_series <- character(0)
+  
+  
   utils::write.table(
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "thermal", "series", area, cluster_name, "series.txt")
@@ -71,15 +85,19 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
 
   # prepro
-  dir.create(path = file.path(inputPath, "thermal", "prepro", area, cluster_name), showWarnings = FALSE)
+  dir.create(path = file.path(inputPath, "thermal", "prepro", area, cluster_name), recursive = TRUE, showWarnings = FALSE)
+  
   if (is.null(prepro_data))
     prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 5)
   utils::write.table(
     x = prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "thermal", "prepro", area, cluster_name, "data.txt")
   )
+  
+  
   if (is.null(prepro_modulation))
-    prepro_modulation <- matrix(data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)), ncol = 1)
+    prepro_modulation <- matrix(data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)), ncol = 4)
+  
   utils::write.table(
     x = prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "thermal", "prepro", area, cluster_name, "modulation.txt")
