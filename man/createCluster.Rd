@@ -15,7 +15,7 @@ createCluster(area, cluster_name, ..., time_series = NULL,
 
 \item{...}{Parameters to write in the Ini file}
 
-\item{time_series}{Cluster's time series}
+\item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes}
 
 \item{prepro_data}{Preprocess data}
 

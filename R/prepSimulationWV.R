@@ -80,7 +80,7 @@ prepSimulationWV <- function(area, fictive_area = paste0("WaterValue_", area), o
   
   # Create link ----
   
-  dagtaLink <- matrix(
+  dataLink <- matrix(
     data = c(rep(0, 8760), rep(max(hydro_storage_max), 8760), rep(0, 8760*3)),
     ncol = 5
   )

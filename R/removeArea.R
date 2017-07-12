@@ -23,7 +23,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   inputPath <- opts$inputPath
 
   # Update area list
-  areas <- setdiff(res$areaList, name)
+  areas <- setdiff(opts$areaList, name)
   areas <- paste(sort(areas), collapse = "\n")
   writeLines(text = areas, con = file.path(inputPath, "areas/list.txt"))
 
@@ -96,7 +96,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
 
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "Input")
+  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
 
   invisible(res)
 }
