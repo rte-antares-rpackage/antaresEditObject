@@ -51,7 +51,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   params_cluster$name <- cluster_name
 
   # named list for writing ini file
-  params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
+  # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
 
   # path to ini file
   path_clusters_ini <- file.path(inputPath, "thermal", "clusters", area, "list.ini")
@@ -62,7 +62,8 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   if (cluster_name %in% names(previous_params) & !overwrite)
     stop(paste(cluster_name, "already exist"))
   
-  params_cluster <- c(previous_params, params_cluster)
+  # params_cluster <- c(previous_params, params_cluster)
+  previous_params[[cluster_name]] <- params_cluster
 
   writeIni(
     listData = params_cluster,

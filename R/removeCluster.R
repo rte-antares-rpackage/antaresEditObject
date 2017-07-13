@@ -44,12 +44,21 @@ removeCluster <- function(area, cluster_name,
     overwrite = TRUE
   )
   
+  if (length(previous_params) > 0) {
+    # remove series
+    unlink(x = file.path(inputPath, "thermal", "series", area, cluster_name), recursive = TRUE)
+    
+    # remove prepro
+    unlink(x = file.path(inputPath, "thermal", "prepro", area, cluster_name), recursive = TRUE)
+  } else {
+    # remove series
+    unlink(x = file.path(inputPath, "thermal", "series", area), recursive = TRUE)
+    
+    # remove prepro
+    unlink(x = file.path(inputPath, "thermal", "prepro", area), recursive = TRUE)
+  }
   
-  # remove series
-  unlink(x = file.path(inputPath, "thermal", "series", area, cluster_name), recursive = TRUE)
   
-  # remove prepro
-  unlink(x = file.path(inputPath, "thermal", "prepro", area, cluster_name), recursive = TRUE)
   
   
   # Maj simulation

@@ -24,6 +24,15 @@ test_that("Initialize a new area", {
 
 
 
+test_that("Initialize a new area", {
+  initializeArea(name = "myareatoremove")
+  removeArea(name = "myareatoremove")
+  ra <- checkRemoveArea(area = "secondarea")
+  expect_length(ra$areaResiduFiles, 0)
+  expect_length(ra$areaResidus, 0)
+})
+
+
 # remove temporary study
 unlink(x = file.path(path, "test_case"), recursive = TRUE)
 
