@@ -30,6 +30,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
   # Input path
   inputPath <- opts$inputPath
+  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
   if (!area %in% opts$areaList)
     stop(paste(area, "is not a valid area"))

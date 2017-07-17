@@ -1,19 +1,34 @@
 #Copyright © 2016 RTE Réseau de transport d’électricité
 
+
 context("Function initializeArea")
+
+
+
+# Setup study -------------------------------------------------------------
 
 
 path <- tempdir()
 # Unzip the study
 setup_study(path, sourcedir)
-
 opts <- antaresRead::setSimulationPath(studyPath)
+
+
+
+
+# Tests -------------------------------------------------------------------
+
+
 
 test_that("Cannot initialize a new area if not in 'Input' mode", {
   expect_error(initializeArea(name = "myarea"))
 })
 
+
+# set simulation path in mode input
 opts <- antaresRead::setSimulationPath(studyPath, 'input')
+
+
 
 test_that("Initialize a new area", {
   n_before <- length(getOption("antares")$areaList)
@@ -24,6 +39,8 @@ test_that("Initialize a new area", {
 
 
 
+
+
 test_that("Initialize a new area", {
   initializeArea(name = "myareatoremove")
   removeArea(name = "myareatoremove")
@@ -31,6 +48,13 @@ test_that("Initialize a new area", {
   expect_length(ra$areaResiduFiles, 0)
   expect_length(ra$areaResidus, 0)
 })
+
+
+
+
+
+
+# End ---------------------------------------------------------------------
 
 
 # remove temporary study

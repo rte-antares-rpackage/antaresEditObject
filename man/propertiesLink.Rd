@@ -13,7 +13,7 @@ propertiesLink(hurdles_cost = FALSE, transmission_capacities = "enabled",
 \item{hurdles_cost}{Logical, which is used to state whether (linear)
 transmission fees should be taken into account or not in economy and adequacy simulations}
 
-\item{transmission_capacities}{Character, one of \code{enabled}, \code{infinite} or \code{ignore}, which is used to state whether 
+\item{transmission_capacities}{Character, one of \code{enabled}, \code{ignore} or \code{infinite}, which is used to state whether 
 the capacities to consider are those indicated in 8760-hour arrays or 
 if zero or infinite values should be used instead (actual values / set to zero / set to infinite)}
 

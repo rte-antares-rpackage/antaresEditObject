@@ -48,6 +48,6 @@ rearranged to match the new order.
 }
 \examples{
 \dontrun{
-createLink()
+createLink(from = "myarea", to  = "myarea2")
 }
 }

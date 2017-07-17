@@ -43,6 +43,7 @@ initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255)
 
   # Input path
   inputPath <- opts$inputPath
+  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
 
   # Update area list
   areas <- c(opts$areaList, name)

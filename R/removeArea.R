@@ -145,7 +145,7 @@ checkRemoveArea <- function(area, opts = antaresRead::simOptions()) {
   # Check files content
   areaResidus <- vector(mode = "character")
   for (i in inputFiles) {
-    if (!is.dir(i)) {
+    if (!file.info(i)$isdir) {
       suppressWarnings({tmp <- readLines(con = i)})
       tmp <- paste(tmp, collapse = "\n")
       if (grepl(pattern = area, x = tmp)) {

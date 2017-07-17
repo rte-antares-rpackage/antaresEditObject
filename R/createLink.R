@@ -35,7 +35,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' createLink()
+#' createLink(from = "myarea", to  = "myarea2")
 #' }
 createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = NULL, overwrite = FALSE, opts = antaresRead::simOptions()) {
   
@@ -50,9 +50,9 @@ createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = N
     to <- areas[1]
   }
   
-  
   # Input path
   inputPath <- opts$inputPath
+  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
   if (!from %in% opts$areaList)
     stop(paste(from, "is not a valid area"))
@@ -100,7 +100,7 @@ createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = N
 #'
 #' @param hurdles_cost Logical, which is used to state whether (linear)
 #'  transmission fees should be taken into account or not in economy and adequacy simulations
-#' @param transmission_capacities Character, one of \code{enabled}, \code{infinite} or \code{ignore}, which is used to state whether 
+#' @param transmission_capacities Character, one of \code{enabled}, \code{ignore} or \code{infinite}, which is used to state whether 
 #' the capacities to consider are those indicated in 8760-hour arrays or 
 #' if zero or infinite values should be used instead (actual values / set to zero / set to infinite)
 #' @param display_comments Logical
@@ -114,7 +114,8 @@ createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = N
 #' \dontrun{
 #' propertiesLink()
 #' }
-propertiesLink <- function(hurdles_cost = FALSE, transmission_capacities = "enabled", 
+propertiesLink <- function(hurdles_cost = FALSE, 
+                           transmission_capacities = "enabled", 
                            display_comments = TRUE,
                            filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
                            filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
