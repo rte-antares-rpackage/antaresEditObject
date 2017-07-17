@@ -4,8 +4,8 @@
 \alias{createLink}
 \title{Create a link between two areas}
 \usage{
-createLink(from, to, propertiesLink = propertiesLink(), dataLink = NULL,
-  overwrite = FALSE, opts = antaresRead::simOptions())
+createLink(from, to, propertiesLink = propertiesLinkOptions(),
+  dataLink = NULL, overwrite = FALSE, opts = antaresRead::simOptions())
 }
 \arguments{
 \item{from}{The first area from which to create a link}

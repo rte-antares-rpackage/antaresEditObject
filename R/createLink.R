@@ -37,7 +37,7 @@
 #' \dontrun{
 #' createLink(from = "myarea", to  = "myarea2")
 #' }
-createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = NULL, overwrite = FALSE, opts = antaresRead::simOptions()) {
+createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataLink = NULL, overwrite = FALSE, opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(class(opts) == "simOptions")
   if (!is.null(dataLink)) 
@@ -68,9 +68,11 @@ createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = N
   if (to %in% names(prev_links) & !overwrite)
     stop(paste("Link to", to, "already exist"))
   
+  propLink <- list(propertiesLink)
+  
   # Write INI file
   writeIni(
-    listData = c(prev_links, stats::setNames(list(propertiesLink), to)),
+    listData = c(prev_links, stats::setNames(propLink, to)),
     pathIni = file.path(inputPath, "links", from, "properties.ini"),
     overwrite = TRUE
   )
@@ -112,9 +114,9 @@ createLink <- function(from, to, propertiesLink = propertiesLink(), dataLink = N
 #'
 #' @examples
 #' \dontrun{
-#' propertiesLink()
+#' propertiesLinkOptions()
 #' }
-propertiesLink <- function(hurdles_cost = FALSE, 
+propertiesLinkOptions <- function(hurdles_cost = FALSE, 
                            transmission_capacities = "enabled", 
                            display_comments = TRUE,
                            filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),

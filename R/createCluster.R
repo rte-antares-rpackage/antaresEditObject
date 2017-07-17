@@ -67,7 +67,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   previous_params[[cluster_name]] <- params_cluster
 
   writeIni(
-    listData = params_cluster,
+    listData = previous_params,
     pathIni = path_clusters_ini,
     overwrite = TRUE
   )
