@@ -88,7 +88,7 @@ prepSimulationWV <- function(area, fictive_area = paste0("WaterValue_", area), o
   createLink(
     from = area, 
     to = fictive_area, 
-    propertiesLink = propertiesLink(hurdles_cost = FALSE, transmission_capacities = "enabled"), 
+    propertiesLink = propertiesLinkOptions(hurdles_cost = FALSE, transmission_capacities = "enabled"), 
     dataLink = dataLink,
     opts = opts
   )
