@@ -1,7 +1,7 @@
 #Copyright © 2016 RTE Réseau de transport d’électricité
 
 
-context("Function initializeArea")
+context("Function createArea")
 
 
 
@@ -35,6 +35,7 @@ test_that("Initialize a new area", {
   createArea(name = "myarea")
   n_after <- length(getOption("antares")$areaList)
   expect_equal(n_before + 1, n_after)
+  expect_true("myarea" %in% getOption("antares")$areaList)
 })
 
 
