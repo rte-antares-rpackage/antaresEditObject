@@ -26,7 +26,7 @@ prepSimulationWV <- function(area, fictive_area = paste0("WaterValue_", area), o
 
 
   # Create fictive area ----
-  initializeArea(name = fictive_area, overwrite = TRUE, opts = opts)
+  createArea(name = fictive_area, overwrite = TRUE, opts = opts)
 
 
   # Hydro storage ----

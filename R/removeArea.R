@@ -120,9 +120,9 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 #'
 #' @examples
 #' \dontrun{
-#' checkRemoveArea("myarea")
+#' checkRemovedArea("myarea")
 #' }
-checkRemoveArea <- function(area, opts = antaresRead::simOptions()) {
+checkRemovedArea <- function(area, opts = antaresRead::simOptions()) {
   
   # Input path
   inputPath <- opts$inputPath

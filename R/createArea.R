@@ -20,10 +20,10 @@
 #' @examples
 #' \dontrun{
 #' 
-#' initializeArea("fictive_area")
+#' createArea("fictive_area")
 #' 
 #' }
-initializeArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
+createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
                        localization = c(0, 0),
                        nodalOptimization = nodalOptimizationOptions(),
                        filtering = filteringOptions(),

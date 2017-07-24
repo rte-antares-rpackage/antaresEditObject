@@ -21,7 +21,7 @@ opts <- antaresRead::setSimulationPath(studyPath)
 
 
 test_that("Cannot initialize a new area if not in 'Input' mode", {
-  expect_error(initializeArea(name = "myarea"))
+  expect_error(createArea(name = "myarea"))
 })
 
 
@@ -32,7 +32,7 @@ opts <- antaresRead::setSimulationPath(studyPath, 'input')
 
 test_that("Initialize a new area", {
   n_before <- length(getOption("antares")$areaList)
-  initializeArea(name = "myarea")
+  createArea(name = "myarea")
   n_after <- length(getOption("antares")$areaList)
   expect_equal(n_before + 1, n_after)
 })
@@ -42,9 +42,9 @@ test_that("Initialize a new area", {
 
 
 test_that("Initialize a new area", {
-  initializeArea(name = "myareatoremove")
+  createArea(name = "myareatoremove")
   removeArea(name = "myareatoremove")
-  ra <- checkRemoveArea(area = "secondarea")
+  ra <- checkRemovedArea(area = "secondarea")
   expect_length(ra$areaResiduFiles, 0)
   expect_length(ra$areaResidus, 0)
 })
