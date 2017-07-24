@@ -105,11 +105,19 @@ createBindingConstraint <- function(name, id = tolower(name),
     }
     
     nrows <- switch(timeStep,
-                    hourly = 24*365,
-                    daily = 365,
-                    weekly = 52,
+                    hourly = 24*366,
+                    daily = 366,
+                    weekly = 366,
                     monthly = 12,
                     annual = 1)
+    
+    if (NROW(values) == 24*365) {
+      values <- rbind(values, matrix(rep(0, 24*3), ncol = 3))
+    }
+    
+    if (NROW(values) == 365) {
+      values <- rbind(values, matrix(rep(0, 3), ncol = 3))
+    }
     
     if (! NROW(values) %in% c(0, nrows)) {
       stop("Incorrect number of rows according to the timeStep")
@@ -129,7 +137,7 @@ createBindingConstraint <- function(name, id = tolower(name),
   
   # Write values
   pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
-  write.table(x = values, file = pathValues, col.names = FALSE, row.names = FALSE)
+  write.table(x = values, file = pathValues, col.names = FALSE, row.names = FALSE, sep = "\t")
   
   
   
