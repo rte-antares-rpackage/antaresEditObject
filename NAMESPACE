@@ -2,6 +2,7 @@
 
 export(backupStudy)
 export(checkRemoveArea)
+export(createBindingConstraint)
 export(createCluster)
 export(createLink)
 export(filteringOptions)

@@ -6,8 +6,9 @@
 #'  It contains one line per time step and three columns "less", "greater" and "equal".
 #' @param enabled Logical, is the constraint enabled ?
 #' @param timeStep Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}
-#' @param operator Type of constraint: equality, inequality on one side or both sides
-#' @param coefficients Elements containing the coefficients used by the constraint
+#' @param operator Type of constraint: equality, inequality on one side or both sides.
+#' @param coefficients A named vector containing the coefficients used by the constraint.
+#' @param overwrite If the constraint already exist, overwrite the previous value.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath} 
@@ -16,13 +17,23 @@
 #' @export
 #'
 #' @examples
-#' # createBindingConstraint()
+#' \dontrun{
+#' createBindingConstraint(
+#'   name = "myconstraint", 
+#'   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+#'   enabled = FALSE, 
+#'   timeStep = "hourly",
+#'   operator = "both",
+#'   coefficients = c("fr%myarea" = 1)
+#' )
+#' }
 createBindingConstraint <- function(name, id = tolower(name),
                                     values = NULL,
                                     enabled = TRUE,
                                     timeStep = c("hourly", "daily", "weekly"),
-                                    operator = c("both", "equal"),
+                                    operator = c("both", "equal", "greater", "lower"),
                                     coefficients = NULL,
+                                    overwrite = FALSE,
                                     opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(class(opts) == "simOptions")
@@ -30,6 +41,52 @@ createBindingConstraint <- function(name, id = tolower(name),
   timeStep <- match.arg(arg = timeStep)
   operator <- match.arg(arg = operator)
   
+  
+  
+  ## Ini file
+  pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
+  bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
+  
+  
+  # Get ids and check if not already exist
+  previds <- lapply(bindingConstraints, `[[`, "id")
+  previds <- unlist(previds, use.names = FALSE)
+  if (id %in% previds & !overwrite)
+    stop(sprintf("A binding constraint with id '%s' already exist.", id))
+  
+  # add the params for the binding constraint ti the ini file
+  iniParams <- list(
+    name = name,
+    id = id,
+    enabled = enabled,
+    type = timeStep,
+    operator = operator
+  )
+  
+  
+  # Check coefficients
+  if (!is.null(coefficients)) {
+    links <- antaresRead::getLinks(opts = opts, namesOnly = TRUE)
+    links <- as.character(links)
+    links <- gsub(pattern = " - ", replacement = "%", x = links)
+    if (!all(names(coefficients) %in% links)) {
+      badcoef <- names(coefficients)[!names(coefficients) %in% links]
+      badcoef <- paste(shQuote(badcoef), collapse = ", ")
+      stop(paste0(badcoef, " : is or are not valid link(s)"))
+    }
+  }
+  
+  
+  indexBC <- as.character(length(bindingConstraints))
+  if (indexBC %in% names(bindingConstraints)) {
+    indexBC <- as.character(max(as.numeric(names(bindingConstraints))) + 1)
+  }
+  bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
+  
+  
+  
+  
+  ## Values
   
   if (!is.null(values)) {
     if (ncol(values) != 3 & is.null(colnames(values))) 
@@ -46,28 +103,40 @@ createBindingConstraint <- function(name, id = tolower(name),
       values <- do.call("cbind", c(list(values), lapply(var_to_add, function(x) 0)))
       values <- values[, c("greater", "less", "equal")]
     }
+    
+    nrows <- switch(timeStep,
+                    hourly = 24*365,
+                    daily = 365,
+                    weekly = 52,
+                    monthly = 12,
+                    annual = 1)
+    
+    if (! NROW(values) %in% c(0, nrows)) {
+      stop("Incorrect number of rows according to the timeStep")
+    }
+    
   } else {
     values <- character(0)
   }
   
   
-  path <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
-  bindingConstraints <- readIniFile(path, stringsAsFactors = FALSE)
   
   
-  #
   
+  
+  # Write Ini
+  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
+  
+  # Write values
+  pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
+  write.table(x = values, file = pathValues, col.names = FALSE, row.names = FALSE)
+  
+  
+  
+  # Maj simulation
+  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  
+  invisible(res)
 }
 
-# 
-# x <- matrix(1:6, ncol = 2)
-# colnames(x) <- c("upper", "lower")
-# x
-# 
-# xx <- character(0)
-# names(xx) <- xx
-# lapply(xx, function(x) 0)
-# 
-# do.call("cbind", c(list(x), lapply(xx, function(x) 0)))
-# 
 
