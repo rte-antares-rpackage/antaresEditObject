@@ -4,6 +4,9 @@
 > Edit an Antares study before running simulation.
 
 
+[![Travis-CI Build Status](https://travis-ci.org/rte-antares-rpackage/antaresEditObject.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresEditObject)
+
+
 
 ## Overview
 
@@ -25,6 +28,17 @@ You need to set the path to an Antares simulation in "input" mode :
 ```r
 antaresRead::setSimulationPath(path = "path/to/study", simulation = "input")
 ```
+
+## Save simulation
+
+Before modifying your simulation, you can save it in an archive :
+
+```r
+backupStudy(what = "input")
+```
+
+This will create a `.tar.gz` file in your simulation folder.
+
 
 
 ## Create a new area
@@ -49,7 +63,7 @@ You can initialize a cluster with some parameters :
 ```r
 createCluster(
   area = "fr", 
-  cluster_name = "myarea",
+  cluster_name = "myareacluster",
   group = "other",
   unitcount = 1,
   nominalcapacity = 8400,
@@ -88,6 +102,16 @@ createBindingConstraint(
   operator = "both",
   coefficients = c("fr%myarea" = 1)
 )
+```
+
+
+
+## Remove methods
+
+You can remove from input folder areas, links, clusters and binding constraints with `remove*` functions, e.g. :
+
+```r
+removeArea("myarea")
 ```
 
 
