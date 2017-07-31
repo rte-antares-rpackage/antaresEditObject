@@ -30,6 +30,15 @@ opts <- antaresRead::setSimulationPath(studyPath, 'input')
 
 
 
+
+
+test_that("Backup study/input", {
+  expect_length(backupStudy(what = "study"), 1)
+  expect_length(backupStudy(what = "input"), 1)
+})
+
+
+
 test_that("Initialize a new area", {
   n_before <- length(getOption("antares")$areaList)
   createArea(name = "myarea")
@@ -42,10 +51,16 @@ test_that("Initialize a new area", {
 
 
 
-test_that("Initialize a new area", {
-  createArea(name = "myareatoremove")
-  removeArea(name = "myareatoremove")
-  ra <- checkRemovedArea(area = "secondarea")
+test_that("Remove an area", {
+  area2remove <- "myareatoremove"
+  createArea(name = area2remove)
+  
+  ra <- checkRemovedArea(area = area2remove)
+  expect_true(length(ra$areaResiduFiles) > 0)
+  expect_true(length(ra$areaResidus) > 0)
+  
+  removeArea(name = area2remove)
+  ra <- checkRemovedArea(area = area2remove)
   expect_length(ra$areaResiduFiles, 0)
   expect_length(ra$areaResidus, 0)
 })

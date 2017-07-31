@@ -23,10 +23,64 @@ test_that("Create a new link", {
   
   areas <- sort(sample(x = getOption("antares")$areaList, size = 2))
   
-  createLink(from = areas[1], to = areas[2])
+  createLink(from = areas[1], to = areas[2], overwrite = TRUE)
   
   expect_true(paste(areas, collapse = " - ") %in% levels(antaresRead::getLinks()))
 })
+
+
+test_that("Create a new link - respect alphabetical order", {
+  
+  areas <- sort(sample(x = getOption("antares")$areaList, size = 2))
+  
+  createLink(from = areas[2], to = areas[1], overwrite = TRUE)
+  expect_true(paste(areas, collapse = " - ") %in% levels(antaresRead::getLinks()))
+  
+  removeLink(from = areas[2], to = areas[1])
+  expect_false(paste(areas, collapse = " - ") %in% levels(antaresRead::getLinks()))
+})
+
+
+
+
+areas <- sort(sample(x = getOption("antares")$areaList, size = 2))
+
+
+test_that("Create a link with default properties", {
+  
+  createLink(
+    from = areas[1], 
+    to = areas[2], 
+    propertiesLink = propertiesLinkOptions(hurdles_cost = FALSE, transmission_capacities = "enabled"), 
+    dataLink =  matrix(
+      data = c(rep(0, 8760), rep(7500, 8760), rep(0, 8760*3)),
+      ncol = 5
+    ),
+    overwrite = TRUE
+  )
+  
+  expect_true(paste(areas, collapse = " - ") %in% levels(antaresRead::getLinks()))
+})
+
+
+
+
+test_that("Remove a link", {
+  
+  removeLink(from = areas[1], to = areas[2])
+  
+  expect_false(paste(areas, collapse = " - ") %in% levels(antaresRead::getLinks()))
+})
+
+
+
+
+test_that("Remove a link that doesn't exist", {
+  expect_message(removeLink(from = "myimaginaryarea", to = "myimaginaryareabis"))
+})
+
+
+
 
 
 

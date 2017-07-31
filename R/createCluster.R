@@ -42,8 +42,8 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   if (! NROW(prepro_modulation) %in% c(0, 8760)) {
     stop("Number of rows for modulation data must be 0 or 8760")
   }
-  if (! NROW(prepro_modulation) %in% c(0, 4)) {
-    stop("Number of cols for modulation data must be 0 or 8760")
+  if (! NCOL(prepro_modulation) %in% c(1, 4)) {
+    stop("Number of cols for modulation data must be 0 or 4")
   }
 
   # Cluster's parameters

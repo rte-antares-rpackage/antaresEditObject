@@ -34,8 +34,12 @@ removeCluster <- function(area, cluster_name,
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
+  
+  # cluster indice
+  ind <- which(tolower(names(previous_params)) %in% cluster_name)
+  
   # Remove
-  previous_params[[cluster_name]] <- NULL
+  previous_params[ind] <- NULL
   
   # write
   writeIni(

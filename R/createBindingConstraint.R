@@ -93,14 +93,17 @@ createBindingConstraint <- function(name, id = tolower(name),
       stop("'values' must have 3 columns or must be named")
     
     if (!is.null(colnames(values))) {
-      if (any(c("greater", "less", "equal") %in% colnames(values))) {
+      if (!any(c("greater", "less", "equal") %in% colnames(values))) {
         stop("'value' must have at least one colum named 'greater' or 'less' or 'equal")
       }
       
       var_to_add <- c("greater", "less", "equal")[!c("greater", "less", "equal") %in% colnames(values)]
-      names(var_to_add) <- var_to_add
       
-      values <- do.call("cbind", c(list(values), lapply(var_to_add, function(x) 0)))
+      if (length(var_to_add) > 0) {
+        names(var_to_add) <- var_to_add
+        values <- do.call("cbind", c(list(values), lapply(var_to_add, function(x) 0)))
+      }
+      
       values <- values[, c("greater", "less", "equal")]
     }
     
@@ -112,11 +115,11 @@ createBindingConstraint <- function(name, id = tolower(name),
                     annual = 1)
     
     if (NROW(values) == 24*365) {
-      values <- rbind(values, matrix(rep(0, 24*3), ncol = 3))
+      values <- rbind(values, matrix(rep(0, 24*3), ncol = 3, dimnames = list(list(), names(values))))
     }
     
     if (NROW(values) == 365) {
-      values <- rbind(values, matrix(rep(0, 3), ncol = 3))
+      values <- rbind(values, matrix(rep(0, 3), ncol = 3, dimnames = list(list(), names(values))))
     }
     
     if (! NROW(values) %in% c(0, nrows)) {

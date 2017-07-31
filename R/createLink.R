@@ -70,9 +70,11 @@ createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataL
   
   propLink <- list(propertiesLink)
   
+  prev_links[[to]] <- propLink
+  
   # Write INI file
   writeIni(
-    listData = c(prev_links, stats::setNames(propLink, to)),
+    listData = prev_links, # c(prev_links, stats::setNames(propLink, to)),
     pathIni = file.path(inputPath, "links", from, "properties.ini"),
     overwrite = TRUE
   )
