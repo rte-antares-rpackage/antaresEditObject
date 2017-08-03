@@ -8,7 +8,8 @@ backupStudy(backupfile, what = c("input", "study"),
   opts = antaresRead::simOptions())
 }
 \arguments{
-\item{backupfile}{Name of the backup, without extension.}
+\item{backupfile}{Name of the backup, without extension. If missing, 
+either the name of the study or 'input' according argument \code{what}.}
 
 \item{what}{Which folder to save, \code{input} for the input folder
 or \code{study} for the whole study.}

@@ -33,7 +33,7 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
 
   assertthat::assert_that(class(opts) == "simOptions")
   
-  if (grepl(pattern = "[[:punct:]]", x = name) | grepl(pattern = "[[:space:]]", x = name)) 
+  if (grepl(pattern = "(?!_)[[:punct:]]", x = name, perl = TRUE) | grepl(pattern = "[[:space:]]", x = name)) 
     stop("Area's name must not contain space or ponctuation")
   
   if (opts$mode != "Input") 

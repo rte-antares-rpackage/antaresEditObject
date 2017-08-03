@@ -2,7 +2,8 @@
 #' 
 #' @description Save an Antares Study or only inputs in a .tar.gz file
 #'
-#' @param backupfile Name of the backup, without extension.
+#' @param backupfile Name of the backup, without extension. If missing, 
+#' either the name of the study or 'input' according argument \code{what}.
 #' @param what Which folder to save, \code{input} for the input folder
 #'  or \code{study} for the whole study.
 #' @param opts
