@@ -1,11 +1,12 @@
 #' Create a thermal cluster
 #'
-#' @param area The area where to create the cluster
-#' @param cluster_name cluster name
-#' @param ... Parameters to write in the Ini file
-#' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes
-#' @param prepro_data Preprocess data
-#' @param prepro_modulation Preprocess modulation
+#' @param area The area where to create the cluster.
+#' @param cluster_name cluster name.
+#' @param ... Parameters to write in the Ini file.
+#' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
+#' @param prepro_data Preprocess data.
+#' @param prepro_modulation Preprocess modulation.
+#' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area's name.
 #' @param overwrite Logical, overwrite the cluster or not.
 #' @param opts
 #'   List of simulation parameters returned by the function
@@ -25,7 +26,7 @@
 #' }
 createCluster <- function(area, cluster_name, ..., time_series = NULL,
                           prepro_data = NULL, prepro_modulation = NULL,
-                          overwrite = FALSE,
+                          add_prefix = TRUE, overwrite = FALSE,
                           opts = antaresRead::simOptions()) {
 
   # Input path
@@ -48,7 +49,8 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
   # Cluster's parameters
   params_cluster <- list(...)
-
+  if (add_prefix)
+    cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
 
   # named list for writing ini file
@@ -74,7 +76,10 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
 
   # initialize series
-  dir.create(path = file.path(inputPath, "thermal", "series", area, cluster_name), recursive = TRUE, showWarnings = FALSE)
+  dir.create(path = file.path(
+    inputPath, "thermal", "series", area, cluster_name),
+    recursive = TRUE, showWarnings = FALSE
+  )
   
   if (is.null(time_series))
     time_series <- character(0)
@@ -87,7 +92,10 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
 
   # prepro
-  dir.create(path = file.path(inputPath, "thermal", "prepro", area, cluster_name), recursive = TRUE, showWarnings = FALSE)
+  dir.create(
+    path = file.path(inputPath, "thermal", "prepro", area, cluster_name),
+    recursive = TRUE, showWarnings = FALSE
+  )
   
   if (is.null(prepro_data))
     prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 5)

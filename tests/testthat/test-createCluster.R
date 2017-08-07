@@ -25,7 +25,7 @@ test_that("Create a new cluster", {
   
   createCluster(area = area, cluster_name = "mycluster")
   
-  expect_true("mycluster" %in% levels(antaresRead::readClusterDesc()$cluster))
+  expect_true(paste(area, "mycluster", sep = "_") %in% levels(antaresRead::readClusterDesc()$cluster))
 })
 
 
@@ -59,7 +59,7 @@ test_that("Create a cluster with default properties", {
     prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4)
   )
   
-  expect_true("mycluster" %in% levels(antaresRead::readClusterDesc()$cluster))
+  expect_true(paste(area2, "mycluster2", sep = "_") %in% levels(antaresRead::readClusterDesc()$cluster))
 })
 
 
@@ -68,7 +68,7 @@ test_that("Remove a cluster", {
   
   removeCluster(area = area2, cluster_name = "mycluster2")
   
-  expect_false("mycluster2" %in% levels(antaresRead::readClusterDesc()$cluster))
+  expect_false(paste(area2, "mycluster2", sep = "_") %in% levels(antaresRead::readClusterDesc()$cluster))
 })
 
 
@@ -79,7 +79,8 @@ test_that("Remove all clusters", {
   for (i in seq_len(nrow(all_clusters))) {
     removeCluster(
       area = unlist(all_clusters[i, ]$area), 
-      cluster_name = unlist(all_clusters[i, ]$cluster)
+      cluster_name = unlist(all_clusters[i, ]$cluster),
+      add_prefix = FALSE
     )
   }
   expect_error(antaresRead::readClusterDesc())

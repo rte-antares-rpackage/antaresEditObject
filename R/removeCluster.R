@@ -1,7 +1,8 @@
 #' Remove a cluster
 #'
-#' @param area Area from which to remove a cluster
-#' @param cluster_name Cluster to remove
+#' @param area Area from which to remove a cluster.
+#' @param cluster_name Cluster to remove.
+#' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area's name.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
@@ -19,13 +20,15 @@
 #' }
 #' 
 #' 
-removeCluster <- function(area, cluster_name,
+removeCluster <- function(area, cluster_name, add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
   
   
   # Input path
   inputPath <- opts$inputPath
   
+  if (add_prefix)
+    cluster_name <- paste(area, cluster_name, sep = "_")
   
   # Remove from Ini file
   # path to ini file

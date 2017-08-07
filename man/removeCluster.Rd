@@ -4,12 +4,15 @@
 \alias{removeCluster}
 \title{Remove a cluster}
 \usage{
-removeCluster(area, cluster_name, opts = antaresRead::simOptions())
+removeCluster(area, cluster_name, add_prefix = TRUE,
+  opts = antaresRead::simOptions())
 }
 \arguments{
-\item{area}{Area from which to remove a cluster}
+\item{area}{Area from which to remove a cluster.}
 
-\item{cluster_name}{Cluster to remove}
+\item{cluster_name}{Cluster to remove.}
+
+\item{add_prefix}{If \code{TRUE}, cluster_name will be prefixed by area's name.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}

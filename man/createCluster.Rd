@@ -5,21 +5,23 @@
 \title{Create a thermal cluster}
 \usage{
 createCluster(area, cluster_name, ..., time_series = NULL,
-  prepro_data = NULL, prepro_modulation = NULL, overwrite = FALSE,
-  opts = antaresRead::simOptions())
+  prepro_data = NULL, prepro_modulation = NULL, add_prefix = TRUE,
+  overwrite = FALSE, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{area}{The area where to create the cluster}
+\item{area}{The area where to create the cluster.}
 
-\item{cluster_name}{cluster name}
+\item{cluster_name}{cluster name.}
 
-\item{...}{Parameters to write in the Ini file}
+\item{...}{Parameters to write in the Ini file.}
 
-\item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes}
+\item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes.}
 
-\item{prepro_data}{Preprocess data}
+\item{prepro_data}{Preprocess data.}
 
-\item{prepro_modulation}{Preprocess modulation}
+\item{prepro_modulation}{Preprocess modulation.}
+
+\item{add_prefix}{If \code{TRUE}, cluster_name will be prefixed by area's name.}
 
 \item{overwrite}{Logical, overwrite the cluster or not.}
 
