@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit a simulation
-Version: 0.1.0
+Version: 0.1.1
 Author: Who wrote it
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)

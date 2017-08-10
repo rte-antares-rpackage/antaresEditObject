@@ -55,7 +55,7 @@ test_that("Create a cluster with default properties", {
     `min-down-time` = 0,
     `marginal-cost` = 0.010000,
     `market-bid-cost` = 0.010000,
-    time_series = matrix(rep(c(0, 8000), each = 24*365), ncol = 2),
+    time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
     prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4)
   )
   
