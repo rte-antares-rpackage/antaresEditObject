@@ -16,7 +16,7 @@ These steps maybe usefull before running an Antares simulation.
 You can install the package with :
 
 ```r
-devtools::install_github("rte-antares-rpackage/antaresEditObject"")
+devtools::install_github("rte-antares-rpackage/antaresEditObject")
 ```
 
 
