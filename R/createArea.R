@@ -48,6 +48,7 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
 
   # Update area list
   areas <- c(opts$areaList, name)
+  areas <- areas[!duplicated(areas)]
   areas <- paste(sort(areas), collapse = "\n")
   writeLines(text = areas, con = file.path(inputPath, "areas/list.txt"))
 

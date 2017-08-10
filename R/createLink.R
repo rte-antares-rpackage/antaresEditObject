@@ -68,9 +68,9 @@ createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataL
   if (to %in% names(prev_links) & !overwrite)
     stop(paste("Link to", to, "already exist"))
   
-  propLink <- list(propertiesLink)
+  # propLink <- list(propertiesLink)
   
-  prev_links[[to]] <- propLink
+  prev_links[[to]] <- propertiesLink
   
   # Write INI file
   writeIni(
@@ -88,7 +88,7 @@ createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataL
   }
   
   utils::write.table(
-    x = dataLink, row.names = FALSE, col.names = FALSE,
+    x = dataLink, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "links", from, paste0(to, ".txt"))
   )
   

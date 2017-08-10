@@ -6,7 +6,7 @@
 \usage{
 createBindingConstraint(name, id = tolower(name), values = NULL,
   enabled = TRUE, timeStep = c("hourly", "daily", "weekly"),
-  operator = c("both", "equal", "greater", "lower"), coefficients = NULL,
+  operator = c("both", "equal", "greater", "less"), coefficients = NULL,
   overwrite = FALSE, opts = antaresRead::simOptions())
 }
 \arguments{

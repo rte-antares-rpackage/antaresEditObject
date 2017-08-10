@@ -36,11 +36,11 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   if (!area %in% opts$areaList)
     stop(paste(area, "is not a valid area"))
   
-  if (! NROW(time_series) %in% c(0, 8760)) {
+  if (! NROW(time_series) %in% c(0, 8736, 8760)) {
     stop("Number of rows for time series must be 0 or 8760")
   }
   
-  if (! NROW(prepro_modulation) %in% c(0, 8760)) {
+  if (! NROW(prepro_modulation) %in% c(0, 8736, 8760)) {
     stop("Number of rows for modulation data must be 0 or 8760")
   }
   if (! NCOL(prepro_modulation) %in% c(1, 4)) {
@@ -84,6 +84,14 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   if (is.null(time_series))
     time_series <- character(0)
   
+  if (NROW(time_series) == 8736) {
+    fill_mat <- matrix(
+      data = rep(0, times = 24 * ncol(time_series)), 
+      ncol = ncol(time_series),
+      dimnames = list(NULL, colnames(time_series))
+    )
+    time_series <- rbind(time_series, fill_mat)
+  }
   
   utils::write.table(
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",

@@ -15,6 +15,9 @@
 #'
 #' @return An upddated list containing various information about the simulation.
 #' @export
+#' 
+#' @importFrom antaresRead getLinks setSimulationPath
+#' @importFrom utils write.table
 #'
 #' @examples
 #' \dontrun{
@@ -31,7 +34,7 @@ createBindingConstraint <- function(name, id = tolower(name),
                                     values = NULL,
                                     enabled = TRUE,
                                     timeStep = c("hourly", "daily", "weekly"),
-                                    operator = c("both", "equal", "greater", "lower"),
+                                    operator = c("both", "equal", "greater", "less"),
                                     coefficients = NULL,
                                     overwrite = FALSE,
                                     opts = antaresRead::simOptions()) {
@@ -53,6 +56,11 @@ createBindingConstraint <- function(name, id = tolower(name),
   previds <- unlist(previds, use.names = FALSE)
   if (id %in% previds & !overwrite)
     stop(sprintf("A binding constraint with id '%s' already exist.", id))
+  
+  if (id %in% previds & overwrite) {
+    bc_remove <- which(previds %in% id)
+    bindingConstraints[bc_remove] <- NULL
+  }
   
   # add the params for the binding constraint ti the ini file
   iniParams <- list(
@@ -93,18 +101,18 @@ createBindingConstraint <- function(name, id = tolower(name),
       stop("'values' must have 3 columns or must be named")
     
     if (!is.null(colnames(values))) {
-      if (!any(c("greater", "less", "equal") %in% colnames(values))) {
+      if (!any(c("less", "greater", "equal") %in% colnames(values))) {
         stop("'value' must have at least one colum named 'greater' or 'less' or 'equal")
       }
       
-      var_to_add <- c("greater", "less", "equal")[!c("greater", "less", "equal") %in% colnames(values)]
+      var_to_add <- c("less", "greater", "equal")[!c("less", "greater", "equal") %in% colnames(values)]
       
       if (length(var_to_add) > 0) {
         names(var_to_add) <- var_to_add
         values <- do.call("cbind", c(list(values), lapply(var_to_add, function(x) 0)))
       }
       
-      values <- values[, c("greater", "less", "equal")]
+      values <- values[, c("less", "greater", "equal")]
     }
     
     nrows <- switch(timeStep,
