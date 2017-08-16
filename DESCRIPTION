@@ -2,10 +2,11 @@ Package: antaresEditObject
 Type: Package
 Title: Edit a simulation
 Version: 0.1.1
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Authors@R: c(
+    person("Victor", "Perrier", email = "victor.perrier@rte-france.com", role = c("aut", "cre")),
+    person("RTE", role = "cph"))
+Maintainer: Victor Perrier <victor.perrier@rte-france.com>
+Description: Edit a simulation before running it : create new areas, links, thermal clusters or binding constraints.
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 LazyData: true

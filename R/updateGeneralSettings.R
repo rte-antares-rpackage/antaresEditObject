@@ -87,6 +87,7 @@ updateGeneralSettings <- function(mode = NULL,
   l_general <- generaldata$general
   new_params <- as.list(match.call())[-1]
   for (i in seq_along(new_params)) {
+    new_params[i] <- as.character(new_params[i])
     names(new_params)[i] <- dicoGeneralSettings(names(new_params)[i])
   }
   l_general <- utils::modifyList(x = l_general, val = new_params)
