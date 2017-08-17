@@ -68,6 +68,13 @@ createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataL
   if (to %in% names(prev_links) & !overwrite)
     stop(paste("Link to", to, "already exist"))
   
+  if (to %in% names(prev_links) & overwrite) {
+    opts <- removeLink(from = from, to = to, opts = opts)
+    prev_links <- readIniFile(
+      file = file.path(inputPath, "links", from, "properties.ini")
+    )
+  }
+  
   # propLink <- list(propertiesLink)
   
   prev_links[[to]] <- propertiesLink

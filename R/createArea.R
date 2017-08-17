@@ -36,11 +36,17 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
   if (grepl(pattern = "(?!_)[[:punct:]]", x = name, perl = TRUE) | grepl(pattern = "[[:space:]]", x = name)) 
     stop("Area's name must not contain space or ponctuation")
   
+  if (grepl(pattern = "[A-Z]", x = name)) 
+    stop("Area's name must be lower case")
+  
   if (opts$mode != "Input") 
     stop("You can initialize an area only in 'Input' mode")
   
   if (name %in% opts$areaList & !overwrite)
     stop("Area already exist")
+  
+  if (name %in% opts$areaList & overwrite)
+    opts <- removeArea(name = name, opts = opts)
 
   # Input path
   inputPath <- opts$inputPath
