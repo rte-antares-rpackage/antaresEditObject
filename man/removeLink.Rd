@@ -15,7 +15,7 @@ removeLink(from, to, opts = antaresRead::simOptions())
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-An upddated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 }
 \description{
 Remove a link between two ares

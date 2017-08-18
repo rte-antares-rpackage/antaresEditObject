@@ -7,11 +7,11 @@
 writeIni(listData, pathIni, overwrite = FALSE)
 }
 \arguments{
-\item{listData}{\code{list}, modified list otain by antaresRead:::readIniFile.}
+\item{listData}{\code{list}, modified list obtained by antaresRead:::readIniFile.}
 
 \item{pathIni}{\code{Character}, Path to ini file.}
 
-\item{overwrite}{logical, should file be overwrited file if already exist?}
+\item{overwrite}{logical, should file be overwritten if already exist?}
 }
 \description{
 Write ini file from list obtain by antaresRead:::readIniFile and modify by user

@@ -22,7 +22,7 @@ updateGeneralSettings(mode = NULL, horizon = NULL, nbyears = NULL,
 
 \item{horizon}{Reference year (static tag, not used in the calculations)}
 
-\item{nbyears}{Number of MC years that should be prepared for the simulation (not always the same as the Number of MC years actually simulated, see “selection mode” below).}
+\item{nbyears}{Number of MC years that should be prepared for the simulation (not always the same as the Number of MC years actually simulated, see 'selection mode' below).}
 
 \item{simulation.start}{First day of the simulation (e.g. 8 for a simulation beginning on the second week of the first month of the year)}
 
@@ -85,7 +85,7 @@ printed out in an individual directory7 :
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-An upddated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 }
 \description{
 Update general parameters of an Antares study

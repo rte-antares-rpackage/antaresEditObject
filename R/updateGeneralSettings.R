@@ -2,7 +2,7 @@
 #'
 #' @param mode Economy, Adequacy, Draft.
 #' @param horizon Reference year (static tag, not used in the calculations)
-#' @param nbyears Number of MC years that should be prepared for the simulation (not always the same as the Number of MC years actually simulated, see “selection mode” below).
+#' @param nbyears Number of MC years that should be prepared for the simulation (not always the same as the Number of MC years actually simulated, see 'selection mode' below).
 #' @param simulation.start First day of the simulation (e.g. 8 for a simulation beginning on the second week of the first month of the year)
 #' @param simulation.end Last day of the simulation (e.g. 28 for a simulation ending on the fourth week of the first month of the year)
 #' @param january.1st First day of the year (Mon, Tue, etc.).
@@ -37,7 +37,7 @@
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
 #'
-#' @return An upddated list containing various information about the simulation.
+#' @return An updated list containing various information about the simulation.
 #' @export
 #' 
 #' @importFrom utils modifyList
@@ -107,7 +107,7 @@ updateGeneralSettings <- function(mode = NULL,
 
 
 
-#' Correspondance between args of updateGeneralSettings and actual Antares parameters.
+#' Correspondence between args of updateGeneralSettings and actual Antares parameters.
 #' 
 #' @param arg An argument from function \code{updateGeneralSettings}.
 #'

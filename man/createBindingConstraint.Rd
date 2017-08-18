@@ -31,7 +31,7 @@ It contains one line per time step and three columns "less", "greater" and "equa
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-An upddated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 }
 \description{
 Create a Binding Constraint

@@ -18,7 +18,7 @@ removeCluster(area, cluster_name, add_prefix = TRUE,
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-An upddated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 }
 \description{
 Remove a cluster

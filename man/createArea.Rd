@@ -10,7 +10,7 @@ createArea(name, color = grDevices::rgb(230, 108, 44, max = 255),
   opts = antaresRead::simOptions())
 }
 \arguments{
-\item{name}{Name of the area as a character, without space or ponctuation.}
+\item{name}{Name of the area as a character, without space or punctuation.}
 
 \item{color}{Color of the node}
 
@@ -26,7 +26,7 @@ createArea(name, color = grDevices::rgb(230, 108, 44, max = 255),
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-An upddated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 }
 \description{
 Create An Area In An Antares Study

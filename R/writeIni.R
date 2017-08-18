@@ -4,9 +4,9 @@
 
 #' Write ini file from list obtain by antaresRead:::readIniFile and modify by user
 #'
-#' @param listData \code{list}, modified list otain by antaresRead:::readIniFile.
+#' @param listData \code{list}, modified list obtained by antaresRead:::readIniFile.
 #' @param pathIni \code{Character}, Path to ini file.
-#' @param overwrite logical, should file be overwrited file if already exist?
+#' @param overwrite logical, should file be overwritten if already exist?
 #'
 #' @examples
 #'

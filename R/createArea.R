@@ -1,6 +1,6 @@
 #' Create An Area In An Antares Study
 #'
-#' @param name Name of the area as a character, without space or ponctuation.
+#' @param name Name of the area as a character, without space or punctuation.
 #' @param color Color of the node
 #' @param localization Localization on the map
 #' @param nodalOptimization Nodal optimization parameters
@@ -10,7 +10,7 @@
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
 #'
-#' @return An upddated list containing various information about the simulation.
+#' @return An updated list containing various information about the simulation.
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath
@@ -350,7 +350,7 @@ filteringOptions <- function(filter_synthesis = c("hourly", "daily", "weekly", "
 }
 
 
-#' Nodal optimization paramameters for creating an area
+#' Nodal optimization parameters for creating an area
 #'
 #' @param non_dispatchable_power logical, default to FALSE
 #' @param dispatchable_hydro_power logical, default to FALSE

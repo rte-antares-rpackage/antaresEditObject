@@ -17,7 +17,7 @@ or transmission-capacities for example.}
 
 \item{dataLink}{a matrix with five column corresponding to : trans. capacity (direct)
 trans. capacity (indirect), impedances, hurdles cost (direct), hurdles cost (indirect).
-If \code{NULL} (default), a matrix wich rows are \code{1, 1, 0, 0, 0} is set. See Details}
+If \code{NULL} (default), a matrix whose rows are equal to \code{1, 1, 0, 0, 0} is set. See Details}
 
 \item{overwrite}{Logical, overwrite the previous between the two areas if exist}
 
@@ -25,7 +25,7 @@ If \code{NULL} (default), a matrix wich rows are \code{1, 1, 0, 0, 0} is set. Se
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-An upddated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 }
 \description{
 Create a link between two areas
@@ -33,11 +33,11 @@ Create a link between two areas
 \details{
 The five times-series are:
 \itemize{
- \item{"NTC direc"}{the upstream-to-downstream capacity, in MW}
- \item{"NTC indirec"}{the downstream-to-upstream capacity, in MW}
- \item{"Impedances"}{virtual impedances that are used in economy simulations to give a physical meaning to raw outputs, when no binding constraints have been defined to enforce Kirchhoff’s laws.}
- \item{"Hurdle cost direct"}{an upstream-to-downstream transmission fee, in €/MWh}
- \item{"Hurdle cost indirect"}{a downstream-to-upstream transmission fee, in €/MWh}
+ \item{"NTC direct"}{the upstream-to-downstream capacity, in MW}
+ \item{"NTC indirect"}{the downstream-to-upstream capacity, in MW}
+ \item{"Impedances"}{virtual impedances that are used in economy simulations to give a physical meaning to raw outputs, when no binding constraints have been defined to enforce Kirchhoff's laws.}
+ \item{"Hurdle cost direct"}{an upstream-to-downstream transmission fee, in euro/MWh}
+ \item{"Hurdle cost indirect"}{a downstream-to-upstream transmission fee, in euro/MWh}
 }
 }
 \note{

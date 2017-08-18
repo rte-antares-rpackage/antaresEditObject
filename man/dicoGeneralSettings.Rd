@@ -2,7 +2,7 @@
 % Please edit documentation in R/updateGeneralSettings.R
 \name{dicoGeneralSettings}
 \alias{dicoGeneralSettings}
-\title{Correspondance between args of updateGeneralSettings and actual Antares parameters.}
+\title{Correspondence between args of updateGeneralSettings and actual Antares parameters.}
 \usage{
 dicoGeneralSettings(arg)
 }
@@ -13,7 +13,7 @@ dicoGeneralSettings(arg)
 The corresponding Antares general parameter.
 }
 \description{
-Correspondance between args of updateGeneralSettings and actual Antares parameters.
+Correspondence between args of updateGeneralSettings and actual Antares parameters.
 }
 \examples{
 dicoGeneralSettings("year.by.year") # "year-by-year"

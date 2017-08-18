@@ -17,9 +17,9 @@ createCluster(area, cluster_name, ..., time_series = NULL,
 
 \item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes.}
 
-\item{prepro_data}{Preprocess data.}
+\item{prepro_data}{Pre-process data.}
 
-\item{prepro_modulation}{Preprocess modulation.}
+\item{prepro_modulation}{Pre-process modulation.}
 
 \item{add_prefix}{If \code{TRUE}, cluster_name will be prefixed by area's name.}
 
@@ -29,7 +29,7 @@ createCluster(area, cluster_name, ..., time_series = NULL,
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-An upddated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 }
 \description{
 Create a thermal cluster

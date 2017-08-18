@@ -4,15 +4,15 @@
 #' @param cluster_name cluster name.
 #' @param ... Parameters to write in the Ini file.
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
-#' @param prepro_data Preprocess data.
-#' @param prepro_modulation Preprocess modulation.
+#' @param prepro_data Pre-process data.
+#' @param prepro_modulation Pre-process modulation.
 #' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area's name.
 #' @param overwrite Logical, overwrite the cluster or not.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
 #'
-#' @return An upddated list containing various information about the simulation.
+#' @return An updated list containing various information about the simulation.
 #' @export
 #' 
 #' @importFrom antaresRead simOptions

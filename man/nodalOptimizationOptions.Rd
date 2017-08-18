@@ -2,7 +2,7 @@
 % Please edit documentation in R/createArea.R
 \name{nodalOptimizationOptions}
 \alias{nodalOptimizationOptions}
-\title{Nodal optimization paramameters for creating an area}
+\title{Nodal optimization parameters for creating an area}
 \usage{
 nodalOptimizationOptions(non_dispatchable_power = TRUE,
   dispatchable_hydro_power = TRUE, other_dispatchable_power = TRUE,
@@ -23,7 +23,7 @@ nodalOptimizationOptions(non_dispatchable_power = TRUE,
 a named list
 }
 \description{
-Nodal optimization paramameters for creating an area
+Nodal optimization parameters for creating an area
 }
 \examples{
 nodalOptimizationOptions()

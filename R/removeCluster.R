@@ -7,7 +7,7 @@
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
 #'
-#' @return An upddated list containing various information about the simulation.
+#' @return An updated list containing various information about the simulation.
 #' @export
 #'
 #' @examples
