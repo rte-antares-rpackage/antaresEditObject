@@ -1,20 +1,18 @@
 
 # From antaresRead
 
-#' Private function that reads the content of a .ini file and convert it to a
-#' list
+#' Read a .ini file
 #'
-#' @param file
-#' file path
+#' @param file file path
+#' @param stringsAsFactors logical: should character vectors be converted to factors?
 #'
-#' @return
-#' A list with an element for each section of the .ini file.
+#' @return A list with an element for each section of the .ini file.
 #' 
 #' @importFrom utils type.convert
 #'
-#' @noRd
+#' @export
 #'
-readIniFile <- function(file, stringsAsFactors=FALSE) {
+readIniFile <- function(file, stringsAsFactors = FALSE) {
   X <- readLines(file)
   sections <- grep("^\\[.*\\]$", X)
   starts <- sections + 1

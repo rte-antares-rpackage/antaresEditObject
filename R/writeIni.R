@@ -4,8 +4,9 @@
 
 #' Write ini file from list obtain by antaresRead:::readIniFile and modify by user
 #'
-#' @param listData \code{list}, modified list otain by antaresRead:::readIniFile
-#' @param pathIni \code{Character}, Path to ini file
+#' @param listData \code{list}, modified list otain by antaresRead:::readIniFile.
+#' @param pathIni \code{Character}, Path to ini file.
+#' @param overwrite logical, should file be overwrited file if already exist?
 #'
 #' @examples
 #'
@@ -17,7 +18,7 @@
 #' }
 #'
 #'
-#' @noRd
+#' @export
 #'
 writeIni <- function(listData, pathIni, overwrite = FALSE) {
   if (file.exists(pathIni)) {
