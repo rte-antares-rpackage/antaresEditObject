@@ -69,7 +69,9 @@ removeCluster <- function(area, cluster_name, add_prefix = TRUE,
   
   
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
   
   invisible(res)
 }

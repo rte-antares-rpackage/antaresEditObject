@@ -322,7 +322,9 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
 
 
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
 
   invisible(res)
 }

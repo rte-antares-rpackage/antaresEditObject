@@ -123,7 +123,9 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
 
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
   
   invisible(res)
 }

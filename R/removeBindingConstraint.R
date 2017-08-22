@@ -41,7 +41,9 @@ removeBindingConstraint <- function(name, opts = antaresRead::simOptions()) {
   
   
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
   
   invisible(res)
 }

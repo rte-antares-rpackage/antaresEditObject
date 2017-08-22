@@ -97,7 +97,9 @@ updateGeneralSettings <- function(mode = NULL,
   writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE)
   
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
   
   invisible(res)
 }

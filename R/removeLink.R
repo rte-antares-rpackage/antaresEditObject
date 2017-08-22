@@ -51,7 +51,9 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   unlink(x = file.path(inputPath, "links", from, paste0(to, ".txt")), recursive = TRUE)
   
   # Maj simulation
-  res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
   
   invisible(res)
 }
