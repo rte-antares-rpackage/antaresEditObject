@@ -46,14 +46,22 @@ This will create a `.tar.gz` file in your simulation folder.
 You can create a new area with :
 
 ```r
-
 library("antaresEditObject")
 
 createArea(name = "myarea")
 
-getOption("antares")$areaList
+# The new area should appear here :
+antaresRead::getAreas()
 
 ```
+
+You can specify the localization of the area on the map, and also color.
+
+There are two helper function for area parameters :
+
+* `filteringOptions()` for filtering options, like `filter-year-by-year`
+* `nodalOptimizationOptions()` for nodal optimizations options.
+
 
 
 ## Create a new cluster
@@ -69,8 +77,7 @@ createCluster(
   nominalcapacity = 8400,
   `min-down-time` = 0,
   `marginal-cost` = 0.010000,
-  `market-bid-cost` = 0.010000,
-  opts = opts
+  `market-bid-cost` = 0.010000
 )
 ```
 
@@ -104,6 +111,13 @@ createBindingConstraint(
 )
 ```
 
+## Update general settings
+
+For example, set the output of simulation year by year, and limit the number of Monte-Carlo years to 10 :
+
+```r
+updateGeneralSettings(year.by.year = TRUE, nbyears = 10)
+```
 
 
 ## Remove methods
