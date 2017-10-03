@@ -106,7 +106,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   )
   
   if (is.null(prepro_data))
-    prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 5)
+    prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 6)
   utils::write.table(
     x = prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "thermal", "prepro", area, cluster_name, "data.txt")

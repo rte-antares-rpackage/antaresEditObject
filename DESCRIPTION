@@ -1,12 +1,12 @@
 Package: antaresEditObject
 Type: Package
-Title: Edit a simulation
+Title: Edit an 'Antares' simulation
 Version: 0.1.1
 Authors@R: c(
     person("Victor", "Perrier", email = "victor.perrier@rte-france.com", role = c("aut", "cre")),
     person("RTE", role = "cph"))
-Maintainer: Victor Perrier <victor.perrier@rte-france.com>
-Description: Edit a simulation before running it : create new areas, links, thermal clusters or binding constraints.
+Maintainer: BREANT Frederic <frederic.breant@rte-france.com>
+Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal clusters or binding constraints.
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 LazyData: true
