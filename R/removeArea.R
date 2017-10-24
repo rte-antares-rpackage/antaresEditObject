@@ -16,6 +16,11 @@
 #' }
 removeArea <- function(name, opts = antaresRead::simOptions()) {
 
+  # name of the area can contain upper case in areas/list.txt (and use in graphics)
+  # (and use in graphics) but not in the folder name (and use in all other case)
+  list_name <- name
+  name <- tolower(name)
+  
   if (!name %in% opts$areaList)
     stop(paste(name, "is not a valid area"))
 
@@ -23,7 +28,9 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   inputPath <- opts$inputPath
 
   # Update area list
-  areas <- setdiff(opts$areaList, name)
+  areas <- readLines(file.path(inputPath, "areas/list.txt"))
+  areas <- setdiff(areas, list_name)
+  areas <- areas[!duplicated(areas)]
   areas <- paste(sort(areas), collapse = "\n")
   writeLines(text = areas, con = file.path(inputPath, "areas/list.txt"))
 
