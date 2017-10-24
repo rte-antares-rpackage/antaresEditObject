@@ -22,6 +22,11 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
+  # control areas name
+  # can be with some upper case (list.txt)
+  from <- tolower(from)
+  to <- tolower(to)
+  
   # areas' order
   areas <- c(from, to)
   if (!identical(areas, sort(areas))) {
