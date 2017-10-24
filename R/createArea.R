@@ -1,6 +1,6 @@
 #' Create An Area In An Antares Study
 #'
-#' @param name Name of the area as a character, without space or punctuation except - and _.
+#' @param name Name of the area as a character, without punctuation except - and _.
 #' @param color Color of the node
 #' @param localization Localization on the map
 #' @param nodalOptimization Nodal optimization parameters
@@ -33,8 +33,8 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
 
   assertthat::assert_that(class(opts) == "simOptions")
   
-  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE) | grepl(pattern = "[[:space:]]", x = name)) 
-    stop("Area's name must not contain space or ponctuation")
+  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
+    stop("Area's name must not ponctuation except - and _")
   
   # if (grepl(pattern = "[A-Z]", x = name)) 
   #   stop("Area's name must be lower case")
