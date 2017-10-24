@@ -1,6 +1,6 @@
 #' Create An Area In An Antares Study
 #'
-#' @param name Name of the area as a character, without space or punctuation.
+#' @param name Name of the area as a character, without punctuation except - and _.
 #' @param color Color of the node
 #' @param localization Localization on the map
 #' @param nodalOptimization Nodal optimization parameters
@@ -33,11 +33,16 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
 
   assertthat::assert_that(class(opts) == "simOptions")
   
-  if (grepl(pattern = "(?!_)[[:punct:]]", x = name, perl = TRUE) | grepl(pattern = "[[:space:]]", x = name)) 
-    stop("Area's name must not contain space or ponctuation")
+  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
+    stop("Area's name must not ponctuation except - and _")
   
-  if (grepl(pattern = "[A-Z]", x = name)) 
-    stop("Area's name must be lower case")
+  # if (grepl(pattern = "[A-Z]", x = name)) 
+  #   stop("Area's name must be lower case")
+  
+  # name of the area can contain upper case in areas/list.txt (and use in graphics)
+  # (and use in graphics) but not in the folder name (and use in all other case)
+  list_name <- name
+  name <- tolower(name)
   
   if (opts$mode != "Input") 
     stop("You can initialize an area only in 'Input' mode")
@@ -53,13 +58,14 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
 
   # Update area list
-  areas <- c(opts$areaList, name)
+  areas <- readLines(file.path(inputPath, "areas/list.txt"))
+  areas <- c(areas, list_name)
   areas <- areas[!duplicated(areas)]
   areas <- paste(sort(areas), collapse = "\n")
   writeLines(text = areas, con = file.path(inputPath, "areas/list.txt"))
 
 
-
+  
   ## Create area ----
   # dir
   dir.create(path = file.path(inputPath, "areas", name), showWarnings = FALSE)

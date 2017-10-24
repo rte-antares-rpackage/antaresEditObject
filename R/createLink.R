@@ -43,6 +43,11 @@ createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataL
   if (!is.null(dataLink)) 
     assertthat::assert_that(ncol(dataLink) == 5)
   
+  # control areas name
+  # can be with some upper case (list.txt)
+  from <- tolower(from)
+  to <- tolower(to)
+  
   # areas' order
   areas <- c(from, to)
   if (!identical(areas, sort(areas))) {

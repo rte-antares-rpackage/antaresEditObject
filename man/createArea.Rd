@@ -10,7 +10,7 @@ createArea(name, color = grDevices::rgb(230, 108, 44, max = 255),
   opts = antaresRead::simOptions())
 }
 \arguments{
-\item{name}{Name of the area as a character, without space or punctuation.}
+\item{name}{Name of the area as a character, without punctuation except - and _.}
 
 \item{color}{Color of the node}
 
