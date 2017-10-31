@@ -27,23 +27,19 @@ removeCluster <- function(area, cluster_name, add_prefix = TRUE,
   # Input path
   inputPath <- opts$inputPath
   
-  # control areas name
-  # can be with some upper case (list.txt)
-  area <- tolower(area)
-  
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   
   # Remove from Ini file
   # path to ini file
-  path_clusters_ini <- file.path(inputPath, "thermal", "clusters", area, "list.ini")
+  path_clusters_ini <- file.path(inputPath, "thermal", "clusters", tolower(area), "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
   
   # cluster indice
-  ind <- which(tolower(names(previous_params)) %in% cluster_name)
+  ind <- which(tolower(names(previous_params)) %in% tolower(cluster_name))
   
   # Remove
   previous_params[ind] <- NULL
@@ -57,18 +53,17 @@ removeCluster <- function(area, cluster_name, add_prefix = TRUE,
   
   if (length(previous_params) > 0) {
     # remove series
-    unlink(x = file.path(inputPath, "thermal", "series", area, cluster_name), recursive = TRUE)
+    unlink(x = file.path(inputPath, "thermal", "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
     
     # remove prepro
-    unlink(x = file.path(inputPath, "thermal", "prepro", area, cluster_name), recursive = TRUE)
+    unlink(x = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
   } else {
     # remove series
-    unlink(x = file.path(inputPath, "thermal", "series", area), recursive = TRUE)
+    unlink(x = file.path(inputPath, "thermal", "series", tolower(area)), recursive = TRUE)
     
     # remove prepro
     unlink(x = file.path(inputPath, "thermal", "prepro", area), recursive = TRUE)
   }
-  
   
   
   

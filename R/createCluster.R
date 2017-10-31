@@ -33,11 +33,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  # control areas name
-  # can be with some upper case (list.txt)
-  area <- tolower(area)
-
-  if (!area %in% opts$areaList)
+  if (!tolower(area) %in% opts$areaList)
     stop(paste(area, "is not a valid area"))
   
   if (! NROW(time_series) %in% c(0, 8736, 8760)) {
@@ -61,17 +57,23 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
 
   # path to ini file
-  path_clusters_ini <- file.path(inputPath, "thermal", "clusters", area, "list.ini")
+  path_clusters_ini <- file.path(inputPath, "thermal", "clusters", tolower(area), "list.ini")
 
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  if (cluster_name %in% names(previous_params) & !overwrite)
+  if (tolower(cluster_name) %in% tolower(names(previous_params)) & !overwrite){
     stop(paste(cluster_name, "already exist"))
+  } else if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
+    ind_cluster <- which(tolower(names(previous_params)) %in% tolower(cluster_name))[1]
+    previous_params[[ind_cluster]] <- params_cluster
+    names(previous_params)[[ind_cluster]] <- cluster_name
+  } else {
+    previous_params[[cluster_name]] <- params_cluster
+  }
   
   # params_cluster <- c(previous_params, params_cluster)
-  previous_params[[cluster_name]] <- params_cluster
-
+  
   writeIni(
     listData = previous_params,
     pathIni = path_clusters_ini,
@@ -81,7 +83,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
   # initialize series
   dir.create(path = file.path(
-    inputPath, "thermal", "series", area, cluster_name),
+    inputPath, "thermal", "series", tolower(area), tolower(cluster_name)),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -99,13 +101,13 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   
   utils::write.table(
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
-    file = file.path(inputPath, "thermal", "series", area, cluster_name, "series.txt")
+    file = file.path(inputPath, "thermal", "series", tolower(area), tolower(cluster_name), "series.txt")
   )
 
 
   # prepro
   dir.create(
-    path = file.path(inputPath, "thermal", "prepro", area, cluster_name),
+    path = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name)),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -113,7 +115,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
     prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 6)
   utils::write.table(
     x = prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
-    file = file.path(inputPath, "thermal", "prepro", area, cluster_name, "data.txt")
+    file = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name), "data.txt")
   )
   
   
@@ -122,7 +124,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   
   utils::write.table(
     x = prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
-    file = file.path(inputPath, "thermal", "prepro", area, cluster_name, "modulation.txt")
+    file = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name), "modulation.txt")
   )
 
 
