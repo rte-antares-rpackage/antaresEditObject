@@ -27,6 +27,10 @@ removeCluster <- function(area, cluster_name, add_prefix = TRUE,
   # Input path
   inputPath <- opts$inputPath
   
+  # control areas name
+  # can be with some upper case (list.txt)
+  area <- tolower(area)
+  
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   

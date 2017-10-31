@@ -33,6 +33,10 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
+  # control areas name
+  # can be with some upper case (list.txt)
+  area <- tolower(area)
+
   if (!area %in% opts$areaList)
     stop(paste(area, "is not a valid area"))
   
