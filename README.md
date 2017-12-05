@@ -5,6 +5,7 @@
 
 
 [![Travis-CI Build Status](https://travis-ci.org/rte-antares-rpackage/antaresEditObject.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresEditObject)
+[![Coverage Status](https://img.shields.io/codecov/c/github/rte-antares-rpackage/antaresEditObject/master.svg)](https://codecov.io/github/rte-antares-rpackage/antaresEditObject?branch=master)
 
 
 
