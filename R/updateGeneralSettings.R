@@ -85,8 +85,41 @@ updateGeneralSettings <- function(mode = NULL,
   
   # update
   l_general <- generaldata$general
-  new_params <- as.list(match.call())[-1]
-  new_params$opts <- NULL
+  # new_params <- as.list(match.call())[-1]
+  # new_params$opts <- NULL
+  new_params <- list(
+    mode = mode,
+    horizon = horizon,
+    nbyears = nbyears,
+    simulation.start = simulation.start,
+    simulation.end = simulation.end,
+    january.1st = january.1st,
+    first.month.in.year = first.month.in.year,
+    first.weekday = first.weekday,
+    leapyear = leapyear,
+    year.by.year = year.by.year,
+    derated = derated,
+    custom.ts.numbers = custom.ts.numbers,
+    user.playlist = user.playlist,
+    filtering = filtering,
+    active.rules.scenario = active.rules.scenario,
+    generate = generate,
+    nbtimeseriesload = nbtimeseriesload,
+    nbtimeserieshydro = nbtimeserieshydro,
+    nbtimeserieswind = nbtimeserieswind,
+    nbtimeseriesthermal = nbtimeseriesthermal,
+    nbtimeseriessolar = nbtimeseriessolar,
+    refreshtimeseries = refreshtimeseries,
+    intra.modal = intra.modal,
+    inter.modal = inter.modal,
+    refreshintervalload = refreshintervalload,
+    refreshintervalhydro = refreshintervalhydro,
+    refreshintervalwind = refreshintervalwind,
+    refreshintervalthermal = refreshintervalthermal,
+    refreshintervalsolar = refreshintervalsolar,
+    readonly = readonly
+  )
+  new_params <- dropNulls(new_params)
   for (i in seq_along(new_params)) {
     new_params[i] <- as.character(new_params[i])
     names(new_params)[i] <- dicoGeneralSettings(names(new_params)[i])
@@ -106,6 +139,9 @@ updateGeneralSettings <- function(mode = NULL,
 }
 
 
+dropNulls <- function (x) {
+  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+}
 
 
 
