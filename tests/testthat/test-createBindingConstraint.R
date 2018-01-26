@@ -140,7 +140,7 @@ test_that("Create a new binding constraint with coefficients", {
 
 
 test_that("Create a new binding constraint with BAD coefficients", {
-
+  
   expect_error(
     createBindingConstraint(
       name = "badcoeffs",
@@ -152,7 +152,19 @@ test_that("Create a new binding constraint with BAD coefficients", {
   
 })
 
-
+test_that("Create a new binding constraint with cluster coefficients (not with %)", {
+  
+  coefs <- antaresRead::readBindingConstraints()[[1]]$coefs
+  coefs <- c(coefs, "at.it" = 1)
+  createBindingConstraint(
+    name = "coeffs",
+    timeStep = "weekly", 
+    values = matrix(data = rep(0, 365 * 3), ncol = 3),
+    coefficients = coefs, overwrite = TRUE
+  )
+  
+  expect_identical(antaresRead::readBindingConstraints()[["coeffs"]]$coefs, coefs)
+})
 
 
 test_that("Remove a binding constraint", {
