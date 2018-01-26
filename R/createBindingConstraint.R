@@ -77,10 +77,16 @@ createBindingConstraint <- function(name, id = tolower(name),
     links <- antaresRead::getLinks(opts = opts, namesOnly = TRUE)
     links <- as.character(links)
     links <- gsub(pattern = " - ", replacement = "%", x = links)
-    if (!all(names(coefficients) %in% links)) {
-      badcoef <- names(coefficients)[!names(coefficients) %in% links]
-      badcoef <- paste(shQuote(badcoef), collapse = ", ")
-      stop(paste0(badcoef, " : is or are not valid link(s)"))
+    
+    #Only coef which % are links
+    coefficientsToControl <- coefficients[grep("%", names(coefficients))]
+    if(length(coefficientsToControl)>0)
+    {
+      if (!all(names(coefficientsToControl) %in% links)) {
+        badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% links]
+        badcoef <- paste(shQuote(badcoef), collapse = ", ")
+        stop(paste0(badcoef, " : is or are not valid link(s)"))
+      }
     }
   }
   
