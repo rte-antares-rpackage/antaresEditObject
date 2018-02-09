@@ -29,7 +29,7 @@
 #' @importFrom antaresRead setSimulationPath
 #'
 # @examples
-updatOptimizationSettings <- function(simplex.range = NULL,
+updateOptimizationSettings <- function(simplex.range = NULL,
                                       transmission.capacities = NULL,
                                       include.constraints = NULL, 
                                       include.hurdlecosts = NULL,
