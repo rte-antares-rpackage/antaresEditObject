@@ -17,6 +17,18 @@ setSolverPath <- function(path) {
   if (missing(path)) {
     path <- file.choose()
   }
-  options(antares.solver = path)
+  if (!grepl(pattern = "solver\\.exe$", x = path)) {
+    path_ <- gsub(pattern = ".*/", replacement = "", x = path)
+    cat(paste0("You have selected:\n-> ", path_, "\n"))
+    ans <- readline("Are you sure that's the Antares solver? (y/n) ")
+    if (ans != "y" & interactive()) {
+      setSolverPath()
+    } else {
+      warning("Unrecognized Antares solver name.")
+      options(antares.solver = path)
+    }
+  } else {
+    options(antares.solver = path)
+  }
 }
 
