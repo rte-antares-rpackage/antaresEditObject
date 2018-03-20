@@ -4,9 +4,11 @@
 #' @param cluster_name cluster name.
 #' @param ... Parameters to write in the Ini file.
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
-#' @param prepro_data Pre-process data.
-#' @param prepro_modulation Pre-process modulation.
-#' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area's name.
+#' @param prepro_data Pre-process data, a \code{data.frame} or \code{matrix}, 
+#'  default is a matrix with 365 rows and 6 columns.
+#' @param prepro_modulation Pre-process modulation, a \code{data.frame} or \code{matrix}, 
+#'  if specified, must have 8760 rows and 1 or 4 columns.
+#' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area name.
 #' @param overwrite Logical, overwrite the cluster or not.
 #' @param opts
 #'   List of simulation parameters returned by the function
@@ -21,8 +23,82 @@
 #'
 #' @examples
 #' \dontrun{
-#' createCluster(area = "fr", cluster_name = "fr_gas",
-#'               group = "other", `marginal-cost` = 50)
+#' 
+#' library(antaresRead)
+#' library(antaresEditObject)
+#' 
+#' # Create a cluster :
+#' createCluster(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster",
+#'   group = "other", 
+#'   `marginal-cost` = 50
+#' )
+#' # by default, cluster name is prefixed 
+#' # by the area name
+#' levels(readClusterDesc()$cluster)
+#' # > "fr_my_cluster"
+#' 
+#' # To prevent this, use `add_prefix`
+#' createCluster(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster",
+#'   add_prefix = FALSE,
+#'   group = "other", 
+#'   `marginal-cost` = 50
+#' )
+#' 
+#' 
+#' # Pre-process data : 
+#' 
+#' #Æ this is the default data :
+#' createCluster(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster",
+#'   prepro_data = matrix(
+#'     data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), 
+#'     ncol = 6
+#'   )
+#' )
+#' 
+#' # with a data.frame
+#' createCluster(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster",
+#'   prepro_data = data.frame(
+#'     v1 = rep(7, 365), # colum name doesn't matter
+#'     v2 = rep(27, 365),
+#'     v3 = rep(0.05, 365),
+#'     v4 = rep(0.12, 365),
+#'     v5 = rep(0, 365),
+#'     v6 = rep(1, 365)
+#'   )
+#' )
+#' 
+#' 
+#' # Pre-process modulation : 
+#' # this is the default data
+#' createCluster(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster",
+#'   prepro_modulation =  = matrix(
+#'     data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)),
+#'     ncol = 4
+#'   )
+#' )
+#' 
+#' # with a data.frame
+#' createCluster(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster",
+#'   prepro_modulation = data.frame(
+#'     var1 = rep(0, 8760), # colum name doesn't matter
+#'     var2 = rep(1, 8760),
+#'     var3 = rep(0, 8760),
+#'     var4 = rep(1, 8760)
+#'   )
+#' )
+#' 
 #' }
 createCluster <- function(area, cluster_name, ..., time_series = NULL,
                           prepro_data = NULL, prepro_modulation = NULL,
