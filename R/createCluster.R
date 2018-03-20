@@ -47,6 +47,8 @@
 #'   group = "other", 
 #'   `marginal-cost` = 50
 #' )
+#' levels(readClusterDesc()$cluster)
+#' # > "my_cluster"
 #' 
 #' 
 #' # Pre-process data : 
@@ -56,7 +58,8 @@
 #'   area = "fr", 
 #'   cluster_name = "my_cluster",
 #'   prepro_data = matrix(
-#'     data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), 
+#'     data = c(rep(1, times = 365 * 2),
+#'              rep(0, times = 365 * 4)), 
 #'     ncol = 6
 #'   )
 #' )
@@ -66,7 +69,7 @@
 #'   area = "fr", 
 #'   cluster_name = "my_cluster",
 #'   prepro_data = data.frame(
-#'     v1 = rep(7, 365), # colum name doesn't matter
+#'     v1 = rep(7, 365), # column name doesn't matter
 #'     v2 = rep(27, 365),
 #'     v3 = rep(0.05, 365),
 #'     v4 = rep(0.12, 365),
@@ -82,7 +85,8 @@
 #'   area = "fr", 
 #'   cluster_name = "my_cluster",
 #'   prepro_modulation =  = matrix(
-#'     data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)),
+#'     data = c(rep(1, times = 365 * 24 * 3),
+#'              rep(0, times = 365 * 24 * 1)),
 #'     ncol = 4
 #'   )
 #' )
@@ -92,7 +96,7 @@
 #'   area = "fr", 
 #'   cluster_name = "my_cluster",
 #'   prepro_modulation = data.frame(
-#'     var1 = rep(0, 8760), # colum name doesn't matter
+#'     var1 = rep(0, 8760), # column name doesn't matter
 #'     var2 = rep(1, 8760),
 #'     var3 = rep(0, 8760),
 #'     var4 = rep(1, 8760)
