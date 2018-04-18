@@ -13,7 +13,9 @@ createCluster(area, cluster_name, ..., time_series = NULL,
 
 \item{cluster_name}{cluster name.}
 
-\item{...}{Parameters to write in the Ini file.}
+\item{...}{Parameters to write in the Ini file. Careful!
+Some parameters must be set as \code{integers} to avoid warnings in Antares, for example, 
+to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 
 \item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes.}
 
@@ -47,6 +49,7 @@ createCluster(
   area = "fr", 
   cluster_name = "my_cluster",
   group = "other", 
+  unitcount = 1L, # or as.integer(1)
   `marginal-cost` = 50
 )
 # by default, cluster name is prefixed 

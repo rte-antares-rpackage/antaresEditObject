@@ -2,7 +2,9 @@
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name cluster name.
-#' @param ... Parameters to write in the Ini file.
+#' @param ... Parameters to write in the Ini file. Careful!
+#'  Some parameters must be set as \code{integers} to avoid warnings in Antares, for example, 
+#'  to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
 #' @param prepro_data Pre-process data, a \code{data.frame} or \code{matrix}, 
 #'  default is a matrix with 365 rows and 6 columns.
@@ -32,6 +34,7 @@
 #'   area = "fr", 
 #'   cluster_name = "my_cluster",
 #'   group = "other", 
+#'   unitcount = 1L, # or as.integer(1)
 #'   `marginal-cost` = 50
 #' )
 #' # by default, cluster name is prefixed 
