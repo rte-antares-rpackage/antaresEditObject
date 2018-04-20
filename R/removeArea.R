@@ -93,6 +93,8 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
   # Thermal
   unlink(x = file.path(inputPath, "thermal", "clusters", name), recursive = TRUE)
+  unlink(x = file.path(inputPath, "thermal", "prepro", name), recursive = TRUE)
+  unlink(x = file.path(inputPath, "thermal", "series", name), recursive = TRUE)
 
 
   # Wind
