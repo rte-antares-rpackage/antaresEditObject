@@ -4,10 +4,12 @@
 \alias{checkRemovedArea}
 \title{Seek for a removed area}
 \usage{
-checkRemovedArea(area, opts = antaresRead::simOptions())
+checkRemovedArea(area, all_files = TRUE, opts = antaresRead::simOptions())
 }
 \arguments{
 \item{area}{An area}
+
+\item{all_files}{Check files in study directory.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}

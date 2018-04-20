@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' simulation
-Version: 0.1.2.920
+Version: 0.1.2.930
 Authors@R: c(
     person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = c("aut", "cre")),
     person("Baptiste", "Seguinot", email = "baptiste.seguinot@rte-france.com", role = "ctb"),

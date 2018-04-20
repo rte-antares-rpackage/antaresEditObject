@@ -68,6 +68,15 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
 
   # Links
+  links_area <- as.character(getLinks(areas = name))
+  if (length(links_area) > 0) {
+    links_area <- strsplit(x = links_area, split = " - ")
+    for (i in seq_along(links_area)) {
+      area1 <- links_area[[i]][1]
+      area2 <- links_area[[i]][2]
+      opts <- removeLink(from = area1, to = area2, opts = opts)
+    }
+  }
   unlink(x = file.path(inputPath, "links", name), recursive = TRUE)
   alllinks <- list.files(path = file.path(inputPath, "links"), pattern = name, full.names = TRUE, recursive = TRUE)
   lapply(alllinks, unlink, recursive = TRUE)
@@ -101,7 +110,17 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   unlink(x = file.path(inputPath, "wind", "prepro", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "wind", "series", paste0("wind_", name, ".txt")), recursive = TRUE)
 
-
+  
+  
+  # Remove binding constraints
+  bindingconstraints <- readLines(
+    con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
+  )
+  bindingconstraints <- grep(pattern = name, x = bindingconstraints, value = TRUE, invert = TRUE)
+  writeLines(
+    text = paste(bindingconstraints, collapse = "\n"), 
+    con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
+  )
 
 
   # Maj simulation
@@ -122,6 +141,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 #' @description Check if it remains trace of a deleted area in the input folder
 #'
 #' @param area An area
+#' @param all_files Check files in study directory.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
@@ -133,7 +153,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 #' \dontrun{
 #' checkRemovedArea("myarea")
 #' }
-checkRemovedArea <- function(area, opts = antaresRead::simOptions()) {
+checkRemovedArea <- function(area, all_files = TRUE, opts = antaresRead::simOptions()) {
   
   # Input path
   inputPath <- opts$inputPath
@@ -142,7 +162,7 @@ checkRemovedArea <- function(area, opts = antaresRead::simOptions()) {
   # Search for files or directories named after the area searched
   inputFiles <- list.files(
     path = inputPath,
-    pattern = area,
+    pattern = if (all_files) "" else area,
     recursive = TRUE, include.dirs = TRUE, full.names = TRUE
   )
   
