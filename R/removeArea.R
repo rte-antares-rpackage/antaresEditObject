@@ -8,7 +8,7 @@
 #' @return An updated list containing various information about the simulation.
 #' @export
 #' 
-#' @importFrom antaresRead simOptions setSimulationPath
+#' @importFrom antaresRead simOptions setSimulationPath readBindingConstraints
 #'
 #' @examples
 #' \dontrun{
@@ -113,6 +113,22 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   
   
   # Remove binding constraints
+  bc <- readBindingConstraints(opts = opts)
+  bc_area <- lapply(
+    X = bc,
+    FUN = function(x) {
+      all(grepl(pattern = name, x = names(x$coefs)))
+    }
+  )
+  bc_area <- unlist(bc_area)
+  bc_remove <- names(bc_area[bc_area])
+  if (length(bc_remove) > 0) {
+    for (bci in bc_remove) {
+      opts <- removeBindingConstraint(name = bci, opts = opts)
+    }
+  }
+  
+  
   bindingconstraints <- readLines(
     con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
   )
