@@ -132,9 +132,12 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   bindingconstraints <- readLines(
     con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
   )
-  bindingconstraints <- grep(pattern = name, x = bindingconstraints, value = TRUE, invert = TRUE)
+  # bindingconstraints <- grep(pattern = name, x = bindingconstraints, value = TRUE, invert = TRUE)
+  ind1 <- !grepl(pattern = paste0("^", name, "%"), x = bindingconstraints)
+  ind2 <- !grepl(pattern = paste0("%", name, "\\s"), x = bindingconstraints)
+  
   writeLines(
-    text = paste(bindingconstraints, collapse = "\n"), 
+    text = paste(bindingconstraints[ind1 | ind2], collapse = "\n"), 
     con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
   )
 
