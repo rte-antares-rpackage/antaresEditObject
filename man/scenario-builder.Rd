@@ -7,7 +7,7 @@
 \alias{updateScenarioBuilder}
 \title{Read, create & update scenario builder}
 \usage{
-scenarioBuilder(n_scenario, n_mc, areas = NULL, areas_rand = NULL,
+scenarioBuilder(n_scenario, n_mc = NULL, areas = NULL, areas_rand = NULL,
   opts = antaresRead::simOptions())
 
 readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE,

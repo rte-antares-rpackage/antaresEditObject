@@ -70,7 +70,7 @@
 #' ))
 #' 
 #' }
-scenarioBuilder <- function(n_scenario, n_mc, areas = NULL, areas_rand = NULL, opts = antaresRead::simOptions()) {
+scenarioBuilder <- function(n_scenario, n_mc = NULL, areas = NULL, areas_rand = NULL, opts = antaresRead::simOptions()) {
   if (is.null(areas)) {
     areas <- antaresRead::getAreas(opts = opts)
   } else {
@@ -79,8 +79,15 @@ scenarioBuilder <- function(n_scenario, n_mc, areas = NULL, areas_rand = NULL, o
   if (!all(areas_rand %in% areas)) {
     warning("Some 'areas_rand' are not Antares' areas", call. = FALSE)
   }
+  if (is.null(n_mc)) {
+    n_mc <- opts$parameters$general$nbyears
+  } else {
+    if (n_mc != opts$parameters$general$nbyears) {
+      warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
+    }
+  }
   sb <- matrix(
-    data = rep(seq_len(n_scenario), length(areas) * n_mc/n_scenario),
+    data = rep(seq_len(n_scenario), length(areas) * ceiling(n_mc/n_scenario)),
     byrow = TRUE, nrow = length(areas),
     dimnames = list(areas, NULL)
   )
