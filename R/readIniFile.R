@@ -25,12 +25,18 @@ readIniFile <- function(file, stringsAsFactors = FALSE) {
     pairs <- pairs[pairs != ""]
     pairs <- strsplit(pairs, "=")
     
-    key <- sapply(pairs, function(p) trimws(p[1]))
-    value <- lapply(pairs, function(p) {
-      v <- trimws(p[2])
-      if (v == "true") return(TRUE)
-      if (v == "false") return(FALSE)
-      utils::type.convert(v, as.is = !stringsAsFactors)
+    key <- lapply(pairs, `[`, 1)
+    key <- unlist(key)
+    key <- trimws(key)
+    
+    value <- lapply(pairs, `[`, 2)
+    value <- as.list(trimws(unlist(value)))
+    value <- lapply(value, function(x) {
+      if (x %in% c("true", "false")) {
+        ifelse(x == "true", TRUE, FALSE)
+      } else {
+        utils::type.convert(x, as.is = TRUE)
+      }
     })
     
     L[[i]] <- value
