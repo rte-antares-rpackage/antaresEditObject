@@ -99,7 +99,7 @@ editLink <- function(from, to, hurdles_cost = NULL,
   )
   
   # edit data
-  if (is.null(dataLink)) {
+  if (!is.null(dataLink)) {
     if (!identical(areas, sort(areas))) {
       dataLink <- dataLink[, c(2, 1, 3, 5, 4)]
     }
