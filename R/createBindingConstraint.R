@@ -78,6 +78,19 @@ createBindingConstraint <- function(name, id = tolower(name),
     links <- as.character(links)
     links <- gsub(pattern = " - ", replacement = "%", x = links)
     
+    #for obscure reasons R CMD check inverse alphabetic order for coefficients
+    #test for createPSP() are OK for devools::test() but not for devtools::check()
+    #these lines are here to correct this behaviour
+    #see https://github.com/r-lib/testthat/issues/144
+    #and https://github.com/r-lib/testthat/issues/86
+    #set Sys.setenv("R_TESTS" = "") do nothing 
+    resLinks<-strsplit(links, "%")
+    newDirectionCoef <- tolower(paste0(resLinks[[1]][2], "%", resLinks[[1]][1]))
+    for(i in 1:length(resLinks)){
+      resLinks[[i]]<-paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
+    }
+    links<-c(links, as.character(resLinks))
+    
     #Only coef which % are links
     coefficientsToControl <- coefficients[grep("%", names(coefficients))]
     if(length(coefficientsToControl)>0)
