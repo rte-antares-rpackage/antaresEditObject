@@ -112,6 +112,36 @@ createBindingConstraint(
 )
 ```
 
+## Create several Pumped Storage Power plant (PSP)
+
+```r
+pspData <- data.frame(
+  area = c("a", "b"), 
+  installedCapacity = c(800,900)
+)
+
+createPSP(
+  areasAndCapacities = pspData, 
+  efficiency = 0.75
+)
+```
+
+## Create several Demand Side Response (DSR)
+
+```r
+dsrData <- data.frame(
+  area = c("a", "b"),
+  unit = c(10,20), 
+  nominalCapacity = c(100, 120),
+  marginalCost = c(52, 65),
+  hour = c(3, 7)
+)
+  
+createDSR(dsrData)
+
+```
+
+
 ## Update general settings
 
 For example, set the output of simulation year by year, and limit the number of Monte-Carlo years to 10 :
