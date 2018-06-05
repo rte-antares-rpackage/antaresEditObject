@@ -307,18 +307,6 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
 }
 
 
-#TODO to copy/paste to antaresRead in a next release. 
-.getLinkName<-function(areaX=NULL, areaY=NULL){
-  if(areaX<areaY){
-    c1<-areaX
-    c2<-areaY
-  }else{
-    c1<-areaY
-    c2<-areaX
-  }
-  return(tolower(paste0(c1, " - ", c2)))
-}
-
 #' @rdname createPSP
 #' 
 #' @return \code{getCapacityPSP()} returns PSP capacity of the area
@@ -399,8 +387,3 @@ editPSP <- function(area = NULL, capacity = NULL, namePumping = "Psp_In", nameTu
   
 }
 
-.checkAreName <- function(area = NULL){
-  if (!(tolower(area) %in% antaresRead::getAreas())){
-    stop(paste0(area, " is not a correct area name."))
-  }
-}
