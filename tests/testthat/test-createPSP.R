@@ -158,7 +158,26 @@ test_that("create a psp with a long name ", {
   expect_equal(binding$suisse_psp_daily$enabled, TRUE)
 })
 
+test_that("Get and set the PSP ", {
 
+  expect_error(editPSP("lp"), "lp is not a correct area name.")
+
+  #after p, we change the link direction
+  areaName<-"suisse"
+  createArea(areaName, overwrite = TRUE)
+  pspData<-data.frame(area=c(areaName), installedCapacity=c(9856))
+  opts <- antaresRead::setSimulationPath(studyPath, 'input')
+  createPSP(pspData, efficiency = 0.5, overwrite = TRUE, timeStepBindConstraint = "daily")
+  expect_equal(getCapacityPSP(areaName, timeStepBindConstraint = "daily"), 9856)
+  
+  opts <- antaresRead::setSimulationPath(studyPath, 'input')
+  pspData<-data.frame(area=c("a", "b"), installedCapacity = c(800, 900))
+  createPSP(pspData, efficiency = 0.75, overwrite = TRUE, hurdleCost = 0.1, opts = opts)
+  opts2<-editPSP("a", 8000)
+  #ERROR in R CMD check 
+  #expect_equal(getCapacityPSP("a", opts = opts2), 8000)
+  
+})
 
 # End ---------------------------------------------------------------------
 

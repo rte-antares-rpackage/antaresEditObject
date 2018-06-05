@@ -11,8 +11,11 @@
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' @param area an area name 
+#' @param capacity PSP capacity for the area
+#' 
+#' @return \code{createPSP()} and \code{editPSP()}  returns an updated list containing various information about the simulation.
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath readLayout getLinks getAreas
@@ -32,7 +35,6 @@
 #' 
 #' createPSP(pspData, efficiency = 0.66, overwrite = TRUE)
 #' createPSP(pspData, efficiency = 0.98, timeStepBindConstraint = "daily")
-
 #' getAreas()
 #' 
 #' }
@@ -304,4 +306,103 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
   
   invisible(res)
   
+}
+
+
+#TODO to copy/paste to antaresRead in a next release. 
+.getLinkName<-function(areaX=NULL, areaY=NULL){
+  if(areaX<areaY){
+    c1<-areaX
+    c2<-areaY
+  }else{
+    c1<-areaY
+    c2<-areaX
+  }
+  return(tolower(paste0(c1, " - ", c2)))
+}
+
+#' @rdname createPSP
+#' 
+#' @return \code{getCapacityPSP()} returns PSP capacity of the area
+#' 
+#' @examples
+#' \dontrun{
+#' 
+#' getCapacityPSP("a")
+#' editPSP("a", capacity = 8000, hurdleCost = 0.1)
+#' getCapacityPSP("a")
+#' 
+#' areaName<-"suisse"
+#' createArea(areaName, overwrite = TRUE)
+#' pspData<-data.frame(area=c(areaName), installedCapacity=c(9856))
+#' createPSP(pspData, efficiency = 0.5, overwrite = TRUE, timeStepBindConstraint = "daily")
+#' 
+#' getCapacityPSP(areaName, timeStepBindConstraint = "daily")
+#' 
+#' 
+#' }
+#' @export
+#' 
+getCapacityPSP <- function(area = NULL, nameTurbining = "Psp_Out", timeStepBindConstraint = "weekly", opts = antaresRead::simOptions()){
+  
+  .checkAreName(area)
+  endNameTurbining<- .getTheLastVirualName(nameTurbining, timeStepBindConstraint = timeStepBindConstraint)
+  capaLinkTurb<-antaresRead::readInputTS(linkCapacity = .getLinkName(area, endNameTurbining), showProgress = FALSE, opts = opts)
+  if(area > endNameTurbining){
+    columnTake<-("transCapacityDirect")
+  }else{
+    columnTake<-("transCapacityIndirect")
+  }
+  valueCapa<-capaLinkTurb[, get(columnTake)][1]
+  
+  return(valueCapa)
+  
+}
+
+
+#' @rdname createPSP
+#' 
+#' @export
+#' 
+editPSP <- function(area = NULL, capacity = NULL, namePumping = "Psp_In", nameTurbining = "Psp_Out", timeStepBindConstraint = "weekly", hurdleCost = 0.0005, opts = antaresRead::simOptions()){
+  
+  .checkAreName(area)
+  #PUMP
+  endNamePumping<- .getTheLastVirualName(namePumping, timeStepBindConstraint = timeStepBindConstraint)
+  dataLinkVirtualPump <- matrix(data = c(rep(capacity, 8760), rep(0, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), ncol = 5)
+  dataLinkPropertiesPump <- propertiesLinkOptions()
+  editLink(from = area, to = endNamePumping, dataLink = dataLinkVirtualPump, 
+           hurdles_cost = dataLinkPropertiesPump$`hurdles-cost`, 
+           transmission_capacities = dataLinkPropertiesPump$`transmission-capacities`, 
+           display_comments = dataLinkPropertiesPump$`display-comments`, 
+           filter_synthesis = dataLinkPropertiesPump$`filter-synthesis`, 
+           filter_year_by_year = dataLinkPropertiesPump$`filter-year-by-year`, 
+           opts = opts)
+  
+  #Turb
+  endNameTurbining<- .getTheLastVirualName(nameTurbining, timeStepBindConstraint = timeStepBindConstraint)
+  dataLinkVirtualTurb <- matrix(data = c(rep(0, 8760), rep(capacity, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), ncol = 5)
+  dataLinkPropertiesTurb <- propertiesLinkOptions()
+  dataLinkPropertiesTurb$`hurdles-cost` <- TRUE
+  editLink(from = area, to = endNameTurbining, dataLink = dataLinkVirtualTurb, 
+           hurdles_cost = dataLinkPropertiesTurb$`hurdles-cost`, 
+           transmission_capacities = dataLinkPropertiesTurb$`transmission-capacities`, 
+           display_comments = dataLinkPropertiesTurb$`display-comments`, 
+           filter_synthesis = dataLinkPropertiesTurb$`filter-synthesis`, 
+           filter_year_by_year = dataLinkPropertiesTurb$`filter-year-by-year`, 
+           opts = opts)
+  
+  # Maj simulation
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
+  
+  invisible(res)
+  
+}
+
+.checkAreName <- function(area = NULL){
+  if (!(tolower(area) %in% antaresRead::getAreas())){
+    stop(paste0(area, " is not a correct area name."))
+  }
 }

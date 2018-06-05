@@ -2,12 +2,21 @@
 % Please edit documentation in R/createPSP.R
 \name{createPSP}
 \alias{createPSP}
+\alias{getCapacityPSP}
+\alias{editPSP}
 \title{Create a Pumped Storage Power plant (PSP)}
 \usage{
 createPSP(areasAndCapacities = NULL, namePumping = "Psp_In",
   nameTurbining = "Psp_Out", hurdleCost = 5e-04,
   timeStepBindConstraint = "weekly", efficiency = NULL, overwrite = FALSE,
   opts = antaresRead::simOptions())
+
+getCapacityPSP(area = NULL, nameTurbining = "Psp_Out",
+  timeStepBindConstraint = "weekly", opts = antaresRead::simOptions())
+
+editPSP(area = NULL, capacity = NULL, namePumping = "Psp_In",
+  nameTurbining = "Psp_Out", timeStepBindConstraint = "weekly",
+  hurdleCost = 5e-04, opts = antaresRead::simOptions())
 }
 \arguments{
 \item{areasAndCapacities}{A data.frame with 2 columns installedCapacity and area}
@@ -27,9 +36,15 @@ This will overwrite the previous area and links.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}
+
+\item{area}{an area name}
+
+\item{capacity}{PSP capacity for the area}
 }
 \value{
-An updated list containing various information about the simulation.
+\code{createPSP()} and \code{editPSP()}  returns an updated list containing various information about the simulation.
+
+\code{getCapacityPSP()} returns PSP capacity of the area
 }
 \description{
 Create a Pumped Storage Power plant (PSP)
@@ -50,4 +65,19 @@ getAreas()
 
 }
 
+\dontrun{
+
+getCapacityPSP("a")
+editPSP("a", capacity = 8000, hurdleCost = 0.1)
+getCapacityPSP("a")
+
+areaName<-"suisse"
+createArea(areaName, overwrite = TRUE)
+pspData<-data.frame(area=c(areaName), installedCapacity=c(9856))
+createPSP(pspData, efficiency = 0.5, overwrite = TRUE, timeStepBindConstraint = "daily")
+
+getCapacityPSP(areaName, timeStepBindConstraint = "daily")
+
+
+}
 }
