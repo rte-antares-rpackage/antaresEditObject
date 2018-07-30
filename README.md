@@ -14,9 +14,16 @@
 This package provide methods to create (and remove) area, links between them, thermal cluster and binding constraints.
 These steps maybe usefull before running an Antares simulation.
 
-You can install the package with :
+You can install the package from GitHub :
 
 ```r
+# with remotes
+remotes::install_github("rte-antares-rpackage/antaresEditObject")
+
+# or with install-github.me service (based on remotes) (Works well with RTE proxy)
+source("https://install-github.me/rte-antares-rpackage/antaresEditObject")
+
+# or with devtools
 devtools::install_github("rte-antares-rpackage/antaresEditObject")
 ```
 
