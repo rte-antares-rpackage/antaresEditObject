@@ -4,8 +4,8 @@
 \alias{editCluster}
 \title{Edit an existing cluster}
 \usage{
-editCluster(area, cluster_name, ..., time_series = NULL, prepro_data = NULL,
-  prepro_modulation = NULL, add_prefix = TRUE,
+editCluster(area, cluster_name, ..., time_series = NULL,
+  prepro_data = NULL, prepro_modulation = NULL, add_prefix = TRUE,
   opts = antaresRead::simOptions())
 }
 \arguments{

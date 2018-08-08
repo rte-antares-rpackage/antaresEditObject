@@ -5,7 +5,8 @@
 \title{Create a link between two areas}
 \usage{
 createLink(from, to, propertiesLink = propertiesLinkOptions(),
-  dataLink = NULL, overwrite = FALSE, opts = antaresRead::simOptions())
+  dataLink = NULL, overwrite = FALSE,
+  opts = antaresRead::simOptions())
 }
 \arguments{
 \item{from}{The first area from which to create a link}

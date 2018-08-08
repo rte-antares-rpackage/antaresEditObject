@@ -8,8 +8,8 @@
 \usage{
 createPSP(areasAndCapacities = NULL, namePumping = "Psp_In",
   nameTurbining = "Psp_Out", hurdleCost = 5e-04,
-  timeStepBindConstraint = "weekly", efficiency = NULL, overwrite = FALSE,
-  opts = antaresRead::simOptions())
+  timeStepBindConstraint = "weekly", efficiency = NULL,
+  overwrite = FALSE, opts = antaresRead::simOptions())
 
 getCapacityPSP(area = NULL, nameTurbining = "Psp_Out",
   timeStepBindConstraint = "weekly", opts = antaresRead::simOptions())

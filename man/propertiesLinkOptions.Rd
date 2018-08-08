@@ -7,7 +7,8 @@
 propertiesLinkOptions(hurdles_cost = FALSE,
   transmission_capacities = "enabled", display_comments = TRUE,
   filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
-  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual"))
+  filter_year_by_year = c("hourly", "daily", "weekly", "monthly",
+  "annual"))
 }
 \arguments{
 \item{hurdles_cost}{Logical, which is used to state whether (linear)

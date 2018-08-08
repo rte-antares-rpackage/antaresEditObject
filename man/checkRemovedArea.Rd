@@ -4,7 +4,8 @@
 \alias{checkRemovedArea}
 \title{Seek for a removed area}
 \usage{
-checkRemovedArea(area, all_files = TRUE, opts = antaresRead::simOptions())
+checkRemovedArea(area, all_files = TRUE,
+  opts = antaresRead::simOptions())
 }
 \arguments{
 \item{area}{An area}

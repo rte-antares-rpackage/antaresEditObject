@@ -12,7 +12,8 @@ createDSR(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE,
 getCapacityDSR(area = NULL, opts = antaresRead::simOptions())
 
 editDSR(area = NULL, unit = NULL, nominalCapacity = NULL,
-  marginalCost = NULL, spinning = NULL, opts = antaresRead::simOptions())
+  marginalCost = NULL, spinning = NULL,
+  opts = antaresRead::simOptions())
 }
 \arguments{
 \item{areasAndDSRParam}{A data.frame with 4 columns area, unit, nominalCapacity, marginalCost and hour. Hour represent the number of activation hours for the DSR per day.}

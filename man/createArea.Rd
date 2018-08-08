@@ -5,7 +5,8 @@
 \title{Create An Area In An Antares Study}
 \usage{
 createArea(name, color = grDevices::rgb(230, 108, 44, max = 255),
-  localization = c(0, 0), nodalOptimization = nodalOptimizationOptions(),
+  localization = c(0, 0),
+  nodalOptimization = nodalOptimizationOptions(),
   filtering = filteringOptions(), overwrite = FALSE,
   opts = antaresRead::simOptions())
 }

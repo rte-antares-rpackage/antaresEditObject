@@ -6,8 +6,9 @@
 \usage{
 createBindingConstraint(name, id = tolower(name), values = NULL,
   enabled = TRUE, timeStep = c("hourly", "daily", "weekly"),
-  operator = c("both", "equal", "greater", "less"), coefficients = NULL,
-  overwrite = FALSE, opts = antaresRead::simOptions())
+  operator = c("both", "equal", "greater", "less"),
+  coefficients = NULL, overwrite = FALSE,
+  opts = antaresRead::simOptions())
 }
 \arguments{
 \item{name}{The name for the binding constraint}
