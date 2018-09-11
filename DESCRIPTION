@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' simulation
-Version: 0.1.2.980
+Version: 0.1.2.990
 Authors@R: c(
     person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = c("aut", "cre")),
     person("Baptiste", "Seguinot", email = "baptiste.seguinot@rte-france.com", role = "ctb"),
@@ -15,8 +15,10 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
 Depends: antaresRead
-Imports: assertthat,
+Imports: 
+    assertthat,
     grDevices,
-    data.table
+    data.table,
+    whisker
 Suggests: testthat,
     covr
