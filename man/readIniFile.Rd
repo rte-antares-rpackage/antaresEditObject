@@ -2,12 +2,12 @@
 % Please edit documentation in R/readIniFile.R
 \name{readIniFile}
 \alias{readIniFile}
-\title{Read a .ini file}
+\title{Read a INI file}
 \usage{
 readIniFile(file, stringsAsFactors = FALSE)
 }
 \arguments{
-\item{file}{file path}
+\item{file}{file path.}
 
 \item{stringsAsFactors}{logical: should character vectors be converted to factors?}
 }
@@ -15,5 +15,5 @@ readIniFile(file, stringsAsFactors = FALSE)
 A list with an element for each section of the .ini file.
 }
 \description{
-Read a .ini file
+Read a INI file
 }

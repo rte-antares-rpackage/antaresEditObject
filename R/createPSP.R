@@ -1,6 +1,6 @@
 #' Create a Pumped Storage Power plant (PSP)
 #'
-#' @param areasAndCapacities A data.frame with 2 columns installedCapacity and area
+#' @param areasAndCapacities A data.frame with 2 columns \code{installedCapacity} and \code{area}
 #' @param namePumping The name of the pumping area
 #' @param nameTurbining The name of the turbining area
 #' @param hurdleCost The cost of the PSP

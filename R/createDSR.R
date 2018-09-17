@@ -1,6 +1,8 @@
 #' Create a Demand Side Response (DSR)
 #'
-#' @param areasAndDSRParam A data.frame with 4 columns area, unit, nominalCapacity, marginalCost and hour. Hour represent the number of activation hours for the DSR per day.
+#' @param areasAndDSRParam A data.frame with 4 columns \code{area}, \code{unit},
+#'  \code{nominalCapacity}, \code{marginalCost} and \code{hour}. 
+#'  Hour represent the number of activation hours for the DSR per day.
 #' @param spinning DSR spinning
 #' @param overwrite Overwrite the DSR plant if already exist.
 #' This will overwrite the previous area and links. 

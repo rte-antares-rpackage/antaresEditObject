@@ -21,7 +21,7 @@ or \code{study} for the whole study.}
 The path of the backup
 }
 \description{
-Save an Antares Study or only inputs in a .tar.gz file
+Save an Antares Study or only inputs in a \code{.tar.gz} file
 }
 \examples{
 \dontrun{

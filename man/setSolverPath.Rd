@@ -7,7 +7,7 @@
 setSolverPath(path)
 }
 \arguments{
-\item{path}{(optional) Path to the solver (e.g. 'antares-6.0-solver.exe' in \\bin directory where Antares is installed). 
+\item{path}{(optional) Path to the solver (e.g. \code{antares-6.0-solver.exe} in \\bin directory where Antares is installed). 
 If missing, a window opens and lets the user choose the directory of the simulation interactively.}
 }
 \description{

@@ -1,6 +1,6 @@
 #' @title Create a backup with an Antares Study
 #' 
-#' @description Save an Antares Study or only inputs in a .tar.gz file
+#' @description Save an Antares Study or only inputs in a \code{.tar.gz} file
 #'
 #' @param backupfile Name of the backup, without extension. If missing, 
 #' either the name of the study or 'input' according argument \code{what}.

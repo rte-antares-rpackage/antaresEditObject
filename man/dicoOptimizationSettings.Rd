@@ -2,7 +2,7 @@
 % Please edit documentation in R/updateOptimizationSettings.R
 \name{dicoOptimizationSettings}
 \alias{dicoOptimizationSettings}
-\title{Correspondence between args of updateOptimizationSettings and actual Antares parameters.}
+\title{Correspondence between arguments of \code{updateOptimizationSettings} and actual Antares parameters.}
 \usage{
 dicoOptimizationSettings(arg)
 }
@@ -13,7 +13,7 @@ dicoOptimizationSettings(arg)
 The corresponding Antares general parameter.
 }
 \description{
-Correspondence between args of updateOptimizationSettings and actual Antares parameters.
+Correspondence between arguments of \code{updateOptimizationSettings} and actual Antares parameters.
 }
 \examples{
 dicoGeneralSettings("year.by.year") # "year-by-year"

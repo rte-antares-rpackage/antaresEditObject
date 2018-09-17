@@ -1,9 +1,9 @@
 
 # From antaresRead
 
-#' Read a .ini file
+#' Read a INI file
 #'
-#' @param file file path
+#' @param file file path.
 #' @param stringsAsFactors logical: should character vectors be converted to factors?
 #'
 #' @return A list with an element for each section of the .ini file.

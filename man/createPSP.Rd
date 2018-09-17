@@ -19,7 +19,7 @@ editPSP(area = NULL, capacity = NULL, namePumping = "Psp_In",
   hurdleCost = 5e-04, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{areasAndCapacities}{A data.frame with 2 columns installedCapacity and area}
+\item{areasAndCapacities}{A data.frame with 2 columns \code{installedCapacity} and \code{area}}
 
 \item{namePumping}{The name of the pumping area}
 

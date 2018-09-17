@@ -16,7 +16,9 @@ editDSR(area = NULL, unit = NULL, nominalCapacity = NULL,
   opts = antaresRead::simOptions())
 }
 \arguments{
-\item{areasAndDSRParam}{A data.frame with 4 columns area, unit, nominalCapacity, marginalCost and hour. Hour represent the number of activation hours for the DSR per day.}
+\item{areasAndDSRParam}{A data.frame with 4 columns \code{area}, \code{unit},
+\code{nominalCapacity}, \code{marginalCost} and \code{hour}. 
+Hour represent the number of activation hours for the DSR per day.}
 
 \item{spinning}{DSR spinning}
 

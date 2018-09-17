@@ -136,7 +136,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
 
 
 
-#' Correspondence between args of updateOptimizationSettings and actual Antares parameters.
+#' Correspondence between arguments of \code{updateOptimizationSettings} and actual Antares parameters.
 #' 
 #' @param arg An argument from function \code{updateOptimizationSettings}.
 #'
