@@ -31,6 +31,8 @@ createStudy <- function(path, study_name = "my_study", antares_version = "6.0.0"
     from = list.files(path = system.file("newStudy", package = "antaresEditObject"), full.names = TRUE),
     to = path, recursive = TRUE
   )
+  to_delete <- list.files(path = path, pattern = "ANTARESEDITOBJECT_TODELETE", full.names = TRUE, recursive = TRUE)
+  unlink(to_delete)
   antares <- paste(readLines(con = file.path(path, "study.antares")), collapse = "\n")
   antares <- whisker::whisker.render(
     template = antares,
