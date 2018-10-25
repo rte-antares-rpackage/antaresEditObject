@@ -40,7 +40,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' createLink(from = "myarea", to  = "myarea2")
+#' editLink(
+#'   from = "area1",
+#'   to = "area2",
+#'   transmission_capacities = "infinite"
+#' )
 #' }
 editLink <- function(from, to, hurdles_cost = NULL, 
                      transmission_capacities = NULL, 

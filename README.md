@@ -37,6 +37,14 @@ You need to set the path to an Antares simulation in "input" mode :
 antaresRead::setSimulationPath(path = "path/to/study", simulation = "input")
 ```
 
+Or you can simply create a new study :
+
+```r
+createStudy("path/to/study")
+```
+
+
+
 ## Save simulation
 
 Before modifying your simulation, you can save it in an archive :
@@ -78,7 +86,7 @@ You can initialize a cluster with some parameters :
 
 ```r
 createCluster(
-  area = "fr", 
+  area = "myarea", 
   cluster_name = "myareacluster",
   group = "other",
   unitcount = 1,
@@ -89,18 +97,38 @@ createCluster(
 )
 ```
 
+You can edit the settings of an existing cluster :
+
+```r
+editCluster(
+  area = "myarea", 
+  cluster_name = "myareacluster", 
+  nominalcapacity = 10600.000
+)
+```
+
 
 ## Create a new link
 
 ```r
 createLink(
-  from = "fr", 
-  to = "myarea", 
+  from = "area1", 
+  to = "area2", 
   propertiesLink = propertiesLinkOptions(
     hurdles_cost = FALSE,
     transmission_capacities = "enabled"
   ), 
   dataLink = NULL
+)
+```
+
+You can edit the settings of an existing link :
+
+```r
+editLink(
+  from = "area1",
+  to = "area2",
+  transmission_capacities = "infinite"
 )
 ```
 
@@ -165,5 +193,21 @@ You can remove from input folder areas, links, clusters and binding constraints 
 ```r
 removeArea("myarea")
 ```
+
+
+## Run an Antares simulation
+
+Launch an Antares simulation from R :
+
+```r
+runSimulation(
+  name = "myAwesomeSimulation", 
+  mode = "economy",
+  path_solver = "C:/path/to/antares-solver.exe", 
+  show_output_on_console = TRUE
+)
+```
+
+
 
 
