@@ -11,12 +11,12 @@ sourcedir <- system.file("testdata", package = "antaresRead")
 
 setup_study <- function(path, sourcedir) {
   if (sourcedir != "") {
-    if (Sys.info()['sysname'] == "Windows") {
-      untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path, 
-            extras = "--force-local")
-    } else {
+    # if (Sys.info()['sysname'] == "Windows") {
+    #   untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path, 
+    #         extras = "--force-local")
+    # } else {
       untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path)
-    }
+    # }
     
     assign("studyPath", file.path(path, "test_case"), envir = globalenv())
     assign("nweeks", 2, envir = globalenv())
