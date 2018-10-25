@@ -4,14 +4,14 @@
 #' in economic mode
 #' 
 #' @param name
-#'   Name of the simulation 
+#'   Name of the simulation.
 #' @param mode
-#'   Simulation mode, can take value "economy", "adequacy" or "draft"
+#'   Simulation mode, can take value "economy", "adequacy" or "draft".
 #' @param path_solver
 #'   Character containing the Antares Solver path
 #' @param show_output_on_console
 #'   Logical, indicating whether to capture the ANTARES log and show 
-#'   it on the R console
+#'   it on the R console.
 #' @param wait
 #'   Logical, indicating whether the R interpreter should wait for the 
 #'   simulation to finish, or run it asynchronously. 
@@ -32,8 +32,16 @@
 #' @export
 #' 
 ### Taken from antaresXpansion_0.5.2 ###
-runSimulation <- function(name, mode = "economy", path_solver, wait = TRUE, show_output_on_console = FALSE, parallel = TRUE, opts = antaresRead::simOptions())
-{
+runSimulation <- function(name, 
+                          mode = "economy", 
+                          path_solver = getOption("antares.solver"), 
+                          wait = TRUE, 
+                          show_output_on_console = FALSE, 
+                          parallel = TRUE, 
+                          opts = antaresRead::simOptions()) {
+  if (is.null(path_solver)) {
+    path_solver <- setSolverPath()
+  }
   # a few checks
   name <- tolower(name)
   assertthat::assert_that(file.exists(path_solver))
@@ -48,18 +56,17 @@ runSimulation <- function(name, mode = "economy", path_solver, wait = TRUE, show
   version_study <- substr(opts$antaresVersion,1,1)
   
   if(version_solver != version_study){
-    stop(paste0("Imcompatibility between antares solver version (", version_solver, ") and study version (", version_study), ")")
+    stop(paste0(
+      "Imcompatibility between antares solver version (", version_solver, ") and study version (", version_study, ")"
+    ), call. = FALSE)
   }
   
   
   #Launch simulation
-  if(version_solver >= 6 & parallel)
-  {
+  if(version_solver >= 6 & parallel) {
     cmd <- '"%s" "%s" -n "%s" --%s --parallel'
     cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
-  }
-  else
-  {
+  } else {
     cmd <- '"%s" "%s" -n "%s" --%s'
     cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
   }

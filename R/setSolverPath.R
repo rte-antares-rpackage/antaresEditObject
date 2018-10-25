@@ -30,5 +30,6 @@ setSolverPath <- function(path) {
   } else {
     options(antares.solver = path)
   }
+  return(invisible(path))
 }
 
