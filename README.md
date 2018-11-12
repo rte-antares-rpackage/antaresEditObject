@@ -195,6 +195,24 @@ removeArea("myarea")
 ```
 
 
+## Run Time-Series Generator
+
+First, update general settings to activate time series to generate :
+
+```r
+updateGeneralSettings(generate = "thermal")
+```
+
+Then run TS-generator:
+
+```r
+runTsGenerator(
+  path_solver = "C:/path/to/antares-solver.exe", 
+  show_output_on_console = TRUE
+)
+```
+
+
 ## Run an Antares simulation
 
 Launch an Antares simulation from R :
