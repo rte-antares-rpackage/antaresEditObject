@@ -3,7 +3,8 @@ Type: Package
 Title: Edit an 'Antares' Simulation
 Version: 0.1.4
 Authors@R: c(
-    person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = c("aut", "cre")),
+    person("Frederic", "Breant", email = "frederic.breant@rte-france.com", role = c("aut", "cre")),
+    person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = "aut"),
     person("Baptiste", "Seguinot", email = "baptiste.seguinot@rte-france.com", role = "ctb"),
     person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "ctb"),
     person("Titouan", "Robert", email = "titouan.robert@datastorm.fr", role = "ctb"),
@@ -14,7 +15,7 @@ Description: Edit an 'Antares' simulation before running it : create new areas, 
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Depends: antaresRead
 Imports: 
     assertthat,
