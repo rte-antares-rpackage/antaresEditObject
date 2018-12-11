@@ -12,7 +12,7 @@ Authors@R: c(
     person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.
-    'Antares' is an open source power system generator, more information are available here : <https://antares-simulator.org/>.
+    'Antares' is an open source power system generator, more information available here : <https://antares-simulator.org/>.
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 LazyData: true
