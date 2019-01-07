@@ -16,7 +16,13 @@
 This package provide methods to create (and remove) area, links between them, thermal cluster and binding constraints.
 These steps maybe usefull before running an Antares simulation.
 
-You can install the package from GitHub :
+Install from CRAN:
+
+```r
+install.packages("antaresEditObject")
+```
+
+Or install dev version from GitHub :
 
 ```r
 # with remotes
