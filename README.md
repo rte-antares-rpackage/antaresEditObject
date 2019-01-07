@@ -6,6 +6,8 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/rte-antares-rpackage/antaresEditObject.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresEditObject)
 [![Coverage Status](https://img.shields.io/codecov/c/github/rte-antares-rpackage/antaresEditObject/master.svg)](https://codecov.io/github/rte-antares-rpackage/antaresEditObject?branch=master)
+[![version](http://www.r-pkg.org/badges/version/antaresEditObject)](https://CRAN.R-project.org/package=antaresEditObject)
+[![cran checks](https://cranchecks.info/badges/worst/antaresEditObject)](https://cranchecks.info/pkgs/antaresEditObject)
 
 
 
