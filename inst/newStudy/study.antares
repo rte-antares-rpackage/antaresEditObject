@@ -1,5 +1,5 @@
 [antares]
-version = 600
+version = {version}
 caption = {{study_name}}
 created = {{date_created}}
 lastsave = {{date_created}}

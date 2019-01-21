@@ -18,8 +18,8 @@
 #' 
 #' }
 createStudy <- function(path, study_name = "my_study", antares_version = "6.0.0") {
-  if (antares_version != "6.0.0") 
-    warning("Only Antares version 6.0.0 is supported", call. = FALSE)
+  if (antares_version >= "6.5.0") 
+    warning("You may need to open the study in Antares before modifying it!", call. = FALSE)
   if (!dir.exists(path)) {
     dir.create(path = path, recursive = TRUE)
   } else {
@@ -37,6 +37,7 @@ createStudy <- function(path, study_name = "my_study", antares_version = "6.0.0"
   antares <- whisker::whisker.render(
     template = antares,
     data = list(
+      version = gsub(pattern = "\\.", replacement = "", x = antares_version),
       study_name = study_name,
       date_created = floor(as.numeric(Sys.time()))
     )
