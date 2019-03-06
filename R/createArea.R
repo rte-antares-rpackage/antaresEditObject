@@ -33,6 +33,8 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
 
   assertthat::assert_that(class(opts) == "simOptions")
   
+  v7 <- is_antares_v7(opts)
+
   if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
     stop("Area's name must not ponctuation except - and _")
   
@@ -108,6 +110,18 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
       hydro$`intra-daily-modulation`[[name]] <- 24
     if (!is.null(hydro$`inter-monthly-breakdown`))
       hydro$`inter-monthly-breakdown`[[name]] <- 1
+
+    if (v7) {
+      if (!is.null(hydro$`initialize reservoir date`))
+        hydro$`initialize reservoir date`[[name]] <- 0
+      if (!is.null(hydro$`leeway low`))
+        hydro$`leeway low`[[name]] <- 1
+      if (!is.null(hydro$`leeway up`))
+        hydro$`leeway up`[[name]] <- 1
+      if (!is.null(hydro$`pumping efficiency`))
+        hydro$`pumping efficiency`[[name]] <- 1
+    }
+
     writeIni(
       listData = hydro,
       pathIni = file.path(inputPath, "hydro", "hydro.ini"),
@@ -135,6 +149,36 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
     x = reservoir, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt"))
   )
+
+  if (v7) {
+    creditmodulations <- matrix(data = rep(1, 202), nrow = 2)
+    utils::write.table(
+      x = creditmodulations, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, "hydro", "common", "capacity", paste0("creditmodulations_", name, ".txt"))
+    )
+
+    inflowPattern <- matrix(data = rep(1, 365), ncol = 1)
+    utils::write.table(
+      x = inflowPattern, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, "hydro", "common", "capacity", paste0("inflowPattern_", name, ".txt"))
+    )
+
+    maxpower <- matrix(data = rep(c(0, 24, 0, 24), each = 365), ncol = 4)
+    utils::write.table(
+      x = maxpower, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", name, ".txt"))
+    )
+
+    reservoir <- matrix(data = rep(c("0", "0.500", "1"), each = 365), ncol = 3)
+    utils::write.table(
+      x = reservoir, row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE,
+      file = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt"))
+    )
+
+    con <- file(description = file.path(inputPath, "hydro", "common", "capacity", paste0("waterValues_", name, ".txt")), open = "wt")
+    writeLines(text = character(0), con = con)
+    close(con)
+  }
 
   # prepro
   # dir
