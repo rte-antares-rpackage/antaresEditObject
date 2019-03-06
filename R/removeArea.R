@@ -49,6 +49,14 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
       hydro$`intra-daily-modulation`[[name]] <- NULL
     if (!is.null(hydro$`inter-monthly-breakdown`))
       hydro$`inter-monthly-breakdown`[[name]] <- NULL
+    if (!is.null(hydro$`initialize reservoir date`))
+      hydro$`initialize reservoir date`[[name]] <- NULL
+    if (!is.null(hydro$`leeway low`))
+      hydro$`leeway low`[[name]] <- NULL
+    if (!is.null(hydro$`leeway up`))
+      hydro$`leeway up`[[name]] <- NULL
+    if (!is.null(hydro$`pumping efficiency`))
+      hydro$`pumping efficiency`[[name]] <- NULL
     writeIni(
       listData = hydro,
       pathIni = file.path(inputPath, "hydro", "hydro.ini"),
@@ -59,8 +67,10 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   unlink(x = file.path(inputPath, "hydro", "allocation", paste0(name, ".ini")), recursive = TRUE)
   # capacity
   unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", name, ".txt")), recursive = TRUE)
-  # reservoir
   unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt")), recursive = TRUE)
+  unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("creditmodulations_", name, ".txt")), recursive = TRUE)
+  unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("inflowPattern_", name, ".txt")), recursive = TRUE)
+  unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("waterValues_", name, ".txt")), recursive = TRUE)
   # prepro
   unlink(x = file.path(inputPath, "hydro", "prepro", name), recursive = TRUE)
   # series
