@@ -5,10 +5,10 @@
 \title{Properties for creating a link}
 \usage{
 propertiesLinkOptions(hurdles_cost = FALSE,
-  transmission_capacities = "enabled", display_comments = TRUE,
-  filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
-  filter_year_by_year = c("hourly", "daily", "weekly", "monthly",
-  "annual"))
+  transmission_capacities = "enabled", asset_type = "ac",
+  display_comments = TRUE, filter_synthesis = c("hourly", "daily",
+  "weekly", "monthly", "annual"), filter_year_by_year = c("hourly",
+  "daily", "weekly", "monthly", "annual"))
 }
 \arguments{
 \item{hurdles_cost}{Logical, which is used to state whether (linear)
@@ -17,6 +17,10 @@ transmission fees should be taken into account or not in economy and adequacy si
 \item{transmission_capacities}{Character, one of \code{enabled}, \code{ignore} or \code{infinite}, which is used to state whether 
 the capacities to consider are those indicated in 8760-hour arrays or 
 if zero or infinite values should be used instead (actual values / set to zero / set to infinite)}
+
+\item{asset_type}{Character, one of \code{ac}, \code{dc}, \code{gas}, \code{virt} or \code{other}. Used to
+state whether the link is either an AC component (subject to Kirchhoff’s laws), a DC component, 
+or another type of asset.}
 
 \item{display_comments}{Logical}
 
