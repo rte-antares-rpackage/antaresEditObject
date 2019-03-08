@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.1.5.920
+Version: 0.1.5.930
 Authors@R: c(
     person("Frederic", "Breant", email = "frederic.breant@rte-france.com", role = c("aut", "cre")),
     person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = c("aut")),
@@ -9,6 +9,7 @@ Authors@R: c(
     person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "ctb"),
     person("Titouan", "Robert", email = "titouan.robert@datastorm.fr", role = "ctb"),
     person("Jalal-Edine", "Zawam", email = "jalal-edine.zawam@rte-france.com", role = "ctb"),
+    person("Etienne", "Sanchez", role = "ctb"),
     person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.

@@ -56,7 +56,7 @@
 #' 
 #' # Pre-process data : 
 #' 
-#' #Æ this is the default data :
+#' # this is the default data :
 #' createCluster(
 #'   area = "fr", 
 #'   cluster_name = "my_cluster",
