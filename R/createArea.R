@@ -50,7 +50,7 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
     stop("You can initialize an area only in 'Input' mode")
   
   if (name %in% opts$areaList & !overwrite)
-    stop("Area already exist")
+    stop(sprintf("Area %s already exist", name), call. = FALSE)
   
   if (name %in% opts$areaList & overwrite)
     opts <- removeArea(name = name, opts = opts)
