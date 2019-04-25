@@ -119,6 +119,8 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset", as_matrix = TRUE,
     ruleset <- ruleset1
   }
   sb <- sb[[ruleset]]
+  if (is.null(sb))
+    return(list())
   extract_el <- function(l, indice) {
     res <- strsplit(x = names(l), split = ",")
     res <- lapply(res, `[`, i = indice)
