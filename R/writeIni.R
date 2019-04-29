@@ -29,14 +29,16 @@ writeIni <- function(listData, pathIni, overwrite = FALSE) {
     }
   }
   con <- file(pathIni, "wb")
+  on.exit(close(con))
   invisible(
-    lapply(seq_along(listData),
-           .formatedIniList,
-           dtaToTransform = listData,
-           namesdtaToTransform = names(listData),
-           con = con)
+    lapply(
+      X = seq_along(listData),
+      FUN = .formatedIniList,
+      dtaToTransform = listData,
+      namesdtaToTransform = names(listData),
+      con = con
+    )
   )
-  close(con)
 }
 
 #' Change R format to ini format
@@ -66,8 +68,8 @@ writeIni <- function(listData, pathIni, overwrite = FALSE) {
 #' @param con file connection where data are write
 #'
 #' @noRd
-.formatedIniList <- function(x, dtaToTransform, namesdtaToTransform, con = con) {
-  if (length(dtaToTransform) > 0) {
+.formatedIniList <- function(x, dtaToTransform, namesdtaToTransform, con) {
+  if (length(dtaToTransform[[x]]) > 0) {
     if (!is.null(namesdtaToTransform)) {
       writeChar( paste0("[", namesdtaToTransform[x], "]\n"), con, eos = NULL)
     } else {
@@ -81,6 +83,8 @@ writeIni <- function(listData, pathIni, overwrite = FALSE) {
     writeChar(paste(paste0(names(tmp_data), " = ", values), collapse = "\n"), con, eos = NULL)
     writeChar("\n\n", con, eos = NULL)
   } else {
+    if (nzchar(namesdtaToTransform[x]))
+      writeChar( paste0("[", namesdtaToTransform[x], "]\n"), con, eos = NULL)
     writeChar("\n\n", con, eos = NULL)
   }
 }

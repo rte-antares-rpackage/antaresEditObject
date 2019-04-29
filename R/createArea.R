@@ -3,9 +3,9 @@
 #' @param name Name of the area as a character, without punctuation except - and _.
 #' @param color Color of the node
 #' @param localization Localization on the map
-#' @param nodalOptimization Nodal optimization parameters
-#' @param filtering Filtering parameters
-#' @param overwrite Overwrite the area if already exist
+#' @param nodalOptimization Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.
+#' @param filtering Filtering parameters, see \code{\link{filteringOptions}}.
+#' @param overwrite Overwrite the area if already exist.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}

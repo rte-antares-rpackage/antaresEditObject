@@ -17,11 +17,11 @@ createArea(name, color = grDevices::rgb(230, 108, 44, max = 255),
 
 \item{localization}{Localization on the map}
 
-\item{nodalOptimization}{Nodal optimization parameters}
+\item{nodalOptimization}{Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.}
 
-\item{filtering}{Filtering parameters}
+\item{filtering}{Filtering parameters, see \code{\link{filteringOptions}}.}
 
-\item{overwrite}{Overwrite the area if already exist}
+\item{overwrite}{Overwrite the area if already exist.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}

@@ -14,7 +14,7 @@ createLink(from, to, propertiesLink = propertiesLinkOptions(),
 \item{to}{The second one}
 
 \item{propertiesLink}{a named list containing the link properties, e.g. hurdles-cost
-or transmission-capacities for example.}
+or transmission-capacities for example. See \code{\link{propertiesLinkOptions}}.}
 
 \item{dataLink}{For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
 trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,

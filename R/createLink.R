@@ -3,7 +3,7 @@
 #' @param from The first area from which to create a link
 #' @param to The second one
 #' @param propertiesLink a named list containing the link properties, e.g. hurdles-cost
-#' or transmission-capacities for example.
+#' or transmission-capacities for example. See \code{\link{propertiesLinkOptions}}.
 #' @param dataLink For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
 #' trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
 #' PST min, PST max.
