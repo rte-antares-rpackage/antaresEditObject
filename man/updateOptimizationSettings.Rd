@@ -42,7 +42,7 @@ updateOptimizationSettings(simplex.range = NULL,
 
 \item{shedding.strategy}{share margins}
 
-\item{shedding.policy}{shave peaks or minmize duration}
+\item{shedding.policy}{shave peaks or minimize duration}
 
 \item{unit.commitment.mode}{fast or accurate}
 

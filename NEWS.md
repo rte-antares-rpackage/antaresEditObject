@@ -1,3 +1,8 @@
+# antaresEditObject 0.1.6
+
+* Compatibility with Antares version 7
+
+
 # antaresEditObject 0.1.4
 
 * Initial release.

@@ -13,7 +13,7 @@
 #' @param include.exportmps true or false
 #' @param power.fluctuations free modulations, minimize excursions or minimize ramping
 #' @param shedding.strategy share margins
-#' @param shedding.policy shave peaks or minmize duration
+#' @param shedding.policy shave peaks or minimize duration
 #' @param unit.commitment.mode fast or accurate
 #' @param number.of.cores.mode minimum, low, medium, high or maximum
 #' @param day.ahead.reserve.management global
