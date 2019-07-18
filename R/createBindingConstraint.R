@@ -84,17 +84,15 @@ createBindingConstraint <- function(name, id = tolower(name),
     #see https://github.com/r-lib/testthat/issues/144
     #and https://github.com/r-lib/testthat/issues/86
     #set Sys.setenv("R_TESTS" = "") do nothing 
-    resLinks<-strsplit(links, "%")
-    newDirectionCoef <- tolower(paste0(resLinks[[1]][2], "%", resLinks[[1]][1]))
-    for(i in 1:length(resLinks)){
-      resLinks[[i]]<-paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
+    resLinks <- strsplit(links, "%")
+    for(i in seq_along(resLinks)){
+      resLinks[[i]] <- paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
     }
-    links<-c(links, as.character(resLinks))
+    links <- c(links, as.character(resLinks))
     
     #Only coef which % are links
     coefficientsToControl <- coefficients[grep("%", names(coefficients))]
-    if(length(coefficientsToControl)>0)
-    {
+    if(length(coefficientsToControl) > 0) {
       if (!all(names(coefficientsToControl) %in% links)) {
         badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% links]
         badcoef <- paste(shQuote(badcoef), collapse = ", ")
