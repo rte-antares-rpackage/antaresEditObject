@@ -298,7 +298,7 @@ createPSP <- function(areasAndCapacities = NULL,
       
       if (isTRUE(v7)) {
         dataLinkVirtual <- cbind(
-          dataLinkVirtual,
+          dataLinkVirtual[, c(1, 2, 4, 5, 3)],
           matrix(data = 0, ncol = 3, nrow = 8760)
         )
       }
@@ -450,7 +450,7 @@ editPSP <- function(area = NULL,
   )
   if (isTRUE(v7)) {
     dataLinkVirtualPump <- cbind(
-      dataLinkVirtualPump,
+      dataLinkVirtualPump[, c(1, 2, 4, 5, 3)],
       matrix(data = 0, ncol = 3, nrow = 8760)
     )
   }
@@ -475,7 +475,7 @@ editPSP <- function(area = NULL,
   )
   if (isTRUE(v7)) {
     dataLinkVirtualTurb <- cbind(
-      dataLinkVirtualTurb,
+      dataLinkVirtualTurb[, c(1, 2, 4, 5, 3)],
       matrix(data = 0, ncol = 3, nrow = 8760)
     )
   }
