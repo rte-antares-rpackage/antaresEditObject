@@ -3,8 +3,9 @@ Type: Package
 Title: Edit an 'Antares' Simulation
 Version: 0.1.7
 Authors@R: c(
-    person("Frederic", "Breant", email = "frederic.breant@rte-france.com", role = c("aut")),
-    person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = c("aut", "cre")),
+    person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
+    person("Frederic", "Breant", email = "frederic.breant@rte-france.com", role = "aut"),
+    person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = c("aut")),
     person("Baptiste", "Seguinot", email = "baptiste.seguinot@rte-france.com", role = "ctb"),
     person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "ctb"),
     person("Titouan", "Robert", email = "titouan.robert@datastorm.fr", role = "ctb"),
