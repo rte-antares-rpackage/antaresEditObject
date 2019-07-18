@@ -1,3 +1,9 @@
+# antaresEditObject 0.1.7
+
+* Fix `createPSP` to work with Antares v7
+
+
+
 # antaresEditObject 0.1.6
 
 * Compatibility with Antares version 7
