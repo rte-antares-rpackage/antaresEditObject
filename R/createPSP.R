@@ -1,3 +1,4 @@
+
 #' Create a Pumped Storage Power plant (PSP)
 #'
 #' @param areasAndCapacities A data.frame with 2 columns \code{installedCapacity} and \code{area}
@@ -38,21 +39,51 @@
 #' }
 #' 
 
-createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTurbining = "Psp_Out", hurdleCost = 0.0005, timeStepBindConstraint = "weekly", efficiency = NULL, overwrite = FALSE, opts = antaresRead::simOptions() ){
+createPSP <- function(areasAndCapacities = NULL, 
+                      namePumping = "Psp_In", 
+                      nameTurbining = "Psp_Out", 
+                      hurdleCost = 0.0005, 
+                      timeStepBindConstraint = "weekly", 
+                      efficiency = NULL, 
+                      overwrite = FALSE, 
+                      opts = antaresRead::simOptions() ){
   
   oldOps<-opts
-  areasAndCapacities <- .checkDataForAddPSP(areasAndCapacities, namePumping, nameTurbining, overwrite, oldOps, hurdleCost, timeStepBindConstraint, efficiency)
-  namePumping <- .getTheLastVirualName(namePumping, timeStepBindConstraint = timeStepBindConstraint)
-  nameTurbining <- .getTheLastVirualName(nameTurbining, timeStepBindConstraint = timeStepBindConstraint)
+  areasAndCapacities <- .checkDataForAddPSP(
+    areasAndCapacities, namePumping, nameTurbining, overwrite,
+    oldOps, hurdleCost, timeStepBindConstraint, efficiency
+  )
+  namePumping <- .getTheLastVirualName(
+    namePumping, timeStepBindConstraint = timeStepBindConstraint
+  )
+  nameTurbining <- .getTheLastVirualName(
+    nameTurbining, timeStepBindConstraint = timeStepBindConstraint
+  )
   
-  newOpts <- .addOneOfTheVirtualArea(nameTurbining, pump = FALSE, overwrite, timeStepBindConstraint = timeStepBindConstraint, opts = oldOps)
-  newOpts <- .addOneOfTheVirtualArea(namePumping, pump = TRUE, overwrite, timeStepBindConstraint = timeStepBindConstraint, opts = newOpts)
-  newOpts <- .addLinksBetweenPspAndAreas(areasAndCapacities = areasAndCapacities, nameVirtualArea = nameTurbining, pumpP = FALSE, overwrite = overwrite, hurdleCost = hurdleCost, opts = newOpts)
-  newOpts <- .addLinksBetweenPspAndAreas(areasAndCapacities = areasAndCapacities, nameVirtualArea = namePumping, pumpP = TRUE, overwrite = overwrite, hurdleCost = hurdleCost, opts = newOpts)
+  newOpts <- .addOneOfTheVirtualArea(
+    nameTurbining, pump = FALSE, overwrite, timeStepBindConstraint = timeStepBindConstraint, opts = oldOps
+  )
+  newOpts <- .addOneOfTheVirtualArea(
+    namePumping, pump = TRUE, overwrite, timeStepBindConstraint = timeStepBindConstraint, opts = newOpts
+  )
+  newOpts <- .addLinksBetweenPspAndAreas(
+    areasAndCapacities = areasAndCapacities, nameVirtualArea = nameTurbining, 
+    pumpP = FALSE, overwrite = overwrite, hurdleCost = hurdleCost, opts = newOpts
+  )
+  newOpts <- .addLinksBetweenPspAndAreas(
+    areasAndCapacities = areasAndCapacities, nameVirtualArea = namePumping, 
+    pumpP = TRUE, overwrite = overwrite, hurdleCost = hurdleCost, opts = newOpts
+  )
   
-  .addRowBalance(namePumping = namePumping, nameTurbining = nameTurbining, opts = newOpts)
+  .addRowBalance(
+    namePumping = namePumping, nameTurbining = nameTurbining, opts = newOpts
+  )
   
-  newOpts <- .addBindingConstraintToPSP(areasAndCapacities = areasAndCapacities, namePumping = namePumping, nameTurbining = nameTurbining, opts = newOpts, overwrite = overwrite, timeStepBindConstraint = timeStepBindConstraint, efficiency = efficiency)
+  newOpts <- .addBindingConstraintToPSP(
+    areasAndCapacities = areasAndCapacities, namePumping = namePumping, 
+    nameTurbining = nameTurbining, opts = newOpts, overwrite = overwrite, 
+    timeStepBindConstraint = timeStepBindConstraint, efficiency = efficiency
+  )
   
   # Maj simulation
   suppressWarnings({
@@ -64,7 +95,14 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
 }
 
 
-.checkDataForAddPSP <- function(areasAndCapacities = NULL, namePumping = NULL, nameTurbining = NULL, overwrite = NULL, opts = NULL, hurdleCost = NULL, timeStepBindConstraint = NULL, efficiency = NULL){
+.checkDataForAddPSP <- function(areasAndCapacities = NULL, 
+                                namePumping = NULL, 
+                                nameTurbining = NULL, 
+                                overwrite = NULL, 
+                                opts = NULL, 
+                                hurdleCost = NULL, 
+                                timeStepBindConstraint = NULL, 
+                                efficiency = NULL){
   #error with globalVariable with a data.table R CMD Check 
   country <- NULL
 
@@ -142,7 +180,13 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
   return(endName)
 }
 
-.addBindingConstraintToPSP <- function(areasAndCapacities = NULL, namePumping = NULL, nameTurbining = NULL, opts = NULL, overwrite = NULL, timeStepBindConstraint = NULL, efficiency = NULL){
+.addBindingConstraintToPSP <- function(areasAndCapacities = NULL,
+                                       namePumping = NULL, 
+                                       nameTurbining = NULL,
+                                       opts = NULL,
+                                       overwrite = NULL, 
+                                       timeStepBindConstraint = NULL,
+                                       efficiency = NULL){
   
 
   invisible(sapply(areasAndCapacities$country, function(x){
@@ -216,30 +260,57 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
   
 }
 
-.addLinksBetweenPspAndAreas <- function(areasAndCapacities = NULL, nameVirtualArea = NULL, pumpP = NULL, hurdleCost = NULL, overwrite = NULL, opts = NULL){
+.addLinksBetweenPspAndAreas <- function(areasAndCapacities = NULL,
+                                        nameVirtualArea = NULL,
+                                        pumpP = NULL, 
+                                        hurdleCost = NULL, 
+                                        overwrite = NULL,
+                                        opts = NULL){
   #error with globalVariable with a data.table R CMD Check 
   installedCapacity <- NULL
   country <- NULL
   
+  v7 <- is_antares_v7(opts)
   
   invisible(sapply(areasAndCapacities$country, function(x){
     
     #get the step capa
     stepCapaX <- areasAndCapacities[country == x, installedCapacity]
     
-    conditionToCreateALink <- paste0(x, " - ", nameVirtualArea) %in% antaresRead::getLinks() | paste0(nameVirtualArea, " - ", x) %in% antaresRead::getLinks()
+    conditionToCreateALink <- paste0(x, " - ", nameVirtualArea) %in% antaresRead::getLinks() |
+      paste0(nameVirtualArea, " - ", x) %in% antaresRead::getLinks()
+    
     if (!conditionToCreateALink | overwrite){
-      if (pumpP){
-        dataLinkVirtual <- matrix(data = c(rep(stepCapaX, 8760), rep(0, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), ncol = 5)
+      if (isTRUE(pumpP)){
+        dataLinkVirtual <- matrix(
+          data = c(rep(stepCapaX, 8760), rep(0, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), 
+          ncol = 5
+        )
         dataLinkProperties <- propertiesLinkOptions()
-      }else{
-        dataLinkVirtual <- matrix(data = c(rep(0, 8760), rep(stepCapaX, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), ncol = 5)
+      } else {
+        dataLinkVirtual <- matrix(
+          data = c(rep(0, 8760), rep(stepCapaX, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), 
+          ncol = 5
+        )
         dataLinkProperties <- propertiesLinkOptions()
         dataLinkProperties$`hurdles-cost` <- TRUE
       }
       
-      createLink(from = x, to = nameVirtualArea, dataLink = dataLinkVirtual, propertiesLink = dataLinkProperties, opts = opts)
-    }else{
+      if (isTRUE(v7)) {
+        dataLinkVirtual <- cbind(
+          dataLinkVirtual,
+          matrix(data = 0, ncol = 3, nrow = 8760)
+        )
+      }
+      
+      createLink(
+        from = x, 
+        to = nameVirtualArea,
+        dataLink = dataLinkVirtual, 
+        propertiesLink = dataLinkProperties, 
+        opts = opts
+      )
+    } else {
       #print(x)
       #print(nameVirtualArea)
     }
@@ -253,7 +324,11 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
   invisible(res)
 }
 
-.addOneOfTheVirtualArea <- function(nameVirtualArea = NULL, pump = NULL, overwrite = NULL, timeStepBindConstraint = NULL, opts = NULL){
+.addOneOfTheVirtualArea <- function(nameVirtualArea = NULL, 
+                                    pump = NULL, 
+                                    overwrite = NULL, 
+                                    timeStepBindConstraint = NULL, 
+                                    opts = NULL){
   #error with globalVariable with a data.table R CMD Check 
   area <- NULL
   
@@ -276,11 +351,11 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
       
       if (pump){
         LocY <- min(xyLayout$areas$y) - 100
-      }else{
+      } else {
         LocY <- max(xyLayout$areas$y) + 100
       }
       
-    }else{
+    } else {
       LocX <- 0
       LocY <- 0
     }
@@ -329,11 +404,18 @@ createPSP <- function(areasAndCapacities = NULL, namePumping = "Psp_In", nameTur
 #' }
 #' @export
 #' 
-getCapacityPSP <- function(area = NULL, nameTurbining = "Psp_Out", timeStepBindConstraint = "weekly", opts = antaresRead::simOptions()){
+getCapacityPSP <- function(area = NULL, 
+                           nameTurbining = "Psp_Out", 
+                           timeStepBindConstraint = "weekly", 
+                           opts = antaresRead::simOptions()){
   
   .checkAreName(area)
-  endNameTurbining<- .getTheLastVirualName(nameTurbining, timeStepBindConstraint = timeStepBindConstraint)
-  capaLinkTurb<-antaresRead::readInputTS(linkCapacity = .getLinkName(area, endNameTurbining), showProgress = FALSE, opts = opts)
+  endNameTurbining<- .getTheLastVirualName(
+    nameTurbining, timeStepBindConstraint = timeStepBindConstraint
+  )
+  capaLinkTurb<-antaresRead::readInputTS(
+    linkCapacity = .getLinkName(area, endNameTurbining), showProgress = FALSE, opts = opts
+  )
   if(area > endNameTurbining){
     columnTake<-("transCapacityDirect")
   }else{
@@ -350,33 +432,64 @@ getCapacityPSP <- function(area = NULL, nameTurbining = "Psp_Out", timeStepBindC
 #' 
 #' @export
 #' 
-editPSP <- function(area = NULL, capacity = NULL, namePumping = "Psp_In", nameTurbining = "Psp_Out", timeStepBindConstraint = "weekly", hurdleCost = 0.0005, opts = antaresRead::simOptions()){
-  
+editPSP <- function(area = NULL,
+                    capacity = NULL,
+                    namePumping = "Psp_In",
+                    nameTurbining = "Psp_Out", 
+                    timeStepBindConstraint = "weekly",
+                    hurdleCost = 0.0005, 
+                    opts = antaresRead::simOptions()){
+  v7 <- is_antares_v7(opts)
   .checkAreName(area)
   #PUMP
-  endNamePumping<- .getTheLastVirualName(namePumping, timeStepBindConstraint = timeStepBindConstraint)
-  dataLinkVirtualPump <- matrix(data = c(rep(capacity, 8760), rep(0, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), ncol = 5)
+  endNamePumping<- .getTheLastVirualName(
+    namePumping, timeStepBindConstraint = timeStepBindConstraint
+  )
+  dataLinkVirtualPump <- matrix(
+    data = c(rep(capacity, 8760), rep(0, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), ncol = 5
+  )
+  if (isTRUE(v7)) {
+    dataLinkVirtualPump <- cbind(
+      dataLinkVirtualPump,
+      matrix(data = 0, ncol = 3, nrow = 8760)
+    )
+  }
   dataLinkPropertiesPump <- propertiesLinkOptions()
-  editLink(from = area, to = endNamePumping, dataLink = dataLinkVirtualPump, 
-           hurdles_cost = dataLinkPropertiesPump$`hurdles-cost`, 
-           transmission_capacities = dataLinkPropertiesPump$`transmission-capacities`, 
-           display_comments = dataLinkPropertiesPump$`display-comments`, 
-           filter_synthesis = dataLinkPropertiesPump$`filter-synthesis`, 
-           filter_year_by_year = dataLinkPropertiesPump$`filter-year-by-year`, 
-           opts = opts)
+  editLink(
+    from = area, to = endNamePumping, dataLink = dataLinkVirtualPump, 
+    hurdles_cost = dataLinkPropertiesPump$`hurdles-cost`, 
+    transmission_capacities = dataLinkPropertiesPump$`transmission-capacities`, 
+    display_comments = dataLinkPropertiesPump$`display-comments`, 
+    filter_synthesis = dataLinkPropertiesPump$`filter-synthesis`, 
+    filter_year_by_year = dataLinkPropertiesPump$`filter-year-by-year`, 
+    opts = opts
+  )
   
   #Turb
-  endNameTurbining<- .getTheLastVirualName(nameTurbining, timeStepBindConstraint = timeStepBindConstraint)
-  dataLinkVirtualTurb <- matrix(data = c(rep(0, 8760), rep(capacity, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)), ncol = 5)
+  endNameTurbining<- .getTheLastVirualName(
+    nameTurbining, timeStepBindConstraint = timeStepBindConstraint
+  )
+  dataLinkVirtualTurb <- matrix(
+    data = c(rep(0, 8760), rep(capacity, 8760), rep(0, 8760), rep(hurdleCost, 8760 * 2)),
+    ncol = 5
+  )
+  if (isTRUE(v7)) {
+    dataLinkVirtualTurb <- cbind(
+      dataLinkVirtualTurb,
+      matrix(data = 0, ncol = 3, nrow = 8760)
+    )
+  }
   dataLinkPropertiesTurb <- propertiesLinkOptions()
   dataLinkPropertiesTurb$`hurdles-cost` <- TRUE
-  editLink(from = area, to = endNameTurbining, dataLink = dataLinkVirtualTurb, 
-           hurdles_cost = dataLinkPropertiesTurb$`hurdles-cost`, 
-           transmission_capacities = dataLinkPropertiesTurb$`transmission-capacities`, 
-           display_comments = dataLinkPropertiesTurb$`display-comments`, 
-           filter_synthesis = dataLinkPropertiesTurb$`filter-synthesis`, 
-           filter_year_by_year = dataLinkPropertiesTurb$`filter-year-by-year`, 
-           opts = opts)
+  editLink(
+    from = area, to = endNameTurbining, dataLink = dataLinkVirtualTurb, 
+    hurdles_cost = dataLinkPropertiesTurb$`hurdles-cost`, 
+    transmission_capacities = dataLinkPropertiesTurb$`transmission-capacities`, 
+    display_comments = dataLinkPropertiesTurb$`display-comments`, 
+    filter_synthesis = dataLinkPropertiesTurb$`filter-synthesis`, 
+    filter_year_by_year = dataLinkPropertiesTurb$`filter-year-by-year`, 
+    opts = opts
+  )
   
   # Maj simulation
   suppressWarnings({
