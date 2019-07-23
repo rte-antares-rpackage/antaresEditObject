@@ -1,7 +1,7 @@
 # antaresEditObject
 
 
-> Edit an Antares study before running simulation.
+> Edit an Antares study before running simulation. Methods are provided to create (and remove) area, links between them, thermal cluster and binding constraints. These steps maybe usefull before running an Antares simulation.
 
 
 [![Travis-CI Build Status](https://travis-ci.org/rte-antares-rpackage/antaresEditObject.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresEditObject)
@@ -13,10 +13,7 @@
 
 
 
-## Overview
-
-This package provide methods to create (and remove) area, links between them, thermal cluster and binding constraints.
-These steps maybe usefull before running an Antares simulation.
+## Installation
 
 Install from CRAN:
 
@@ -27,14 +24,7 @@ install.packages("antaresEditObject")
 Or install dev version from GitHub :
 
 ```r
-# with remotes
 remotes::install_github("rte-antares-rpackage/antaresEditObject")
-
-# or with install-github.me service (based on remotes) (Works well with RTE proxy)
-source("https://install-github.me/rte-antares-rpackage/antaresEditObject")
-
-# or with devtools
-devtools::install_github("rte-antares-rpackage/antaresEditObject")
 ```
 
 
