@@ -58,6 +58,14 @@ rearranged to match the new order.
 }
 \examples{
 \dontrun{
-createLink(from = "myarea", to  = "myarea2")
+
+library(antaresRead)
+
+# Set simulation path
+setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
+
+# Create a link between two areas
+createLink(from = "first_area", to  = "second_area")
+
 }
 }

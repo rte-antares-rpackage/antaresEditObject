@@ -35,6 +35,12 @@ Create An Area In An Antares Study
 \examples{
 \dontrun{
 
+library(antaresRead)
+
+# Set simulation path
+setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
+
+# Create a new area
 createArea("fictive_area")
 
 }

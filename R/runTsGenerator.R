@@ -18,7 +18,7 @@
 #' \dontrun{
 #' library(antaresRead)
 #' setSimulationPath(path = "path/to/study")
-
+#' 
 #' library(antaresEditObject)
 #' runTsGenerator(
 #'   path_solver = "path/to/antares-6.0-solver.exe", 
