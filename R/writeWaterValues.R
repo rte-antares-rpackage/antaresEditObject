@@ -41,7 +41,7 @@ writeWaterValues <- function(area, data = NULL, overwrite = TRUE,
     stop("Water values already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
          call. = FALSE)
 
-  if (!(identical(dim(data), c(365L, 101L)) | identical(dim(data), c(36865L, 3L))))
+  if (!(identical(dim(data), c(365L, 101L)) || identical(dim(data), c(36865L, 3L))))
     stop("'data' must be either a 365*101 or (365*101)*3 matrix.", call. = FALSE)
 
   if (ncol(data) == 3) {
