@@ -41,6 +41,8 @@ writeSeriesPrepro <- function(
   opts = antaresRead::simOptions()
 ) {
   
+  type <- match.arg(type)
+  
   assertthat::assert_that(class(opts) == "simOptions")
   
   if (!tolower(area) %in% opts$areaList)
