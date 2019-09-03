@@ -1,6 +1,6 @@
 #Copyright © 2016 RTE Réseau de transport d’électricité
 
-context("Function writewatervalues")
+context("Function writeWaterValues")
 
 
 # Setup study -------------------------------------------------------------
