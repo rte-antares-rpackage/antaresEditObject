@@ -3,7 +3,7 @@
 #' This function allows to write load, wind and solar prepro data.
 #'
 #' @param area The area where to write prepro data.
-#' @param type "load", "wind" or "solar".
+#' @param type Type of data to write : \code{"load"}, \code{"wind"} or \code{"solar"}.
 #' @param coefficients A 12*6 matrix of monthly values for the primary
 #'   parameters alpha, beta, gamma, delta, theta and mu.
 #' @param daily_profile A 24*12 matrix of hourly / monthly coefficients K(hm)

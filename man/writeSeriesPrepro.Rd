@@ -12,7 +12,7 @@ writeSeriesPrepro(area, type = c("load", "wind", "solar"),
 \arguments{
 \item{area}{The area where to write prepro data.}
 
-\item{type}{"load", "wind" or "solar".}
+\item{type}{Type of data to write : \code{"load"}, \code{"wind"} or \code{"solar"}.}
 
 \item{coefficients}{A 12*6 matrix of monthly values for the primary
 parameters alpha, beta, gamma, delta, theta and mu.}

@@ -3,7 +3,8 @@
 #' This function writes input time series in an Antares project.
 #'
 #' @param area The area where to write the input time series.
-#' @param type "load", "thermal", "hydro", "wind" or "solar".
+#' @param type Serie to write: \code{"load"}, \code{"thermal"}, \code{"hydro"},
+#'  \code{"wind"} or \code{"solar"}.
 #' @param data A 8760*N matrix of hourly time series.
 #' @param overwrite Logical. Overwrite the values if a file already exists.
 #' @param opts List of simulation parameters returned by the function

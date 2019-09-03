@@ -10,7 +10,8 @@ writeInputTS(area, type = c("load", "thermal", "hydro", "wind", "solar"),
 \arguments{
 \item{area}{The area where to write the input time series.}
 
-\item{type}{"load", "thermal", "hydro", "wind" or "solar".}
+\item{type}{Serie to write: \code{"load"}, \code{"thermal"}, \code{"hydro"},
+\code{"wind"} or \code{"solar"}.}
 
 \item{data}{A 8760*N matrix of hourly time series.}
 
