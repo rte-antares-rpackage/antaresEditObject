@@ -35,9 +35,12 @@ updateOutputSettings <- function(
   general <- readIniFile(file = pathIni)
   
   outputs <- general$output
-  outputs$synthesis <- synthesis
-  outputs$storenewset <- storenewset
-  outputs$archives <- paste(archives, collapse = ", ")
+  if (!is.null(synthesis))
+    outputs$synthesis <- synthesis
+  if (!is.null(storenewset))
+    outputs$storenewset <- storenewset
+  if (!is.null(archives))
+    outputs$archives <- paste(archives, collapse = ", ")
   general$output <- outputs
   
   writeIni(listData = general, pathIni = pathIni, overwrite = TRUE)
