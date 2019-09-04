@@ -10,6 +10,7 @@
 [![cran checks](https://cranchecks.info/badges/worst/antaresEditObject)](https://cranchecks.info/pkgs/antaresEditObject)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![cranlogs](http://cranlogs.r-pkg.org/badges/antaresEditObject)](https://CRAN.R-project.org/package=antaresEditObject)
 
 
 
