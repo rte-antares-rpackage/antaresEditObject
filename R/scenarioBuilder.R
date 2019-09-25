@@ -92,7 +92,7 @@ scenarioBuilder <- function(n_scenario, n_mc = NULL, areas = NULL, areas_rand = 
     dimnames = list(areas, NULL)
   )
   sb[areas %in% areas_rand, ] <- apply(
-    X = sb[areas %in% areas_rand, ],
+    X = sb[areas %in% areas_rand, , drop = FALSE],
     MARGIN = 1,
     FUN = function(x) "rand"
   )
