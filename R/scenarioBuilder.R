@@ -74,7 +74,7 @@ scenarioBuilder <- function(n_scenario, n_mc = NULL, areas = NULL, areas_rand = 
   if (is.null(areas)) {
     areas <- antaresRead::getAreas(opts = opts)
   } else {
-    areas <- unique(areas, areas_rand)
+    areas <- unique(c(areas, areas_rand))
   }
   if (!all(areas_rand %in% areas)) {
     warning("Some 'areas_rand' are not Antares' areas", call. = FALSE)
