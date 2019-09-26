@@ -58,10 +58,10 @@ writeSeriesPrepro <- function(
   translation_file <- file.path(area_folder, "translation.txt")
   conversion_file <- file.path(area_folder, "conversion.txt")
   
-  if ((isTRUE(file.size(coefficients_file)) > 0 ||
-       isTRUE(file.size(daily_profile_file)) > 0 ||
-       isTRUE(file.size(translation_file)) > 0 ||
-       isTRUE(file.size(conversion_file)) > 0) && !overwrite)
+  if ((isTRUE(file.size(coefficients_file) > 0) ||
+       isTRUE(file.size(daily_profile_file) > 0) ||
+       isTRUE(file.size(translation_file) > 0) ||
+       isTRUE(file.size(conversion_file) > 0)) && !overwrite)
     stop("Coefficients already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
          .call = FALSE)
   
@@ -88,7 +88,7 @@ writeSeriesPrepro <- function(
   # Translation
   if (!is.null(translation)) {
     if (!(is.atomic(translation) && length(translation) == 8760) &&
-        !identical(dim(daily_profile), c(8760L, 1L)))
+        !identical(dim(translation), c(8760L, 1L)))
       stop("'translation' must be either a vector of length 8760 or a 8760*1 matrix.", call. = FALSE)
     fwrite(
       x = as.data.table(translation), row.names = FALSE, col.names = FALSE, sep = "\t",
