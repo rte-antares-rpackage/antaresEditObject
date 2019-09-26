@@ -30,6 +30,22 @@ test_that("Write new input time series", {
                            paste0("thermal_", area, ".txt"))
   
   expect_equal(fread(values_file), as.data.table(M))
+  
+  expect_error(
+    writeInputTS(area = "fake area", type = "thermal", data = M),
+    regexp = "not a valid area"
+    )
+  
+  expect_error(
+    writeInputTS(area = area, type = "thermal", data = M, overwrite = FALSE),
+    regexp = "already exist"
+  )
+  
+  expect_error(
+    writeInputTS(area = area, type = "thermal", data = matrix(1:3)),
+    regexp = "8760\\*N matrix"
+  )
+  
 })
 
 
