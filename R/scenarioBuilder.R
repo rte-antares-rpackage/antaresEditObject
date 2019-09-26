@@ -149,8 +149,8 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset", as_matrix = TRUE,
 
 
 #' @param ldata A \code{matrix} obtained with \code{scenarioBuilder}, 
-#'  or a named list of matrix obtained with \code{scenarioBuilder}, names must be 
-#'  'l', 'h', 'w' or 's', depending the serie to update.
+#'  or a named list of matrices obtained with \code{scenarioBuilder}, names must be 
+#'  'l', 'h', 'w', 's' or 't', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.
 #'
 #' @export
@@ -162,7 +162,8 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
   prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- match.arg(series, choices = c("load", "hydro", "wind", "solar"), several.ok = TRUE)
+      series <- match.arg(series, choices = c("load", "hydro", "wind", "solar", "thermal"),
+                          several.ok = TRUE)
       series <- substr(series, 1, 1)
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
@@ -174,8 +175,8 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s"))) {
-      stop("'ldata' must be 'l', 'h', 'w' or 's'", call. = FALSE)
+    if (!all(series %in% c("l", "h", "w", "s", "t"))) {
+      stop("'ldata' must be 'l', 'h', 'w', 's' or 't'", call. = FALSE)
     }
     sbuild <- lapply(
       X = series,
@@ -196,18 +197,23 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
   return(invisible(res))
 } 
 
-
+#' Converts a scenarioBuilder matrix to a list
+#' 
+#' @param mat A matrix obtained from scenarioBuilder().
+#' @param series Name of the series, among 'l', 'h', 'w', 's' and 't'.
+#'
 #' @importFrom data.table as.data.table melt :=
-listify_sb <- function(mat, serie = "l") {
+#' @noRd
+listify_sb <- function(mat, series = "l") {
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
-  dtsb[, value:= as.integer(value)]
+  dtsb[, value := as.integer(value)]
   dtsb <- dtsb[order(rn, variable)]
   
   lsb <- as.list(dtsb$value)
-  names(lsb) <- paste(serie, dtsb$rn, dtsb$variable, sep = ",")
+  names(lsb) <- paste(series, dtsb$rn, dtsb$variable, sep = ",")
   
   return(lsb)
 } 
