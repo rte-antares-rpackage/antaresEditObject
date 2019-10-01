@@ -34,12 +34,16 @@ General Reference Guide.}
 \code{antaresRead::setSimulationPath}.}
 }
 \description{
-This function allows to write load, wind and solar prepro data.
+This function allows to write load, wind and solar prepro data. Using
+\code{character(0)} allows to erase data (cf Examples).
 }
 \examples{
 \dontrun{
 
 writeSeriesPrepro("fictive_area", type = "solar", daily_profile = matrix(rep(1, 24*12), nrow = 24))
+
+# Erase daily profile data:
+writeSeriesPrepro("fictive_area", type = "solar", daily_profile = character(0))
 
 }
 }

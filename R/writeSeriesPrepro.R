@@ -1,6 +1,7 @@
 #' Write prepro data
 #'
-#' This function allows to write load, wind and solar prepro data.
+#' This function allows to write load, wind and solar prepro data. Using
+#' \code{character(0)} allows to erase data (cf Examples).
 #'
 #' @param area The area where to write prepro data.
 #' @param type Type of data to write : \code{"load"}, \code{"wind"} or \code{"solar"}.
@@ -28,6 +29,9 @@
 #' \dontrun{
 #'
 #' writeSeriesPrepro("fictive_area", type = "solar", daily_profile = matrix(rep(1, 24*12), nrow = 24))
+#' 
+#' # Erase daily profile data:
+#' writeSeriesPrepro("fictive_area", type = "solar", daily_profile = character(0))
 #'
 #' }
 writeSeriesPrepro <- function(
@@ -67,8 +71,8 @@ writeSeriesPrepro <- function(
   
   # Coefficients
   if (!is.null(coefficients)) {
-    if (!identical(dim(coefficients), c(12L, 6L)))
-      stop("'coefficients' must be a 12*6 matrix.", call. = FALSE)
+    if (!identical(dim(coefficients), c(12L, 6L)) && !identical(coefficients, character(0)))
+      stop("'coefficients' must be either a 12*6 matrix or character(0).", call. = FALSE)
     fwrite(
       x = as.data.table(coefficients), row.names = FALSE, col.names = FALSE, sep = "\t",
       file = coefficients_file
@@ -77,8 +81,8 @@ writeSeriesPrepro <- function(
   
   # Daily profile
   if (!is.null(daily_profile)) {
-    if (!identical(dim(daily_profile), c(24L, 12L)))
-      stop("'daily_profile' must be a 24*12 matrix.", call. = FALSE)
+    if (!identical(dim(daily_profile), c(24L, 12L)) && !identical(daily_profile, character(0)))
+      stop("'daily_profile' must be either a 24*12 matrix or character(0).", call. = FALSE)
     fwrite(
       x = as.data.table(daily_profile), row.names = FALSE, col.names = FALSE, sep = "\t",
       file = daily_profile_file
@@ -88,8 +92,10 @@ writeSeriesPrepro <- function(
   # Translation
   if (!is.null(translation)) {
     if (!(is.atomic(translation) && length(translation) == 8760) &&
-        !identical(dim(translation), c(8760L, 1L)))
-      stop("'translation' must be either a vector of length 8760 or a 8760*1 matrix.", call. = FALSE)
+        !identical(dim(translation), c(8760L, 1L)) &&
+        !identical(translation, character(0)))
+      stop("'translation' must be either a vector of length 8760, a 8760*1 matrix, or character(0).",
+           call. = FALSE)
     fwrite(
       x = as.data.table(translation), row.names = FALSE, col.names = FALSE, sep = "\t",
       file = translation_file
@@ -98,8 +104,8 @@ writeSeriesPrepro <- function(
   
   # Conversion
   if (!is.null(conversion)) {
-    if (NROW(conversion) != 2)
-      stop("'conversion' must be a 2*N matrix.", call. = FALSE)
+    if (NROW(conversion) != 2 && !identical(translation, character(0)))
+      stop("'conversion' must be either a 2*N matrix or character(0).", call. = FALSE)
     fwrite(
       x = as.data.table(conversion), row.names = FALSE, col.names = FALSE, sep = "\t",
       file = conversion_file
