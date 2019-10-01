@@ -1,7 +1,7 @@
 
 #' Edit an existing cluster
 #'
-#' @param area The area where to create the cluster.
+#' @param area The area where the cluster is.
 #' @param cluster_name cluster name.
 #' @param ... Parameters to write in the Ini file.
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.

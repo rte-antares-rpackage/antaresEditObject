@@ -9,7 +9,7 @@ editCluster(area, cluster_name, ..., time_series = NULL,
   opts = antaresRead::simOptions())
 }
 \arguments{
-\item{area}{The area where to create the cluster.}
+\item{area}{The area where the cluster is.}
 
 \item{cluster_name}{cluster name.}
 

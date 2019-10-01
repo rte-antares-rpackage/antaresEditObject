@@ -48,6 +48,7 @@ writeWaterValues <- function(area, data = NULL, overwrite = TRUE,
     data <- data.table::data.table(data)
     names(data) <- c("date", "level", "value")
     data <- data.table::dcast(data, formula = date ~ level, value.var = "value")
+    data$date <- NULL
   }
 
   utils::write.table(x = data, row.names = FALSE, col.names = FALSE, sep = "\t", file = values_file)

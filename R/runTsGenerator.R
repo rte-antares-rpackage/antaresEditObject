@@ -46,7 +46,7 @@ runTsGenerator <- function(path_solver = getOption("antares.solver"),
   
   if(version_solver != version_study){
     stop(paste0(
-      "Imcompatibility between antares solver version (", version_solver, ") and study version (", version_study, ")"
+      "Incompatibility between antares solver version (", version_solver, ") and study version (", version_study, ")"
     ), call. = FALSE)
   }
   
