@@ -2,7 +2,7 @@
 title: "User guide"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{User guide}
+  %\VignetteIndexEntry{antaresEditObject}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -55,7 +55,7 @@ You can create a new area with:
 ```r
 createArea(name = "myarea")
 
-# The new area should appear here :
+# The new area should appear here:
 antaresRead::getAreas()
 
 ```
