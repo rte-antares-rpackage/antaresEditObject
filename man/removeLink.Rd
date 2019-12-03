@@ -2,7 +2,7 @@
 % Please edit documentation in R/removeLink.R
 \name{removeLink}
 \alias{removeLink}
-\title{Remove a link between two ares}
+\title{Remove a link between two areas}
 \usage{
 removeLink(from, to, opts = antaresRead::simOptions())
 }
@@ -18,7 +18,7 @@ removeLink(from, to, opts = antaresRead::simOptions())
 An updated list containing various information about the simulation.
 }
 \description{
-Remove a link between two ares
+Remove a link between two areas
 }
 \examples{
 \dontrun{

@@ -4,9 +4,16 @@
 \alias{editCluster}
 \title{Edit an existing cluster}
 \usage{
-editCluster(area, cluster_name, ..., time_series = NULL,
-  prepro_data = NULL, prepro_modulation = NULL, add_prefix = TRUE,
-  opts = antaresRead::simOptions())
+editCluster(
+  area,
+  cluster_name,
+  ...,
+  time_series = NULL,
+  prepro_data = NULL,
+  prepro_modulation = NULL,
+  add_prefix = TRUE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{area}{The area where the cluster is.}

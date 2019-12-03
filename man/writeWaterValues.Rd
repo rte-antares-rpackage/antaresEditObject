@@ -4,8 +4,12 @@
 \alias{writeWaterValues}
 \title{Write water values}
 \usage{
-writeWaterValues(area, data = NULL, overwrite = TRUE,
-  opts = antaresRead::simOptions())
+writeWaterValues(
+  area,
+  data = NULL,
+  overwrite = TRUE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{area}{The area where to add the water values.}

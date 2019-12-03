@@ -4,10 +4,17 @@
 \alias{createDistrict}
 \title{Create a district}
 \usage{
-createDistrict(name, caption = NULL, comments = NULL,
-  apply_filter = "none", add_area = NULL, remove_area = NULL,
-  output = FALSE, overwrite = FALSE,
-  opts = antaresRead::simOptions())
+createDistrict(
+  name,
+  caption = NULL,
+  comments = NULL,
+  apply_filter = "none",
+  add_area = NULL,
+  remove_area = NULL,
+  output = FALSE,
+  overwrite = FALSE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{name}{District's name.}

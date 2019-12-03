@@ -4,8 +4,12 @@
 \alias{runTsGenerator}
 \title{Run Time-Series Generator}
 \usage{
-runTsGenerator(path_solver = getOption("antares.solver"), wait = TRUE,
-  show_output_on_console = FALSE, opts = antaresRead::simOptions())
+runTsGenerator(
+  path_solver = getOption("antares.solver"),
+  wait = TRUE,
+  show_output_on_console = FALSE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{path_solver}{Character containing the Antares Solver path.}

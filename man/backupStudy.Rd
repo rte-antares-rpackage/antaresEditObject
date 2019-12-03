@@ -4,8 +4,11 @@
 \alias{backupStudy}
 \title{Create a backup with an Antares Study}
 \usage{
-backupStudy(backupfile, what = c("input", "study"),
-  opts = antaresRead::simOptions())
+backupStudy(
+  backupfile,
+  what = c("input", "study"),
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{backupfile}{Name of the backup, without extension. If missing, 

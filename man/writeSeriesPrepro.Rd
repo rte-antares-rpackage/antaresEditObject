@@ -4,10 +4,16 @@
 \alias{writeSeriesPrepro}
 \title{Write prepro data}
 \usage{
-writeSeriesPrepro(area, type = c("load", "wind", "solar"),
-  coefficients = NULL, daily_profile = NULL, translation = NULL,
-  conversion = NULL, overwrite = TRUE,
-  opts = antaresRead::simOptions())
+writeSeriesPrepro(
+  area,
+  type = c("load", "wind", "solar"),
+  coefficients = NULL,
+  daily_profile = NULL,
+  translation = NULL,
+  conversion = NULL,
+  overwrite = TRUE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{area}{The area where to write prepro data.}

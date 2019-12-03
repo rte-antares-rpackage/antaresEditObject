@@ -4,19 +4,39 @@
 \alias{updateGeneralSettings}
 \title{Update general parameters of an Antares study}
 \usage{
-updateGeneralSettings(mode = NULL, horizon = NULL, nbyears = NULL,
-  simulation.start = NULL, simulation.end = NULL, january.1st = NULL,
-  first.month.in.year = NULL, first.weekday = NULL, leapyear = NULL,
-  year.by.year = NULL, derated = NULL, custom.ts.numbers = NULL,
-  user.playlist = NULL, filtering = NULL,
-  active.rules.scenario = NULL, generate = NULL,
-  nbtimeseriesload = NULL, nbtimeserieshydro = NULL,
-  nbtimeserieswind = NULL, nbtimeseriesthermal = NULL,
-  nbtimeseriessolar = NULL, refreshtimeseries = NULL,
-  intra.modal = NULL, inter.modal = NULL, refreshintervalload = NULL,
-  refreshintervalhydro = NULL, refreshintervalwind = NULL,
-  refreshintervalthermal = NULL, refreshintervalsolar = NULL,
-  readonly = NULL, opts = antaresRead::simOptions())
+updateGeneralSettings(
+  mode = NULL,
+  horizon = NULL,
+  nbyears = NULL,
+  simulation.start = NULL,
+  simulation.end = NULL,
+  january.1st = NULL,
+  first.month.in.year = NULL,
+  first.weekday = NULL,
+  leapyear = NULL,
+  year.by.year = NULL,
+  derated = NULL,
+  custom.ts.numbers = NULL,
+  user.playlist = NULL,
+  filtering = NULL,
+  active.rules.scenario = NULL,
+  generate = NULL,
+  nbtimeseriesload = NULL,
+  nbtimeserieshydro = NULL,
+  nbtimeserieswind = NULL,
+  nbtimeseriesthermal = NULL,
+  nbtimeseriessolar = NULL,
+  refreshtimeseries = NULL,
+  intra.modal = NULL,
+  inter.modal = NULL,
+  refreshintervalload = NULL,
+  refreshintervalhydro = NULL,
+  refreshintervalwind = NULL,
+  refreshintervalthermal = NULL,
+  refreshintervalsolar = NULL,
+  readonly = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{mode}{Economy, Adequacy, Draft.}

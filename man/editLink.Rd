@@ -4,10 +4,18 @@
 \alias{editLink}
 \title{Edit a link between two areas}
 \usage{
-editLink(from, to, hurdles_cost = NULL, transmission_capacities = NULL,
-  asset_type = NULL, display_comments = NULL,
-  filter_synthesis = NULL, filter_year_by_year = NULL,
-  dataLink = NULL, opts = antaresRead::simOptions())
+editLink(
+  from,
+  to,
+  hurdles_cost = NULL,
+  transmission_capacities = NULL,
+  asset_type = NULL,
+  display_comments = NULL,
+  filter_synthesis = NULL,
+  filter_year_by_year = NULL,
+  dataLink = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{from}{The first area from which to create a link}
