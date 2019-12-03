@@ -4,3 +4,6 @@
 ^\.Rproj\.user$
 test_case/
 ^\.travis\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
