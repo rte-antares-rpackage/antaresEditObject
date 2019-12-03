@@ -25,5 +25,9 @@ Imports:
     grDevices,
     data.table,
     whisker
-Suggests: testthat,
-    covr
+Suggests: 
+    testthat,
+    covr,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
