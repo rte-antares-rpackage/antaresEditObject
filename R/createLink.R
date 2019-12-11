@@ -127,7 +127,12 @@ createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataL
   
   if (!identical(areas, sort(areas))) {
     dataLink[, 1:2] <- dataLink[, 2:1]
-    dataLink[, 4:5] <- dataLink[, 5:4]
+    
+    if (v7) {
+      dataLink[, 3:4] <- dataLink[, 4:3]
+    } else {
+      dataLink[, 4:5] <- dataLink[, 5:4]
+    }
   }
   
   utils::write.table(
