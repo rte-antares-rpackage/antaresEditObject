@@ -4,10 +4,15 @@
 \alias{runSimulation}
 \title{Run an Antares Simulation}
 \usage{
-runSimulation(name, mode = "economy",
-  path_solver = getOption("antares.solver"), wait = TRUE,
-  show_output_on_console = FALSE, parallel = TRUE,
-  opts = antaresRead::simOptions())
+runSimulation(
+  name,
+  mode = "economy",
+  path_solver = getOption("antares.solver"),
+  wait = TRUE,
+  show_output_on_console = FALSE,
+  parallel = TRUE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{name}{Name of the simulation.}

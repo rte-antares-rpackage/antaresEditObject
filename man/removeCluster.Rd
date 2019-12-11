@@ -4,8 +4,12 @@
 \alias{removeCluster}
 \title{Remove a cluster}
 \usage{
-removeCluster(area, cluster_name, add_prefix = TRUE,
-  opts = antaresRead::simOptions())
+removeCluster(
+  area,
+  cluster_name,
+  add_prefix = TRUE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{area}{Area from which to remove a cluster.}

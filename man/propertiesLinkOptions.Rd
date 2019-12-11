@@ -4,11 +4,14 @@
 \alias{propertiesLinkOptions}
 \title{Properties for creating a link}
 \usage{
-propertiesLinkOptions(hurdles_cost = FALSE,
-  transmission_capacities = "enabled", asset_type = "ac",
-  display_comments = TRUE, filter_synthesis = c("hourly", "daily",
-  "weekly", "monthly", "annual"), filter_year_by_year = c("hourly",
-  "daily", "weekly", "monthly", "annual"))
+propertiesLinkOptions(
+  hurdles_cost = FALSE,
+  transmission_capacities = "enabled",
+  asset_type = "ac",
+  display_comments = TRUE,
+  filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
+  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")
+)
 }
 \arguments{
 \item{hurdles_cost}{Logical, which is used to state whether (linear)

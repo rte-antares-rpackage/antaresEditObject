@@ -6,14 +6,23 @@
 \alias{editDSR}
 \title{Create a Demand Side Response (DSR)}
 \usage{
-createDSR(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE,
-  opts = antaresRead::simOptions())
+createDSR(
+  areasAndDSRParam = NULL,
+  spinning = 2,
+  overwrite = FALSE,
+  opts = antaresRead::simOptions()
+)
 
 getCapacityDSR(area = NULL, opts = antaresRead::simOptions())
 
-editDSR(area = NULL, unit = NULL, nominalCapacity = NULL,
-  marginalCost = NULL, spinning = NULL,
-  opts = antaresRead::simOptions())
+editDSR(
+  area = NULL,
+  unit = NULL,
+  nominalCapacity = NULL,
+  marginalCost = NULL,
+  spinning = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{areasAndDSRParam}{A data.frame with 4 columns \code{area}, \code{unit},

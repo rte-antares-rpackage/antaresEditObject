@@ -6,17 +6,33 @@
 \alias{editPSP}
 \title{Create a Pumped Storage Power plant (PSP)}
 \usage{
-createPSP(areasAndCapacities = NULL, namePumping = "Psp_In",
-  nameTurbining = "Psp_Out", hurdleCost = 5e-04,
-  timeStepBindConstraint = "weekly", efficiency = NULL,
-  overwrite = FALSE, opts = antaresRead::simOptions())
+createPSP(
+  areasAndCapacities = NULL,
+  namePumping = "Psp_In",
+  nameTurbining = "Psp_Out",
+  hurdleCost = 5e-04,
+  timeStepBindConstraint = "weekly",
+  efficiency = NULL,
+  overwrite = FALSE,
+  opts = antaresRead::simOptions()
+)
 
-getCapacityPSP(area = NULL, nameTurbining = "Psp_Out",
-  timeStepBindConstraint = "weekly", opts = antaresRead::simOptions())
+getCapacityPSP(
+  area = NULL,
+  nameTurbining = "Psp_Out",
+  timeStepBindConstraint = "weekly",
+  opts = antaresRead::simOptions()
+)
 
-editPSP(area = NULL, capacity = NULL, namePumping = "Psp_In",
-  nameTurbining = "Psp_Out", timeStepBindConstraint = "weekly",
-  hurdleCost = 5e-04, opts = antaresRead::simOptions())
+editPSP(
+  area = NULL,
+  capacity = NULL,
+  namePumping = "Psp_In",
+  nameTurbining = "Psp_Out",
+  timeStepBindConstraint = "weekly",
+  hurdleCost = 5e-04,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{areasAndCapacities}{A data.frame with 2 columns \code{installedCapacity} and \code{area}}

@@ -4,16 +4,26 @@
 \alias{updateOptimizationSettings}
 \title{Update optimization parameters of an Antares study}
 \usage{
-updateOptimizationSettings(simplex.range = NULL,
-  transmission.capacities = NULL, include.constraints = NULL,
-  include.hurdlecosts = NULL, include.tc.min.stable.power = NULL,
-  include.tc.min.up.down.time = NULL, include.dayahead = NULL,
-  include.strategicreserve = NULL, include.spinningreserve = NULL,
-  include.primaryreserve = NULL, include.exportmps = NULL,
-  power.fluctuations = NULL, shedding.strategy = NULL,
-  shedding.policy = NULL, unit.commitment.mode = NULL,
-  number.of.cores.mode = NULL, day.ahead.reserve.management = NULL,
-  opts = antaresRead::simOptions())
+updateOptimizationSettings(
+  simplex.range = NULL,
+  transmission.capacities = NULL,
+  include.constraints = NULL,
+  include.hurdlecosts = NULL,
+  include.tc.min.stable.power = NULL,
+  include.tc.min.up.down.time = NULL,
+  include.dayahead = NULL,
+  include.strategicreserve = NULL,
+  include.spinningreserve = NULL,
+  include.primaryreserve = NULL,
+  include.exportmps = NULL,
+  power.fluctuations = NULL,
+  shedding.strategy = NULL,
+  shedding.policy = NULL,
+  unit.commitment.mode = NULL,
+  number.of.cores.mode = NULL,
+  day.ahead.reserve.management = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{simplex.range}{week or day}

@@ -4,8 +4,13 @@
 \alias{writeInputTS}
 \title{Write input time series}
 \usage{
-writeInputTS(area, type = c("load", "thermal", "hydro", "wind", "solar"),
-  data, overwrite = TRUE, opts = antaresRead::simOptions())
+writeInputTS(
+  area,
+  type = c("load", "thermal", "hydro", "wind", "solar"),
+  data,
+  overwrite = TRUE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{area}{The area where to write the input time series.}

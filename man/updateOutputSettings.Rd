@@ -4,8 +4,12 @@
 \alias{updateOutputSettings}
 \title{Update output parameters of an Antares study}
 \usage{
-updateOutputSettings(synthesis = NULL, storenewset = NULL,
-  archives = NULL, opts = antaresRead::simOptions())
+updateOutputSettings(
+  synthesis = NULL,
+  storenewset = NULL,
+  archives = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{synthesis}{Logical. If TRUE, synthetic results will be stored in a

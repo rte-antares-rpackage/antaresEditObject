@@ -7,14 +7,26 @@
 \alias{updateScenarioBuilder}
 \title{Read, create & update scenario builder}
 \usage{
-scenarioBuilder(n_scenario, n_mc = NULL, areas = NULL,
-  areas_rand = NULL, opts = antaresRead::simOptions())
+scenarioBuilder(
+  n_scenario,
+  n_mc = NULL,
+  areas = NULL,
+  areas_rand = NULL,
+  opts = antaresRead::simOptions()
+)
 
-readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE,
-  opts = antaresRead::simOptions())
+readScenarioBuilder(
+  ruleset = "Default Ruleset",
+  as_matrix = TRUE,
+  opts = antaresRead::simOptions()
+)
 
-updateScenarioBuilder(ldata, ruleset = "Default Ruleset",
-  series = NULL, opts = antaresRead::simOptions())
+updateScenarioBuilder(
+  ldata,
+  ruleset = "Default Ruleset",
+  series = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{n_scenario}{Number of scenario.}

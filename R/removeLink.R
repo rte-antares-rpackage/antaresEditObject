@@ -1,4 +1,4 @@
-#' Remove a link between two ares
+#' Remove a link between two areas
 #'
 #' @param from The first area from which to create a link
 #' @param to The second one 

@@ -4,9 +4,17 @@
 \alias{createCluster}
 \title{Create a thermal cluster}
 \usage{
-createCluster(area, cluster_name, ..., time_series = NULL,
-  prepro_data = NULL, prepro_modulation = NULL, add_prefix = TRUE,
-  overwrite = FALSE, opts = antaresRead::simOptions())
+createCluster(
+  area,
+  cluster_name,
+  ...,
+  time_series = NULL,
+  prepro_data = NULL,
+  prepro_modulation = NULL,
+  add_prefix = TRUE,
+  overwrite = FALSE,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{area}{The area where to create the cluster.}

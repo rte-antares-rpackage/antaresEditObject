@@ -4,9 +4,10 @@
 \alias{filteringOptions}
 \title{Output profile options for creating an area}
 \usage{
-filteringOptions(filter_synthesis = c("hourly", "daily", "weekly",
-  "monthly", "annual"), filter_year_by_year = c("hourly", "daily",
-  "weekly", "monthly", "annual"))
+filteringOptions(
+  filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
+  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")
+)
 }
 \arguments{
 \item{filter_synthesis}{Output synthesis}
