@@ -155,7 +155,11 @@ createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, 
     
     conditionToCreateALink <- paste0(areaName, " - ", nameDsr) %in% antaresRead::getLinks() | paste0(nameDsr, " - ", areaName) %in% antaresRead::getLinks()
     if (!conditionToCreateALink | overwrite){
-      dataLinkVirtual <- matrix(data = c(rep(0, 8760), rep(installedCapacityLink, 8760), rep(0, 8760), rep(0, 8760 * 2)), ncol = 5)
+      if (is_antares_v7(opts)) {
+        dataLinkVirtual <- matrix(data = c(rep(0, 8760), rep(installedCapacityLink, 8760), rep(0, 8760*6)), ncol = 8)
+      } else {
+        dataLinkVirtual <- matrix(data = c(rep(0, 8760), rep(installedCapacityLink, 8760), rep(0, 8760*3)), ncol = 5)
+      }
       dataLinkProperties <- propertiesLinkOptions()
       dataLinkProperties$`hurdles-cost` <- FALSE
       createLink(from = areaName, to = nameDsr, dataLink = dataLinkVirtual, propertiesLink = dataLinkProperties, opts = opts, overwrite = overwrite)
@@ -347,7 +351,11 @@ editDSR <- function(area = NULL, unit = NULL, nominalCapacity = NULL, marginalCo
                           overwrite = TRUE, opts = opts)
   
   #edit Link
-  dataLinkVirtual <- matrix(data = c(rep(0, 8760), rep(newCapacityLink, 8760), rep(0, 8760), rep(0, 8760 * 2)), ncol = 5)
+  if (is_antares_v7(opts)) {
+    dataLinkVirtual <- matrix(data = c(rep(0, 8760), rep(newCapacityLink, 8760), rep(0, 8760*6)), ncol = 8)
+  } else {
+    dataLinkVirtual <- matrix(data = c(rep(0, 8760), rep(newCapacityLink, 8760), rep(0, 8760*3)), ncol = 5)
+  }
   dataLinkProperties <- propertiesLinkOptions()
   dataLinkProperties$`hurdles-cost` <- FALSE
   createLink(from = area, 

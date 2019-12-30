@@ -48,14 +48,23 @@ areas <- sort(sample(x = getOption("antares")$areaList, size = 2))
 
 test_that("Create a link with default properties", {
   
+  if (is_antares_v7(opts)) {
+    dataLink <- matrix(
+      data = c(rep(0, 8760), rep(7500, 8760), rep(0, 8760*6)),
+      ncol = 8
+    ) 
+  } else {
+    dataLink <- matrix(
+      data = c(rep(0, 8760), rep(7500, 8760), rep(0, 8760*3)),
+      ncol = 5
+    )
+  }
+  
   createLink(
     from = areas[1], 
     to = areas[2], 
     propertiesLink = propertiesLinkOptions(hurdles_cost = FALSE, transmission_capacities = "enabled"), 
-    dataLink =  matrix(
-      data = c(rep(0, 8760), rep(7500, 8760), rep(0, 8760*3)),
-      ncol = 5
-    ),
+    dataLink = dataLink,
     overwrite = TRUE
   )
   
