@@ -1,28 +1,23 @@
 
-context("Function updateOutputSettings")
+context("Function updateOuputSettings")
 
 
-
-# Setup study -------------------------------------------------------------
-
-
-path <- tempdir()
-# Unzip the study
-setup_study(path, sourcedir)
-# set simulation path in mode input
-opts <- antaresRead::setSimulationPath(studyPath, 'input')
-
-
-
-
-
-# Tests -------------------------------------------------------------------
-
-
-test_that("Update an output parameter", {
+sapply(studies, function(study) {
   
-  updateOutputSettings(synthesis = FALSE)
+  setup_study(study, sourcedir)
+  opts <- antaresRead::setSimulationPath(studyPath, "input")
   
-  expect_false(getOption("antares")$parameters$output$synthesis)
+  
+  
+  test_that("Update an output parameter", {
+    
+    updateOutputSettings(synthesis = FALSE)
+    
+    expect_false(getOption("antares")$parameters$output$synthesis)
+    
+  })
+  
+  # remove temporary study
+  unlink(x = file.path(path, "test_case"), recursive = TRUE)
   
 })

@@ -30,4 +30,5 @@ Suggests:
     covr,
     knitr,
     rmarkdown
+Remotes: rte-antares-rpackage/antaresRead
 VignetteBuilder: knitr
