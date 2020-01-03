@@ -1,30 +1,24 @@
-#Copyright © 2016 RTE Réseau de transport d’électricité
 
 
 context("Function updateGeneralSettings")
 
 
-
-# Setup study -------------------------------------------------------------
-
-
-path <- tempdir()
-# Unzip the study
-setup_study(path, sourcedir)
-# set simulation path in mode input
-opts <- antaresRead::setSimulationPath(studyPath, 'input')
-
-
-
-
-
-# Tests -------------------------------------------------------------------
-
-
-test_that("Update a general parameter", {
+sapply(studies, function(study) {
   
-  updateGeneralSettings(year.by.year = FALSE)
-
-  expect_false(getOption("antares")$parameters$general$`year-by-year`)
+  setup_study(study, sourcedir)
+  opts <- antaresRead::setSimulationPath(studyPath, "input")
+  
+  
+  
+  test_that("Update a general parameter", {
+    
+    updateGeneralSettings(year.by.year = FALSE)
+    
+    expect_false(getOption("antares")$parameters$general$`year-by-year`)
+    
+  })
+  
+  # remove temporary study
+  unlink(x = file.path(path, "test_case"), recursive = TRUE)
   
 })
