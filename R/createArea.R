@@ -79,7 +79,16 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
   dir.create(path = file.path(inputPath, "areas", name), showWarnings = FALSE)
   # optimization ini file
   writeIni(
-    listData = c(list(`nodal optimization` = nodalOptimization), list(filtering = filtering)),
+    listData = c(
+      list(`nodal optimization` = nodalOptimization[c(
+        "non-dispatchable-power",
+        "dispatchable-hydro-power",
+        "other-dispatchable-power",
+        "spread-unsupplied-energy-cost",
+        "spread-spilled-energy-cost"
+      )]),
+      list(filtering = filtering)
+    ),
     pathIni = file.path(inputPath, "areas", name, "optimization.ini"),
     overwrite = overwrite
   )
@@ -333,6 +342,17 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
     overwrite = overwrite
   )
 
+  # thermal/areas ini file
+  thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
+  if (file.exists(thermal_areas_path)) {
+    thermal_areas <- readIniFile(file = thermal_areas_path)
+  } else {
+    thermal_areas <- list()
+  }
+  thermal_areas$unserverdenergycost[[name]] <- nodalOptimization[["unserverdenergycost"]]
+  thermal_areas$spilledenergycost[[name]] <- nodalOptimization[["spilledenergycost"]]
+  writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
+  
 
 
   ## Wind ----
@@ -415,6 +435,8 @@ filteringOptions <- function(filter_synthesis = c("hourly", "daily", "weekly", "
 #' @param other_dispatchable_power logical, default to FALSE
 #' @param spread_unsupplied_energy_cost numeric, default to 0
 #' @param spread_spilled_energy_cost numeric, default to 0
+#' @param average_unsupplied_energy_cost numeric, default to 0
+#' @param average_spilled_energy_cost numeric, default to 0
 #'
 #' @return a named list
 #' @export
@@ -425,13 +447,17 @@ nodalOptimizationOptions <- function(non_dispatchable_power = TRUE,
                                      dispatchable_hydro_power = TRUE,
                                      other_dispatchable_power = TRUE,
                                      spread_unsupplied_energy_cost = 0,
-                                     spread_spilled_energy_cost = 0) {
+                                     spread_spilled_energy_cost = 0,
+                                     average_unsupplied_energy_cost = 0,
+                                     average_spilled_energy_cost = 0) {
   list(
     `non-dispatchable-power` = non_dispatchable_power,
     `dispatchable-hydro-power` = dispatchable_hydro_power,
     `other-dispatchable-power` = other_dispatchable_power,
     `spread-unsupplied-energy-cost` = spread_unsupplied_energy_cost,
-    `spread-spilled-energy-cost` = spread_spilled_energy_cost
+    `spread-spilled-energy-cost` = spread_spilled_energy_cost,
+    `unserverdenergycost` = average_unsupplied_energy_cost,
+    `spilledenergycost` = average_spilled_energy_cost
   )
 }
 

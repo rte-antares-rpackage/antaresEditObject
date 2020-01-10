@@ -114,6 +114,16 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   unlink(x = file.path(inputPath, "thermal", "clusters", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "thermal", "prepro", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "thermal", "series", name), recursive = TRUE)
+  
+  thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
+  if (file.exists(thermal_areas_path)) {
+    thermal_areas <- readIniFile(thermal_areas_path)
+    if (!is.null(thermal_areas$unserverdenergycost))
+      thermal_areas$unserverdenergycost[[name]] <- NULL
+    if (!is.null(thermal_areas$spilledenergycost))
+      thermal_areas$spilledenergycost[[name]] <- NULL
+    writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
+  }
 
 
   # Wind
