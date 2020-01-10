@@ -1,7 +1,41 @@
-
-
-
-
+#' Write Economic Options
+#' 
+#' This function allows to create or edit economic options. Areas/options present
+#' in the input dataframe are edited, while all other values are left unchanged.
+#'
+#' @param x A dataframe. Must contain an \code{area} column listing some (but not
+#'   necessarily all) areas of the study. Can contain up to 7 other columns among:
+#'   \code{average_unsupplied_energy_cost}, \code{spread_unsupplied_energy_cost},
+#'   \code{average_spilled_energy_cost}, \code{spread_spilled_energy_cost},
+#'   (numeric columns), \code{non_dispatchable_power},
+#'   \code{dispatchable_hydro_power} and \code{other_dispatchable_power}
+#'   (logical columns).
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   \code{antaresRead::setSimulationPath}
+#'
+#' @export
+#' 
+#' @importFrom assertthat assert_that
+#'
+#' @examples
+#' \dontrun{
+#' 
+#' library(antaresRead)
+#' 
+#' # Set simulation path
+#' setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
+#' 
+#' # Write some economic options for areas a, b and c
+#' writeEconomicOptions(data.frame(
+#'   area = c("a", "b", "c"),
+#'   dispatchable_hydro_power = c(TRUE, FALSE, FALSE),
+#'   spread_unsupplied_energy_cost = c(0.03, 0.024, 0.01),
+#'   average_spilled_energy_cost = c(10, 8, 8),
+#'   stringsAsFactors = FALSE
+#' ))
+#' 
+#' }
 writeEconomicOptions <- function(
   x,
   opts = antaresRead::simOptions()
