@@ -50,13 +50,13 @@ writeEconomicOptions <- function(
   
   lapply(
     X = c("non_dispatchable_power", "dispatchable_hydro_power", "other_dispatchable_power"),
-    FUN = function(v) assertthat::assert_that(is.logical(x$v) || is.null(x$v))
+    FUN = function(v) assertthat::assert_that(is.logical(x[[v]]) || is.null(x[[v]]))
   )
   
   lapply(
     X = c("spread_unsupplied_energy_cost", "spread_spilled_energy_cost",
           "average_unsupplied_energy_cost", "average_spilled_energy_cost"),
-    FUN = function(v) assertthat::assert_that(is.numeric(x$v) || is.null(x$v))
+    FUN = function(v) assertthat::assert_that(is.numeric(x[[v]]) || is.null(x[[v]]))
   )
   
   unkwnown_areas <- setdiff(x$area, opts$areaList)
