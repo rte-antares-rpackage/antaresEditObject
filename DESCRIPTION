@@ -4,12 +4,12 @@ Title: Edit an 'Antares' Simulation
 Version: 0.1.8.900
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
-    person("Frederic", "Breant", email = "frederic.breant@rte-france.com", role = "aut"),
-    person("Victor", "Perrier", email = "victor.perrier@dreamRs.fr", role = c("aut")),
-    person("Baptiste", "Seguinot", email = "baptiste.seguinot@rte-france.com", role = "ctb"),
-    person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "ctb"),
-    person("Titouan", "Robert", email = "titouan.robert@datastorm.fr", role = "ctb"),
-    person("Jalal-Edine", "Zawam", email = "jalal-edine.zawam@rte-france.com", role = "ctb"),
+    person("Frederic", "Breant", role = "aut"),
+    person("Victor", "Perrier", role = c("aut")),
+    person("Baptiste", "Seguinot", role = "ctb"),
+    person("Benoit", "Thieurmel", role = "ctb"),
+    person("Titouan", "Robert", role = "ctb"),
+    person("Jalal-Edine", "Zawam", role = "ctb"),
     person("Etienne", "Sanchez", role = "ctb"),
     person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
