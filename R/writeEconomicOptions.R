@@ -96,17 +96,14 @@ writeEconomicOptions <- function(
     thermal_areas <- list()
   }
   
-  lapply(
-    X = x$areas,
-    FUN = function(name) {
-      params <- x[x$area == name]
-      
-      if (!is.null(params$average_unsupplied_energy_cost))
-        thermal_areas$unserverdenergycost[[name]] <- params$average_unsupplied_energy_cost
-      if (!is.null(params$average_spilled_energy_cost))
-        thermal_areas$spilledenergycost[[name]] <- params$average_spilled_energy_cost
-    }
-  )
-  
+  for (name in x$area) {
+    params <- x[x$area == name, ]
+    
+    if (!is.null(params$average_unsupplied_energy_cost))
+      thermal_areas$unserverdenergycost[[name]] <- params$average_unsupplied_energy_cost
+    if (!is.null(params$average_spilled_energy_cost))
+      thermal_areas$spilledenergycost[[name]] <- params$average_spilled_energy_cost
+  }
+
   writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
 }

@@ -66,16 +66,32 @@ sapply(studies, function(study) {
   
   
   test_that("writeEconomicOptions works", {
-    expect_error(
-      writeEconomicOptions(data.frame(
-        area = letters[1:3],
-        dispatchable_hydro_power = c(TRUE, FALSE, FALSE),
-        spread_unsupplied_energy_cost = 1:3,
-        average_spilled_energy_cost = 7:9,
-        stringsAsFactors = FALSE
-      )),
-      NA
-    )
+    
+    writeEconomicOptions(data.frame(
+      area = letters[1:3],
+      non_dispatchable_power = c(TRUE, FALSE, TRUE),
+      dispatchable_hydro_power = c(TRUE, FALSE, FALSE),
+      other_dispatchable_power = c(TRUE, TRUE, TRUE),
+      spread_unsupplied_energy_cost = 1:3,
+      spread_spilled_energy_cost = c(20, 10, 100),
+      average_unsupplied_energy_cost = c(0, 8, 5),
+      average_spilled_energy_cost = 7:9,
+      stringsAsFactors = FALSE
+    ))
+    
+    optim_c <- readIniFile(file.path(opts$inputPath, "areas", "c", "optimization.ini"))
+    expect_equal(optim_c$`nodal optimization`$`dispatchable-hydro-power`, FALSE)
+    expect_equal(optim_c$`nodal optimization`$`spread-unsupplied-energy-cost`, 3)
+    
+    optim_b <- readIniFile(file.path(opts$inputPath, "areas", "b", "optimization.ini"))
+    expect_equal(optim_b$`nodal optimization`$`non-dispatchable-power`, FALSE)
+    expect_equal(optim_b$`nodal optimization`$`other-dispatchable-power`, TRUE)
+    expect_equal(optim_b$`nodal optimization`$`spread-spilled-energy-cost`, 10)
+    
+    thermal_areas <- readIniFile(file.path(opts$inputPath, "thermal", "areas.ini"))
+    expect_equal(thermal_areas$spilledenergycost$b, 8)
+    expect_equal(thermal_areas$unserverdenergycost$c, 5)
+    
   })
   
   

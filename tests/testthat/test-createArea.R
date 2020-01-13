@@ -37,6 +37,31 @@ sapply(studies, function(study) {
   })
   
   
+  test_that("nodal optimization options are properly written", {
+    createArea(
+      name = "testarea",
+      nodalOptimization = nodalOptimizationOptions(
+        non_dispatchable_power = FALSE,
+        dispatchable_hydro_power = TRUE,
+        other_dispatchable_power = FALSE,
+        spread_unsupplied_energy_cost = 10,
+        spread_spilled_energy_cost = 3.14,
+        average_unsupplied_energy_cost = 239,
+        average_spilled_energy_cost = 1000
+      )
+    )
+    
+    optim_testarea <- readIniFile(file.path(opts$inputPath, "areas", "testarea", "optimization.ini"))
+    expect_equal(optim_testarea$`nodal optimization`$`dispatchable-hydro-power`, TRUE)
+    expect_equal(optim_testarea$`nodal optimization`$`spread-unsupplied-energy-cost`, 10)
+    expect_equal(optim_testarea$`nodal optimization`$`non-dispatchable-power`, FALSE)
+    expect_equal(optim_testarea$`nodal optimization`$`other-dispatchable-power`, FALSE)
+    expect_equal(optim_testarea$`nodal optimization`$`spread-spilled-energy-cost`, 3.14)
+    
+    thermal_areas <- readIniFile(file.path(opts$inputPath, "thermal", "areas.ini"))
+    expect_equal(thermal_areas$spilledenergycost$testarea, 1000)
+    expect_equal(thermal_areas$unserverdenergycost$testarea, 239)
+  })
   
   
   
