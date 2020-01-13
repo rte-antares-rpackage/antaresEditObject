@@ -9,7 +9,9 @@ nodalOptimizationOptions(
   dispatchable_hydro_power = TRUE,
   other_dispatchable_power = TRUE,
   spread_unsupplied_energy_cost = 0,
-  spread_spilled_energy_cost = 0
+  spread_spilled_energy_cost = 0,
+  average_unsupplied_energy_cost = 0,
+  average_spilled_energy_cost = 0
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ nodalOptimizationOptions(
 \item{spread_unsupplied_energy_cost}{numeric, default to 0}
 
 \item{spread_spilled_energy_cost}{numeric, default to 0}
+
+\item{average_unsupplied_energy_cost}{numeric, default to 0}
+
+\item{average_spilled_energy_cost}{numeric, default to 0}
 }
 \value{
 a named list
