@@ -3,9 +3,11 @@
 #' This function writes input time series in an Antares project.
 #'
 #' @param area The area where to write the input time series.
-#' @param type Serie to write: \code{"load"}, \code{"thermal"}, \code{"hydro"},
+#' @param type Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
 #'  \code{"wind"} or \code{"solar"}.
-#' @param data A 8760*N matrix of hourly time series.
+#' @param data A 8760*N matrix of hourly time series, except when \code{type} is
+#'  \code{"hydroSTOR"}. In this latter case, \code{data} must either be 365*N
+#'  (Antares v7) or 12*N (v6 and earlier).
 #' @param overwrite Logical. Overwrite the values if a file already exists.
 #' @param opts List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}.
@@ -19,10 +21,10 @@
 #' @examples
 #' \dontrun{
 #'
-#' writeInputTS("fictive_area", type = "thermal", data = matrix(rep(4, 8760*2), nrow = 8760))
+#' writeInputTS("fictive_area", type = "solar", data = matrix(rep(4, 8760*2), nrow = 8760))
 #'
 #' }
-writeInputTS <- function(area, type = c("load", "thermal", "hydro", "wind", "solar"),
+writeInputTS <- function(area, type = c("load", "hydroROR", "hydroSTOR", "wind", "solar"),
                          data, overwrite = TRUE, opts = antaresRead::simOptions()) {
   
   type <- match.arg(type)
@@ -35,14 +37,32 @@ writeInputTS <- function(area, type = c("load", "thermal", "hydro", "wind", "sol
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  values_file <- file.path(inputPath, type, "series", paste0(type, "_", tolower(area), ".txt"))
+  if (type %in% c("load", "wind", "solar")) {
+    values_file <- file.path(inputPath, type, "series", paste0(type, "_", tolower(area), ".txt"))
+  }
+  else if (type == "hydroROR") {
+    values_file <- file.path(inputPath, "hydro", "series", area, "ror.txt")
+  }
+  else {
+    values_file <- file.path(inputPath, "hydro", "series", area, "mod.txt")
+  }
   
   if (isTRUE(file.size(values_file) > 0) && !overwrite)
     stop("Time series already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
          call. = FALSE)
   
-  if (NROW(data) != 8760)
-    stop("'data' must be a 8760*N matrix.", call. = FALSE)
+  if (type %in% c("load", "hydroROR", "wind", "solar")) {
+    if (NROW(data) != 8760)
+      stop("'data' must be a 8760*N matrix.", call. = FALSE)
+  } else {
+    if (is_antares_v7(opts)) {
+      if (NROW(data) != 365)
+        stop("'data' must be a 365*N matrix.", call. = FALSE)
+    } else {
+      if (NROW(data) != 12)
+        stop("'data' must be a 12*N matrix.", call. = FALSE)
+    }
+  }
   
   fwrite(
     x = as.data.table(data), row.names = FALSE, col.names = FALSE, sep = "\t",
