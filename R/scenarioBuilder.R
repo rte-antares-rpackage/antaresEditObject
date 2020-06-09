@@ -210,10 +210,20 @@ listify_sb <- function(mat, series = "l") {
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
   dtsb[, value := as.integer(value)]
+  
+  if(series == "t"){
+    cluster_desc = readClusterDesc(opts = opts)  
+    dtsb = merge(dtsb, cluster_desc[, .(area, cluster)], by.x = "rn", by.y = "area", allow.cartesian = T)
+  }
+  
   dtsb <- dtsb[order(rn, variable)]
   
   lsb <- as.list(dtsb$value)
-  names(lsb) <- paste(series, dtsb$rn, dtsb$variable, sep = ",")
+  if(series == "t"){
+    names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
+  } else{
+    names(lsb) <- paste(series, dtsb$rn, dtsb$variable, sep = ",")
+  }
   
   return(lsb)
 } 
