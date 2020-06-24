@@ -70,7 +70,11 @@
 #' ))
 #' 
 #' }
-scenarioBuilder <- function(n_scenario, n_mc = NULL, areas = NULL, areas_rand = NULL, opts = antaresRead::simOptions()) {
+scenarioBuilder <- function(n_scenario, 
+                            n_mc = NULL,
+                            areas = NULL,
+                            areas_rand = NULL,
+                            opts = antaresRead::simOptions()) {
   if (is.null(areas)) {
     areas <- antaresRead::getAreas(opts = opts)
   } else {
@@ -109,7 +113,8 @@ scenarioBuilder <- function(n_scenario, n_mc = NULL, areas = NULL, areas_rand = 
 #' @export
 #' 
 #' @rdname scenario-builder
-readScenarioBuilder <- function(ruleset = "Default Ruleset", as_matrix = TRUE,
+readScenarioBuilder <- function(ruleset = "Default Ruleset",
+                                as_matrix = TRUE,
                                 opts = antaresRead::simOptions()) {
   pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
   sb <- readIniFile(file = pathSB)
@@ -162,15 +167,20 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
   prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- match.arg(series, choices = c("load", "hydro", "wind", "solar", "thermal"),
-                          several.ok = TRUE)
+      series <- match.arg(
+        arg = series,
+        choices = c("load", "hydro", "wind", "solar", "thermal"),
+        several.ok = TRUE
+      )
       series <- substr(series, 1, 1)
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
     sbuild <- lapply(
       X = series,
-      FUN = listify_sb, mat = ldata
+      FUN = listify_sb,
+      mat = ldata,
+      opts = opts
     )
     prevSB[series] <- NULL
   } else {
@@ -181,7 +191,7 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
     sbuild <- lapply(
       X = series,
       FUN = function(x) {
-        listify_sb(ldata[[x]], x)
+        listify_sb(ldata[[x]], x, opts = opts)
       }
     )
     prevSB[series] <- NULL
@@ -201,25 +211,33 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
 #' @param series Name of the series, among 'l', 'h', 'w', 's' and 't'.
+#' @param opts Simulation options.
 #'
-#' @importFrom data.table as.data.table melt :=
+#' @importFrom data.table as.data.table melt := .SD
+#' @importFrom antaresRead readClusterDesc
 #' @noRd
-listify_sb <- function(mat, series = "l") {
+listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
   dtsb[, value := as.integer(value)]
   
-  if(series == "t"){
-    cluster_desc = readClusterDesc(opts = opts)  
-    dtsb = merge(dtsb, cluster_desc[, .(area, cluster)], by.x = "rn", by.y = "area", allow.cartesian = T)
+  if (identical(series, "t")){
+    cluster_desc <- readClusterDesc(opts = opts)  
+    dtsb <- merge(
+      x = dtsb, 
+      y = cluster_desc[, .SD, .SDcols = c("area", "cluster")],
+      by.x = "rn",
+      by.y = "area", 
+      allow.cartesian = TRUE
+    )
   }
   
   dtsb <- dtsb[order(rn, variable)]
   
   lsb <- as.list(dtsb$value)
-  if(series == "t"){
+  if (identical(series, "t")){
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
   } else{
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, sep = ",")
