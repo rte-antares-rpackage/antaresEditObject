@@ -1,0 +1,81 @@
+Folder;Name;digits
+area;OV. COST;0
+area;OP. COST;0
+area;MRG. PRICE;2
+area;CO2 EMIS.;0
+area;BALANCE;0
+area;ROW BAL.;0
+area;PSP;0
+area;MISC. NDG;0
+area;LOAD;2
+area;H. ROR;0
+area;WIND;0
+area;SOLAR;0
+area;NUCLEAR;0
+area;LIGNITE;0
+area;COAL;0
+area;GAS;0
+area;OIL;0
+area;MIX. FUEL;0
+area;MISC. DTG;0
+area;H. STOR;0
+area;UNSP. ENRG;0
+area;SPIL. ENRG;0
+area;LOLD;2
+area;LOLP;2
+area;AVL DTG;0
+area;DTG MRG;0
+area;MAX MRG;0
+area;NP COST;0
+area;NODU;0
+area;OV. COST;0
+area;OP. COST;0
+area;MRG. PRICE;2
+area;CO2 EMIS.;0
+area;BALANCE;0
+area;ROW BAL.;0
+area;PSP;0
+area;MISC. NDG;0
+area;LOAD;2
+area;H. ROR;0
+area;WIND;0
+area;SOLAR;0
+area;NUCLEAR;0
+area;LIGNITE;0
+area;COAL;0
+area;GAS;0
+area;OIL;0
+area;MIX. FUEL;0
+area;MISC. DTG;0
+area;H. STOR;0
+area;UNSP. ENRG;0
+area;SPIL. ENRG;0
+area;LOLD;2
+area;LOLP;2
+area;AVL DTG;0
+area;DTG MRG;0
+area;MAX MRG;0
+area;H. PUMP;0
+area;H. LEV;0
+area;H. INFL;0
+area;H. OVFL;0
+area;H. VAL;0
+area;H. COST;0
+link;FLOW LIN.;0
+link;UCAP LIN.;0
+link;FLOW QUAD.;0
+link;CONG. FEE (ALG.);0
+link;CONG. FEE (ABS.);0
+link;MARG. COST;0
+link;CONG. PROB +;0
+link;CONG. PROB -;0
+link;HURDLE COST;0
+link;FLOW LIN.;0
+link;UCAP LIN.;0
+link;FLOW QUAD.;0
+link;CONG. FEE (ALG.);0
+link;CONG. FEE (ABS.);0
+link;MARG. COST;0
+link;CONG. PROB +;0
+link;CONG. PROB -;0
+link;HURDLE COST;0
