@@ -1,3 +1,9 @@
+# antaresEditObject 0.2.0
+
+* New template in `createStudy()` for Antares version >= 7.1.0
+
+
+
 # antaresEditObject 0.1.9
 
 * New function `writeSeriesPrepro()`: to write load, wind and solar prepro data.
