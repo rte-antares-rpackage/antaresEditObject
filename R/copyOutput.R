@@ -16,13 +16,21 @@
 #' copyOputput(opts, "_adq")
 #' 
 #' }
+#' @import fs
 #' 
 #' @export
 copyOputput <- function(opts, extname){
   fil <- paste0(opts$simPath, extname)
   dir.create(fil)
+  
   sapply(list.files(opts$simPath), function(x){
-    file.copy(file.path(opts$simPath, x), fil, recursive=TRUE, )
+    dd <- file.path(opts$simPath, x)
+    if(fs::is_dir(dd)){
+      fs::dir_copy(dd, fil)
+    }else{
+      fs::file_copy(dd, fil)
+    }
   })
+  
   cat("Done")
 }

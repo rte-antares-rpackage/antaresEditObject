@@ -25,7 +25,8 @@ Imports:
     assertthat,
     grDevices,
     data.table,
-    whisker
+    whisker,
+    fs
 Suggests: 
     testthat,
     covr,

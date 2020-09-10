@@ -26,5 +26,4 @@ opts = setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
 copyOputput(opts, "_adq")
 
 }
-
 }
