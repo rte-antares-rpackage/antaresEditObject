@@ -2,6 +2,7 @@
 
 export(backupStudy)
 export(checkRemovedArea)
+export(copyOputput)
 export(createArea)
 export(createBindingConstraint)
 export(createCluster)

@@ -1,6 +1,3 @@
-library(antaresRead)
-opts = setSimulationPath("C:/Users/TitouanRobert/Desktop/Projet/RTE/antares/etude/MAF2025_S3_FBCOREMOD/output/20200831-1727eco-test elia2")
-
 #' Create An Area In An Antares Study
 #'
 #' @param opts file opts obtain with antaresRead::setSimulationPath
@@ -19,8 +16,10 @@ opts = setSimulationPath("C:/Users/TitouanRobert/Desktop/Projet/RTE/antares/etud
 #' copyOputput(opts, "_adq")
 #' 
 #' }
+#' 
+#' @export
 copyOputput <- function(opts, extname){
-  fil <- paste(opts$simPath, "toto")
+  fil <- paste0(opts$simPath, extname)
   dir.create(fil)
   sapply(list.files(opts$simPath), function(x){
     file.copy(file.path(opts$simPath, x), fil, recursive=TRUE, )
