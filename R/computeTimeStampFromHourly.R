@@ -65,7 +65,7 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose 
   
   pblapply(mcYears,
         function(mcYear){
-          antaresEditObject:::cpt_timstamp(mcYear, opts, dayArea, weArea, moArea, annualArea)
+          cpt_timstamp(mcYear, opts, dayArea, weArea, moArea, annualArea)
         },
         cl = cl
   )
