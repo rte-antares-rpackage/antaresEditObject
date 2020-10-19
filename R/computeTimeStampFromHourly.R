@@ -1,8 +1,9 @@
 #' Compute daily, weekly, monthly and annual mc-ind from hourly data.
 #' 
-#' @param opts opts simulation path
-#' @param mcYears mcYears to compute
+#' @param opts opts simulation path.
+#' @param mcYears mcYears to compute.
 #' @param nbcl number of thread for parallel computing.
+#' @param verbose verbose for execution.
 #' 
 #' @examples
 #' \dontrun{

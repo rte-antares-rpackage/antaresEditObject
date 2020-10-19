@@ -7,11 +7,13 @@
 computeTimeStampFromHourly(opts, mcYears = "all", nbcl = 8, verbose = 1)
 }
 \arguments{
-\item{opts}{opts simulation path}
+\item{opts}{opts simulation path.}
 
-\item{mcYears}{mcYears to compute}
+\item{mcYears}{mcYears to compute.}
 
 \item{nbcl}{number of thread for parallel computing.}
+
+\item{verbose}{verbose for execution.}
 }
 \description{
 Compute daily, weekly, monthly and annual mc-ind from hourly data.
