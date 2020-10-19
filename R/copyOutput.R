@@ -32,5 +32,10 @@ copyOputput <- function(opts, extname){
     }
   })
   
-  cat("Done")
+  opts <- antaresRead::setSimulationPath(fil)
+  .updateStudyName(opts, extname)
+  
+  cat("Copy done")
+  
+  opts
 }
