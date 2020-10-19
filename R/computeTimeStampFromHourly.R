@@ -154,12 +154,12 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea){
   re <- merge(ooSum, ooMean, by = idc)
   if(is.null(re$time)){
     re$timeId <- "Annual"
-    setcolorder(re, initalOrder)
+    data.table::setcolorder(re, initalOrder)
     setnames(re, "timeId", "annual")
   }else{
     seqL <- 1:length(unique(re$time))
     re$timeId <- rep(seqL, nrow(re)/length(seqL))
-    setcolorder(re, initalOrder)
+    data.table::setcolorder(re, initalOrder)
   }
   re
 }

@@ -22,6 +22,7 @@
 #' @importFrom antaresRead simOptions
 #' @importFrom stats setNames
 #' @importFrom utils read.table write.table
+#' @importFrom data.table setcolorder
 #'
 #' @examples
 #' \dontrun{
