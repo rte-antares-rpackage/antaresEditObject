@@ -3,6 +3,10 @@ context("Function computeTimeStampFromHourly")
 sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
+  
+  print("studyPath computeTimeStampFromHourly")
+  print(studyPath)
+  
   opts <- antaresRead::setSimulationPath(studyPath, 1)
   
   outputd <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "daily", showProgress = FALSE)
