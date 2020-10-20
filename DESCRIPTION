@@ -29,7 +29,8 @@ Imports:
     fs,
     doParallel,
     pbapply,
-    parallel
+    parallel,
+    pipeR
 Suggests: 
     testthat,
     covr,
