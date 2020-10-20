@@ -23,6 +23,10 @@ aggregateResult(
  \item{1}{ : Short log}
  \item{2}{ : Long log}
 }}
+
+\item{selected}{\code{list} named list (pass to antaresRead) : list(areas = 'a', links = 'a - e')}
+
+\item{timestep}{\code{character} antares timestep}
 }
 \description{
 Creation of Mc_all

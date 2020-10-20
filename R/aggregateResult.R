@@ -70,6 +70,8 @@ parallelAggregMcall <- function(opts, nbcl = 8, verbose = 1){
 #'  \item{1}{ : Short log}
 #'  \item{2}{ : Long log}
 #'}
+#' @param timestep \code{character} antares timestep
+#' @param selected \code{list} named list (pass to antaresRead) : list(areas = 'a', links = 'a - e')
 #'
 #' @import data.table
 #'
