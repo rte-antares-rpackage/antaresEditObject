@@ -16,7 +16,7 @@ sapply(studies, function(study) {
     
     writeInputTS(area = area, type = "solar", data = M)
     
-    values_file <- file.path(path, "test_case", "input", "solar", "series",
+    values_file <- file.path(pathstd, "test_case", "input", "solar", "series",
                              paste0("solar_", area, ".txt"))
     
     expect_equal(fread(values_file), as.data.table(M))
@@ -39,7 +39,7 @@ sapply(studies, function(study) {
   })
   
   # remove temporary study
-  unlink(x = file.path(path, "test_case"), recursive = TRUE)
+  unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
 })
 

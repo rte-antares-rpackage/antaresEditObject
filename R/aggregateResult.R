@@ -8,7 +8,11 @@
 #'
 #' @export
 parallelAggregMcall <- function(opts, nbcl = 8, verbose = 1){
+  
+  
+  if(verbose == 1){
   cat("Mc all start\n")
+  }
   
   if(verbose == 0){
     pboptions(type = "none")
@@ -115,6 +119,10 @@ aggregateResult <- function(opts, verbose = 1, filtering = FALSE,
       
       #load first MC-year
       a <- Sys.time()
+      
+      oldw <- getOption("warn")
+      options(warn = -1)
+      
       if(!filtering)
       {
         dta <- antaresRead::readAntares(area = "all", links = "all", clusters = "all",
@@ -132,6 +140,7 @@ aggregateResult <- function(opts, verbose = 1, filtering = FALSE,
                                           mcYears = numMc[1],
                                           showProgress = FALSE)
         }else{
+
           
           dta <- antaresRead::readAntares(area = selected$area,
                                           links = selected$link,
@@ -140,10 +149,12 @@ aggregateResult <- function(opts, verbose = 1, filtering = FALSE,
                                           simplify = FALSE,
                                           mcYears = numMc[1],
                                           showProgress = FALSE)
+          
         }
         
       }
       
+      options(warn = oldw)
       
       if(length(dta)>0){
         dtaLoadAndcalcul <- try({
@@ -207,6 +218,10 @@ aggregateResult <- function(opts, verbose = 1, filtering = FALSE,
           {
             for(i in 2:N){
               a <- Sys.time()
+              
+              oldw <- getOption("warn")
+              options(warn = -1)
+              
               if(!filtering)
               {
                 dtaTP <- antaresRead::readAntares(area = "all", links = "all", clusters = "all",
@@ -230,6 +245,8 @@ aggregateResult <- function(opts, verbose = 1, filtering = FALSE,
                   
                 }
               }
+              
+              options(warn = oldw)
               
               
               aTot <- aTot + as.numeric(Sys.time() - a)
@@ -311,7 +328,7 @@ aggregateResult <- function(opts, verbose = 1, filtering = FALSE,
               dig <- areaSpecialFile[var == paste(Name,progNam )]$digits
               areas[, c(var) := .(do.call(round, args = list(get(var), digits = dig)))]
             }
-            if(length(allAreas > 0))
+            if(length(allAreas) > 0)
             {
               sapply(allAreas,  function(areasel){
                 #for each country prepare file

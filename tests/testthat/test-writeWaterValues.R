@@ -15,7 +15,7 @@ sapply(studies, function(study) {
     
     writeWaterValues(area = area, data = M, overwrite = FALSE)
     
-    values_file <- file.path(path, "test_case", "input", "hydro", "common", "capacity", 
+    values_file <- file.path(pathstd, "test_case", "input", "hydro", "common", "capacity", 
                              paste0("waterValues_", tolower(area), ".txt"))
     
     expect_equal(fread(values_file), as.data.table(M))
@@ -48,7 +48,7 @@ sapply(studies, function(study) {
   
   
   # remove temporary study
-  unlink(x = file.path(path, "test_case"), recursive = TRUE)
+  unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
 })
 

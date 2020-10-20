@@ -2,7 +2,7 @@
 
 # Copy the test studies in a temporary folder
 
-path <- tempdir()
+pathstd <- tempdir()
 
 sourcedir <- system.file("testdata", package = "antaresRead")
 
@@ -18,10 +18,11 @@ setup_study <- function(study, sourcedir) {
     #   untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path, 
     #         extras = "--force-local")
     # } else {
-      untar(study, exdir = path)
+      untar(study, exdir = pathstd)
     # }
     
-    assign("studyPath", file.path(path, "test_case"), envir = globalenv())
+    pathstd <- tempdir()
+    assign("studyPath", file.path(pathstd, "test_case"), envir = globalenv())
     assign("nweeks", 2, envir = globalenv())
   }
 }

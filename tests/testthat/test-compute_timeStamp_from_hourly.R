@@ -5,10 +5,10 @@ sapply(studies, function(study) {
   setup_study(study, sourcedir)
   opts <- antaresRead::setSimulationPath(studyPath, 1)
   
-  outputd <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "daily")
-  outputw <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "weekly")
-  outputm <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "monthly")
-  outputa <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "annual")
+  outputd <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "daily", showProgress = FALSE)
+  outputw <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "weekly", showProgress = FALSE)
+  outputm <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "monthly", showProgress = FALSE)
+  outputa <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "annual", showProgress = FALSE)
   
   .testDT <- function(dt, dt2, seuil){
     max(unlist(lapply(names(dt), function(X){
@@ -20,10 +20,10 @@ sapply(studies, function(study) {
   
   computeTimeStampFromHourly(opts, nbcl = 1, verbose = 0)
   
-  outputdafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "daily")
-  outputwafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "weekly")
-  outputmafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "monthly")
-  outputaafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "annual")
+  outputdafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "daily", showProgress = FALSE)
+  outputwafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "weekly", showProgress = FALSE)
+  outputmafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "monthly", showProgress = FALSE)
+  outputaafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "annual", showProgress = FALSE)
   
   
   test_that("daily data", {
@@ -54,6 +54,6 @@ sapply(studies, function(study) {
   
   })
   
-  unlink(x = file.path(path, "test_case"), recursive = TRUE)
+  unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
 })

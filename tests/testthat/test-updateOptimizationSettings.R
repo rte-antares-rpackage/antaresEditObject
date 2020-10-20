@@ -24,6 +24,6 @@ sapply(studies, function(study) {
   })
   
   # remove temporary study
-  unlink(x = file.path(path, "test_case"), recursive = TRUE)
+  unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
 })

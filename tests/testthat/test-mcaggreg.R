@@ -11,7 +11,7 @@ outw <- readAntares(areas = "all", links = "all", timeStep = "weekly", showProgr
 outm <- readAntares(areas = "all", links = "all", timeStep = "monthly", showProgress = FALSE)
 outa <- readAntares(areas = "all", links = "all", timeStep = "annual", showProgress = FALSE)
 
-parallelAggregMcall(opts, nbcl = 1)
+parallelAggregMcall(opts, nbcl = 1, verbose = 0)
 
 outhafter <- readAntares(areas = "all", links = "all", showProgress = FALSE)
 outdafter <- readAntares(areas = "all", links = "all", timeStep = "daily", showProgress = FALSE)
@@ -50,8 +50,6 @@ test_that("Aggregation mc-all", {
 })
 
 
-if(exists("studyPath")){
-  unlink(studyPath, recursive = T)
-}
+unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
 
 

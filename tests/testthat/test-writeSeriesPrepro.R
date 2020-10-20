@@ -9,16 +9,16 @@ sapply(studies, function(study) {
   
   area <- sample(x = getOption("antares")$areaList, size = 1)
   
-  coefficients_file <- file.path(path, "test_case", "input", "wind", "prepro",
+  coefficients_file <- file.path(pathstd, "test_case", "input", "wind", "prepro",
                                  area, "data.txt")
   
-  translation_file <- file.path(path, "test_case", "input", "wind", "prepro",
+  translation_file <- file.path(pathstd, "test_case", "input", "wind", "prepro",
                                 area, "translation.txt")
   
-  dp_file <- file.path(path, "test_case", "input", "wind", "prepro",
+  dp_file <- file.path(pathstd, "test_case", "input", "wind", "prepro",
                        area, "k.txt")
   
-  conv_file <- file.path(path, "test_case", "input", "wind", "prepro",
+  conv_file <- file.path(pathstd, "test_case", "input", "wind", "prepro",
                          area, "conversion.txt")
   
   
@@ -64,6 +64,6 @@ sapply(studies, function(study) {
   
   
   # remove temporary study
-  unlink(x = file.path(path, "test_case"), recursive = TRUE)
+  unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
 })
