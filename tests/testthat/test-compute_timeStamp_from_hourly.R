@@ -54,4 +54,6 @@ sapply(studies, function(study) {
   
   })
   
+  unlink(x = file.path(path, "test_case"), recursive = TRUE)
+  
 })
