@@ -2,7 +2,6 @@ context("Test mc-all build")
 
 study <- studies[2]
 
-
 setup_study(study, sourcedir)
 opts <- antaresRead::setSimulationPath(studyPath, 1)
 
