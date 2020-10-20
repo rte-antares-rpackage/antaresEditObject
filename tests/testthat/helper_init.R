@@ -20,8 +20,7 @@ setup_study <- function(study, sourcedir) {
     # } else {
       untar(study, exdir = pathstd)
     # }
-    
-    pathstd <- tempdir()
+
     assign("studyPath", file.path(pathstd, "test_case"), envir = globalenv())
     assign("nweeks", 2, envir = globalenv())
   }

@@ -2,8 +2,8 @@ context("Test mc-all build")
 
 sapply(studies[2], function(study) {
   
-  setup_study(study, sourcedir)
-  print(studyPath)
+  setup_study(study, "test")
+  
   opts <- antaresRead::setSimulationPath(studyPath, 1)
   
   outh <- readAntares(areas = "all", links = "all", showProgress = FALSE)
