@@ -4,7 +4,13 @@
 \alias{computeTimeStampFromHourly}
 \title{Compute daily, weekly, monthly and annual mc-ind from hourly data.}
 \usage{
-computeTimeStampFromHourly(opts, mcYears = "all", nbcl = 8, verbose = 1)
+computeTimeStampFromHourly(
+  opts,
+  mcYears = "all",
+  nbcl = 8,
+  verbose = 1,
+  type = c("areas", "links", "clusters")
+)
 }
 \arguments{
 \item{opts}{opts simulation path.}
@@ -14,6 +20,8 @@ computeTimeStampFromHourly(opts, mcYears = "all", nbcl = 8, verbose = 1)
 \item{nbcl}{number of thread for parallel computing.}
 
 \item{verbose}{verbose for execution.}
+
+\item{type}{type of file to compute.}
 }
 \description{
 Compute daily, weekly, monthly and annual mc-ind from hourly data.

@@ -4,6 +4,7 @@
 #' @param mcYears mcYears to compute.
 #' @param nbcl number of thread for parallel computing.
 #' @param verbose verbose for execution.
+#' @param type type of file to compute.
 #' 
 #' @examples
 #' \dontrun{
@@ -17,7 +18,8 @@
 #' @import doParallel pbapply parallel
 #' 
 #' @export
-computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose = 1){
+computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8,
+                                       verbose = 1, type = c("areas", "links", "clusters")){
   
   if(verbose == 0){
     pboptions(type = "none")
@@ -57,7 +59,8 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose 
   
   if(parallel){
     cl <- makeCluster(nbcl)
-    clusterExport(cl, c("dayArea", "weArea", "moArea", "annualArea", "opts"), envir = environment())
+    clusterExport(cl, c("dayArea", "weArea", "moArea", "annualArea", "opts",
+                        "dayLink", "weLink", "moLink", "annualLink"), envir = environment())
     clusterEvalQ(cl, {
       library(antaresRead)
       library(antaresEditObject)
@@ -69,28 +72,50 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose 
     cl <- NULL
   }
   
-  if(verbose == 1){
-    cat("Start computing areas\n")
+  if("areas" %in% type){
+    if(verbose == 1){
+      cat("Start computing areas\n")
+    }
+    
+    
+    pblapply(mcYears,
+             function(mcYear){
+               cpt_timstamp(mcYear, opts, dayArea, weArea, moArea, annualArea)
+             },
+             cl = cl
+    )
+    
+    
   }
   
   
-  pblapply(mcYears,
-           function(mcYear){
-             cpt_timstamp(mcYear, opts, dayArea, weArea, moArea, annualArea)
-           },
-           cl = cl
-  )
-  
-  if(verbose == 1){
-    cat("Start computing links\n")
+  if("links" %in% type){
+    
+    if(verbose == 1){
+      cat("Start computing links\n")
+    }
+    
+    pblapply(mcYears,
+             function(mcYear){
+               cpt_timstamp(mcYear, opts, dayLink, weLink, moLink, annualLink, type = "links")
+             },
+             cl = cl
+    )
   }
   
-  pblapply(mcYears,
-           function(mcYear){
-             cpt_timstamp(mcYear, opts, dayLink, weLink, moLink, annualLink, type = "links")
-           },
-           cl = cl
-  )
+  if("clusters" %in% type){
+    if(verbose == 1){
+      cat("Start computing cluster\n")
+    }
+    
+    pblapply(mcYears,
+             function(mcYear){
+               cpt_timstamp(mcYear, opts, dayArea, weArea, moArea, annualArea, type = "clusters")
+             },
+             cl = cl
+    )
+  }
+  
   
   if(parallel){
     stopCluster(cl)
@@ -107,10 +132,10 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose 
 #' @param Year mcyear to compute
 #' @param opts antares opts
 #' @param dayArea areas to compute for daily
-#' @param dayArea areas to compute for daily
 #' @param weArea areas to compute for weArea
 #' @param moArea areas to compute for moArea
 #' @param annualArea areas to compute for annualArea
+#' @param type type of data to write (area, link, ....)
 #'
 #' @noRd
 cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type = "areas"){
@@ -127,44 +152,33 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
     colForMean = NULL
   }
   
+  
+  
+  if(type == "clusters"){
+    hourlydata <- readAntares(clusters = "all", mcYears = Year, timeStep = "hourly",
+                              opts = opts, showProgress = FALSE)
+    colForMean = NULL
+  }
+  
+  
   hourlydata$time <- as.Date(hourlydata$time)
   ##Hourly to daily
   ood <- .aggregateMc(hourlydata, colForMean = colForMean)
   attributes(ood)$timeStep <- "daily"
   
-  if(type == "areas"){
-    ood <- ood[area %in% dayArea]
-    antaresEditObject::write_area_output_values(opts = opts, data = ood)
-  }
-  
-  if(type == "links"){
-    ood <- ood[link %in% dayArea]
-    antaresEditObject::write_link_output_values(opts = opts, data = ood)
-  }
-  
+  .writeDT(ood, type, dayArea)
   
   ##Hourly to weekly
   om <- hourlydata
   
   sem <- .give_week_day(opts, om$time)
-  
-  
   om$time <- paste0(year(hourlydata$time), "-w", formatC(sem, width = 2, format = "d", flag = "0"))
   om$day <- NULL
   om$month <- NULL
   ood <- .aggregateMc(om, colForMean = colForMean)
   attributes(ood)$timeStep <- "weekly"
   
-  
-  if(type == "areas"){
-    ood <- ood[area %in% weArea]
-    antaresEditObject::write_area_output_values(opts = opts, data = ood)
-  }
-  
-  if(type == "links"){
-    ood <- ood[link %in% weArea]
-    antaresEditObject::write_link_output_values(opts = opts, data = ood)
-  }
+  .writeDT(ood, type, weArea)
   
   ##Hourly to monthly
   om <- hourlydata
@@ -174,34 +188,15 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
   ood$time <- as.factor(ood$time)
   attributes(ood)$timeStep <- "monthly"
   
-  
-  
-  
-  if(type == "areas"){
-    ood <- ood[area %in% moArea]
-    antaresEditObject::write_area_output_values(opts = opts, data = ood)
-  }
-  
-  if(type == "links"){
-    ood <- ood[link %in% moArea]
-    antaresEditObject::write_link_output_values(opts = opts, data = ood)
-  }
+  .writeDT(ood, type, moArea)
   
   ##Hourly to annual
   om <- hourlydata
   om$time <- om$day <- om$month <- NULL
   ood <- .aggregateMc(om, colForMean = colForMean)
   attributes(ood)$timeStep <- "annual"
+  .writeDT(ood, type, annualArea)
   
-  if(type == "areas"){
-    ood <- ood[area %in% annualArea]
-    antaresEditObject::write_area_output_values(opts = opts, data = ood)
-  }
-  
-  if(type == "links"){
-    ood <- ood[link %in% annualArea]
-    antaresEditObject::write_link_output_values(opts = opts, data = ood)
-  }
   
 }
 
@@ -288,6 +283,25 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
   days[bis & days>feb29] <- days[bis & days>feb29] - 2
   sem <- o[days]
   sem
+  
+}
+
+.writeDT <- function(data, type, filtertable){
+  
+  if(type == "areas"){
+    data <- data[area %in% filtertable]
+    antaresEditObject::write_output_values(data = data, opts = opts)
+  }
+  
+  if(type == "links"){
+    data <- data[link %in% filtertable]
+    antaresEditObject::write_output_values( data = data, opts = opts)
+  }
+  
+  if(type == "clusters"){
+    data <- data[area %in% filtertable]
+    antaresEditObject::write_output_values( data = data, opts = opts)
+  }
   
 }
 
