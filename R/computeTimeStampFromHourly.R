@@ -33,12 +33,21 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose 
     mcYears <- opts$mcYears
   }
   if(verbose == 1){
-  cat("Load necessary data\n")
+    cat("Load necessary data\n")
   }
   dayArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$area)
   weArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$area)
   moArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$area)
   annualArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$area)
+  
+  
+  
+  dayLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$link)
+  weLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$link)
+  moLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$link)
+  annualLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$link)
+  
+  
   
   if(nbcl>1){
     parallel <- TRUE
@@ -61,14 +70,26 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose 
   }
   
   if(verbose == 1){
-    cat("Start computing\n")
+    cat("Start computing areas\n")
+  }
+  
+  
+  pblapply(mcYears,
+           function(mcYear){
+             cpt_timstamp(mcYear, opts, dayArea, weArea, moArea, annualArea)
+           },
+           cl = cl
+  )
+  
+  if(verbose == 1){
+    cat("Start computing links\n")
   }
   
   pblapply(mcYears,
-        function(mcYear){
-          cpt_timstamp(mcYear, opts, dayArea, weArea, moArea, annualArea)
-        },
-        cl = cl
+           function(mcYear){
+             cpt_timstamp(mcYear, opts, dayLink, weLink, moLink, annualLink, type = "links")
+           },
+           cl = cl
   )
   
   if(parallel){
@@ -92,16 +113,35 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8, verbose 
 #' @param annualArea areas to compute for annualArea
 #'
 #' @noRd
-cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea){
-  hourlydata <- readAntares(areas = "all", mcYears = Year, timeStep = "hourly",
-                            opts = opts, showProgress = FALSE)
+cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type = "areas"){
+  
+  if(type == "areas"){
+    hourlydata <- readAntares(areas = "all", mcYears = Year, timeStep = "hourly",
+                              opts = opts, showProgress = FALSE)
+    colForMean = c("MRG. PRICE", "H. LEV", "LOLP")
+  }
+  
+  if(type == "links"){
+    hourlydata <- readAntares(links = "all", mcYears = Year, timeStep = "hourly",
+                              opts = opts, showProgress = FALSE)
+    colForMean = NULL
+  }
   
   hourlydata$time <- as.Date(hourlydata$time)
   ##Hourly to daily
-  ood <- .aggregateMc(hourlydata)
+  ood <- .aggregateMc(hourlydata, colForMean = colForMean)
   attributes(ood)$timeStep <- "daily"
-  ood <- ood[area %in% dayArea]
-  antaresEditObject::write_area_output_values(opts = opts, data = ood)
+  
+  if(type == "areas"){
+    ood <- ood[area %in% dayArea]
+    antaresEditObject::write_area_output_values(opts = opts, data = ood)
+  }
+  
+  if(type == "links"){
+    ood <- ood[link %in% dayArea]
+    antaresEditObject::write_link_output_values(opts = opts, data = ood)
+  }
+  
   
   ##Hourly to weekly
   om <- hourlydata
@@ -112,31 +152,56 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea){
   om$time <- paste0(year(hourlydata$time), "-w", formatC(sem, width = 2, format = "d", flag = "0"))
   om$day <- NULL
   om$month <- NULL
-  ood <- .aggregateMc(om)
+  ood <- .aggregateMc(om, colForMean = colForMean)
   attributes(ood)$timeStep <- "weekly"
-  ood <- ood[area %in% weArea]
   
-  antaresEditObject::write_area_output_values(opts = opts, data = ood)
   
+  if(type == "areas"){
+    ood <- ood[area %in% weArea]
+    antaresEditObject::write_area_output_values(opts = opts, data = ood)
+  }
+  
+  if(type == "links"){
+    ood <- ood[link %in% weArea]
+    antaresEditObject::write_link_output_values(opts = opts, data = ood)
+  }
   
   ##Hourly to monthly
   om <- hourlydata
   om$time <- paste0(year(hourlydata$time), "-", formatC(month(hourlydata$time) - 1, width = 2, format = "d", flag = "0"))
   om$day <- NULL
-  ood <- .aggregateMc(om)
+  ood <- .aggregateMc(om, colForMean = colForMean)
   ood$time <- as.factor(ood$time)
   attributes(ood)$timeStep <- "monthly"
-  ood <- ood[area %in% moArea]
-  antaresEditObject::write_area_output_values(opts = opts, data = ood)
   
+  
+  
+  
+  if(type == "areas"){
+    ood <- ood[area %in% moArea]
+    antaresEditObject::write_area_output_values(opts = opts, data = ood)
+  }
+  
+  if(type == "links"){
+    ood <- ood[link %in% moArea]
+    antaresEditObject::write_link_output_values(opts = opts, data = ood)
+  }
   
   ##Hourly to annual
   om <- hourlydata
   om$time <- om$day <- om$month <- NULL
-  ood <- .aggregateMc(om)
+  ood <- .aggregateMc(om, colForMean = colForMean)
   attributes(ood)$timeStep <- "annual"
-  ood <- ood[area %in% annualArea]
-  antaresEditObject::write_area_output_values(opts = opts, data = ood)
+  
+  if(type == "areas"){
+    ood <- ood[area %in% annualArea]
+    antaresEditObject::write_area_output_values(opts = opts, data = ood)
+  }
+  
+  if(type == "links"){
+    ood <- ood[link %in% annualArea]
+    antaresEditObject::write_link_output_values(opts = opts, data = ood)
+  }
   
 }
 
@@ -146,13 +211,21 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea){
   oo$timeId <- NULL
   idc <- getIdCols(oo)
   
-  colForMean <- colForMean[colForMean %in% names(oo)]
-  sumC <- names(oo)[!names(oo) %in% idc & !names(oo) %in% colForMean]
-  ooSum <- oo[, lapply(.SD, sum), by = idc, .SDcols = sumC]
-  ooMean <- oo[, lapply(.SD, function(X){
-    round(mean(X), 2)
-  }), by = idc, .SDcols = colForMean]
-  re <- merge(ooSum, ooMean, by = idc)
+  if(!is.null(colForMean)){
+    colForMean <- colForMean[colForMean %in% names(oo)]
+    sumC <- names(oo)[!names(oo) %in% idc & !names(oo) %in% colForMean]
+    ooSum <- oo[, lapply(.SD, sum), by = idc, .SDcols = sumC]
+    ooMean <- oo[, lapply(.SD, function(X){
+      round(mean(X), 2)
+    }), by = idc, .SDcols = colForMean]
+    re <- merge(ooSum, ooMean, by = idc)
+  }else{
+    sumC <- names(oo)[!names(oo) %in% idc]
+    re <- oo[, lapply(.SD, sum), by = idc, .SDcols = sumC]
+  }
+  
+  
+  
   if(is.null(re$time)){
     re$timeId <- "Annual"
     data.table::setcolorder(re, initalOrder)
