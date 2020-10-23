@@ -1,4 +1,4 @@
-#' Create An Area In An Antares Study
+#' Copy an output studies.
 #'
 #' @param opts file opts obtain with antaresRead::setSimulationPath
 #' @param extname extention name for study duplicated
@@ -13,13 +13,13 @@
 #' opts = setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
 #' 
 #' # Create a new area
-#' copyOputput(opts, "_adq")
+#' copyOutput(opts, "_adq")
 #' 
 #' }
 #' @import fs
 #' 
 #' @export
-copyOputput <- function(opts, extname){
+copyOutput <- function(opts, extname){
   fil <- paste0(opts$simPath, extname)
   dir.create(fil)
   
