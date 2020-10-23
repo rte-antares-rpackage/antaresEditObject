@@ -1,3 +1,13 @@
+# antaresEditObject 0.2.1
+
+* New functionality : `copyOputput` copy antares output with extansion.
+* New functionality : `copyOputput` copy antares output with extansion.
+* New functionality : `write_output_values` write antares data after `antaresRead` (areas, links and clusters).
+* New functionality : `computeTimeStampFromHourly` write mc-ind data from hourly files (daily, weekly, monthly and annual).
+* New functionality : `computeTimeStampFromHourly` write mc-ind data from hourly files (daily, weekly, monthly and annual).
+* New functionality : `parallelAggregMcall` write mc-all from md-ind. 
+
+
 # antaresEditObject 0.2.0
 
 * New template in `createStudy()` for Antares version >= 7.1.0

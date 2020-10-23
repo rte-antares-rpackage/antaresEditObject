@@ -587,7 +587,6 @@ pmax.fast <- function(k,x) (x+k + abs(x-k))/2
 #'
 #' @noRd
 #'
-
 .writeFileOut <- function(dta, timestep, fileType, ctry, opts, folderType, nbvar,
                           indexMin, indexMax, ncolFix, nomcair, unit, nomStruct, Stats){
   
