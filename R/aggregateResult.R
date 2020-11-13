@@ -5,6 +5,13 @@
 #' @param verbose \code{numeric} see logs (1) or not (0)
 #'
 #' @import data.table parallel pipeR
+#' 
+#'
+#' @examples
+#' \dontrun{
+#'    parallelAggregMcall(opts)
+#' 
+#' }
 #'
 #' @export
 parallelAggregMcall <- function(opts, nbcl = 8, verbose = 1){
@@ -68,12 +75,12 @@ parallelAggregMcall <- function(opts, nbcl = 8, verbose = 1){
 #'
 #' @param opts \code{list} of simulation parameters returned by the function \link{setSimulationPath}
 #' @param verbose \code{numeric} show log in console. Defaut to 1
-#' @param filtering \code{boolean} filtering control
 #' \itemize{
 #'  \item{0}{ : No log}
 #'  \item{1}{ : Short log}
 #'  \item{2}{ : Long log}
 #'}
+#' @param filtering \code{boolean} filtering control
 #' @param timestep \code{character} antares timestep
 #' @param selected \code{list} named list (pass to antaresRead) : list(areas = 'a', links = 'a - e')
 #'
