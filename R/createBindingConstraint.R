@@ -112,6 +112,27 @@ createBindingConstraint <- function(name, id = tolower(name),
   
   
   ## Values
+  values <- .valueCheck(values, timeStep)
+  
+  # Write Ini
+  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
+  
+  # Write values
+  pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
+  write.table(x = values, file = pathValues, col.names = FALSE, row.names = FALSE, sep = "\t")
+  
+  
+  
+  # Maj simulation
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
+  
+  invisible(res)
+}
+
+
+.valueCheck <- function(values, timeStep){
   
   if (!is.null(values)) {
     if (ncol(values) != 3 & is.null(colnames(values))) 
@@ -154,27 +175,7 @@ createBindingConstraint <- function(name, id = tolower(name),
   } else {
     values <- character(0)
   }
-  
-  
-  
-  
-  
-  
-  # Write Ini
-  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
-  
-  # Write values
-  pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
-  write.table(x = values, file = pathValues, col.names = FALSE, row.names = FALSE, sep = "\t")
-  
-  
-  
-  # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
-  
-  invisible(res)
+  values
 }
 
 

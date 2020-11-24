@@ -16,3 +16,10 @@ parallelAggregMcall(opts, nbcl = 8, verbose = 1)
 \description{
 Creation of Mc_all (only antares > V6)
 }
+\examples{
+\dontrun{
+   parallelAggregMcall(opts)
+
+}
+
+}
