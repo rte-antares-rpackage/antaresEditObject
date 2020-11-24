@@ -47,6 +47,8 @@ editArea <- function(name, color = NULL,
   if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
     stop("Area's name must not ponctuation except - and _")
   
+  if(!name %in% opts$areaList)stop("Areas specify is not in current stidue areas")
+  
   # if (grepl(pattern = "[A-Z]", x = name)) 
   #   stop("Area's name must be lower case")
   

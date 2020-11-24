@@ -6,6 +6,9 @@ sapply(studies, function(study) {
   setup_study(study, sourcedir)
   opts <- antaresRead::setSimulationPath(studyPath, "input")
   
+  expect_error(editArea("azerty", opts = opts))
+  
+  
   editArea("a", opts = opts)
 
   editArea("a", localization = c(1, 1), opts = opts)
