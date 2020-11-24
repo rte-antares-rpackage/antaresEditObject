@@ -1,4 +1,4 @@
-#' Create An Area In An Antares Study
+#' Edit An Existing Area In An Antares Study
 #'
 #' @param name Name of the area as a character, without punctuation except - and _.
 #' @param color Color of the node
@@ -25,13 +25,11 @@
 #' # Set simulation path
 #' setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
 #' 
-#' # Create a new area
-#' createArea("area, color = grDevices::rgb(230, 108, 44, max = 255),
-#' localization = c(0, 0),
-#' nodalOptimization = nodalOptimizationOptions(),
-#' filtering = filteringOptions(),
-#' overwrite = FALSE,
-#' opts = antaresRead::simOptions()) 
+#' # Edit an existing area
+#' editArea("area, color = grDevices::rgb(230, 108, 44, max = 255),
+#'   localization = c(1, 1),
+#'   opts = antaresRead::simOptions()
+#' ) 
 #' 
 #' }
 editArea <- function(name, color = NULL,
@@ -47,7 +45,7 @@ editArea <- function(name, color = NULL,
   if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
     stop("Area's name must not ponctuation except - and _")
   
-  if(!name %in% opts$areaList)stop("Areas specify is not in current stidue areas")
+  if(!name %in% opts$areaList) stop("Area '", name, "' doesn't exist in current study.")
   
   # if (grepl(pattern = "[A-Z]", x = name)) 
   #   stop("Area's name must be lower case")
@@ -65,7 +63,6 @@ editArea <- function(name, color = NULL,
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   infoIni <- readIniFile(file.path(inputPath, "areas", name, "optimization.ini"))
   
-  
   if(!is.null(nodalOptimization)){
     for(i in names(nodalOptimization)){
       infoIni$`nodal optimization`[[i]] <- nodalOptimization[[i]]
@@ -78,14 +75,12 @@ editArea <- function(name, color = NULL,
     }
   }
   
-  
   # optimization ini file
   writeIni(
     listData = infoIni ,
     pathIni = file.path(inputPath, "areas", name, "optimization.ini"),
     overwrite = TRUE
   )
-  
   
   color_loc_ini <- readIniFile(file.path(inputPath, "areas", name, "ui.ini"))
   
@@ -118,8 +113,6 @@ editArea <- function(name, color = NULL,
     overwrite = TRUE
   )
   
-  
-  
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
@@ -127,7 +120,7 @@ editArea <- function(name, color = NULL,
   
   invisible(res)
 }
-# 
+
 # ## Hydro ----
 # 
 # # capacity

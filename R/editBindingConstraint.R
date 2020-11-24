@@ -1,4 +1,4 @@
-#' Update a Binding Constraint
+#' Update An Existing Binding Constraint
 #'
 #' @param name The name for the binding constraint
 #' @param id An id
@@ -38,17 +38,16 @@ editBindingConstraint <- function(name,
                                     coefficients = NULL,
                                     opts = antaresRead::simOptions()) {
   valuesIn <- values
-  ## Ini file
+  # Ini file
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   previds <- lapply(bindingConstraints, `[[`, "id")
   previds <- unlist(previds, use.names = FALSE)
   if(!id %in% previds){
-    stop(sprintf("A binding constraint with id '%s' not already exist.", id))
+    stop("Binding constraint with id '", id, "' doesn't exist in current study.")
   }
   
-  
-  ##Update general params
+  # Update general params
   bc_update_pos <- which(previds %in% id)
   bc_update <- bindingConstraints[[bc_update_pos]]
   
@@ -61,20 +60,17 @@ editBindingConstraint <- function(name,
   )
   
   
-  if(!is.null(name))iniParams$name <- name
-  if(!is.null(id))iniParams$id <- id
-  if(!is.null(enabled))iniParams$enabled <- enabled
-  if(!is.null(timeStep))iniParams$type <- timeStep
-  if(!is.null(operator))iniParams$operator <- operator
-  
-  
+  if(!is.null(name)) iniParams$name <- name
+  if(!is.null(id)) iniParams$id <- id
+  if(!is.null(enabled)) iniParams$enabled <- enabled
+  if(!is.null(timeStep)) iniParams$type <- timeStep
+  if(!is.null(operator)) iniParams$operator <- operator
   
   bindingConstraints[[bc_update_pos]]$name <- iniParams$name
   bindingConstraints[[bc_update_pos]]$id <- iniParams$id
   bindingConstraints[[bc_update_pos]]$enabled <- iniParams$enabled
   bindingConstraints[[bc_update_pos]]$type <- iniParams$type
   bindingConstraints[[bc_update_pos]]$operator <- iniParams$operator
-  
   
   if(!is.null(coefficients)){
     
@@ -93,7 +89,7 @@ editBindingConstraint <- function(name,
       if (!all(names(coefficientsToControl) %in% links)) {
         badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% links]
         badcoef <- paste(shQuote(badcoef), collapse = ", ")
-        stop(paste0(badcoef, " : is or are not valid link(s)"))
+        stop(paste0(badcoef, " : is/are not valid link(s)"))
       }
     }
     
@@ -101,7 +97,6 @@ editBindingConstraint <- function(name,
       bindingConstraints[[bc_update_pos]][[i]] <- coefficients[i]
     }
   }
-  
   
   values <- .valueCheck(values, bindingConstraints[[bc_update_pos]]$type)
   
@@ -118,7 +113,4 @@ editBindingConstraint <- function(name,
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   })
   
-  
 }
-
-
