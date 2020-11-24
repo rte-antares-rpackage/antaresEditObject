@@ -1,4 +1,4 @@
-context("Function write_output_values")
+context("Function writeOutputValues")
 
 sapply(studies, function(study) {
   setup_study(study, sourcedir)
@@ -12,7 +12,7 @@ sapply(studies, function(study) {
     data$areas$`OV. COST` <- data$areas$`OV. COST` + 1
     data$links$`FLOW LIN.` <- data$links$`FLOW LIN.` + 1
     data$clusters$production <- data$clusters$production + 1
-    write_output_values(data, opts)
+    writeOutputValues(data, opts)
     data2 <- readAntares(links = "all", areas = "all", clusters = "all", mcYears = "all", showProgress = FALSE)
     
     expect_true(identical(as.matrix(data$areas), as.matrix(data2$areas)))
@@ -25,7 +25,7 @@ sapply(studies, function(study) {
     data$areas$`OV. COST` <- data$areas$`OV. COST` + 1
     data$links$`FLOW LIN.` <- data$links$`FLOW LIN.` + 1
     data$clusters$production <- data$clusters$production + 1
-    write_output_values(data, opts)
+    writeOutputValues(data, opts)
     data2 <- readAntares(links = "all", areas = "all", clusters = "all", showProgress = FALSE)
     
     expect_true(identical(as.matrix(data$areas), as.matrix(data2$areas)))

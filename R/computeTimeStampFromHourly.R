@@ -290,17 +290,17 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
   
   if(type == "areas"){
     data <- data[area %in% filtertable]
-    antaresEditObject::write_output_values(data = data)
+    antaresEditObject::writeOutputValues(data = data)
   }
   
   if(type == "links"){
     data <- data[link %in% filtertable]
-    antaresEditObject::write_output_values(data = data)
+    antaresEditObject::writeOutputValues(data = data)
   }
   
   if(type == "clusters"){
     data <- data[area %in% filtertable]
-    antaresEditObject::write_output_values(data = data)
+    antaresEditObject::writeOutputValues(data = data)
   }
   
 }
