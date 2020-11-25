@@ -12,13 +12,13 @@
 #' library(data.table)
 #' opts <- setSimulationPath("C:/Users/TitouanRobert/Desktop/Projet/RTE/antares/etude/new/BP19_FB18_2021_60mcAcc/output/20201015-0957eco-test3a")
 #' data <- readAntares(links = "all", areas = "all", clusters = "all")
-#' write_output_values(data)
+#' writeOutputValues(data)
 #' 
 #' 
 #' }
 #' 
 #' @export
-write_output_values <- function(data, opts = NULL){
+writeOutputValues <- function(data, opts = NULL){
   
   if(!"antaresDataList" %in% class(data)){
     data <- list(data)

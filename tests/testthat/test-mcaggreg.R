@@ -18,7 +18,7 @@
 # outa <- readAntares(areas = "all",
 #                     links = "all", timeStep = "annual", showProgress = FALSE)
 # 
-# parallelAggregMcall(opts, nbcl = 1, verbose = 0)
+# parAggregateMCall(opts, nbcl = 1, verbose = 0)
 # 
 # outhafter <- readAntares(areas = "all", links = "all",
 #                          showProgress = FALSE)
