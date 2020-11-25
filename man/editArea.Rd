@@ -33,3 +33,19 @@ An updated list containing various information about the simulation.
 \description{
 Edit An Existing Area In An Antares Study
 }
+\examples{
+\dontrun{
+
+library(antaresRead)
+
+# Set simulation path
+setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
+
+# Edit an existing area
+editArea("area", color = grDevices::rgb(230, 108, 44, max = 255),
+  localization = c(1, 1),
+  opts = antaresRead::simOptions()
+) 
+
+}
+}

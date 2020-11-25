@@ -26,7 +26,7 @@
 #' setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
 #' 
 #' # Edit an existing area
-#' editArea("area, color = grDevices::rgb(230, 108, 44, max = 255),
+#' editArea("area", color = grDevices::rgb(230, 108, 44, max = 255),
 #'   localization = c(1, 1),
 #'   opts = antaresRead::simOptions()
 #' ) 
