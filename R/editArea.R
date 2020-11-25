@@ -45,8 +45,6 @@ editArea <- function(name, color = NULL,
   if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
     stop("Area's name must not ponctuation except - and _")
   
-  if(!name %in% opts$areaList) stop("Area '", name, "' doesn't exist in current study.")
-  
   # if (grepl(pattern = "[A-Z]", x = name)) 
   #   stop("Area's name must be lower case")
   
@@ -54,6 +52,8 @@ editArea <- function(name, color = NULL,
   # (and use in graphics) but not in the folder name (and use in all other case)
   list_name <- name
   name <- tolower(name)
+  
+  if(!name %in% opts$areaList) stop("Area '", list_name, "' doesn't exist in current study.")
   
   if (opts$mode != "Input") 
     stop("You can initialize an area only in 'Input' mode")
