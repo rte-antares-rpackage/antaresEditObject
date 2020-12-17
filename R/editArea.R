@@ -28,8 +28,13 @@
 #' # Edit an existing area
 #' editArea("area", color = grDevices::rgb(230, 108, 44, max = 255),
 #'   localization = c(1, 1),
-#'   opts = antaresRead::simOptions()
-#' ) 
+#'   opts = antaresRead::simOptions()) 
+#' 
+#' editArea("de",  nodalOptimization = list("spilledenergycost" = list(fr = 30)),
+#' opts = antaresRead::simOptions())
+#' 
+#' editArea("de",  nodalOptimization = nodalOptimizationOptions(),
+#' opts = antaresRead::simOptions())
 #' 
 #' }
 editArea <- function(name, color = NULL,
@@ -63,6 +68,9 @@ editArea <- function(name, color = NULL,
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   infoIni <- readIniFile(file.path(inputPath, "areas", name, "optimization.ini"))
   
+  
+  nodalOptimizationThermal <- nodalOptimization[names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
+  nodalOptimization <- nodalOptimization[!names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
   if(!is.null(nodalOptimization)){
     for(i in names(nodalOptimization)){
       infoIni$`nodal optimization`[[i]] <- nodalOptimization[[i]]
@@ -112,6 +120,21 @@ editArea <- function(name, color = NULL,
     pathIni = file.path(inputPath, "areas", name, "ui.ini"),
     overwrite = TRUE
   )
+  
+  if(!is.null(nodalOptimizationThermal)){
+    
+    
+    thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
+    if (file.exists(thermal_areas_path)) {
+      thermal_areas <- readIniFile(file = thermal_areas_path)
+    } else {
+      thermal_areas <- list()
+    }
+    thermal_areas$unserverdenergycost[[name]] <- nodalOptimizationThermal[["unserverdenergycost"]]
+    thermal_areas$spilledenergycost[[name]] <- nodalOptimizationThermal[["spilledenergycost"]]
+    writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
+    
+  }
   
   # Maj simulation
   suppressWarnings({
