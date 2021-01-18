@@ -15,14 +15,14 @@ aggregateResult(
 \arguments{
 \item{opts}{\code{list} of simulation parameters returned by the function \link{setSimulationPath}}
 
-\item{verbose}{\code{numeric} show log in console. Defaut to 1}
-
-\item{filtering}{\code{boolean} filtering control
+\item{verbose}{\code{numeric} show log in console. Defaut to 1
 \itemize{
  \item{0}{ : No log}
  \item{1}{ : Short log}
  \item{2}{ : Long log}
 }}
+
+\item{filtering}{\code{boolean} filtering control}
 
 \item{selected}{\code{list} named list (pass to antaresRead) : list(areas = 'a', links = 'a - e')}
 

@@ -9,12 +9,12 @@
 #'
 #' @examples
 #' \dontrun{
-#'    parallelAggregMcall(opts)
+#'    parAggregateMCall(opts)
 #' 
 #' }
 #'
 #' @export
-parallelAggregMcall <- function(opts, nbcl = 8, verbose = 1){
+parAggregateMCall <- function(opts, nbcl = 8, verbose = 1){
   
   
   if(verbose == 1){
