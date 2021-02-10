@@ -4,7 +4,7 @@ language: R
 sudo: false
 cache: packages
 
-r: bioc-devel
+r: bioc
 
 r_packages:
   - covr
