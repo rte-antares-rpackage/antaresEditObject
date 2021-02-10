@@ -55,7 +55,7 @@ getPlaylist <- function(opts = antaresRead::simOptions())
   }
   
   # modified playlist - take into account the modifications
-  assertthat::assert_that(all(playlist_update_type %in% c("playlist_reset", "playlist_year +", "playlist_year -")))
+  assertthat::assert_that(all(playlist_update_type %in% c("playlist_reset", "playlist_year +", "playlist_year -", "playlist_year_weight")))
   activated <- rep(TRUE, length(mc_years))
   
   for(i in 1:length(playlist_update_type))
@@ -76,7 +76,10 @@ getPlaylist <- function(opts = antaresRead::simOptions())
       activated[playlist_update_value[[i]]+1] <- FALSE
     } 
   }
-  return(mc_years[activated])
+  
+  activate_mc <- mc_years[activated]
+  activate_mc
+  
 }
 
 
