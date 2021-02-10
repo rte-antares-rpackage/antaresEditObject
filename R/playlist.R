@@ -19,6 +19,8 @@
 getPlaylist <- function(opts = antaresRead::simOptions())
 {
   
+  
+
   # reload opts
   if(is.null(opts$simPath))
   {
@@ -32,7 +34,9 @@ getPlaylist <- function(opts = antaresRead::simOptions())
       opts2 <- antaresRead::setSimulationPath(path = opts$simPath)
     })
   }
-    
+  version_study <- substr(opts2$antaresVersion,1,1)
+  version_study <- as.numeric(version_study)
+  
   
   # get all MC years
   mc_years <- 1:opts2$parameters$general$nbyears
@@ -76,10 +80,25 @@ getPlaylist <- function(opts = antaresRead::simOptions())
       activated[playlist_update_value[[i]]+1] <- FALSE
     } 
   }
-  
   activate_mc <- mc_years[activated]
-  activate_mc
   
+  if(version_study<8){
+
+  return(activate_mc)
+  
+  }else{
+    if(!"playlist_year_weight" %in% playlist_update_type){
+      return(activate_mc)
+    }else{
+      vect_value_weigth = unlist(playlist_update_value[names(playlist_update_value) == "playlist_year_weight"])
+      mat_play_list <- data.table(t(cbind.data.frame(strsplit(vect_value_weigth, ","))))
+      mat_play_list$V1 <- as.numeric(mat_play_list$V1) + 1
+      mat_play_list$V2 <- as.numeric(mat_play_list$V2)
+      setnames(mat_play_list, "V1", "mcYears")
+      setnames(mat_play_list, "V2", "weights")
+      return(list(activate_mc = activate_mc, weights = weights))
+    }
+  }
 }
 
 
