@@ -96,7 +96,7 @@ getPlaylist <- function(opts = antaresRead::simOptions())
       mat_play_list$V2 <- as.numeric(mat_play_list$V2)
       setnames(mat_play_list, "V1", "mcYears")
       setnames(mat_play_list, "V2", "weights")
-      return(list(activate_mc = activate_mc, weights = weights))
+      return(list(activate_mc = activate_mc, weights = mat_play_list))
     }
   }
 }
@@ -110,7 +110,10 @@ getPlaylist <- function(opts = antaresRead::simOptions())
 #' 
 #' 
 #' @param playlist
-#'   vector of MC years identifier to be simulated
+#'   vector of MC years identifier to be simulated can be a list (V8 compatibility) but not recommended
+#' @param weights
+#'   data.table, 2 columns : mcYears and weights. Only with after antares V8
+#'   
 #' @param opts
 #'   list of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
@@ -123,8 +126,28 @@ getPlaylist <- function(opts = antaresRead::simOptions())
 #' @importFrom antaresRead simOptions
 #' @export
 #' 
-setPlaylist <- function(playlist, opts = antaresRead::simOptions())
+setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions())
 {
+  
+  
+  version_study <- substr(opts$antaresVersion,1,1)
+  version_study <- as.numeric(version_study)
+  
+  if(version_study < 8 & !is.null(weights)){
+    stop("weights can be use only for antares > V8, please convert your studie before")
+  }
+  
+  
+  
+  ##For portability (V7, V8)
+  if(is.list(playlist)){
+    if('activate_mc' %in% names(playlist)){
+      playlist <- playlist$activate_mc
+    }else{
+      stop("List provide must contain activate_mc columns")
+    }
+  }
+  
   # get all MC years
   mc_years <- 1:opts$parameters$general$nbyears
   assertthat::assert_that(all(playlist %in% mc_years))
@@ -171,6 +194,12 @@ setPlaylist <- function(playlist, opts = antaresRead::simOptions())
     new_playlist <- c("[playlist]", 
                       "playlist_reset = false",
                       sapply(playlist,FUN = function(x){paste0("playlist_year + = ", x-1)}))
+    
+    if(!is.null(weights)){
+      new_playlist <- c(new_playlist, apply(weights, 1, function(X){
+        paste0("playlist_year_weight = " , X[1] - 1,",",format(round(X[2], 6), nsmall = 6))
+      })) 
+    }
     
     # add new playlist to the parameters description
     param_data <- c(param_data, new_playlist)

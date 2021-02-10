@@ -4,10 +4,12 @@
 \alias{setPlaylist}
 \title{Set the playlist of an Antares Study}
 \usage{
-setPlaylist(playlist, opts = antaresRead::simOptions())
+setPlaylist(playlist, weights = NULL, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{playlist}{vector of MC years identifier to be simulated}
+\item{playlist}{vector of MC years identifier to be simulated can be a list (V8 compatibility) but not recommended}
+
+\item{weights}{data.table, 2 columns : mcYears and weights. Only with after antares V8}
 
 \item{opts}{list of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}
