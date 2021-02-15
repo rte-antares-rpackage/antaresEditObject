@@ -9,7 +9,9 @@ aggregateResult(
   verbose = 1,
   filtering = FALSE,
   selected = NULL,
-  timestep = c("annual", "daily", "hourly", "monthly", "weekly")
+  timestep = c("annual", "daily", "hourly", "monthly", "weekly"),
+  writeOutput = TRUE,
+  mcWeights = NULL
 )
 }
 \arguments{
@@ -27,6 +29,10 @@ aggregateResult(
 \item{selected}{\code{list} named list (pass to antaresRead) : list(areas = 'a', links = 'a - e')}
 
 \item{timestep}{\code{character} antares timestep}
+
+\item{writeOutput}{\code{boolean} write result or not.}
+
+\item{mcWeights}{\code{numeric} vector of weigth for mcYears.}
 }
 \description{
 Creation of Mc_all
