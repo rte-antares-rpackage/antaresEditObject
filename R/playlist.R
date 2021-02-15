@@ -170,42 +170,63 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   # if all mc_years must be simulated, desactive playlist
   if(length(playlist) == length(mc_years))
   {
+    
+    if(version_study < 8 | is.null(weights)){
+
     # update line to disable the playlist
     param_data[index_p] <- paste0("user-playlist = false")
     # write updated file
     write(param_data, general_parameters_file_name, sep = "/")
+    }else{
+      #Edit playlist
+      param_data <- .createNewMc(param_data, weights, playlist)
+      
+      # write updated file
+      write(param_data, general_parameters_file_name, sep = "/")
+    }
+    
+    
   }
   
   # otherwise, set the playlist
   else
   {
-    # update line to enable the playlist
-    param_data[index_p] = paste0("user-playlist = true")
-    
-    # delete lines with current playlist
-    index_d <- grep("playlist",param_data,  fixed = TRUE)
-    index_d <- index_d[index_d != index_p]
-    if(length(index_d) >= 1)
-    {
-      param_data <- param_data[- index_d]
-    }
-    
-    # create new plalist
-    new_playlist <- c("[playlist]", 
-                      "playlist_reset = false",
-                      sapply(playlist,FUN = function(x){paste0("playlist_year + = ", x-1)}))
-    
-    if(!is.null(weights)){
-      new_playlist <- c(new_playlist, apply(weights, 1, function(X){
-        paste0("playlist_year_weight = " , X[1] - 1,",",format(round(X[2], 6), nsmall = 6))
-      })) 
-    }
-    
-    # add new playlist to the parameters description
-    param_data <- c(param_data, new_playlist)
+   
+    #Edit playlist
+    param_data <- .createNewMc(param_data, weights, playlist)
     
     # write updated file
     write(param_data, general_parameters_file_name, sep = "/")
     
   }
+}
+
+#' @noRd
+.createNewMc <- function(param_data, weights, playlist){
+  # update line to enable the playlist
+  param_data[index_p] = paste0("user-playlist = true")
+  
+  # delete lines with current playlist
+  
+  index_d <- grep("playlist",param_data,  fixed = TRUE)
+  index_d <- index_d[index_d != index_p]
+  if(length(index_d) >= 1)
+  {
+    param_data <- param_data[- index_d]
+  }
+  
+  # create new plalist
+  new_playlist <- c("[playlist]", 
+                    "playlist_reset = false",
+                    sapply(playlist,FUN = function(x){paste0("playlist_year + = ", x-1)}))
+  
+  if(!is.null(weights)){
+    new_playlist <- c(new_playlist, apply(weights, 1, function(X){
+      paste0("playlist_year_weight = " , X[1] - 1,",",format(round(X[2], 6), nsmall = 6))
+    })) 
+  }
+  
+  # add new playlist to the parameters description
+  param_data <- c(param_data, new_playlist)
+  param_data
 }
