@@ -179,7 +179,7 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
     write(param_data, general_parameters_file_name, sep = "/")
     }else{
       #Edit playlist
-      param_data <- .createNewMc(param_data, weights, playlist)
+      param_data <- .createNewMc(param_data, weights, playlist, index_p)
       
       # write updated file
       write(param_data, general_parameters_file_name, sep = "/")
@@ -193,7 +193,7 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   {
    
     #Edit playlist
-    param_data <- .createNewMc(param_data, weights, playlist)
+    param_data <- .createNewMc(param_data, weights, playlist, index_p)
     
     # write updated file
     write(param_data, general_parameters_file_name, sep = "/")
@@ -202,7 +202,7 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
 }
 
 #' @noRd
-.createNewMc <- function(param_data, weights, playlist){
+.createNewMc <- function(param_data, weights, playlist, index_p){
   # update line to enable the playlist
   param_data[index_p] = paste0("user-playlist = true")
   
