@@ -18,7 +18,7 @@
 #' createStudy("path/to/simulation")
 #' 
 #' }
-createStudy <- function(path, study_name = "my_study", antares_version = "7.0.0") {
+createStudy <- function(path, study_name = "my_study", antares_version = "8.0.0") {
   antares_version <- as.numeric_version(antares_version)
   if (!dir.exists(path)) {
     dir.create(path = path, recursive = TRUE)
@@ -39,8 +39,12 @@ createStudy <- function(path, study_name = "my_study", antares_version = "7.0.0"
     unlink(to_delete)
   } else if (antares_version < as.numeric_version("7.1.0")) {
     statut <- unzip(zipfile = system.file("template-antares/antares-study-v700.zip", package = "antaresEditObject"), exdir = path)
-  } else {
+  } else if (antares_version < as.numeric_version("7.2.0")){
     statut <- unzip(zipfile = system.file("template-antares/antares-study-v710.zip", package = "antaresEditObject"), exdir = path)
+  } else if (antares_version < as.numeric_version("8.0.0")){
+    statut <- unzip(zipfile = system.file("template-antares/antares-study-v720.zip", package = "antaresEditObject"), exdir = path)
+  } else {
+    statut <- unzip(zipfile = system.file("template-antares/antares-study-v800.zip", package = "antaresEditObject"), exdir = path)
   }
   antares <- paste(readLines(con = file.path(path, "study.antares")), collapse = "\n")
   antares <- whisker::whisker.render(
