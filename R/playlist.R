@@ -20,7 +20,7 @@ getPlaylist <- function(opts = antaresRead::simOptions())
 {
   
   
-
+  
   # reload opts
   if(is.null(opts$simPath))
   {
@@ -83,9 +83,9 @@ getPlaylist <- function(opts = antaresRead::simOptions())
   activate_mc <- mc_years[activated]
   
   if(version_study<8){
-
-  return(activate_mc)
-  
+    
+    return(activate_mc)
+    
   }else{
     if(!"playlist_year_weight" %in% playlist_update_type){
       return(activate_mc)
@@ -130,6 +130,9 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
 {
   
   
+  
+  
+  if(any(weights$weights)<0)stop("weights < 0 cant be used by Antares")
   version_study <- substr(opts$antaresVersion,1,1)
   version_study <- as.numeric(version_study)
   
@@ -172,11 +175,10 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   {
     
     if(version_study < 8 | is.null(weights)){
-
-    # update line to disable the playlist
-    param_data[index_p] <- paste0("user-playlist = false")
-    # write updated file
-    write(param_data, general_parameters_file_name, sep = "/")
+      # update line to disable the playlist
+      param_data[index_p] <- paste0("user-playlist = false")
+      # write updated file
+      write(param_data, general_parameters_file_name, sep = "/")
     }else{
       #Edit playlist
       param_data <- .createNewMc(param_data, weights, playlist, index_p)
@@ -191,7 +193,6 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   # otherwise, set the playlist
   else
   {
-   
     #Edit playlist
     param_data <- .createNewMc(param_data, weights, playlist, index_p)
     
@@ -209,7 +210,17 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   # delete lines with current playlist
   
   index_d <- grep("playlist",param_data,  fixed = TRUE)
+  
   index_d <- index_d[index_d != index_p]
+  
+  if(is.null(weights)){
+    
+    index_p2 <- grep("playlist_year_weight = ",param_data,  fixed = TRUE)
+    
+    index_d <- index_d[!index_d %in% index_p2]
+    
+  }
+  
   if(length(index_d) >= 1)
   {
     param_data <- param_data[- index_d]
