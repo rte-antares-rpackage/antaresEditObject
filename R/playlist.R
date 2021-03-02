@@ -112,7 +112,8 @@ getPlaylist <- function(opts = antaresRead::simOptions())
 #' @param playlist
 #'   vector of MC years identifier to be simulated can be a list (V8 compatibility) but not recommended
 #' @param weights
-#'   data.table, 2 columns : mcYears and weights. Only with after antares V8
+#'   data.table, 2 columns : mcYears and weights. Only with after antares V8. You can specify weights by 
+#'   mcYears for antares simulation.
 #'   
 #' @param opts
 #'   list of simulation parameters returned by the function
