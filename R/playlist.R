@@ -129,10 +129,20 @@ getPlaylist <- function(opts = antaresRead::simOptions())
 setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions())
 {
   
+
+  
+  if(!is.null(weights)){
+    if(!all(sort(playlist) == sort(weights$mcYears))){
+      stop("mcYears in playlist and weights mcYears column must be similar")
+    }
+    
+    if(!all(names(weights)%in% c("mcYears", "weights"))){
+      stop("weights must have mcYears and weights columns")
+    }
+  }
   
   
-  
-  if(any(weights$weights)<0)stop("weights < 0 cant be used by Antares")
+  if(any(weights$weights<0))stop("weights < 0 cant be used by Antares")
   version_study <- substr(opts$antaresVersion,1,1)
   version_study <- as.numeric(version_study)
   
