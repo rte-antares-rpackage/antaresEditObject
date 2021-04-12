@@ -1,5 +1,6 @@
 
 .tableAggregateload <- function(opts){
+  Mode <- NULL
 	linkTable <- try(data.table::fread(system.file("/format_output/tableOutput.csv", package = "antaresEditObject")),
 					 silent = TRUE)
 	linkTable$progNam <- linkTable$Stats
@@ -11,6 +12,8 @@
 	}
 }
 .updateData <- function(opts, dta, linkTable){
+  
+  .N <- Name <- progNam <- NULL
 	idC <- getIdCols(dta)
 	calcC <- names(dta)[!names(dta)%in%idC]
 	idC <- idC[idC != "mcYear"]

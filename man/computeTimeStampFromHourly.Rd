@@ -30,7 +30,7 @@ Compute daily, weekly, monthly and annual mc-ind from hourly data.
 \dontrun{
 
 library(antaresEditObject)
-opts <- setSimulationPath("C:/Users/TitouanRobert/Desktop/Projet/RTE/antares/etude/new/BP19_FB18_2021_60mcAcc/output/20201015-0957eco-test3a")
+opts <- setSimulationPath("my_study")
 computeTimeStampFromHourly(opts)
 
 }

@@ -10,12 +10,15 @@
 #' \dontrun{
 #' 
 #' library(antaresEditObject)
-#' opts <- setSimulationPath("C:/Users/TitouanRobert/Desktop/Projet/RTE/antares/etude/new/BP19_FB18_2021_60mcAcc/output/20201015-0957eco-test3a")
+#' opts <- setSimulationPath("my_study")
 #' computeTimeStampFromHourly(opts)
 #' 
 #' }
 #' 
-#' @import doParallel pbapply parallel
+#' @import doParallel parallel
+#' @importFrom pbapply pblapply pboptions
+#' @importFrom antaresRead getIdCols readAntares
+#' @importFrom stats sd
 #' 
 #' @export
 computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8,
@@ -201,10 +204,11 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
 }
 
 .aggregateMc <- function(oo, colForMean = c("MRG. PRICE", "H. LEV", "LOLP")){
+  
   oo$hour <- NULL
   initalOrder <- names(oo)
   oo$timeId <- NULL
-  idc <- getIdCols(oo)
+  idc <- antaresRead::getIdCols(oo)
   
   if(!is.null(colForMean)){
     colForMean <- colForMean[colForMean %in% names(oo)]
@@ -287,7 +291,7 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
 }
 
 .writeDT <- function(data, type, filtertable){
-  
+  area <- link <- NULL
   if(type == "areas"){
     data <- data[area %in% filtertable]
     antaresEditObject::writeOutputValues(data = data)
