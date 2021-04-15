@@ -18,9 +18,6 @@
 #' 
 getPlaylist <- function(opts = antaresRead::simOptions())
 {
-  
-  
-  
   # reload opts
   if(is.null(opts$simPath))
   {
@@ -87,10 +84,10 @@ getPlaylist <- function(opts = antaresRead::simOptions())
     return(activate_mc)
     
   }else{
-    if(!"playlist_year_weight" %in% names(opts2$parameters$`seeds - Mersenne Twister`)){
+    if(!"playlist_year_weight" %in% names(opts2$parameters$playlist)){
       return(activate_mc)
     }else{
-      vect_value_weigth = unlist(opts2$parameters$`seeds - Mersenne Twister`[names(opts2$parameters$`seeds - Mersenne Twister`) == "playlist_year_weight"])
+      vect_value_weigth = unlist(opts2$parameters$playlist[names(opts2$parameters$playlist) == "playlist_year_weight"])
       mat_play_list <- data.table(t(cbind.data.frame(strsplit(vect_value_weigth, ","))))
       mat_play_list$V1 <- as.numeric(mat_play_list$V1) + 1
       mat_play_list$V2 <- as.numeric(mat_play_list$V2)
@@ -185,7 +182,7 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   if(length(playlist) == length(mc_years))
   {
     
-    if(version_study < 8 | is.null(weights)){
+    if(version_study < 8 ){#| is.null(weights)
       # update line to disable the playlist
       param_data[index_p] <- paste0("user-playlist = false")
       # write updated file
