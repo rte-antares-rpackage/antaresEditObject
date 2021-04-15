@@ -139,7 +139,6 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
     }
   }
   
-  
   if(any(weights$weights<0))stop("weights < 0 cant be used by Antares")
   version_study <- substr(opts$antaresVersion,1,1)
   version_study <- as.numeric(version_study)
