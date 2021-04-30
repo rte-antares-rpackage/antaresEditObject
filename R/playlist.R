@@ -177,7 +177,7 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   assertthat::assert_that(length(index_p) == 1)
   
   
-  # if all mc_years must be simulated, desactive playlist
+  # if all mc_years must be simulated, desactive playlist (not in V8)
   if(length(playlist) == length(mc_years))
   {
     
@@ -216,17 +216,19 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
   
   # delete lines with current playlist
   
-  index_d <- grep("playlist",param_data,  fixed = TRUE)
+  index_d <- grep("playlist", param_data,  fixed = TRUE)
+  index_d2 <- grep("playlist_year_weight", param_data,  fixed = TRUE)
+
   
+  saveweigth <- param_data[index_d2]
   index_d <- index_d[index_d != index_p]
   
-  if(is.null(weights)){
-    
-    index_p2 <- grep("playlist_year_weight = ",param_data,  fixed = TRUE)
-    
-    index_d <- index_d[!index_d %in% index_p2]
-    
-  }
+  
+  
+  # if(is.null(weights)){
+  #   index_p2 <- grep("playlist_year_weight = ",param_data,  fixed = TRUE)
+  #   index_d <- index_d[!index_d %in% index_p2]
+  # }
   
   if(length(index_d) >= 1)
   {
@@ -242,6 +244,9 @@ setPlaylist <- function(playlist, weights = NULL, opts = antaresRead::simOptions
     new_playlist <- c(new_playlist, apply(weights, 1, function(X){
       paste0("playlist_year_weight = " , X[1] - 1,",",format(round(X[2], 6), nsmall = 6))
     })) 
+  }else{
+    if(!is.null(saveweigth))
+    new_playlist <- c(new_playlist, saveweigth )
   }
   
   # add new playlist to the parameters description

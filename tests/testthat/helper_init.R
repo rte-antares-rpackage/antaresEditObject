@@ -26,3 +26,7 @@ setup_study <- function(study, sourcedir) {
   }
 }
 
+# dir.create(file.path(pathstdpathstd, "Ponderation_light")))
+ file.copy(system.file(file.path("studyV8", "Ponderation_light"), package = "antaresEditObject"),
+                   pathstd, recursive = TRUE)
+V8dir <- file.path(pathstd, "Ponderation_light")
