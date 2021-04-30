@@ -43,7 +43,7 @@ test_that("playlist V8", {
   testthat::expect_true(all(playlist == 1:10))
   
   setPlaylist(playlist = c(1:8))
-  testthat::expect_true(all(getPlaylist()$activate_mc == 1:8))
+  testthat::expect_true(all(getPlaylist() == 1:8))
   
   weights_clean <- data.table(mcYears = c(1:8), weights = c(seq(from = 0.1, to = 0.7, length.out = 7), 14))
   setPlaylist(playlist = c(1:8), weights = weights_clean)
