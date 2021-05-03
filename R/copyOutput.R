@@ -2,6 +2,7 @@
 #'
 #' @param opts file opts obtain with antaresRead::setSimulationPath
 #' @param extname extention name for study duplicated
+#' @param mcYears mcYears to copy. Can be all.
 #' 
 #' 
 #' @examples
@@ -19,7 +20,7 @@
 #' @import fs
 #' 
 #' @export
-copyOutput <- function(opts, extname){
+copyOutput <- function(opts, extname, mcYears = "all"){
   fil <- paste0(opts$simPath, extname)
   dir.create(fil)
   
@@ -38,4 +39,17 @@ copyOutput <- function(opts, extname){
   cat("Copy done")
   
   opts
+}
+
+
+
+
+#' @noRd
+.updateStudyName <- function(opts, ext)
+{
+  iniPath <- file.path(opts$simPath, "info.antares-output")
+  infosIni <- readIniFile(iniPath)
+  infosIni$general$name <- paste0(infosIni$general$name, ext)
+  writeIni(listData = infosIni, pathIni =  iniPath, overwrite = TRUE)
+  NULL
 }

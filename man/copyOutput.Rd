@@ -4,12 +4,14 @@
 \alias{copyOutput}
 \title{Copy an output studies.}
 \usage{
-copyOutput(opts, extname)
+copyOutput(opts, extname, mcYears = "all")
 }
 \arguments{
 \item{opts}{file opts obtain with antaresRead::setSimulationPath}
 
 \item{extname}{extention name for study duplicated}
+
+\item{mcYears}{mcYears to copy. Can be all.}
 }
 \description{
 Copy an output studies.
