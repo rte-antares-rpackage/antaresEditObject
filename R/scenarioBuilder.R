@@ -139,6 +139,9 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
       areas <- unique(extract_el(x, 2))
       years <- unique(extract_el(x, 3))
       if (as_matrix) {
+        if(length(x) != length(areas)*length(years)){
+          x <- rep(x, length(years))
+        }
         matrix(
           data = x, byrow = TRUE,
           nrow = length(areas),
