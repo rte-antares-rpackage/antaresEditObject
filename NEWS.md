@@ -1,3 +1,8 @@
+# antaresEditObject 0.2.2
+
+* New usage `getPlaylist` : V8 antares ponderation.
+* New usage `getPlaylist` : V8 antares ponderation.
+
 # antaresEditObject 0.2.1
 
 * New function `copyOutput` : to copy antares output with extansion.
