@@ -10,12 +10,13 @@
 #' \dontrun{
 #' 
 #' library(antaresEditObject)
-#' opts <- setSimulationPath("C:/Users/TitouanRobert/Desktop/Projet/RTE/antares/etude/new/BP19_FB18_2021_60mcAcc/output/20201015-0957eco-test3a")
+#' opts <- setSimulationPath("my_study")
 #' computeTimeStampFromHourly(opts)
 #' 
 #' }
 #' 
 #' @import doParallel pbapply parallel
+#' @importFrom stats sd as.formula
 #' 
 #' @export
 computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8,
@@ -37,17 +38,17 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8,
   if(verbose == 1){
     cat("Load necessary data\n")
   }
-  dayArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$area)
-  weArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$area)
-  moArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$area)
-  annualArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$area)
+  dayArea <- unique(antaresRead::readAntares(areas = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$area)
+  weArea <- unique(antaresRead::readAntares(areas = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$area)
+  moArea <- unique(antaresRead::readAntares(areas = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$area)
+  annualArea <- unique(antaresRead::readAntares(areas = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$area)
   
   
   
-  dayLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$link)
-  weLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$link)
-  moLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$link)
-  annualLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$link)
+  dayLink <- unique(antaresRead::readAntares(links = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$link)
+  weLink <- unique(antaresRead::readAntares(links = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$link)
+  moLink <- unique(antaresRead::readAntares(links = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$link)
+  annualLink <- unique(antaresRead::readAntares(links = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$link)
   
   
   
@@ -65,7 +66,7 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8,
       library(antaresRead)
       library(antaresEditObject)
       library(data.table)
-      opts <- setSimulationPath(opts$simPath)
+      opts <- antaresRead::setSimulationPath(opts$simPath)
     })
     registerDoParallel(cl)
   }else{
@@ -141,13 +142,13 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8,
 cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type = "areas"){
   
   if(type == "areas"){
-    hourlydata <- readAntares(areas = "all", mcYears = Year, timeStep = "hourly",
+    hourlydata <- antaresRead::readAntares(areas = "all", mcYears = Year, timeStep = "hourly",
                               opts = opts, showProgress = FALSE)
     colForMean = c("MRG. PRICE", "H. LEV", "LOLP")
   }
   
   if(type == "links"){
-    hourlydata <- readAntares(links = "all", mcYears = Year, timeStep = "hourly",
+    hourlydata <- antaresRead::readAntares(links = "all", mcYears = Year, timeStep = "hourly",
                               opts = opts, showProgress = FALSE)
     colForMean = NULL
   }
@@ -155,7 +156,7 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
   
   
   if(type == "clusters"){
-    hourlydata <- readAntares(clusters = "all", mcYears = Year, timeStep = "hourly",
+    hourlydata <- antaresRead::readAntares(clusters = "all", mcYears = Year, timeStep = "hourly",
                               opts = opts, showProgress = FALSE)
     colForMean = NULL
   }
@@ -201,10 +202,11 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
 }
 
 .aggregateMc <- function(oo, colForMean = c("MRG. PRICE", "H. LEV", "LOLP")){
+  
   oo$hour <- NULL
   initalOrder <- names(oo)
   oo$timeId <- NULL
-  idc <- getIdCols(oo)
+  idc <- antaresRead::getIdCols(oo)
   
   if(!is.null(colForMean)){
     colForMean <- colForMean[colForMean %in% names(oo)]
@@ -287,7 +289,7 @@ cpt_timstamp <- function(Year, opts, dayArea, weArea, moArea, annualArea, type =
 }
 
 .writeDT <- function(data, type, filtertable){
-  
+  area <- link <- NULL
   if(type == "areas"){
     data <- data[area %in% filtertable]
     antaresEditObject::writeOutputValues(data = data)

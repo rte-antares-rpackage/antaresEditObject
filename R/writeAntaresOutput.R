@@ -10,7 +10,7 @@
 #' 
 #' library(antaresRead)
 #' library(data.table)
-#' opts <- setSimulationPath("C:/Users/TitouanRobert/Desktop/Projet/RTE/antares/etude/new/BP19_FB18_2021_60mcAcc/output/20201015-0957eco-test3a")
+#' opts <- setSimulationPath("my_study")
 #' data <- readAntares(links = "all", areas = "all", clusters = "all")
 #' writeOutputValues(data)
 #' 
@@ -70,7 +70,7 @@ writeOutputValues <- function(data, opts = NULL){
           
           ts <- attributes(datatp)$timeStep
           
-          id <- getIdCols(datatp)
+          id <- antaresRead::getIdCols(datatp)
           id <- id[id != "cluster"]
           tmp_formula <- as.formula(paste0(paste0(id, collapse = "+"), "~cluster"))
           datatp <- dcast(datatp, tmp_formula, value.var = c("production", "NP Cost", "NODU"))
