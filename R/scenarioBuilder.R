@@ -139,11 +139,12 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
       areas <- unique(extract_el(x, 2))
       years <- unique(extract_el(x, 3))
       if (as_matrix) {
-        if(length(x) != length(areas)*length(years)){
+        # x <- unlist(x)
+        if(length(x) < length(areas)*length(years)){
           x <- rep(x, length(years))
         }
         matrix(
-          data = x, byrow = TRUE,
+          data = x[1:(length(areas) * length(years))], byrow = TRUE,
           nrow = length(areas),
           ncol = length(years),
           dimnames = list(areas, NULL)
