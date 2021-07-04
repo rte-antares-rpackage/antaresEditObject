@@ -37,17 +37,17 @@ computeTimeStampFromHourly <- function(opts, mcYears = "all", nbcl = 8,
   if(verbose == 1){
     cat("Load necessary data\n")
   }
-  dayArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$area)
-  weArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$area)
-  moArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$area)
-  annualArea <- unique(readAntares(areas = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$area)
+  dayArea <- unique(readAntares(areas = "all", mcYears = mcYears[1], timeStep = "daily", opts = opts, showProgress = FALSE)$area)
+  weArea <- unique(readAntares(areas = "all", mcYears = mcYears[1], timeStep = "weekly", opts = opts, showProgress = FALSE)$area)
+  moArea <- unique(readAntares(areas = "all", mcYears = mcYears[1], timeStep = "monthly", opts = opts, showProgress = FALSE)$area)
+  annualArea <- unique(readAntares(areas = "all", mcYears = mcYears[1], timeStep = "annual", opts = opts, showProgress = FALSE)$area)
   
   
   
-  dayLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "daily", opts = opts, showProgress = FALSE)$link)
-  weLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "weekly", opts = opts, showProgress = FALSE)$link)
-  moLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "monthly", opts = opts, showProgress = FALSE)$link)
-  annualLink <- unique(readAntares(links = "all", mcYears = 1, timeStep = "annual", opts = opts, showProgress = FALSE)$link)
+  dayLink <- unique(readAntares(links = "all", mcYears = mcYears[1], timeStep = "daily", opts = opts, showProgress = FALSE)$link)
+  weLink <- unique(readAntares(links = "all", mcYears = mcYears[1], timeStep = "weekly", opts = opts, showProgress = FALSE)$link)
+  moLink <- unique(readAntares(links = "all", mcYears = mcYears[1], timeStep = "monthly", opts = opts, showProgress = FALSE)$link)
+  annualLink <- unique(readAntares(links = "all", mcYears = mcYears[1], timeStep = "annual", opts = opts, showProgress = FALSE)$link)
   
   
   
