@@ -19,6 +19,7 @@ Description: Edit an 'Antares' simulation before running it : create new areas, 
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
 Depends: antaresRead (>= 2.2.7)
 Imports: 
     assertthat,

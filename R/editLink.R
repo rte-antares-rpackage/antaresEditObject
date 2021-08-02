@@ -27,16 +27,16 @@
 #' rearranged to match the new order.
 #' 
 #' @details The eight times-series are:
-#' \itemize{
-#'  \item{"NTC direct"}{the upstream-to-downstream capacity, in MW}
-#'  \item{"NTC indirect"}{the downstream-to-upstream capacity, in MW}
-#'  \item{"Hurdle cost direct"}{an upstream-to-downstream transmission fee, in euro/MWh}
-#'  \item{"Hurdle cost indirect"}{a downstream-to-upstream transmission fee, in euro/MWh}
-#'  \item{"Impedances"}{virtual impedances that are used in economy simulations to give a physical meaning to raw outputs, when no binding constraints have been defined to enforce Kirchhoff's laws.}
-#'  \item{"Loop flow"}{amount of power flowing circularly though the grid when all “nodes” are perfectly balanced (no import and no export).}
-#'  \item{"PST min"}{lower bound of phase-shifting that can be reached by a PST installed on the link, if any.}
-#'  \item{"PST max"}{upper bound of phase-shifting that can be reached by a PST installed on the link, if any.}
-#' }
+#' 
+#' * **NTC direct** : the upstream-to-downstream capacity, in MW
+#' * **NTC indirect** : the downstream-to-upstream capacity, in MW
+#' * **Hurdle cost direct** : an upstream-to-downstream transmission fee, in euro/MWh
+#' * **Hurdle cost indirect** : a downstream-to-upstream transmission fee, in euro/MWh
+#' * **Impedances** : virtual impedances that are used in economy simulations to give a physical meaning to raw outputs, when no binding constraints have been defined to enforce Kirchhoff's laws.
+#' * **Loop flow** : amount of power flowing circularly though the grid when all "nodes" are perfectly balanced (no import and no export).
+#' * **PST min** : lower bound of phase-shifting that can be reached by a PST installed on the link, if any.
+#' * **PST max** : upper bound of phase-shifting that can be reached by a PST installed on the link, if any.
+#' 
 #' NB: For Antares v7 the eight columns must conform to above order. For Antares v6, only five columns are 
 #' expected, and they must follow this other order: NTC direct, NTC indirect, Impedances, Hurdle cost direct,
 #' Hurdle cost indirect.

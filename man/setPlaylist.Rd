@@ -15,7 +15,7 @@ setPlaylist(playlist, weights = NULL, opts = antaresRead::simOptions())
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-The function does not return anything. It is  used to modify the input of an 
+The function does not return anything. It is  used to modify the input of an
 Antares study
 }
 \description{

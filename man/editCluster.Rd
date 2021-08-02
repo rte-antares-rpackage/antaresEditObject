@@ -24,10 +24,10 @@ editCluster(
 
 \item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes.}
 
-\item{prepro_data}{Pre-process data, a \code{data.frame} or \code{matrix}, 
+\item{prepro_data}{Pre-process data, a \code{data.frame} or \code{matrix},
 default is a matrix with 365 rows and 6 columns.}
 
-\item{prepro_modulation}{Pre-process modulation, a \code{data.frame} or \code{matrix}, 
+\item{prepro_modulation}{Pre-process modulation, a \code{data.frame} or \code{matrix},
 if specified, must have 8760 rows and 1 or 4 columns.}
 
 \item{add_prefix}{If \code{TRUE}, cluster_name will be prefixed by area name.}

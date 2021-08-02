@@ -59,7 +59,7 @@ updateOptimizationSettings(
 
 \item{number.of.cores.mode}{minimum, low, medium, high or maximum}
 
-\item{renewable.generation.modelling}{aggregated or cluster}
+\item{renewable.generation.modelling}{aggregated or clusters}
 
 \item{day.ahead.reserve.management}{global}
 

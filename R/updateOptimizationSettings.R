@@ -94,8 +94,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
   
   
   # read
-  generaldatapath <-
-    file.path(opts$studyPath, "settings", "generaldata.ini")
+  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
   generaldata <- readIniFile(file = generaldatapath)
   
   # update

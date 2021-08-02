@@ -18,8 +18,8 @@ writeInputTS(
 \item{type}{Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
 \code{"wind"} or \code{"solar"}.}
 
-\item{data}{A 8760*N matrix of hourly time series, except when \code{type} is
-\code{"hydroSTOR"}. In this latter case, \code{data} must either be 365*N
+\item{data}{A 8760\emph{N matrix of hourly time series, except when \code{type} is
+\code{"hydroSTOR"}. In this latter case, \code{data} must either be 365}N
 (Antares v7) or 12*N (v6 and earlier).}
 
 \item{overwrite}{Logical. Overwrite the values if a file already exists.}

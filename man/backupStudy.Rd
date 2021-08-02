@@ -11,7 +11,7 @@ backupStudy(
 )
 }
 \arguments{
-\item{backupfile}{Name of the backup, without extension. If missing, 
+\item{backupfile}{Name of the backup, without extension. If missing,
 either the name of the study or 'input' according argument \code{what}.}
 
 \item{what}{Which folder to save, \code{input} for the input folder
