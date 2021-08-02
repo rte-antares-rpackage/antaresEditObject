@@ -1,23 +1,30 @@
-#' Create a thermal cluster
+#' @title Create a cluster
+#' 
+#' @description Create a new thermal or renewable cluster.
 #'
 #' @param area The area where to create the cluster.
-#' @param cluster_name cluster name.
+#' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
+#' @param group Group of the cluster, depends on cluster type:
+#'  - thermal cluster, one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2, Other 3, Other 4.
+#'  - renewable cluster, one of: Wind Onshore, Wind Offshore, Solar Thermal, Solar PV, Solar Rooftop, Other RES 1, Other RES 2, Other RES 3, Other RES 4.
 #' @param ... Parameters to write in the Ini file. Careful!
-#'  Some parameters must be set as \code{integers} to avoid warnings in Antares, for example, 
-#'  to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.
+#'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
+#'  to set \code{unitcount}, you'll have to use `unitcount = 1L`.
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
-#' @param prepro_data Pre-process data, a \code{data.frame} or \code{matrix}, 
+#' @param prepro_data Pre-process data, a `data.frame` or `matrix`, 
 #'  default is a matrix with 365 rows and 6 columns.
-#' @param prepro_modulation Pre-process modulation, a \code{data.frame} or \code{matrix}, 
+#' @param prepro_modulation Pre-process modulation, a `data.frame` or `matrix`, 
 #'  if specified, must have 8760 rows and 1 or 4 columns.
-#' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area name.
+#' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite Logical, overwrite the cluster or not.
 #' @param opts
 #'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#'  [antaresRead::setSimulationPath()]
 #'
 #' @return An updated list containing various information about the simulation.
 #' @export
+#' 
+#' @name create-cluster
 #' 
 #' @importFrom antaresRead simOptions
 #' @importFrom stats setNames
@@ -108,26 +115,125 @@
 #' )
 #' 
 #' }
-createCluster <- function(area, cluster_name, ..., time_series = NULL,
-                          prepro_data = NULL, prepro_modulation = NULL,
-                          add_prefix = TRUE, overwrite = FALSE,
+createCluster <- function(area, 
+                          cluster_name, 
+                          group = "Other",
+                          ...,
+                          time_series = NULL,
+                          prepro_data = NULL,
+                          prepro_modulation = NULL,
+                          add_prefix = TRUE, 
+                          overwrite = FALSE,
                           opts = antaresRead::simOptions()) {
+  thermal_group <- c("Gas",
+                     "Hard coal",
+                     "Lignite",
+                     "Mixed fuel",
+                     "Nuclear",
+                     "Oil",
+                     "Other",
+                     "Other 2",
+                     "Other 3",
+                     "Other 4")
+  if (!is.null(group) && !group %in% thermal_group) 
+    warning(
+      "Group: '", group, "' is not a valid name recognized by Antares,",
+      " you should be using one of: ", paste(thermal_group, collapse = ", ")
+    )
+  .createCluster(
+    area = area, 
+    cluster_name = cluster_name, 
+    group = group,
+    ...,
+    time_series = time_series,
+    prepro_data = prepro_data,
+    prepro_modulation = prepro_modulation,
+    add_prefix = add_prefix, 
+    overwrite = overwrite,
+    cluster_type = "thermal",
+    opts = opts
+  )
+}
+
+#' @export
+#' 
+#' @rdname create-cluster
+createClusterRenewable <- function(area, 
+                                   cluster_name, 
+                                   group = "Other RES 1",
+                                   ...,
+                                   time_series = NULL,
+                                   add_prefix = TRUE, 
+                                   overwrite = FALSE,
+                                   opts = antaresRead::simOptions()) {
+  assertthat::assert_that(class(opts) == "simOptions")
+  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
+  generaldata <- readIniFile(file = generaldatapath)
+  rgm <- generaldata$`other preferences`$`renewable-generation-modelling`
+  if (!is.null(rgm) && !identical(rgm, "clusters"))
+    stop(
+      "Cannot create a renewable cluster: parameter renewable-generation-modelling value is not 'clusters'",
+      ", please use updateOptimizationSettings() to update that parameter before creating renewable cluster.",
+      call. = FALSE
+    )
+  renewables_group <- c("Wind Onshore",
+                        "Wind Offshore",
+                        "Solar Thermal",
+                        "Solar PV",
+                        "Solar Rooftop",
+                        "Other RES 1",
+                        "Other RES 2",
+                        "Other RES 3",
+                        "Other RES 4")
+  if (!is.null(group) && !group %in% renewables_group) 
+    warning(
+      "Group: '", group, "' is not a valid name recognized by Antares,",
+      " you should be using one of: ", paste(renewables_group, collapse = ", ")
+    )
+  initClustersRenewables(opts)
+  .createCluster(
+    area = area, 
+    cluster_name = cluster_name,
+    group = group,
+    ...,
+    time_series = time_series,
+    prepro_data = NULL,
+    prepro_modulation = NULL,
+    add_prefix = add_prefix, 
+    overwrite = overwrite,
+    cluster_type = "renewables",
+    opts = opts
+  )
+}
+
+
+.createCluster <- function(area, 
+                           cluster_name, 
+                           ...,
+                           time_series = NULL,
+                           prepro_data = NULL,
+                           prepro_modulation = NULL,
+                           add_prefix = TRUE, 
+                           overwrite = FALSE,
+                           cluster_type = c("thermal", "renewables"),
+                           opts = antaresRead::simOptions()) {
 
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
+  cluster_type <- match.arg(cluster_type)
   
   if (!tolower(area) %in% opts$areaList)
     stop(paste(area, "is not a valid area"))
   
-  if (! NROW(time_series) %in% c(0, 8736, 8760)) {
+  if (!NROW(time_series) %in% c(0, 8736, 8760)) {
     stop("Number of rows for time series must be 0 or 8760")
   }
   
-  if (! NROW(prepro_modulation) %in% c(0, 8736, 8760)) {
+  if (!NROW(prepro_modulation) %in% c(0, 8736, 8760)) {
     stop("Number of rows for modulation data must be 0 or 8760")
   }
-  if (! NCOL(prepro_modulation) %in% c(1, 4)) {
+  if (!NCOL(prepro_modulation) %in% c(1, 4)) {
     stop("Number of cols for modulation data must be 0 or 4")
   }
 
@@ -140,8 +246,8 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   # named list for writing ini file
   # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
 
-  # path to ini file
-  path_clusters_ini <- file.path(inputPath, "thermal", "clusters", tolower(area), "list.ini")
+  # path to ini file containing clusters' name and parameters
+  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", tolower(area), "list.ini")
 
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
@@ -167,7 +273,7 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
 
   # initialize series
   dir.create(path = file.path(
-    inputPath, "thermal", "series", tolower(area), tolower(cluster_name)),
+    inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -185,34 +291,36 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   
   utils::write.table(
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
-    file = file.path(inputPath, "thermal", "series", tolower(area), tolower(cluster_name), "series.txt")
+    file = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name), "series.txt")
   )
 
 
   # prepro
-  dir.create(
-    path = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name)),
-    recursive = TRUE, showWarnings = FALSE
-  )
-  
-  if (is.null(prepro_data))
-    prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 6)
-  utils::write.table(
-    x = prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
-    file = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name), "data.txt")
-  )
-  
-  
-  if (is.null(prepro_modulation))
-    prepro_modulation <- matrix(data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)), ncol = 4)
-  
-  utils::write.table(
-    x = prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
-    file = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name), "modulation.txt")
-  )
+  if (identical(cluster_type, "thermal")) {
+    dir.create(
+      path = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)),
+      recursive = TRUE, showWarnings = FALSE
+    )
+    
+    if (is.null(prepro_data))
+      prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 6)
+    utils::write.table(
+      x = prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name), "data.txt")
+    )
+    
+    
+    if (is.null(prepro_modulation))
+      prepro_modulation <- matrix(data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)), ncol = 4)
+    
+    utils::write.table(
+      x = prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name), "modulation.txt")
+    )
+  }
 
 
-  # Maj simulation
+  # Update simulation options object
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   })
@@ -220,6 +328,22 @@ createCluster <- function(area, cluster_name, ..., time_series = NULL,
   invisible(res)
 }
 
+
+initClustersRenewables <- function(opts) {
+  inputPath <- opts$inputPath
+  ren_dir <- file.path(inputPath, "renewables")
+  if (dir.exists(ren_dir))
+    return(invisible(TRUE))
+  dir.create(ren_dir)
+  dir.create(file.path(ren_dir, "clusters"))
+  areas <- opts$areaList
+  for (area in areas) {
+    dir.create(file.path(inputPath, "renewables", "clusters", tolower(area)))
+    writeLines(character(0), con = file.path(inputPath, "renewables", "clusters", tolower(area), "list.ini"))
+  }
+  dir.create(file.path(ren_dir, "series"))
+  return(invisible(TRUE))
+}
 
 
 # # ex

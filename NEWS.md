@@ -1,6 +1,7 @@
 # antaresEditObject 0.2.2.9000
 
-* `updateOptimizationSettings()` new argument `renewable.generation.modelling` that can take as value: `NULL`|`aggregated`|`cluster`.
+* `updateOptimizationSettings()` has a new argument `renewable.generation.modelling` that can take as value: `NULL`|`aggregated`|`cluster`.
+* New function `createClusterRenewable()` to create a new renewable cluster.
 
 
 # antaresEditObject 0.2.2
