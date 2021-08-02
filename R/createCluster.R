@@ -1,3 +1,4 @@
+
 #' @title Create a cluster
 #' 
 #' @description Create a new thermal or renewable cluster.
@@ -22,6 +23,9 @@
 #'  [antaresRead::setSimulationPath()]
 #'
 #' @return An updated list containing various information about the simulation.
+#' 
+#' @seealso [editCluster()] or [editClusterRenewable()] to edit existing clusters, [removeCluster()] or [removeClusterRenewable()] to remove clusters.
+#' 
 #' @export
 #' 
 #' @name create-cluster
@@ -167,15 +171,7 @@ createClusterRenewable <- function(area,
                                    overwrite = FALSE,
                                    opts = antaresRead::simOptions()) {
   assertthat::assert_that(class(opts) == "simOptions")
-  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  rgm <- generaldata$`other preferences`$`renewable-generation-modelling`
-  if (!is.null(rgm) && !identical(rgm, "clusters"))
-    stop(
-      "Cannot create a renewable cluster: parameter renewable-generation-modelling value is not 'clusters'",
-      ", please use updateOptimizationSettings() to update that parameter before creating renewable cluster.",
-      call. = FALSE
-    )
+  checkClustersRenewables(opts)
   renewables_group <- c("Wind Onshore",
                         "Wind Offshore",
                         "Solar Thermal",
@@ -342,6 +338,20 @@ initClustersRenewables <- function(opts) {
     writeLines(character(0), con = file.path(inputPath, "renewables", "clusters", tolower(area), "list.ini"))
   }
   dir.create(file.path(ren_dir, "series"))
+  return(invisible(TRUE))
+}
+
+checkClustersRenewables <- function(opts) {
+  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
+  generaldata <- readIniFile(file = generaldatapath)
+  rgm <- generaldata$`other preferences`$`renewable-generation-modelling`
+  if (!is.null(rgm) && !identical(rgm, "clusters")) {
+    stop(
+      "Cannot create a renewable cluster: parameter renewable-generation-modelling value is not 'clusters'",
+      ", please use updateOptimizationSettings() to update that parameter before creating renewable cluster.",
+      call. = FALSE
+    )
+  }
   return(invisible(TRUE))
 }
 

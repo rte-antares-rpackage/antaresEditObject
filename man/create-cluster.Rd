@@ -151,3 +151,6 @@ createCluster(
 
 }
 }
+\seealso{
+\code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRenewable]{editClusterRenewable()}} to edit existing clusters, \code{\link[=removeCluster]{removeCluster()}} or \code{\link[=removeClusterRenewable]{removeClusterRenewable()}} to remove clusters.
+}

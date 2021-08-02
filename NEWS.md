@@ -1,7 +1,11 @@
 # antaresEditObject 0.2.2.9000
 
+This release include some new features to interact with renewable clusters:
+
 * `updateOptimizationSettings()` has a new argument `renewable.generation.modelling` that can take as value: `NULL`|`aggregated`|`cluster`.
 * New function `createClusterRenewable()` to create a new renewable cluster.
+* New function `editClusterRenewable()` to edit an existing renewable cluster.
+* New function `removeClusterRenewable()` to remove a renewable cluster.
 
 
 # antaresEditObject 0.2.2
