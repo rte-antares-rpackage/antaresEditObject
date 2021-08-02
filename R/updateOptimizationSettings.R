@@ -16,7 +16,7 @@
 #' @param shedding.policy shave peaks or minimize duration
 #' @param unit.commitment.mode fast or accurate
 #' @param number.of.cores.mode minimum, low, medium, high or maximum
-#' @param renewable.generation.modelling aggregated or cluster
+#' @param renewable.generation.modelling aggregated or clusters
 #' @param day.ahead.reserve.management global
 #' @param opts
 #'   List of simulation parameters returned by the function
@@ -88,7 +88,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
   if (!is.null(number.of.cores.mode))
     assertthat::assert_that(number.of.cores.mode %in% c("minimum", "low", "medium", "high", "maximum"))
   if (!is.null(renewable.generation.modelling))
-    assertthat::assert_that(renewable.generation.modelling %in% c("aggregated", "cluster"))
+    assertthat::assert_that(renewable.generation.modelling %in% c("aggregated", "clusters"))
   if (!is.null(day.ahead.reserve.management))
     assertthat::assert_that(day.ahead.reserve.management %in% c("global"))
   
