@@ -21,6 +21,7 @@ updateOptimizationSettings(
   shedding.policy = NULL,
   unit.commitment.mode = NULL,
   number.of.cores.mode = NULL,
+  renewable.generation.modelling = NULL,
   day.ahead.reserve.management = NULL,
   opts = antaresRead::simOptions()
 )
@@ -57,6 +58,8 @@ updateOptimizationSettings(
 \item{unit.commitment.mode}{fast or accurate}
 
 \item{number.of.cores.mode}{minimum, low, medium, high or maximum}
+
+\item{renewable.generation.modelling}{aggregated or cluster}
 
 \item{day.ahead.reserve.management}{global}
 

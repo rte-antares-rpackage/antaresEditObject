@@ -1,7 +1,13 @@
+# antaresEditObject 0.2.2.9000
+
+* `updateOptimizationSettings()` new argument `renewable.generation.modelling` that can take as value: `NULL`|`aggregated`|`cluster`.
+
+
 # antaresEditObject 0.2.2
 
 * New usage `getPlaylist` : V8 antares ponderation.
 * New usage `setPlaylist` : V8 antares ponderation.
+
 
 # antaresEditObject 0.2.1
 
@@ -11,6 +17,7 @@
 * New function `parAggregateMCall` : to compute mc-all from md-ind. 
 * New function `editArea` : to edit area
 * New function `editBindingConstraint` : to edit Binding Constraint
+
 
 # antaresEditObject 0.2.0
 
