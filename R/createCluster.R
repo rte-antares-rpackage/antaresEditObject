@@ -341,7 +341,7 @@ initClustersRenewables <- function(opts) {
   return(invisible(TRUE))
 }
 
-checkClustersRenewables <- function(opts) {
+checkClustersRenewables <- function(opts, check_dir = FALSE) {
   generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
   generaldata <- readIniFile(file = generaldatapath)
   rgm <- generaldata$`other preferences`$`renewable-generation-modelling`
@@ -351,6 +351,16 @@ checkClustersRenewables <- function(opts) {
       ", please use updateOptimizationSettings() to update that parameter before creating renewable cluster.",
       call. = FALSE
     )
+  }
+  if (isTRUE(check_dir)) {
+    inputPath <- opts$inputPath
+    ren_dir <- file.path(inputPath, "renewables")
+    if (!dir.exists(ren_dir)) {
+      stop(
+        "There is no 'renewables' directory in the study, are you sure you have renewable clusters?",
+        call. = FALSE
+      )
+    }
   }
   return(invisible(TRUE))
 }

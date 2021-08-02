@@ -46,6 +46,8 @@ removeClusterRenewable <- function(area,
                                    cluster_name, 
                                    add_prefix = TRUE, 
                                    opts = antaresRead::simOptions()) {
+  assertthat::assert_that(class(opts) == "simOptions")
+  checkClustersRenewables(opts, check_dir = TRUE)
   .removeCluster(
     area = area, 
     cluster_name = cluster_name, 
