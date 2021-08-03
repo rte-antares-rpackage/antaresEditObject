@@ -2,20 +2,55 @@
 
 # RES utilities functions -------------------------------------------------
 
+#' @title Activate RES in an Antares study
+#' 
+#' @description Helper to activate Renewables Energy Sources. This will
+#'  update `renewable.generation.modelling` parameter and create 
+#'  appropriate structure for RES clusters.
+#' @param quietly Display or not a message to the user if success.
+#'
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   \code{antaresRead::setSimulationPath}
+#'
+#' @return An updated list containing various information about the simulation.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' 
+#' library(antaresEditObject)
+#' tmp <- tempfile()
+#' createStudy(path = tmp)
+#' opts <- antaresRead::setSimulationPath(tmp)
+#' activateRES()
+#' 
+#' # then you can use createClusterRES()...
+#' 
+#' }
+activateRES <- function(opts = antaresRead::simOptions(), quietly = FALSE) {
+  assertthat::assert_that(class(opts) == "simOptions")
+  updateOptimizationSettings(renewable.generation.modelling = "clusters")
+  initialize_RES(opts)
+  if (!isTRUE(quietly))
+    cat("\u2713", "Renewables Energy Sources activated\n")
+  invisible(opts)
+}
+
 
 initialize_RES <- function(opts) {
   inputPath <- opts$inputPath
   ren_dir <- file.path(inputPath, "renewables")
-  if (dir.exists(ren_dir))
-    return(invisible(TRUE))
-  dir.create(ren_dir)
-  dir.create(file.path(ren_dir, "clusters"))
+  dir.create(ren_dir, showWarnings = FALSE)
+  dir.create(file.path(ren_dir, "clusters"), showWarnings = FALSE)
   areas <- opts$areaList
   for (area in areas) {
-    dir.create(file.path(inputPath, "renewables", "clusters", tolower(area)))
-    writeLines(character(0), con = file.path(inputPath, "renewables", "clusters", tolower(area), "list.ini"))
+    dir.create(file.path(inputPath, "renewables", "clusters", tolower(area)), showWarnings = FALSE)
+    path_ini <- file.path(inputPath, "renewables", "clusters", tolower(area), "list.ini")
+    if (!file.exists(path_ini))
+      writeLines(character(0), con = path_ini)
   }
-  dir.create(file.path(ren_dir, "series"))
+  dir.create(file.path(ren_dir, "series"), showWarnings = FALSE)
   return(invisible(TRUE))
 }
 
