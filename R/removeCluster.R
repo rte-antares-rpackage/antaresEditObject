@@ -1,7 +1,7 @@
 
 #' @title Remove a cluster
 #' 
-#' @description Remove a cluster (thermal or renewable) and all its data.
+#' @description Remove a cluster, thermal or RES (renewable energy source), and all its data.
 #'
 #' @param area Area from which to remove a cluster.
 #' @param cluster_name Cluster to remove.
@@ -12,7 +12,7 @@
 #'
 #' @return An updated list containing various information about the simulation.
 #' 
-#' @seealso [createCluster()] or [createClusterRenewable()] to create new clusters, [editCluster()] or [editClusterRenewable()] to edit existing clusters.
+#' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [editCluster()] or [editClusterRES()] to edit existing clusters.
 #' 
 #' @export
 #' 
@@ -42,10 +42,10 @@ removeCluster <- function(area,
 #' @export
 #' 
 #' @rdname remove-cluster
-removeClusterRenewable <- function(area, 
-                                   cluster_name, 
-                                   add_prefix = TRUE, 
-                                   opts = antaresRead::simOptions()) {
+removeClusterRES <- function(area, 
+                             cluster_name, 
+                             add_prefix = TRUE, 
+                             opts = antaresRead::simOptions()) {
   assertthat::assert_that(class(opts) == "simOptions")
   checkClustersRenewables(opts, check_dir = TRUE)
   .removeCluster(

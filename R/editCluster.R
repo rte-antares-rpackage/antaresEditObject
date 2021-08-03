@@ -1,7 +1,7 @@
 
 #' @title Edit an existing cluster
 #' 
-#' @description Edit parameters of an existing cluster (thermal or renewable).
+#' @description Edit parameters of an existing cluster, thermal or RES (renewable energy source).
 #'
 #' @param area The area where the cluster is.
 #' @param cluster_name cluster name.
@@ -18,7 +18,7 @@
 #'
 #' @return An updated list containing various information about the simulation.
 #' 
-#' @seealso [createCluster()] or [createClusterRenewable()] to create new clusters, [removeCluster()] or [removeClusterRenewable()] to remove clusters.
+#' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
 #' 
 #' @export
 #' 
@@ -63,12 +63,12 @@ editCluster <- function(area,
 #' @export
 #' 
 #' @rdname edit-cluster
-editClusterRenewable <- function(area,
-                                 cluster_name, 
-                                 ..., 
-                                 time_series = NULL,
-                                 add_prefix = TRUE, 
-                                 opts = antaresRead::simOptions()) {
+editClusterRES <- function(area,
+                           cluster_name, 
+                           ..., 
+                           time_series = NULL,
+                           add_prefix = TRUE, 
+                           opts = antaresRead::simOptions()) {
   assertthat::assert_that(class(opts) == "simOptions")
   checkClustersRenewables(opts, check_dir = TRUE)
   .editCluster(

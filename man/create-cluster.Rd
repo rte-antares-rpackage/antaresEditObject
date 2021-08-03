@@ -3,7 +3,7 @@
 \name{create-cluster}
 \alias{create-cluster}
 \alias{createCluster}
-\alias{createClusterRenewable}
+\alias{createClusterRES}
 \title{Create a cluster}
 \usage{
 createCluster(
@@ -19,7 +19,7 @@ createCluster(
   opts = antaresRead::simOptions()
 )
 
-createClusterRenewable(
+createClusterRES(
   area,
   cluster_name,
   group = "Other RES 1",
@@ -64,7 +64,7 @@ if specified, must have 8760 rows and 1 or 4 columns.}
 An updated list containing various information about the simulation.
 }
 \description{
-Create a new thermal or renewable cluster.
+Create a new thermal or RES (renewable energy source) cluster.
 }
 \examples{
 \dontrun{
@@ -152,5 +152,5 @@ createCluster(
 }
 }
 \seealso{
-\code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRenewable]{editClusterRenewable()}} to edit existing clusters, \code{\link[=removeCluster]{removeCluster()}} or \code{\link[=removeClusterRenewable]{removeClusterRenewable()}} to remove clusters.
+\code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} to edit existing clusters, \code{\link[=removeCluster]{removeCluster()}} or \code{\link[=removeClusterRES]{removeClusterRES()}} to remove clusters.
 }

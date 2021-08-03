@@ -3,7 +3,7 @@
 \name{edit-cluster}
 \alias{edit-cluster}
 \alias{editCluster}
-\alias{editClusterRenewable}
+\alias{editClusterRES}
 \title{Edit an existing cluster}
 \usage{
 editCluster(
@@ -17,7 +17,7 @@ editCluster(
   opts = antaresRead::simOptions()
 )
 
-editClusterRenewable(
+editClusterRES(
   area,
   cluster_name,
   ...,
@@ -50,7 +50,7 @@ if specified, must have 8760 rows and 1 or 4 columns.}
 An updated list containing various information about the simulation.
 }
 \description{
-Edit parameters of an existing cluster (thermal or renewable).
+Edit parameters of an existing cluster, thermal or RES (renewable energy source).
 }
 \examples{
 \dontrun{
@@ -65,5 +65,5 @@ editCluster(
 }
 }
 \seealso{
-\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRenewable]{createClusterRenewable()}} to create new clusters, \code{\link[=removeCluster]{removeCluster()}} or \code{\link[=removeClusterRenewable]{removeClusterRenewable()}} to remove clusters.
+\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRES]{createClusterRES()}} to create new clusters, \code{\link[=removeCluster]{removeCluster()}} or \code{\link[=removeClusterRES]{removeClusterRES()}} to remove clusters.
 }

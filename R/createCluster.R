@@ -1,7 +1,7 @@
 
 #' @title Create a cluster
 #' 
-#' @description Create a new thermal or renewable cluster.
+#' @description Create a new thermal or RES (renewable energy source) cluster.
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
@@ -24,7 +24,7 @@
 #'
 #' @return An updated list containing various information about the simulation.
 #' 
-#' @seealso [editCluster()] or [editClusterRenewable()] to edit existing clusters, [removeCluster()] or [removeClusterRenewable()] to remove clusters.
+#' @seealso [editCluster()] or [editClusterRES()] to edit existing clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
 #' 
 #' @export
 #' 
@@ -162,14 +162,14 @@ createCluster <- function(area,
 #' @export
 #' 
 #' @rdname create-cluster
-createClusterRenewable <- function(area, 
-                                   cluster_name, 
-                                   group = "Other RES 1",
-                                   ...,
-                                   time_series = NULL,
-                                   add_prefix = TRUE, 
-                                   overwrite = FALSE,
-                                   opts = antaresRead::simOptions()) {
+createClusterRES <- function(area, 
+                             cluster_name, 
+                             group = "Other RES 1",
+                             ...,
+                             time_series = NULL,
+                             add_prefix = TRUE, 
+                             overwrite = FALSE,
+                             opts = antaresRead::simOptions()) {
   assertthat::assert_that(class(opts) == "simOptions")
   checkClustersRenewables(opts)
   renewables_group <- c("Wind Onshore",

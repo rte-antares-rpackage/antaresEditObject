@@ -3,7 +3,7 @@
 \name{remove-cluster}
 \alias{remove-cluster}
 \alias{removeCluster}
-\alias{removeClusterRenewable}
+\alias{removeClusterRES}
 \title{Remove a cluster}
 \usage{
 removeCluster(
@@ -13,7 +13,7 @@ removeCluster(
   opts = antaresRead::simOptions()
 )
 
-removeClusterRenewable(
+removeClusterRES(
   area,
   cluster_name,
   add_prefix = TRUE,
@@ -34,7 +34,7 @@ removeClusterRenewable(
 An updated list containing various information about the simulation.
 }
 \description{
-Remove a cluster (thermal or renewable) and all its data.
+Remove a cluster, thermal or RES (renewable energy source), and all its data.
 }
 \examples{
 \dontrun{
@@ -46,5 +46,5 @@ removeCluster(area = "fr", cluster_name = "fr_gas")
 }
 }
 \seealso{
-\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRenewable]{createClusterRenewable()}} to create new clusters, \code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRenewable]{editClusterRenewable()}} to edit existing clusters.
+\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRES]{createClusterRES()}} to create new clusters, \code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} to edit existing clusters.
 }

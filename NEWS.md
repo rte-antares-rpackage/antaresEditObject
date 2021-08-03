@@ -1,11 +1,11 @@
 # antaresEditObject 0.2.2.9000
 
-This release include some new features to interact with renewable clusters:
+This release include some new features to interact with renewable energy sources (new in Antares v8.0.3):
 
 * `updateOptimizationSettings()` has a new argument `renewable.generation.modelling` that can take as value: `NULL`|`aggregated`|`cluster`.
-* New function `createClusterRenewable()` to create a new renewable cluster.
-* New function `editClusterRenewable()` to edit an existing renewable cluster.
-* New function `removeClusterRenewable()` to remove a renewable cluster.
+* New function `createClusterRES()` to create a new renewable cluster.
+* New function `editClusterRES()` to edit an existing renewable cluster.
+* New function `removeClusterRES()` to remove a renewable cluster.
 
 
 # antaresEditObject 0.2.2
@@ -16,12 +16,12 @@ This release include some new features to interact with renewable clusters:
 
 # antaresEditObject 0.2.1
 
-* New function `copyOutput` : to copy antares output with extansion.
+* New function `copyOutput` : to copy antares output with extension.
 * New function `writeOutputValues` : to write antares data after `antaresRead` (areas, links and clusters).
 * New function `computeTimeStampFromHourly` : to write mc-ind data from hourly files (daily, weekly, monthly and annual).
 * New function `parAggregateMCall` : to compute mc-all from md-ind. 
-* New function `editArea` : to edit area
-* New function `editBindingConstraint` : to edit Binding Constraint
+* New function `editArea` : to edit an area.
+* New function `editBindingConstraint` : to edit a Binding Constraint.
 
 
 # antaresEditObject 0.2.0
