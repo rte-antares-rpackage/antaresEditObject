@@ -39,7 +39,7 @@ sapply(studies, function(study) {
     createCluster(
       area = area2, 
       cluster_name = "mycluster2",
-      group = "other",
+      group = "Other",
       unitcount = 1,
       nominalcapacity = 8000,
       `min-down-time` = 0,
