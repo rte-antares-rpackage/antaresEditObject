@@ -171,7 +171,7 @@ createClusterRES <- function(area,
                              overwrite = FALSE,
                              opts = antaresRead::simOptions()) {
   assertthat::assert_that(class(opts) == "simOptions")
-  checkClustersRenewables(opts)
+  check_active_RES(opts)
   renewables_group <- c("Wind Onshore",
                         "Wind Offshore",
                         "Solar Thermal",
@@ -186,7 +186,7 @@ createClusterRES <- function(area,
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(renewables_group, collapse = ", ")
     )
-  initClustersRenewables(opts)
+  initialize_RES(opts)
   .createCluster(
     area = area, 
     cluster_name = cluster_name,
@@ -325,45 +325,6 @@ createClusterRES <- function(area,
 }
 
 
-initClustersRenewables <- function(opts) {
-  inputPath <- opts$inputPath
-  ren_dir <- file.path(inputPath, "renewables")
-  if (dir.exists(ren_dir))
-    return(invisible(TRUE))
-  dir.create(ren_dir)
-  dir.create(file.path(ren_dir, "clusters"))
-  areas <- opts$areaList
-  for (area in areas) {
-    dir.create(file.path(inputPath, "renewables", "clusters", tolower(area)))
-    writeLines(character(0), con = file.path(inputPath, "renewables", "clusters", tolower(area), "list.ini"))
-  }
-  dir.create(file.path(ren_dir, "series"))
-  return(invisible(TRUE))
-}
-
-checkClustersRenewables <- function(opts, check_dir = FALSE) {
-  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  rgm <- generaldata$`other preferences`$`renewable-generation-modelling`
-  if (!is.null(rgm) && !identical(rgm, "clusters")) {
-    stop(
-      "Cannot create a renewable cluster: parameter renewable-generation-modelling value is not 'clusters'",
-      ", please use updateOptimizationSettings() to update that parameter before creating renewable cluster.",
-      call. = FALSE
-    )
-  }
-  if (isTRUE(check_dir)) {
-    inputPath <- opts$inputPath
-    ren_dir <- file.path(inputPath, "renewables")
-    if (!dir.exists(ren_dir)) {
-      stop(
-        "There is no 'renewables' directory in the study, are you sure you have renewable clusters?",
-        call. = FALSE
-      )
-    }
-  }
-  return(invisible(TRUE))
-}
 
 
 # # ex
