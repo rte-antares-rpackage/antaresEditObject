@@ -38,11 +38,11 @@ updateScenarioBuilder(
 \item{areas_rand}{Areas for which to use \code{"rand"}.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 
 \item{ruleset}{Ruleset to read.}
 
-\item{as_matrix}{If \code{TRUE} (default) return a matrix, else a list.}
+\item{as_matrix}{If \code{TRUE} (default) return a \code{matrix}, else a \code{list}.}
 
 \item{ldata}{A \code{matrix} obtained with \code{scenarioBuilder},
 or a named list of matrices obtained with \code{scenarioBuilder}, names must be
@@ -53,7 +53,7 @@ or a named list of matrices obtained with \code{scenarioBuilder}, names must be
 \value{
 \code{scenarioBuilder} : a \code{matrix}
 
-\code{readScenarioBuilder} : a \code{list} of \code{matrix} or \code{list}
+\code{readScenarioBuilder} : a \code{list} of \code{matrix} or \code{list} according to \code{as_matrix} parameters.
 }
 \description{
 Read, create & update scenario builder
