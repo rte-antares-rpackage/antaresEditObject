@@ -2,6 +2,7 @@
 
 This release include some new features to interact with renewable energy sources (new in Antares v8.0.3):
 
+* New function `activateRES()` to use new RES features in an Antares study.
 * `updateOptimizationSettings()` has a new argument `renewable.generation.modelling` that can take as value: `NULL`|`aggregated`|`cluster`.
 * New function `createClusterRES()` to create a new renewable cluster.
 * New function `editClusterRES()` to edit an existing renewable cluster.
