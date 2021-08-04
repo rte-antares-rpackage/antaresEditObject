@@ -130,14 +130,14 @@ updateOptimizationSettings <- function(simplex.range = NULL,
   new_params_others <- dropNulls(new_params_others)
   
   for (i in seq_along(new_params_optimization)) {
-    new_params_optimization[i] <-
-      as.character(new_params_optimization[i])
+    new_params_optimization[[i]] <-
+      as.character(new_params_optimization[[i]])
     names(new_params_optimization)[i] <-
       dicoOptimizationSettings(names(new_params_optimization)[i])
   }
   
   for (i in seq_along(new_params_others)) {
-    new_params_others[i] <- as.character(new_params_others[i])
+    new_params_others[[i]] <- as.character(new_params_others[[i]])
     names(new_params_others)[i] <-
       dicoOptimizationSettings(names(new_params_others)[i])
   }

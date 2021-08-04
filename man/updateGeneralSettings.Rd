@@ -103,11 +103,23 @@ Study_name/OUTPUT/simu_tag/Economy /mc-i-number}
 \item{readonly}{See Antares General Reference Guide.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
 Update general parameters of an Antares study
+}
+\examples{
+\dontrun{
+
+# Update number of Monte-Carlo years
+updateGeneralSettings(nbyears = 42)
+
+# Use a vector to update a parameter that
+# can take multiple values
+updateGeneralSettings(generate = c("thermal", "hydro"))
+
+}
 }

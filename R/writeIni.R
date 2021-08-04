@@ -48,9 +48,9 @@ writeIni <- function(listData, pathIni, overwrite = FALSE) {
 #'
 #' @noRd
 .formatedIni <- function(val) {
-  if (class(val) %in% c("numeric", "integer")) {
+  if (inherits(val, c("numeric", "integer"))) {
     format(val, nsmall = 6, scientific = FALSE)
-  } else if (class(val) %in% c("logical")) {
+  } else if (inherits(val, "logical")) {
     if (is.na(val)) {
       ""
     } else {
