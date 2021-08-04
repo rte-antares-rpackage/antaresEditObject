@@ -19,28 +19,31 @@
 #' copyOutput(opts, "_adq")
 #' 
 #' }
-#' @import fs
 #' 
 #' @export
 copyOutput <- function(opts, extname, mcYears = "all"){
+  if (!file.exists(opts$simPath))
+    stop("Invalid simulation path, are you sure to have a simulation to copy?", call. = FALSE)
   fil <- paste0(opts$simPath, extname)
   dir.create(fil)
   
-  sapply(list.files(opts$simPath), function(x){
-    dd <- file.path(opts$simPath, x)
-    if(fs::is_dir(dd)){
-      fs::dir_copy(dd, fil)
-    }else{
-      fs::file_copy(dd, fil)
-    }
-  })
+  result <- file.copy(
+    from = list.files(
+      path = opts$simPath,
+      full.names = TRUE
+    ),
+    to = fil, 
+    recursive = TRUE
+  )
+  if (all(result))
+    cat("\u2713", "Copy done\n")
   
-  opts <- antaresRead::setSimulationPath(fil)
+  suppressWarnings(opts <- antaresRead::setSimulationPath(fil))
   .updateStudyName(opts, extname)
   
-  cat("Copy done")
+  cat("\u2713", "Simulation options updated\n")
   
-  opts
+  invisible(opts)
 }
 
 

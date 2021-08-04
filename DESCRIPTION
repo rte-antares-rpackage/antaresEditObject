@@ -25,7 +25,6 @@ Imports:
     grDevices,
     data.table,
     whisker,
-    fs,
     doParallel,
     pbapply,
     parallel
