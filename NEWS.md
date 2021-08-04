@@ -6,6 +6,12 @@ This release include some new features to interact with renewable energy sources
 * New function `createClusterRES()` to create a new renewable cluster.
 * New function `editClusterRES()` to edit an existing renewable cluster.
 * New function `removeClusterRES()` to remove a renewable cluster.
+* `readScenarioBuilder()`: there can be a new field `r` if a scenario is completed for renewables
+* `updateScenarioBuilder()`: allow to update scenario builder for renewables if RES activated.
+* In `updateGeneralSettings()`: check value for `inter.modal` and `inter.modal` parameters:
+  + RES activated: use load, hydro, thermal, renewables
+  + RES not activated: use load, hydro, wind, thermal, solar
+* In `updateInputSettings()`: prevent use of `renewables` for `import` parameter.
 
 
 # antaresEditObject 0.2.2

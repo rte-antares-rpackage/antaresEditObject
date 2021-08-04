@@ -112,7 +112,17 @@ $r
 area51   1    2    3  
 ```
 
+To update the scenario builder, you can use:
 
+```r
+# generate scenario
+sbuilder <- scenarioBuilder(n_scenario = 51)
+
+# Update with:
+updateScenarioBuilder(ldata = sbuilder, series = "renewables")
+# OR
+updateScenarioBuilder(ldata = list(r = sbuilder))
+```
 
 
 

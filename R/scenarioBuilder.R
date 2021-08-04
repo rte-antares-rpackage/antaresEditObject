@@ -176,7 +176,7 @@ updateScenarioBuilder <- function(ldata,
     if (!is.null(series)) {
       series <- match.arg(
         arg = series,
-        choices = c("load", "hydro", "wind", "solar", "thermal", "renewable"),
+        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables"),
         several.ok = TRUE
       )
       series <- substr(series, 1, 1)
@@ -210,7 +210,7 @@ updateScenarioBuilder <- function(ldata,
   
   pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
   writeIni(listData = res, pathIni = pathSB, overwrite = TRUE)
-  cat("Scenario Builder updated\n")
+  cat("\u2713", "Scenario Builder updated\n")
   return(invisible(res))
 } 
 
@@ -243,9 +243,9 @@ listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
   }
   if (identical(series, "r")) {
     if (packageVersion("antaresRead") < "2.2.8")
-      stop("You need to install amore recent version of antaresRead (>2.2.8)", call. = FALSE)
+      stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
     if (!exists("readClusterResDesc", where = "package:antaresRead", mode = "function"))
-      stop("You need to install amore recent version of antaresRead (>2.2.8)", call. = FALSE)
+      stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
     read_cluster_res_desc <- getFromNamespace("readClusterResDesc", ns = "antaresRead")
     cluster_desc <- read_cluster_res_desc(opts = opts)
     dtsb <- merge(
