@@ -2,17 +2,18 @@
 % Please edit documentation in R/writeAntaresOutput.R
 \name{writeOutputValues}
 \alias{writeOutputValues}
-\title{Write output value for antares}
+\title{Write output value for Antares}
 \usage{
 writeOutputValues(data, opts = NULL)
 }
 \arguments{
 \item{data}{obtain with readAntares}
 
-\item{opts}{opts simulation path}
+\item{opts}{List of simulation parameters returned by the function
+\code{antaresRead::setSimulationPath}}
 }
 \description{
-This function write all ouput values for antares
+This function write all output values for an Antares study.
 }
 \examples{
 \dontrun{

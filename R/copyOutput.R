@@ -1,8 +1,10 @@
-#' Copy an output studies.
+#' Copy of the output files of an Antares study
 #'
-#' @param opts file opts obtain with antaresRead::setSimulationPath
-#' @param extname extention name for study duplicated
-#' @param mcYears mcYears to copy. Can be all.
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   \code{antaresRead::setSimulationPath}
+#' @param extname Extension to be added to the name of the study, to be used as a name for the newly created folder.
+#' @param mcYears mcYears to copy. Can be \code{"all"}.
 #' 
 #' 
 #' @examples

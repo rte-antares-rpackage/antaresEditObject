@@ -1,9 +1,11 @@
-#' Write output value for antares
+#' @title Write output value for Antares
 #'
-#' This function write all ouput values for antares
+#' @description This function write all output values for an Antares study.
 #' 
 #' @param data obtain with readAntares
-#' @param opts opts simulation path
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   \code{antaresRead::setSimulationPath}
 #' 
 #' @examples
 #' \dontrun{

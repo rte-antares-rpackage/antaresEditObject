@@ -2,19 +2,20 @@
 % Please edit documentation in R/copyOutput.R
 \name{copyOutput}
 \alias{copyOutput}
-\title{Copy an output studies.}
+\title{Copy of the output files of an Antares study}
 \usage{
 copyOutput(opts, extname, mcYears = "all")
 }
 \arguments{
-\item{opts}{file opts obtain with antaresRead::setSimulationPath}
+\item{opts}{List of simulation parameters returned by the function
+\code{antaresRead::setSimulationPath}}
 
-\item{extname}{extention name for study duplicated}
+\item{extname}{Extension to be added to the name of the study, to be used as a name for the newly created folder.}
 
-\item{mcYears}{mcYears to copy. Can be all.}
+\item{mcYears}{mcYears to copy. Can be \code{"all"}.}
 }
 \description{
-Copy an output studies.
+Copy of the output files of an Antares study
 }
 \examples{
 \dontrun{
