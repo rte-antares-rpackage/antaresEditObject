@@ -1,11 +1,10 @@
 
-
 #' Update input parameters of an Antares study
 #'
 #' @param import Series to import.
 #' @param opts
 #'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#'   [antaresRead::setSimulationPath()]
 #'
 #' @return An updated list containing various information about the simulation.
 #' @export
@@ -19,6 +18,11 @@
 #' }
 updateInputSettings <- function(import, opts = antaresRead::simOptions()) {
   assertthat::assert_that(class(opts) == "simOptions")
+  
+  if ("renewables" %in% import) {
+    warning("import parameter cannot be 'renewables', it will be discarded.")
+    import <- setdiff(import, "renewables")
+  }
   
   # read
   generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")

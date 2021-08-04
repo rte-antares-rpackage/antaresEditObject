@@ -17,6 +17,14 @@ sapply(studies, function(study) {
     
   })
   
+  test_that("Dont update input settings if renewables", {
+    
+    expect_warning(updateInputSettings(import = "renewables"))
+    
+    expect_identical(getOption("antares")$parameters$input$import, NA)
+    
+  })
+  
   # remove temporary study
   unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
