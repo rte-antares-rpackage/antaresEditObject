@@ -222,7 +222,7 @@ updateScenarioBuilder <- function(ldata,
 #'
 #' @importFrom data.table as.data.table melt := .SD
 #' @importFrom antaresRead readClusterDesc
-#' @importFrom utils packageVersion
+#' @importFrom utils packageVersion getFromNamespace
 #' @noRd
 listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
@@ -246,7 +246,8 @@ listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
       stop("You need to install amore recent version of antaresRead (>2.2.8)", call. = FALSE)
     if (!exists("readClusterResDesc", where = "package:antaresRead", mode = "function"))
       stop("You need to install amore recent version of antaresRead (>2.2.8)", call. = FALSE)
-    cluster_desc <- antaresRead::readClusterResDesc(opts = opts)
+    read_cluster_res_desc <- getFromNamespace("readClusterResDesc", ns = "antaresRead")
+    cluster_desc <- read_cluster_res_desc(opts = opts)
     dtsb <- merge(
       x = dtsb, 
       y = cluster_desc[, .SD, .SDcols = c("area", "cluster")],
