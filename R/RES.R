@@ -62,9 +62,11 @@ is_active_RES <- function(opts) {
 }
 
 check_active_RES <- function(opts, check_dir = FALSE) {
+  if (opts$antaresVersion < 810)
+    stop("Renewable Energy Sources is only available if using Antares >= 8.1.0", call. = FALSE)
   if (!is_active_RES(opts)) {
     stop(
-      "Cannot create a renewable cluster: parameter renewable-generation-modelling value is not 'clusters'",
+      "Cannot create/edit a renewable cluster: parameter renewable-generation-modelling value is not 'clusters'",
       ", please use updateOptimizationSettings() to update that parameter before creating renewable cluster.",
       call. = FALSE
     )
@@ -74,7 +76,7 @@ check_active_RES <- function(opts, check_dir = FALSE) {
     ren_dir <- file.path(inputPath, "renewables")
     if (!dir.exists(ren_dir)) {
       stop(
-        "There is no 'renewables' directory in the study, are you sure you have renewable clusters?",
+        "There is no 'renewables' directory in the study, are you sure you have renewable clusters enabled?",
         call. = FALSE
       )
     }
