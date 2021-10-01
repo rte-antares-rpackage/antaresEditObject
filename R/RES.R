@@ -66,8 +66,8 @@ check_active_RES <- function(opts, check_dir = FALSE) {
     stop("Renewable Energy Sources is only available if using Antares >= 8.1.0", call. = FALSE)
   if (!is_active_RES(opts)) {
     stop(
-      "Cannot create/edit a renewable cluster: parameter renewable-generation-modelling value is not 'clusters'",
-      ", please use updateOptimizationSettings() to update that parameter before creating renewable cluster.",
+      "Renewable Energy Sources is not activated, you cannot create/edit a renewable cluster or update scenario builder for renewables for example.",
+      "\nPlease use updateOptimizationSettings() to set `renewable-generation-modelling` parameter to 'clusters' or use activateRES().",
       call. = FALSE
     )
   }

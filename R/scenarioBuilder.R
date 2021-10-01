@@ -244,6 +244,7 @@ listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
     )
   }
   if (identical(series, "r")) {
+    check_active_RES(opts)
     if (packageVersion("antaresRead") < "2.2.8")
       stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
     if (!exists("readClusterResDesc", where = "package:antaresRead", mode = "function"))
