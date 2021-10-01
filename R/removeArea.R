@@ -28,8 +28,9 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
   # Update area list
   areas <- readLines(file.path(inputPath, "areas/list.txt"))
-  areas <- setdiff(areas, list_name)
   areas <- areas[!duplicated(areas)]
+  index_to_remove <- match(name, tolower(areas))
+  areas <- areas[-index_to_remove]
   areas <- paste(sort(areas), collapse = "\n")
   writeLines(text = areas, con = file.path(inputPath, "areas/list.txt"))
 
