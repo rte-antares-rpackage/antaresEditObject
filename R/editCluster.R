@@ -97,8 +97,7 @@ editClusterRES <- function(area,
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   cluster_type <- match.arg(cluster_type)
   
-  if (!tolower(area) %in% opts$areaList)
-    stop(paste(area, "is not a valid area"))
+  check_area_name(area, opts)
   
   if (!NROW(time_series) %in% c(0, 8736, 8760)) {
     stop("Number of rows for time series must be 0 or 8760")
@@ -112,7 +111,7 @@ editClusterRES <- function(area,
   }
   
   # Cluster's parameters
-  params_cluster <- list(...)
+  params_cluster <- hyphenize_names(list(...))
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name

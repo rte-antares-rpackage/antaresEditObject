@@ -56,7 +56,8 @@
 #'   transmission_capacities = "infinite"
 #' )
 #' }
-editLink <- function(from, to, hurdles_cost = NULL, 
+editLink <- function(from, to,
+                     hurdles_cost = NULL, 
                      transmission_capacities = NULL, 
                      asset_type = NULL,
                      display_comments = NULL,
@@ -92,17 +93,13 @@ editLink <- function(from, to, hurdles_cost = NULL,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  if (!from %in% opts$areaList)
-    stop(paste(from, "is not a valid area"))
-  if (!to %in% opts$areaList)
-    stop(paste(to, "is not a valid area"))
-  
+  check_area_name(from, opts)
+  check_area_name(to, opts)
   
   # Previous links
   prev_links <- readIniFile(
     file = file.path(inputPath, "links", from, "properties.ini")
   )
-  
 
   propertiesLink <- dropNulls(list(
     `hurdles-cost` = hurdles_cost,

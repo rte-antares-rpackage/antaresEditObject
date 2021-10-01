@@ -150,11 +150,6 @@ updateGeneralSettings <- function(mode = NULL,
   invisible(res)
 }
 
-
-dropNulls <- function (x) {
-  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
-}
-
 check_modal_param <- function(x, opts) {
   if (is.null(x))
     return(NULL)

@@ -409,7 +409,7 @@ getCapacityPSP <- function(area = NULL,
                            timeStepBindConstraint = "weekly", 
                            opts = antaresRead::simOptions()){
   
-  .checkAreName(area)
+  check_area_name(area, opts = opts)
   endNameTurbining<- .getTheLastVirualName(
     nameTurbining, timeStepBindConstraint = timeStepBindConstraint
   )
@@ -440,7 +440,7 @@ editPSP <- function(area = NULL,
                     hurdleCost = 0.0005, 
                     opts = antaresRead::simOptions()){
   v7 <- is_antares_v7(opts)
-  .checkAreName(area)
+  check_area_name(area, opts = opts)
   #PUMP
   endNamePumping<- .getTheLastVirualName(
     namePumping, timeStepBindConstraint = timeStepBindConstraint

@@ -92,7 +92,8 @@ scenarioBuilder <- function(n_scenario,
   }
   sb <- matrix(
     data = rep(seq_len(n_scenario), length(areas) * ceiling(n_mc/n_scenario)),
-    byrow = TRUE, nrow = length(areas),
+    byrow = TRUE, 
+    nrow = length(areas),
     dimnames = list(areas, NULL)
   )
   sb[areas %in% areas_rand, ] <- apply(
@@ -161,7 +162,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's' or 't', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #'
 #' @export
@@ -210,7 +211,8 @@ updateScenarioBuilder <- function(ldata,
   
   pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
   writeIni(listData = res, pathIni = pathSB, overwrite = TRUE)
-  cat("\u2713", "Scenario Builder updated\n")
+  if (interactive())
+    cat("\u2713", "Scenario Builder updated\n")
   return(invisible(res))
 } 
 

@@ -2,7 +2,7 @@
 test_that("RES works", {
   
   tmp <- tempfile()
-  createStudy(path = tmp)
+  createStudy(path = tmp, antares_version = "8.1.0")
   suppressWarnings(opts <- antaresRead::setSimulationPath(tmp))
   activateRES(quietly = TRUE)
   

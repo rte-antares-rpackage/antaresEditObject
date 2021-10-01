@@ -43,7 +43,7 @@ initialize_RES <- function(opts) {
   ren_dir <- file.path(inputPath, "renewables")
   dir.create(ren_dir, showWarnings = FALSE)
   dir.create(file.path(ren_dir, "clusters"), showWarnings = FALSE)
-  areas <- opts$areaList
+  areas <- antaresRead::getAreas(opts = opts)
   for (area in areas) {
     dir.create(file.path(inputPath, "renewables", "clusters", tolower(area)), showWarnings = FALSE)
     path_ini <- file.path(inputPath, "renewables", "clusters", tolower(area), "list.ini")

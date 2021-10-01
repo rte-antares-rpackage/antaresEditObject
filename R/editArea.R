@@ -57,8 +57,7 @@ editArea <- function(name, color = NULL,
   # (and use in graphics) but not in the folder name (and use in all other case)
   list_name <- name
   name <- tolower(name)
-  
-  if(!name %in% opts$areaList) stop("Area '", list_name, "' doesn't exist in current study.")
+  check_area_name(name, opts)
   
   if (opts$mode != "Input") 
     stop("You can initialize an area only in 'Input' mode")

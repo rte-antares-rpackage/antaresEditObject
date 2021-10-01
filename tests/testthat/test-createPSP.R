@@ -153,7 +153,7 @@ sapply(studies, function(study) {
   
   test_that("Get and set the PSP ", {
     
-    expect_error(editPSP("lp"), "lp is not a correct area name.")
+    expect_error(editPSP("lp"))
     
     #after p, we change the link direction
     areaName<-"suisse"

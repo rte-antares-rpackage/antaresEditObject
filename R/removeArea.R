@@ -21,8 +21,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   list_name <- name
   name <- tolower(name)
   
-  if (!name %in% opts$areaList)
-    stop(paste(name, "is not a valid area"))
+  check_area_name(name, opts)
 
   # Input path
   inputPath <- opts$inputPath

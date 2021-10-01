@@ -34,8 +34,7 @@ writeWaterValues <- function(area,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
 
-  if (!tolower(area) %in% opts$areaList)
-    stop(paste(area, "is not a valid area"), call. = FALSE)
+  check_area_name(area, opts)
   
   values_file <- file.path(inputPath, "hydro", "common", "capacity", paste0("waterValues_", tolower(area), ".txt"))
   
