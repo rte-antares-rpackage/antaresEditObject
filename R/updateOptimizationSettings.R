@@ -87,8 +87,11 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     assertthat::assert_that(unit.commitment.mode %in% c("fast", "accurate"))
   if (!is.null(number.of.cores.mode))
     assertthat::assert_that(number.of.cores.mode %in% c("minimum", "low", "medium", "high", "maximum"))
-  if (!is.null(renewable.generation.modelling))
+  if (!is.null(renewable.generation.modelling)) {
+    if (opts$antaresVersion < 810)
+      stop("updateOptimizationSettings: renewable.generation.modelling parameter is only available if using Antares >= 8.1.0", call. = FALSE)
     assertthat::assert_that(renewable.generation.modelling %in% c("aggregated", "clusters"))
+  }
   if (!is.null(day.ahead.reserve.management))
     assertthat::assert_that(day.ahead.reserve.management %in% c("global"))
   
