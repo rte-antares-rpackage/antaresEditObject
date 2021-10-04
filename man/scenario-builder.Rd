@@ -25,6 +25,7 @@ updateScenarioBuilder(
   ldata,
   ruleset = "Default Ruleset",
   series = NULL,
+  clusters_areas = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -33,7 +34,7 @@ updateScenarioBuilder(
 
 \item{n_mc}{Number of Monte-Carlo years.}
 
-\item{areas}{Areas to use in scenario builder, if \code{NULL} (default), areas in Antares study are used.}
+\item{areas}{Areas to use in scenario builder, if \code{NULL} (default) all areas in Antares study are used.}
 
 \item{areas_rand}{Areas for which to use \code{"rand"}.}
 
@@ -49,6 +50,10 @@ or a named list of matrices obtained with \code{scenarioBuilder}, names must be
 'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.}
 
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
+
+\item{clusters_areas}{A \code{data.table} with two columns \code{area} and \code{cluster}
+to identify area/cluster couple to use for thermal or renewable series.
+Default is to read clusters description and use all couples area/cluster.}
 }
 \value{
 \code{scenarioBuilder} : a \code{matrix}

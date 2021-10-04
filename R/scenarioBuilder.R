@@ -4,7 +4,7 @@
 #'
 #' @param n_scenario Number of scenario.
 #' @param n_mc Number of Monte-Carlo years.
-#' @param areas Areas to use in scenario builder, if `NULL` (default), areas in Antares study are used.
+#' @param areas Areas to use in scenario builder, if `NULL` (default) all areas in Antares study are used.
 #' @param areas_rand Areas for which to use `"rand"`.
 #' @param opts
 #'   List of simulation parameters returned by the function
@@ -164,6 +164,9 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
 #'  'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
+#' @param clusters_areas A `data.table` with two columns `area` and `cluster`
+#'  to identify area/cluster couple to use for thermal or renewable series.
+#'  Default is to read clusters description and use all couples area/cluster.
 #'
 #' @export
 #' 
@@ -171,6 +174,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 updateScenarioBuilder <- function(ldata, 
                                   ruleset = "Default Ruleset", 
                                   series = NULL,
+                                  clusters_areas = NULL,
                                   opts = antaresRead::simOptions()) {
   prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
   if (!is.list(ldata)) {
@@ -188,6 +192,7 @@ updateScenarioBuilder <- function(ldata,
       X = series,
       FUN = listify_sb,
       mat = ldata,
+      clusters_areas = clusters_areas,
       opts = opts
     )
     prevSB[series] <- NULL
@@ -199,7 +204,7 @@ updateScenarioBuilder <- function(ldata,
     sbuild <- lapply(
       X = series,
       FUN = function(x) {
-        listify_sb(ldata[[x]], x, opts = opts)
+        listify_sb(ldata[[x]], x, opts = opts, clusters_areas = clusters_areas)
       }
     )
     prevSB[series] <- NULL
@@ -220,13 +225,15 @@ updateScenarioBuilder <- function(ldata,
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
 #' @param series Name of the series, among 'l', 'h', 'w', 's', 't' and 'r'.
+#' @param clusters_areas A `data.table` with two columns `area` and `cluster`
+#'  to identify area/cluster couple to use for thermal or renewable series.
 #' @param opts Simulation options.
 #'
 #' @importFrom data.table as.data.table melt := .SD
 #' @importFrom antaresRead readClusterDesc
 #' @importFrom utils packageVersion getFromNamespace
 #' @noRd
-listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
+listify_sb <- function(mat, series = "l", clusters_areas = NULL, opts = antaresRead::simOptions()) {
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
@@ -234,10 +241,11 @@ listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
   dtsb[, value := as.integer(value)]
   
   if (identical(series, "t")) {
-    cluster_desc <- readClusterDesc(opts = opts)
+    if (is.null(clusters_areas))
+      clusters_areas <- readClusterDesc(opts = opts)
     dtsb <- merge(
       x = dtsb, 
-      y = cluster_desc[, .SD, .SDcols = c("area", "cluster")],
+      y = clusters_areas[, .SD, .SDcols = c("area", "cluster")],
       by.x = "rn",
       by.y = "area", 
       allow.cartesian = TRUE
@@ -250,10 +258,11 @@ listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
     if (!exists("readClusterResDesc", where = "package:antaresRead", mode = "function"))
       stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
     read_cluster_res_desc <- getFromNamespace("readClusterResDesc", ns = "antaresRead")
-    cluster_desc <- read_cluster_res_desc(opts = opts)
+    if (is.null(clusters_areas))
+      clusters_areas <- read_cluster_res_desc(opts = opts)
     dtsb <- merge(
       x = dtsb, 
-      y = cluster_desc[, .SD, .SDcols = c("area", "cluster")],
+      y = clusters_areas[, .SD, .SDcols = c("area", "cluster")],
       by.x = "rn",
       by.y = "area", 
       allow.cartesian = TRUE

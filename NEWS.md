@@ -14,6 +14,10 @@ This release include some new features to interact with renewable energy sources
   + RES not activated: use load, hydro, wind, thermal, solar
 * In `updateInputSettings()`: prevent use of `renewables` for `import` parameter.
 
+Other updates:
+
+* `updateScenarioBuilder()` has a new argument `clusters_areas = <data.table>` to specify area/cluster to use for thermal/renewable series.
+
 
 # antaresEditObject 0.2.2
 
