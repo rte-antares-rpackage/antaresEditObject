@@ -81,6 +81,8 @@ removeClusterRES <- function(area,
   
   # cluster indice
   ind <- which(tolower(names(previous_params)) %in% tolower(cluster_name))
+  if (length(ind) < 1)
+    warning("Cluster '", cluster_name, "' you want to remove doesn't seem to exist in area '", area, "'.")
   
   # Remove
   previous_params[ind] <- NULL
