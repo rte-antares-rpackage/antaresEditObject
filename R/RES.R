@@ -28,7 +28,7 @@
 #' # then you can use createClusterRES()...
 #' 
 #' }
-activateRES <- function(opts = antaresRead::simOptions(), quietly = FALSE) {
+activateRES <- function(opts = antaresRead::simOptions(), quietly = !interactive()) {
   assertthat::assert_that(class(opts) == "simOptions")
   updateOptimizationSettings(renewable.generation.modelling = "clusters")
   initialize_RES(opts)
