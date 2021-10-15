@@ -96,8 +96,10 @@ updateGeneralSettings <- function(mode = NULL,
   # update general field
   l_general <- generaldata$general
   
-  intra.modal <- check_modal_param(intra.modal, opts)
-  inter.modal <- check_modal_param(inter.modal, opts)
+  intra.modal <- check_param_modal(intra.modal, opts)
+  inter.modal <- check_param_modal(inter.modal, opts)
+  generate <- check_param_RES(generate, opts)
+  refreshtimeseries <- check_param_RES(refreshtimeseries, opts)
   
   new_params <- list(
     mode = mode,
@@ -150,7 +152,7 @@ updateGeneralSettings <- function(mode = NULL,
   invisible(res)
 }
 
-check_modal_param <- function(x, opts) {
+check_param_modal <- function(x, opts) {
   if (is.null(x))
     return(NULL)
   name <- deparse(substitute(x))
@@ -161,8 +163,21 @@ check_modal_param <- function(x, opts) {
   }
   if (!all(x %in% possible_values)) {
     warning(
-      "updateGeneralSettings: ", name, " parameter should be one of: ", 
+      "updateGeneralSettings: '", name, "' parameter should be one of: ", 
       paste(possible_values, collapse = ", "), 
+      call. = FALSE
+    )
+  }
+  return(x)
+}
+
+check_param_RES <- function(x, opts) {
+  if (is.null(x))
+    return(NULL)
+  name <- deparse(substitute(x))
+  if (isTRUE("renewable" %in% x)) {
+    warning(
+      "updateGeneralSettings: '", name, "' parameter should not contain 'renewable'", 
       call. = FALSE
     )
   }
