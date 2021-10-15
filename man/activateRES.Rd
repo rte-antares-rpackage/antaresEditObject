@@ -4,7 +4,7 @@
 \alias{activateRES}
 \title{Activate RES in an Antares study}
 \usage{
-activateRES(opts = antaresRead::simOptions(), quietly = FALSE)
+activateRES(opts = antaresRead::simOptions(), quietly = !interactive())
 }
 \arguments{
 \item{opts}{List of simulation parameters returned by the function

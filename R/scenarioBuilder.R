@@ -91,7 +91,7 @@ scenarioBuilder <- function(n_scenario,
     }
   }
   sb <- matrix(
-    data = rep(seq_len(n_scenario), length(areas) * ceiling(n_mc/n_scenario)),
+    data = rep_len(seq_len(n_scenario), length(areas) * n_mc),
     byrow = TRUE, 
     nrow = length(areas),
     dimnames = list(areas, NULL)
@@ -139,19 +139,23 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
   lapply(
     X = sbt,
     FUN = function(x) {
-      areas <- unique(extract_el(x, 2))
-      years <- unique(extract_el(x, 3))
+      type <- extract_el(x, 1)[1]
+      areas <- extract_el(x, 2)
+      if (type %in% c("t", "r")) {
+        clusters <- extract_el(x, 4)
+        areas <- paste(areas, clusters, sep = "_")
+      }
+      years <- extract_el(x, 3)
       if (as_matrix) {
-        # x <- unlist(x)
-        if(length(x) < length(areas)*length(years)){
-          x <- rep(x, length(years))
-        }
-        matrix(
-          data = x[1:(length(areas) * length(years))], byrow = TRUE,
-          nrow = length(areas),
-          ncol = length(years),
-          dimnames = list(areas, NULL)
+        SB <- data.table::data.table(
+          areas = areas,
+          years = as.numeric(years) + 1,
+          values = unlist(x, use.names = FALSE)
         )
+        SB <- data.table::dcast(data = SB, formula = areas ~ years, value.var = "values")
+        mat <- as.matrix(SB, rownames = 1)
+        colnames(mat) <- NULL
+        mat
       } else {
         x
       }
