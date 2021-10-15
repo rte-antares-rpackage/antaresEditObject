@@ -78,7 +78,7 @@ createCluster(
   cluster_name = "my_cluster",
   group = "other", 
   unitcount = 1L, # or as.integer(1)
-  `marginal-cost` = 50
+  marginal_cost = 50
 )
 # by default, cluster name is prefixed 
 # by the area name
@@ -91,7 +91,7 @@ createCluster(
   cluster_name = "my_cluster",
   add_prefix = FALSE,
   group = "other", 
-  `marginal-cost` = 50
+  marginal_cost = 50
 )
 levels(readClusterDesc()$cluster)
 # > "my_cluster"

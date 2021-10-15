@@ -72,7 +72,7 @@ createClusterRES(
   cluster_name = "ren02", 
   group = "Wind Offshore",
   nominalcapacity = 123,
-  `ts-interpretation` = "production-factor",
+  ts_interpretation = "production-factor",
   add_prefix = FALSE
 )
 ```
