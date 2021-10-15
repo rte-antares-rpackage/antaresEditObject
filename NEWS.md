@@ -1,5 +1,9 @@
 # antaresEditObject 0.2.2.9000
 
+### Breaking changes
+* `createStudy()` no longer return `TRUE` / `FALSE`, but simulation options list returned by `antaresRead::setSimulationPath()`.
+
+### Renewable Energy Sources
 This release include some new features to interact with renewable energy sources (new in Antares v8.0.3):
 
 * New function `activateRES()` to use new RES features in an Antares study.
@@ -14,15 +18,16 @@ This release include some new features to interact with renewable energy sources
   + RES not activated: use load, hydro, wind, thermal, solar
 * In `updateInputSettings()`: prevent use of `renewables` for `import` parameter.
 
-Other updates:
-
+### Other updates
 * `updateScenarioBuilder()` has a new argument `clusters_areas = <data.table>` to specify area/cluster to use for thermal/renewable series.
+
 
 
 # antaresEditObject 0.2.2
 
 * New usage `getPlaylist` : V8 antares ponderation.
 * New usage `setPlaylist` : V8 antares ponderation.
+
 
 
 # antaresEditObject 0.2.1
@@ -33,6 +38,7 @@ Other updates:
 * New function `parAggregateMCall` : to compute mc-all from md-ind. 
 * New function `editArea` : to edit an area.
 * New function `editBindingConstraint` : to edit a Binding Constraint.
+
 
 
 # antaresEditObject 0.2.0
@@ -49,9 +55,7 @@ Other updates:
 * New function `writeEconomicOptions()`: to create or edit economic options.
 * `nodalOptimizationOptions()` has two new arguments: `average_unsupplied_energy_cost` and `average_spilled_energy_cost`.
 
-
 ### Bugfixes
-
 * `scenarioBuilder()` now work when areas_rand has length 1
 
 
@@ -59,6 +63,7 @@ Other updates:
 # antaresEditObject 0.1.8
 
 * Internal release.
+
 
 
 # antaresEditObject 0.1.7
@@ -70,6 +75,7 @@ Other updates:
 # antaresEditObject 0.1.6
 
 * Compatibility with Antares version 7
+
 
 
 # antaresEditObject 0.1.4
