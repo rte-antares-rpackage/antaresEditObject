@@ -1,0 +1,153 @@
+---
+title: "Scenario Builder"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Scenario Builder}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+```
+
+```{r setup}
+library(antaresEditObject)
+```
+
+
+First let's create a new study with some areas and clusters:
+
+```{r}
+path <- tempdir()
+createStudy(path = path, study_name = "my-study")
+
+# Set number of Monte-Carlo scenarios
+updateGeneralSettings(nbyears = 10)
+
+# First area
+createArea("earth")
+createCluster(area = "earth", cluster_name = "america", add_prefix = FALSE)
+createCluster(area = "earth", cluster_name = "africa", add_prefix = FALSE)
+createCluster(area = "earth", cluster_name = "europe", add_prefix = FALSE)
+
+# Second one
+createArea("moon")
+createCluster(area = "moon", cluster_name = "tranquility", add_prefix = FALSE)
+createCluster(area = "moon", cluster_name = "serenety", add_prefix = FALSE)
+
+# Check what we have created
+getAreas()
+readClusterDesc()
+```
+
+
+We can read scenario builder data with:
+
+```{r}
+readScenarioBuilder()
+```
+
+
+Currently it's empty. We need to create rules before updating data:
+
+```{r}
+# All areas
+scenarioBuilder(n_scenario = 3)
+scenarioBuilder(n_scenario = 5)
+# Specific area
+scenarioBuilder(n_scenario = 3, areas = "earth")
+# Specify an area for which to use random values
+scenarioBuilder(n_scenario = 3, areas_rand = "earth")
+```
+
+Now we can update the scenario builder data:
+
+```{r}
+my_scenario <- scenarioBuilder(n_scenario = 3)
+
+# for load serie
+updateScenarioBuilder(ldata = my_scenario, series = "load")
+
+# equivalent as
+updateScenarioBuilder(ldata = list(l = my_scenario))
+```
+
+Here we update data for serie `load` only. To update several series at once you can do:
+
+* with same scenario data:
+
+```{r}
+my_scenario <- scenarioBuilder(n_scenario = 3)
+
+updateScenarioBuilder(
+  ldata = my_scenario, 
+  series = c("load", "hydro", "solar")
+)
+```
+
+* with differents scenario:
+
+```{r}
+load_scenario <- scenarioBuilder(n_scenario = 3)
+hydro_scenario <- scenarioBuilder(n_scenario = 4)
+solar_scenario <- scenarioBuilder(n_scenario = 5)
+
+updateScenarioBuilder(ldata = list(
+  l = load_scenario,
+  h = hydro_scenario,
+  s = solar_scenario
+))
+```
+
+
+If you read scenario builder now, wet got:
+
+```{r}
+readScenarioBuilder()
+```
+
+
+For thermal and renewables series, default behavior is to set rules to each clusters in the area :
+
+```{r}
+my_scenario <- scenarioBuilder(n_scenario = 3)
+
+updateScenarioBuilder(
+  ldata = my_scenario, 
+  series = "thermal"
+)
+
+readScenarioBuilder()$t
+```
+
+We can specify specific clusters with:
+
+```{r}
+updateScenarioBuilder(
+  ldata = my_scenario, 
+  series = "thermal",
+  clusters_areas = data.table::data.table(
+    area = c("earth", "earth"),
+    cluster = c("africa", "europe")
+  )
+)
+readScenarioBuilder()$t
+```
+
+
+Finally, you can remove all scenarios from a ruleset with:
+
+```{r}
+clearScenarioBuilder()
+```
+
+
+```{r, echo=FALSE}
+unlink(file.path(path, "my-study"), recursive = TRUE)
+```
+

@@ -1,14 +1,14 @@
 #' Write water values
 #'
 #' @param area The area where to add the water values.
-#' @param data A 365*101 numeric matrix: table of marginal values for the stored energy, which depends
+#' @param data A 365x101 numeric matrix: table of marginal values for the stored energy, which depends
 #'   on the date (365 days) and on the reservoir level (101 round percentage values ranging from
-#'   0\% to 100\%). OR a 3-column matrix with 365*101 rows. In this latter case the 3 columns must
+#'   0% to 100%). OR a 3-column matrix with 365x101 rows. In this latter case the 3 columns must
 #'   be 'date', 'level' and 'value' (in this order), and the rows must be sorted by:
 #'   ascending day, ascending level.
 #' @param overwrite Logical. Overwrite the values if a file already exists.
 #' @param opts List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}.
+#'   [antaresRead::setSimulationPath()].
 #'
 #' @export
 #'
@@ -23,7 +23,9 @@
 #' writeWaterValues("fictive_area", data = matrix(rep(0, 365*101), nrow = 365))
 #'
 #' }
-writeWaterValues <- function(area, data = NULL, overwrite = TRUE,
+writeWaterValues <- function(area,
+                             data = NULL, 
+                             overwrite = TRUE,
                              opts = antaresRead::simOptions()) {
 
   assertthat::assert_that(class(opts) == "simOptions")
@@ -32,8 +34,7 @@ writeWaterValues <- function(area, data = NULL, overwrite = TRUE,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
 
-  if (!tolower(area) %in% opts$areaList)
-    stop(paste(area, "is not a valid area"), call. = FALSE)
+  check_area_name(area, opts)
   
   values_file <- file.path(inputPath, "hydro", "common", "capacity", paste0("waterValues_", tolower(area), ".txt"))
   

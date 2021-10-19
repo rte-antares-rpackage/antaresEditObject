@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.2.3
+Version: 0.2.2.9000
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
@@ -18,7 +18,8 @@ Description: Edit an 'Antares' simulation before running it : create new areas, 
     'Antares' is an open source power system generator, more information available here : <https://antares-simulator.org/>.
 License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
+Roxygen: list(markdown = TRUE)
 Depends: antaresRead (>= 2.2.7)
 Imports: 
     assertthat,

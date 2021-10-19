@@ -6,11 +6,12 @@
 #' @param study_name Name of the study.
 #' @param antares_version Antares number version.
 #'
-#' @return logical vector indicating success or failure
+#' @return Result of [antaresRead::setSimulationPath()].
 #' @export
 #' 
 #' @importFrom whisker whisker.render
 #' @importFrom utils unzip
+#' @importFrom antaresRead setSimulationPath
 #'
 #' @examples
 #' \dontrun{
@@ -18,7 +19,7 @@
 #' createStudy("path/to/simulation")
 #' 
 #' }
-createStudy <- function(path, study_name = "my_study", antares_version = "8.0.0") {
+createStudy <- function(path, study_name = "my_study", antares_version = "8.1.0") {
   antares_version <- as.numeric_version(antares_version)
   if (!dir.exists(path)) {
     dir.create(path = path, recursive = TRUE)
@@ -31,26 +32,26 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.0.0"
     }
   }
   if (antares_version < as.numeric_version("6.5.0")) {
-    statut <- file.copy(
+    file.copy(
       from = list.files(path = system.file("newStudy", package = "antaresEditObject"), full.names = TRUE),
       to = path, recursive = TRUE
     )
     to_delete <- list.files(path = path, pattern = "ANTARESEDITOBJECT_TODELETE", full.names = TRUE, recursive = TRUE)
     unlink(to_delete)
   } else if (antares_version < as.numeric_version("7.1.0")) {
-    statut <- unzip(zipfile = system.file("template-antares/antares-study-v700.zip", package = "antaresEditObject"), exdir = path)
+    unzip(zipfile = system.file("template-antares/antares-study-v700.zip", package = "antaresEditObject"), exdir = path)
   } else if (antares_version < as.numeric_version("7.2.0")){
-    statut <- unzip(zipfile = system.file("template-antares/antares-study-v710.zip", package = "antaresEditObject"), exdir = path)
+    unzip(zipfile = system.file("template-antares/antares-study-v710.zip", package = "antaresEditObject"), exdir = path)
   } else if (antares_version < as.numeric_version("8.0.0")){
-    statut <- unzip(zipfile = system.file("template-antares/antares-study-v720.zip", package = "antaresEditObject"), exdir = path)
+    unzip(zipfile = system.file("template-antares/antares-study-v720.zip", package = "antaresEditObject"), exdir = path)
   } else {
-    statut <- unzip(zipfile = system.file("template-antares/antares-study-v800.zip", package = "antaresEditObject"), exdir = path)
+    unzip(zipfile = system.file("template-antares/antares-study-v800.zip", package = "antaresEditObject"), exdir = path)
   }
   antares <- paste(readLines(con = file.path(path, "study.antares")), collapse = "\n")
   antares <- whisker::whisker.render(
     template = antares,
     data = list(
-      version = gsub(pattern = "\\.", replacement = "", x = antares_version),
+      version = gsub(pattern = ".", replacement = "", x = antares_version, fixed = TRUE),
       study_name = study_name,
       date_created = floor(as.numeric(Sys.time()))
     )
@@ -64,7 +65,11 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.0.0"
     )
   )
   writeLines(text = desktop, con = file.path(path, "Desktop.ini"))
-  invisible(statut)
+  opts <- setSimulationPath(path = path)
+  if (antares_version >= as.numeric_version("8.1.0")) {
+    activateRES(opts = opts)
+  }
+  return(invisible(opts))
 }
 
 

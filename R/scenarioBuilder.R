@@ -4,13 +4,13 @@
 #'
 #' @param n_scenario Number of scenario.
 #' @param n_mc Number of Monte-Carlo years.
-#' @param areas Areas to use in scenario builder, if \code{NULL} (default), areas in Antares study are used.
-#' @param areas_rand Areas for which to use \code{"rand"}.
+#' @param areas Areas to use in scenario builder, if `NULL` (default) all areas in Antares study are used.
+#' @param areas_rand Areas for which to use `"rand"`.
 #' @param opts
 #'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#'   [antaresRead::setSimulationPath()]
 #'
-#' @return \code{scenarioBuilder} : a \code{matrix}
+#' @return `scenarioBuilder` : a `matrix`
 #' @export
 #' 
 #' @importFrom antaresRead getAreas simOptions
@@ -91,8 +91,9 @@ scenarioBuilder <- function(n_scenario,
     }
   }
   sb <- matrix(
-    data = rep(seq_len(n_scenario), length(areas) * ceiling(n_mc/n_scenario)),
-    byrow = TRUE, nrow = length(areas),
+    data = rep_len(seq_len(n_scenario), length(areas) * n_mc),
+    byrow = TRUE, 
+    nrow = length(areas),
     dimnames = list(areas, NULL)
   )
   sb[areas %in% areas_rand, ] <- apply(
@@ -107,9 +108,9 @@ scenarioBuilder <- function(n_scenario,
 
 
 #' @param ruleset Ruleset to read.
-#' @param as_matrix If \code{TRUE} (default) return a matrix, else a list.
+#' @param as_matrix If `TRUE` (default) return a `matrix`, else a `list`.
 #'
-#' @return \code{readScenarioBuilder} : a \code{list} of \code{matrix} or \code{list}
+#' @return `readScenarioBuilder` : a `list` of `matrix` or `list` according to `as_matrix` parameters.
 #' @export
 #' 
 #' @rdname scenario-builder
@@ -133,22 +134,28 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
   }
   types <- extract_el(sb, 1)
   sbt <- split(x = sb, f = types)
+  if (!is_active_RES(opts))
+    sbt$r <- NULL
   lapply(
     X = sbt,
     FUN = function(x) {
-      areas <- unique(extract_el(x, 2))
-      years <- unique(extract_el(x, 3))
+      type <- extract_el(x, 1)[1]
+      areas <- extract_el(x, 2)
+      if (type %in% c("t", "r")) {
+        clusters <- extract_el(x, 4)
+        areas <- paste(areas, clusters, sep = "_")
+      }
+      years <- extract_el(x, 3)
       if (as_matrix) {
-        # x <- unlist(x)
-        if(length(x) < length(areas)*length(years)){
-          x <- rep(x, length(years))
-        }
-        matrix(
-          data = x[1:(length(areas) * length(years))], byrow = TRUE,
-          nrow = length(areas),
-          ncol = length(years),
-          dimnames = list(areas, NULL)
+        SB <- data.table::data.table(
+          areas = areas,
+          years = as.numeric(years) + 1,
+          values = unlist(x, use.names = FALSE)
         )
+        SB <- data.table::dcast(data = SB, formula = areas ~ years, value.var = "values")
+        mat <- as.matrix(SB, rownames = 1)
+        colnames(mat) <- NULL
+        mat
       } else {
         x
       }
@@ -157,23 +164,28 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 }
 
 
-#' @param ldata A \code{matrix} obtained with \code{scenarioBuilder}, 
-#'  or a named list of matrices obtained with \code{scenarioBuilder}, names must be 
-#'  'l', 'h', 'w', 's' or 't', depending on the series to update.
-#' @param series Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.
+#' @param ldata A `matrix` obtained with `scenarioBuilder`, 
+#'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
+#'  'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.
+#' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
+#' @param clusters_areas A `data.table` with two columns `area` and `cluster`
+#'  to identify area/cluster couple to use for thermal or renewable series.
+#'  Default is to read clusters description and use all couples area/cluster.
 #'
 #' @export
 #' 
 #' @rdname scenario-builder
-updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset", 
+updateScenarioBuilder <- function(ldata, 
+                                  ruleset = "Default Ruleset", 
                                   series = NULL,
+                                  clusters_areas = NULL,
                                   opts = antaresRead::simOptions()) {
   prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
   if (!is.list(ldata)) {
     if (!is.null(series)) {
       series <- match.arg(
         arg = series,
-        choices = c("load", "hydro", "wind", "solar", "thermal"),
+        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables"),
         several.ok = TRUE
       )
       series <- substr(series, 1, 1)
@@ -184,18 +196,19 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
       X = series,
       FUN = listify_sb,
       mat = ldata,
+      clusters_areas = clusters_areas,
       opts = opts
     )
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s", "t"))) {
-      stop("'ldata' must be 'l', 'h', 'w', 's' or 't'", call. = FALSE)
+    if (!all(series %in% c("l", "h", "w", "s", "t", "r"))) {
+      stop("'ldata' must be 'l', 'h', 'w', 's', 't' or 'r'", call. = FALSE)
     }
     sbuild <- lapply(
       X = series,
       FUN = function(x) {
-        listify_sb(ldata[[x]], x, opts = opts)
+        listify_sb(ldata[[x]], x, opts = opts, clusters_areas = clusters_areas)
       }
     )
     prevSB[series] <- NULL
@@ -207,31 +220,76 @@ updateScenarioBuilder <- function(ldata, ruleset = "Default Ruleset",
   
   pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
   writeIni(listData = res, pathIni = pathSB, overwrite = TRUE)
-  cat("Scenario Builder updated\n")
+  if (interactive())
+    cat("\u2713", "Scenario Builder updated\n")
   return(invisible(res))
 } 
+
+
+#' @export
+#' 
+#' @rdname scenario-builder
+clearScenarioBuilder <- function(ruleset = "Default Ruleset",
+                                 opts = antaresRead::simOptions()) {
+  opts <- antaresRead::simOptions()
+  pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+  sb <- readIniFile(file = pathSB)
+  if (!isTRUE(ruleset %in% names(sb))) {
+    warning("Invalid ruleset provided.")
+    return(invisible(FALSE))
+  }
+  sb[[ruleset]] <- list()
+  writeIni(listData = sb, pathIni = pathSB, overwrite = TRUE)
+  if (interactive())
+    cat("\u2713", "Scenario Builder cleared\n")
+  return(invisible(TRUE))
+}
+
+
+
 
 #' Converts a scenarioBuilder matrix to a list
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
-#' @param series Name of the series, among 'l', 'h', 'w', 's' and 't'.
+#' @param series Name of the series, among 'l', 'h', 'w', 's', 't' and 'r'.
+#' @param clusters_areas A `data.table` with two columns `area` and `cluster`
+#'  to identify area/cluster couple to use for thermal or renewable series.
 #' @param opts Simulation options.
 #'
 #' @importFrom data.table as.data.table melt := .SD
 #' @importFrom antaresRead readClusterDesc
+#' @importFrom utils packageVersion getFromNamespace
 #' @noRd
-listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
+listify_sb <- function(mat, series = "l", clusters_areas = NULL, opts = antaresRead::simOptions()) {
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
   dtsb[, value := as.integer(value)]
   
-  if (identical(series, "t")){
-    cluster_desc <- readClusterDesc(opts = opts)  
+  if (identical(series, "t")) {
+    if (is.null(clusters_areas))
+      clusters_areas <- readClusterDesc(opts = opts)
     dtsb <- merge(
       x = dtsb, 
-      y = cluster_desc[, .SD, .SDcols = c("area", "cluster")],
+      y = clusters_areas[, .SD, .SDcols = c("area", "cluster")],
+      by.x = "rn",
+      by.y = "area", 
+      allow.cartesian = TRUE
+    )
+  }
+  if (identical(series, "r")) {
+    check_active_RES(opts)
+    if (packageVersion("antaresRead") < "2.2.8")
+      stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
+    if (!exists("readClusterResDesc", where = "package:antaresRead", mode = "function"))
+      stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
+    read_cluster_res_desc <- getFromNamespace("readClusterResDesc", ns = "antaresRead")
+    if (is.null(clusters_areas))
+      clusters_areas <- read_cluster_res_desc(opts = opts)
+    dtsb <- merge(
+      x = dtsb, 
+      y = clusters_areas[, .SD, .SDcols = c("area", "cluster")],
       by.x = "rn",
       by.y = "area", 
       allow.cartesian = TRUE
@@ -241,7 +299,7 @@ listify_sb <- function(mat, series = "l", opts = antaresRead::simOptions()) {
   dtsb <- dtsb[order(rn, variable)]
   
   lsb <- as.list(dtsb$value)
-  if (identical(series, "t")){
+  if (series %in% c("r", "t")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
   } else{
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, sep = ",")

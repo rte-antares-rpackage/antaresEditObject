@@ -21,10 +21,10 @@ runSimulation(
 
 \item{path_solver}{Character containing the Antares Solver path}
 
-\item{wait}{Logical, indicating whether the R interpreter should wait for the 
+\item{wait}{Logical, indicating whether the R interpreter should wait for the
 simulation to finish, or run it asynchronously.}
 
-\item{show_output_on_console}{Logical, indicating whether to capture the ANTARES log and show 
+\item{show_output_on_console}{Logical, indicating whether to capture the ANTARES log and show
 it on the R console.}
 
 \item{parallel}{Logical. If \code{TRUE} the ANTARES simulation will be run in parallel mode (Work
@@ -35,7 +35,7 @@ is the one set in advanced_settings/simulation_cores (see ANTARES interface).}
 \code{antaresRead::setSimulationPath}}
 }
 \value{
-The function does not return anything. It is  used to launch an 
+The function does not return anything. It is  used to launch an
 ANTARES simulation
 }
 \description{

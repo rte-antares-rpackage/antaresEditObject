@@ -26,7 +26,7 @@ editDSR(
 }
 \arguments{
 \item{areasAndDSRParam}{A data.frame with 4 columns \code{area}, \code{unit},
-\code{nominalCapacity}, \code{marginalCost} and \code{hour}. 
+\code{nominalCapacity}, \code{marginalCost} and \code{hour}.
 Hour represent the number of activation hours for the DSR per day.}
 
 \item{spinning}{DSR spinning}

@@ -1,14 +1,22 @@
-#' Remove a cluster
+
+#' @title Remove a cluster
+#' 
+#' @description Remove a cluster, thermal or RES (renewable energy source), and all its data.
 #'
 #' @param area Area from which to remove a cluster.
 #' @param cluster_name Cluster to remove.
 #' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area's name.
 #' @param opts
 #'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#'   [antaresRead::setSimulationPath]
 #'
 #' @return An updated list containing various information about the simulation.
+#' 
+#' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [editCluster()] or [editClusterRES()] to edit existing clusters.
+#' 
 #' @export
+#' 
+#' @name remove-cluster
 #'
 #' @examples
 #' \dontrun{
@@ -18,11 +26,45 @@
 #' removeCluster(area = "fr", cluster_name = "fr_gas")
 #' 
 #' }
-#' 
-#' 
-removeCluster <- function(area, cluster_name, add_prefix = TRUE, 
+removeCluster <- function(area, 
+                          cluster_name, 
+                          add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
+  .removeCluster(
+    area = area, 
+    cluster_name = cluster_name, 
+    add_prefix = add_prefix, 
+    cluster_type = "thermal",
+    opts = opts
+  )
+}
+
+#' @export
+#' 
+#' @rdname remove-cluster
+removeClusterRES <- function(area, 
+                             cluster_name, 
+                             add_prefix = TRUE, 
+                             opts = antaresRead::simOptions()) {
+  assertthat::assert_that(class(opts) == "simOptions")
+  check_active_RES(opts, check_dir = TRUE)
+  .removeCluster(
+    area = area, 
+    cluster_name = cluster_name, 
+    add_prefix = add_prefix, 
+    cluster_type = "renewables",
+    opts = opts
+  )
+}
+
+
+.removeCluster <- function(area, 
+                           cluster_name, 
+                           add_prefix = TRUE,
+                           cluster_type = c("thermal", "renewables"),
+                           opts = antaresRead::simOptions()) {
   
+  cluster_type <- match.arg(cluster_type)
   
   # Input path
   inputPath <- opts$inputPath
@@ -32,14 +74,15 @@ removeCluster <- function(area, cluster_name, add_prefix = TRUE,
   
   # Remove from Ini file
   # path to ini file
-  path_clusters_ini <- file.path(inputPath, "thermal", "clusters", tolower(area), "list.ini")
+  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", tolower(area), "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  
   # cluster indice
   ind <- which(tolower(names(previous_params)) %in% tolower(cluster_name))
+  if (length(ind) < 1)
+    warning("Cluster '", cluster_name, "' you want to remove doesn't seem to exist in area '", area, "'.")
   
   # Remove
   previous_params[ind] <- NULL
@@ -53,19 +96,17 @@ removeCluster <- function(area, cluster_name, add_prefix = TRUE,
   
   if (length(previous_params) > 0) {
     # remove series
-    unlink(x = file.path(inputPath, "thermal", "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
     
     # remove prepro
-    unlink(x = file.path(inputPath, "thermal", "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
   } else {
     # remove series
-    unlink(x = file.path(inputPath, "thermal", "series", tolower(area)), recursive = TRUE)
+    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area)), recursive = TRUE)
     
     # remove prepro
-    unlink(x = file.path(inputPath, "thermal", "prepro", area), recursive = TRUE)
+    unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
   }
-  
-  
   
   # Maj simulation
   suppressWarnings({

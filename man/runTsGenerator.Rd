@@ -14,10 +14,10 @@ runTsGenerator(
 \arguments{
 \item{path_solver}{Character containing the Antares Solver path.}
 
-\item{wait}{Logical, indicating whether the R interpreter should wait for the 
+\item{wait}{Logical, indicating whether the R interpreter should wait for the
 simulation to finish, or run it asynchronously.}
 
-\item{show_output_on_console}{Logical, indicating whether to capture the ANTARES log and show 
+\item{show_output_on_console}{Logical, indicating whether to capture the ANTARES log and show
 it on the R console.}
 
 \item{opts}{List of simulation parameters returned by the function

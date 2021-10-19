@@ -35,7 +35,7 @@
 #' @param readonly See Antares General Reference Guide.
 #' @param opts
 #'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#'   [antaresRead::setSimulationPath()]
 #'
 #' @return An updated list containing various information about the simulation.
 #' @export
@@ -44,7 +44,17 @@
 #' @importFrom assertthat assert_that
 #' @importFrom antaresRead setSimulationPath
 #'
-# @examples
+#' @examples
+#' \dontrun{
+#' 
+#' # Update number of Monte-Carlo years
+#' updateGeneralSettings(nbyears = 42)
+#' 
+#' # Use a vector to update a parameter that
+#' # can take multiple values
+#' updateGeneralSettings(generate = c("thermal", "hydro"))
+#' 
+#' }
 updateGeneralSettings <- function(mode = NULL,
                                   horizon = NULL,
                                   nbyears = NULL, 
@@ -79,14 +89,18 @@ updateGeneralSettings <- function(mode = NULL,
   
   assertthat::assert_that(class(opts) == "simOptions")
   
-  # read
+  # read current settings
   generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
   generaldata <- readIniFile(file = generaldatapath)
   
-  # update
+  # update general field
   l_general <- generaldata$general
-  # new_params <- as.list(match.call())[-1]
-  # new_params$opts <- NULL
+  
+  intra.modal <- check_param_modal(intra.modal, opts)
+  inter.modal <- check_param_modal(inter.modal, opts)
+  generate <- check_param_RES(generate, opts)
+  refreshtimeseries <- check_param_RES(refreshtimeseries, opts)
+  
   new_params <- list(
     mode = mode,
     horizon = horizon,
@@ -121,7 +135,7 @@ updateGeneralSettings <- function(mode = NULL,
   )
   new_params <- dropNulls(new_params)
   for (i in seq_along(new_params)) {
-    new_params[i] <- as.character(new_params[i])
+    new_params[[i]] <- as.character(new_params[[i]])
     names(new_params)[i] <- dicoGeneralSettings(names(new_params)[i])
   }
   l_general <- utils::modifyList(x = l_general, val = new_params)
@@ -138,12 +152,37 @@ updateGeneralSettings <- function(mode = NULL,
   invisible(res)
 }
 
-
-dropNulls <- function (x) {
-  x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+check_param_modal <- function(x, opts) {
+  if (is.null(x))
+    return(NULL)
+  name <- deparse(substitute(x))
+  if (is_active_RES(opts)) {
+    possible_values <- c("load", "hydro", "thermal", "renewables")
+  } else {
+    possible_values <- c("load", "hydro", "wind", "thermal", "solar")
+  }
+  if (!all(x %in% possible_values)) {
+    warning(
+      "updateGeneralSettings: '", name, "' parameter should be one of: ", 
+      paste(possible_values, collapse = ", "), 
+      call. = FALSE
+    )
+  }
+  return(x)
 }
 
-
+check_param_RES <- function(x, opts) {
+  if (is.null(x))
+    return(NULL)
+  name <- deparse(substitute(x))
+  if (isTRUE("renewable" %in% x)) {
+    warning(
+      "updateGeneralSettings: '", name, "' parameter should not contain 'renewable'", 
+      call. = FALSE
+    )
+  }
+  return(x)
+}
 
 
 #' Correspondence between arguments of \code{updateGeneralSettings} and actual Antares parameters.

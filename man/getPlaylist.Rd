@@ -15,6 +15,6 @@ Returns a vector of the identifier of the simulated MC year
 }
 \description{
 \code{getPlaylist} gives the identifier of the MC years which
-will be simulated in the Antares study, taking into account the potential use of a 
+will be simulated in the Antares study, taking into account the potential use of a
 playlist which can skip some MC years
 }

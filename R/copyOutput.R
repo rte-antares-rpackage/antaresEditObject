@@ -47,11 +47,7 @@ copyOutput <- function(opts, extname, mcYears = "all"){
 }
 
 
-
-
-#' @noRd
-.updateStudyName <- function(opts, ext)
-{
+.updateStudyName <- function(opts, ext) {
   iniPath <- file.path(opts$simPath, "info.antares-output")
   infosIni <- readIniFile(iniPath)
   infosIni$general$name <- paste0(infosIni$general$name, ext)

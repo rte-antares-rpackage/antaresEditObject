@@ -10,7 +10,7 @@ updateInputSettings(import, opts = antaresRead::simOptions())
 \item{import}{Series to import.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.

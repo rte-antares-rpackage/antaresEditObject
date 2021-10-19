@@ -272,7 +272,7 @@ createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, 
 #' 
 getCapacityDSR <- function(area = NULL,  opts = antaresRead::simOptions()){
   
-  .checkAreName(area)
+  check_area_name(area, opts = opts)
   nameDsr <- .getTheDsrName(area)
   
   clusterList <- antaresRead::readClusterDesc(opts = opts)
@@ -310,7 +310,7 @@ getCapacityDSR <- function(area = NULL,  opts = antaresRead::simOptions()){
 #' 
 editDSR <- function(area = NULL, unit = NULL, nominalCapacity = NULL, marginalCost = NULL, spinning = NULL, opts = antaresRead::simOptions()){
   
-  .checkAreName(area)
+  check_area_name(area, opts = opts)
   .checkDataEditDSR(area, unit, nominalCapacity, marginalCost, spinning)
 
   #get previous Data 

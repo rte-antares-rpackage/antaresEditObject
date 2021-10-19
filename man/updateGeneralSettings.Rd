@@ -60,7 +60,7 @@ updateGeneralSettings(
 \item{year.by.year}{(False) No individual results will be printed out,
 (True) For each simulated year, detailed results will be
 printed out in an individual directory7 :
-  Study_name/OUTPUT/simu_tag/Economy /mc-i-number}
+Study_name/OUTPUT/simu_tag/Economy /mc-i-number}
 
 \item{derated}{See Antares General Reference Guide.}
 
@@ -103,11 +103,23 @@ printed out in an individual directory7 :
 \item{readonly}{See Antares General Reference Guide.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
 Update general parameters of an Antares study
+}
+\examples{
+\dontrun{
+
+# Update number of Monte-Carlo years
+updateGeneralSettings(nbyears = 42)
+
+# Use a vector to update a parameter that
+# can take multiple values
+updateGeneralSettings(generate = c("thermal", "hydro"))
+
+}
 }

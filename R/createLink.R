@@ -19,18 +19,16 @@
 #' rearranged to match the new order.
 #' 
 #' @details The eight times-series are:
-#' \itemize{
-#'  \item{\strong{NTC direct}}{ : the upstream-to-downstream capacity, in MW}
-#'  \item{\strong{NTC indirect}}{ : the downstream-to-upstream capacity, in MW}
-#'  \item{\strong{Hurdle cost direct}}{ : an upstream-to-downstream transmission fee, in euro/MWh}
-#'  \item{\strong{Hurdle cost indirect}}{ : a downstream-to-upstream transmission fee, in euro/MWh}
-#'  \item{\strong{Impedances}}{ : virtual impedances that are used in economy simulations to give a
-#'    physical meaning to raw outputs, when no binding constraints have been defined to enforce Kirchhoff's laws.}
-#'  \item{\strong{Loop flow}}{ : amount of power flowing circularly though the grid when all
-#'    "nodes" are perfectly balanced (no import and no export).}
-#'  \item{\strong{PST min}}{ : lower bound of phase-shifting that can be reached by a PST installed on the link, if any.}
-#'  \item{\strong{PST max}}{ : upper bound of phase-shifting that can be reached by a PST installed on the link, if any.}
-#' }
+#' 
+#' * **NTC direct** : the upstream-to-downstream capacity, in MW
+#' * **NTC indirect** : the downstream-to-upstream capacity, in MW
+#' * **Hurdle cost direct** : an upstream-to-downstream transmission fee, in euro/MWh
+#' * **Hurdle cost indirect** : a downstream-to-upstream transmission fee, in euro/MWh
+#' * **Impedances** : virtual impedances that are used in economy simulations to give a physical meaning to raw outputs, when no binding constraints have been defined to enforce Kirchhoff's laws.
+#' * **Loop flow** : amount of power flowing circularly though the grid when all "nodes" are perfectly balanced (no import and no export).
+#' * **PST min** : lower bound of phase-shifting that can be reached by a PST installed on the link, if any.
+#' * **PST max** : upper bound of phase-shifting that can be reached by a PST installed on the link, if any.
+#' 
 #' NB: For Antares v7 the eight columns must conform to above order. For Antares v6, only five columns are 
 #' expected, and they must follow this other order: NTC direct, NTC indirect, Impedances, Hurdle cost direct,
 #' Hurdle cost indirect.
@@ -54,7 +52,12 @@
 #' createLink(from = "first_area", to  = "second_area")
 #' 
 #' }
-createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataLink = NULL, overwrite = FALSE, opts = antaresRead::simOptions()) {
+createLink <- function(from,
+                       to, 
+                       propertiesLink = propertiesLinkOptions(), 
+                       dataLink = NULL, 
+                       overwrite = FALSE,
+                       opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(class(opts) == "simOptions")
   
@@ -84,11 +87,8 @@ createLink <- function(from, to, propertiesLink = propertiesLinkOptions(), dataL
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  if (!from %in% opts$areaList)
-    stop(paste(from, "is not a valid area"))
-  if (!to %in% opts$areaList)
-    stop(paste(to, "is not a valid area"))
-  
+  check_area_name(from, opts)
+  check_area_name(to, opts)
   
   # Previous links
   prev_links <- readIniFile(

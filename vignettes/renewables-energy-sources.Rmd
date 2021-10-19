@@ -1,0 +1,129 @@
+---
+title: "Renewables Energy Sources"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Renewables Energy Sources}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(antaresEditObject)
+```
+
+
+Antares v8.0.3 allow to work with renewable energy sources, implemented in Antares as a new functionnality: renewables clusters.
+Here's a quick start guide to use those new features.
+
+As always, setup the study you want to use:
+
+```{r}
+tmp <- tempfile()
+createStudy(path = tmp, study_name = "res-study")
+opts <- setSimulationPath(tmp)
+```
+
+
+
+## Activate RES
+
+First you need to activate RES functionality, to do so you can use:
+
+```{r}
+activateRES()
+```
+
+This will set `renewable-generation-modelling` parameters to `clusters` and create appropriate file structure to create RES clusters.
+
+
+You can also update `renewable-generation-modelling` parameters manually with:
+
+```{r}
+updateOptimizationSettings(renewable.generation.modelling = "clusters")
+```
+
+
+## Manipulate clusters
+
+Like thermal clusters, there's equivalent functions to create, edit and remove RES clusters:
+
+```{r}
+# create an area to create a cluster in it
+createArea(name = "area51")
+
+# Create a renewable cluster
+createClusterRES(
+  area = "area51", 
+  cluster_name = "ren01", 
+  add_prefix = FALSE
+)
+
+# Use an other group and some parameters
+createClusterRES(
+  area = "area51", 
+  cluster_name = "ren02", 
+  group = "Wind Offshore",
+  nominalcapacity = 123,
+  ts_interpretation = "production-factor",
+  add_prefix = FALSE
+)
+```
+
+
+Edit an existing cluster with:
+
+```{r}
+editClusterRES(
+  area = "area51", 
+  cluster_name = "ren02", 
+  group = "Solar Rooftop", # new group
+  add_prefix = FALSE
+)
+```
+
+
+And remove a cluster with:
+
+```{r}
+removeClusterRES(area = "area51", cluster_name = "ren01")
+```
+
+
+
+## Scenario builder
+
+There's a new type of serie allowed in scenario builder for renewable clusters called `r`:
+
+```{r}
+readScenarioBuilder()
+```
+
+```r
+$r
+      [,1] [,2] [,3]
+area51   1    2    3  
+```
+
+To update the scenario builder, you can use:
+
+```r
+# generate scenario
+sbuilder <- scenarioBuilder(n_scenario = 51)
+
+# Update with:
+updateScenarioBuilder(ldata = sbuilder, series = "renewables")
+# OR
+updateScenarioBuilder(ldata = list(r = sbuilder))
+```
+
+
+
+

@@ -353,6 +353,19 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
   thermal_areas$spilledenergycost[[name]] <- nodalOptimization[["spilledenergycost"]]
   writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
   
+  
+  ## Renewables ----
+  
+  if (is_active_RES(opts)) {
+    # dir
+    dir.create(path = file.path(inputPath, "renewables", "clusters", name), showWarnings = FALSE)
+    
+    writeIni(
+      listData = list(),
+      pathIni = file.path(inputPath, "renewables", "clusters", name, "list.ini"),
+      overwrite = overwrite
+    )
+  }
 
 
   ## Wind ----

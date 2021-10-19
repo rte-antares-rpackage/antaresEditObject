@@ -49,8 +49,7 @@ writeSeriesPrepro <- function(
   
   assertthat::assert_that(class(opts) == "simOptions")
   
-  if (!tolower(area) %in% opts$areaList)
-    stop(paste(area, "is not a valid area"), call. = FALSE)
+  check_area_name(area, opts)
   
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
