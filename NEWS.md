@@ -20,6 +20,7 @@ This release include some new features to interact with renewable energy sources
 
 ### Other updates
 * `updateScenarioBuilder()` has a new argument `clusters_areas = <data.table>` to specify area/cluster to use for thermal/renewable series.
+* New function `clearScenarioBuilder()` to clear a ruleset from the scenario builder.
 
 
 

@@ -5,6 +5,7 @@
 \alias{scenarioBuilder}
 \alias{readScenarioBuilder}
 \alias{updateScenarioBuilder}
+\alias{clearScenarioBuilder}
 \title{Read, create & update scenario builder}
 \usage{
 scenarioBuilder(
@@ -26,6 +27,11 @@ updateScenarioBuilder(
   ruleset = "Default Ruleset",
   series = NULL,
   clusters_areas = NULL,
+  opts = antaresRead::simOptions()
+)
+
+clearScenarioBuilder(
+  ruleset = "Default Ruleset",
   opts = antaresRead::simOptions()
 )
 }

@@ -127,7 +127,6 @@ readScenarioBuilder()$t
 
 We can specify specific clusters with:
 
-
 ```{r}
 updateScenarioBuilder(
   ldata = my_scenario, 
@@ -138,5 +137,17 @@ updateScenarioBuilder(
   )
 )
 readScenarioBuilder()$t
+```
+
+
+Finally, you can remove all scenarios from a ruleset with:
+
+```{r}
+clearScenarioBuilder()
+```
+
+
+```{r, echo=FALSE}
+unlink(file.path(path, "my-study"), recursive = TRUE)
 ```
 

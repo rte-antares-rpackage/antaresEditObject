@@ -122,6 +122,11 @@ sapply(studies, function(study) {
     
   })
   
+  test_that("clearScenarioBuilder works", {
+    expect_true(clearScenarioBuilder())
+    expect_length(readScenarioBuilder(), 0L)
+  })
+  
   # remove temporary study
   unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   

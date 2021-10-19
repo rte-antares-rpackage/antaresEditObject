@@ -3,6 +3,7 @@
 export(activateRES)
 export(backupStudy)
 export(checkRemovedArea)
+export(clearScenarioBuilder)
 export(computeTimeStampFromHourly)
 export(copyOutput)
 export(createArea)

@@ -225,6 +225,29 @@ updateScenarioBuilder <- function(ldata,
   return(invisible(res))
 } 
 
+
+#' @export
+#' 
+#' @rdname scenario-builder
+clearScenarioBuilder <- function(ruleset = "Default Ruleset",
+                                 opts = antaresRead::simOptions()) {
+  opts <- antaresRead::simOptions()
+  pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+  sb <- readIniFile(file = pathSB)
+  if (!isTRUE(ruleset %in% names(sb))) {
+    warning("Invalid ruleset provided.")
+    return(invisible(FALSE))
+  }
+  sb[[ruleset]] <- list()
+  writeIni(listData = sb, pathIni = pathSB, overwrite = TRUE)
+  if (interactive())
+    cat("\u2713", "Scenario Builder cleared\n")
+  return(invisible(TRUE))
+}
+
+
+
+
 #' Converts a scenarioBuilder matrix to a list
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
