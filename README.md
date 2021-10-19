@@ -38,6 +38,8 @@ This package allows to edit an Antares study. Methods are provided to create
 (and remove) areas, links between them, thermal clusters and binding
 constraints. These steps may be useful before running an Antares simulation.
 
+See website for more documentation: https://rte-antares-rpackage.github.io/antaresEditObject/
+
 
 ## Usage
 
