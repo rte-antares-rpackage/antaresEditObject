@@ -58,8 +58,8 @@ or a named list of matrices obtained with \code{scenarioBuilder}, names must be
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
 
 \item{clusters_areas}{A \code{data.table} with two columns \code{area} and \code{cluster}
-to identify area/cluster couple to use for thermal or renewable series.
-Default is to read clusters description and use all couples area/cluster.}
+to identify area/cluster couple to update for thermal or renewable series.
+Default is to read clusters description and update all couples area/cluster.}
 }
 \value{
 \code{scenarioBuilder} : a \code{matrix}
