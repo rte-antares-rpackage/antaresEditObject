@@ -70,10 +70,16 @@ sapply(studies, function(study) {
                 "psp out", "psp out-2"), NULL)
         ),
         t = structure(
-          c(1L, 1L, 
-            1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L), .Dim = c(5L, 2L), .Dimnames = list(
-              c("a_base", "a_base_must_run", "a_peak", "a_peak_must_run_partial", 
-                "a_semi base"), NULL)
+          c(1L, 1L, 1L, 1L, 1L, NA, NA, NA, NA, NA, NA, NA, NA, 
+            NA, NA, 2L, 2L, 2L, 2L, 2L, NA, NA, NA, NA, NA, NA, NA, NA, NA, 
+            NA), .Dim = c(15L, 2L),
+          .Dimnames = list(
+            c("a_base", "a_base_must_run", 
+              "a_peak", "a_peak_must_run_partial", "a_semi base", "b_base", 
+              "b_peak", "b_semi base", "c_base", "c_peak", "c_semi base", "psp in-2_psp_in_2", 
+              "psp in_psp_in", "psp out-2_psp_out_2", "psp out_psp_out"),
+            NULL
+          )
         )
       )
     )
@@ -87,15 +93,15 @@ sapply(studies, function(study) {
     m <- scenarioBuilder(
       n_scenario = 2,
       n_mc = 2,
-      areas = c("fr", "it", "be"),
-      areas_rand = c("it", "be")
+      areas = c("a", "b", "c"),
+      areas_rand = c("b", "c")
     )
     
     m2 <- scenarioBuilder(
       n_scenario = 2,
       n_mc = 2,
-      areas = c("ie", "it", "be"),
-      areas_rand = "be"
+      areas = c("a", "b", "c"),
+      areas_rand = "c"
     )
     
     expect_error(updateScenarioBuilder(ldata = m))
@@ -111,14 +117,14 @@ sapply(studies, function(study) {
     # m_out <- as.list(m_out) # to match actual output of readScenarioBuilder()
     attributes(m_out) <- attributes(m)
     
-    expect_identical(newSB[["w"]], m_out)
+    expect_identical(newSB[["w"]]["a", , drop = FALSE], m_out)
     
     m2 <- m2[m2[, 1] != "rand", , drop = FALSE]
     m2_out <- apply(m2, 2, as.integer)
     # m2_out <- as.list(m2_out)
     attributes(m2_out) <- attributes(m2)
     
-    expect_identical(newSB[["s"]], m2_out)
+    expect_identical(newSB[["s"]][c("a", "b"), , drop = FALSE], m2_out)
     
   })
   

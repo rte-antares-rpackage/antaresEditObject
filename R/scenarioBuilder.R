@@ -114,6 +114,9 @@ scenarioBuilder <- function(n_scenario,
 #' @export
 #' 
 #' @rdname scenario-builder
+#' 
+#' @importFrom data.table data.table CJ dcast
+#' @importFrom antaresRead readClusterDesc getAreas 
 readScenarioBuilder <- function(ruleset = "Default Ruleset",
                                 as_matrix = TRUE,
                                 opts = antaresRead::simOptions()) {
@@ -144,15 +147,30 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
       if (type %in% c("t", "r")) {
         clusters <- extract_el(x, 4)
         areas <- paste(areas, clusters, sep = "_")
+        # all_areas <- areas # for the moment
+        if (type == "t") {
+          clusdesc <- readClusterDesc(opts = opts)
+        } else {
+          if (packageVersion("antaresRead") < "2.2.8")
+            stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
+          if (!exists("readClusterResDesc", where = "package:antaresRead", mode = "function"))
+            stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
+          read_cluster_res_desc <- getFromNamespace("readClusterResDesc", ns = "antaresRead")
+          clusdesc <- read_cluster_res_desc(opts = opts)
+        }
+        all_areas <- paste(clusdesc$area, clusdesc$cluster, sep = "_")
+      } else {
+        all_areas <- getAreas(opts = opts)
       }
       years <- extract_el(x, 3)
       if (as_matrix) {
-        SB <- data.table::data.table(
+        SB <- data.table(
           areas = areas,
           years = as.numeric(years) + 1,
           values = unlist(x, use.names = FALSE)
         )
-        SB <- data.table::dcast(data = SB, formula = areas ~ years, value.var = "values")
+        SB <- SB[CJ(areas = all_areas, years = seq_len(opts$parameters$general$nbyears)), on = c("areas", "years")]
+        SB <- dcast(data = SB, formula = areas ~ years, value.var = "values")
         mat <- as.matrix(SB, rownames = 1)
         colnames(mat) <- NULL
         mat
