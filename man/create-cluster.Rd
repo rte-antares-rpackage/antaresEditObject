@@ -97,6 +97,28 @@ levels(readClusterDesc()$cluster)
 # > "my_cluster"
 
 
+# Create a RES cluster :
+createClusterRES(
+  area = "fr", 
+  cluster_name = "my_cluster_res",
+  group = "other", 
+  unitcount = 1L, # or as.integer(1)
+  nominalcapacity = 50,
+  ts_interpretation = "power-generation"
+) 
+
+# You can also specify that the Time-Series of the RES cluster are
+# production factors :
+createClusterRES(
+  area = "fr", 
+  cluster_name = "my_cluster_res",
+  group = "other", 
+  unitcount = 1L, # or as.integer(1)
+  nominalcapacity = 50,
+  ts_interpretation = "production-factor"
+)
+
+
 # Pre-process data : 
 
 # this is the default data :
