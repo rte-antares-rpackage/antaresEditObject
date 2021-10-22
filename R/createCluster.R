@@ -66,6 +66,28 @@
 #' # > "my_cluster"
 #' 
 #' 
+#' # Create a RES cluster :
+#' createClusterRES(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster_res",
+#'   group = "other", 
+#'   unitcount = 1L, # or as.integer(1)
+#'   nominalcapacity = 50,
+#'   ts_interpretation = "power-generation"
+#' ) 
+#' 
+#' # You can also specify that the Time-Series of the RES cluster are
+#' # production factors :
+#' createClusterRES(
+#'   area = "fr", 
+#'   cluster_name = "my_cluster_res",
+#'   group = "other", 
+#'   unitcount = 1L, # or as.integer(1)
+#'   nominalcapacity = 50,
+#'   ts_interpretation = "production-factor"
+#' )
+#' 
+#' 
 #' # Pre-process data : 
 #' 
 #' # this is the default data :
@@ -213,7 +235,7 @@ createClusterRES <- function(area,
                            overwrite = FALSE,
                            cluster_type = c("thermal", "renewables"),
                            opts = antaresRead::simOptions()) {
-
+  
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
@@ -231,19 +253,19 @@ createClusterRES <- function(area,
   if (!NCOL(prepro_modulation) %in% c(1, 4)) {
     stop("Number of cols for modulation data must be 0 or 4")
   }
-
+  
   # Cluster's parameters
   params_cluster <- hyphenize_names(list(...))
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
-
+  
   # named list for writing ini file
   # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
-
+  
   # path to ini file containing clusters' name and parameters
   path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", tolower(area), "list.ini")
-
+  
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
@@ -264,8 +286,8 @@ createClusterRES <- function(area,
     pathIni = path_clusters_ini,
     overwrite = TRUE
   )
-
-
+  
+  
   # initialize series
   dir.create(path = file.path(
     inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)),
@@ -288,8 +310,8 @@ createClusterRES <- function(area,
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name), "series.txt")
   )
-
-
+  
+  
   # prepro
   if (identical(cluster_type, "thermal")) {
     dir.create(
@@ -313,8 +335,8 @@ createClusterRES <- function(area,
       file = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name), "modulation.txt")
     )
   }
-
-
+  
+  
   # Update simulation options object
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")

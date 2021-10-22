@@ -187,8 +187,8 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #'  'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
-#'  to identify area/cluster couple to use for thermal or renewable series.
-#'  Default is to read clusters description and use all couples area/cluster.
+#'  to identify area/cluster couple to update for thermal or renewable series.
+#'  Default is to read clusters description and update all couples area/cluster.
 #'
 #' @export
 #' 
