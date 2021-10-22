@@ -137,8 +137,12 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
   }
   types <- extract_el(sb, 1)
   sbt <- split(x = sb, f = types)
-  if (!is_active_RES(opts))
+  if (is_active_RES(opts)) {
+    sbt$w <- NULL
+    sbt$s <- NULL
+  } else {
     sbt$r <- NULL
+  }
   lapply(
     X = sbt,
     FUN = function(x) {
