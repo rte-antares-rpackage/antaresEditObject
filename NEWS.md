@@ -1,4 +1,4 @@
-# antaresEditObject 0.2.2.9000
+# antaresEditObject 0.3.0
 
 ### Breaking changes
 * `createStudy()` no longer return `TRUE` / `FALSE`, but simulation options list returned by `antaresRead::setSimulationPath()`.
