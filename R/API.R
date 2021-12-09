@@ -29,6 +29,22 @@ setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions
 }
 
 
+#' Get API commands generated
+#'
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'  [antaresRead::setSimulationPath()]
+#'
+#' @return a list of API commands
+#' @export
+#'
+getCommands <- function(opts = antaresRead::simOptions()) {
+  commands <- getOption("antaresEditObject.apiCommands", default = list())
+  class(commands) <- c("list", "antares.api.commands")
+  commands
+}
+
+
 #' @title Create a study's variant
 #' 
 #' @description **API**: create a new variant for a given study or use a pre-existing one. 
@@ -61,7 +77,7 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
   )
   stop_for_status(result)
   opts$variant_id <- content(result)
-  opts$apiCommands <- NULL
+  options("antaresEditObject.apiCommands" = list())
   options(antares = opts)
   return(invisible(opts))
 }
@@ -79,7 +95,7 @@ useVariant <- function(name, opts = antaresRead::simOptions()) {
     }
     variant_id <- variants[[index]]$id
     opts$variant_id <- variant_id
-    opts$apiCommands <- NULL
+    options("antaresEditObject.apiCommands" = list())
   } else {
     stop("Variant not found")
   }

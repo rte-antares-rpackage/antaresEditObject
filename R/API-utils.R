@@ -14,6 +14,12 @@ should_command_be_executed <- function(opts) {
 }
 
 
+#' @export
+print.antares.api.commands <- function(x, ...) {
+  print(jsonlite::toJSON(as.list(x), pretty = TRUE, auto_unbox = TRUE))
+}
+
+
 #' Generate a command
 #'
 #' @param action Action to perform
@@ -61,17 +67,18 @@ api_commands_generate <- function(...) {
 }
 
 api_command_register <- function(command, opts) {
-  commands <- opts$apiCommands %||% list()
+  commands <- getOption("antaresEditObject.apiCommands", default = list())
   if (inherits(command, "antares.api.command")) {
-    opts$apiCommands <- append(commands, list(command))
+    newCommands <- append(commands, list(command))
   } else if (inherits(command, "antares.api.commands")) {
-    opts$apiCommands <- c(commands, command)
+    newCommands <- c(commands, command)
   } else {
     stop(
-      "'command' must be a command generetad with api_command_generate() or api_commands_generate()"
+      "'command' must be a command generated with api_command_generate() or api_commands_generate()"
     )
   }
-  return(invisible(command))
+  options("antaresEditObject.apiCommands" = newCommands)
+  return(invisible(newCommands))
 }
 
 #' @importFrom httr POST accept_json content_type_json stop_for_status content
