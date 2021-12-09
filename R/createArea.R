@@ -30,7 +30,8 @@
 #' createArea("fictive_area")
 #' 
 #' }
-createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
+createArea <- function(name,
+                       color = grDevices::rgb(230, 108, 44, max = 255),
                        localization = c(0, 0),
                        nodalOptimization = nodalOptimizationOptions(),
                        filtering = filteringOptions(),
@@ -38,11 +39,19 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
                        opts = antaresRead::simOptions()) {
 
   assertthat::assert_that(class(opts) == "simOptions")
+  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
+    stop("Area's name must not contain ponctuation except - and _")
+  
+  # API block
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate("create_area", area_name = name)
+    api_command_register(cmd, opts = opts)
+    if (should_command_be_executed(opts))
+      api_command_execute(cmd, opts = opts)
+    return(invisible(opts))
+  }
   
   v7 <- is_antares_v7(opts)
-
-  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
-    stop("Area's name must not ponctuation except - and _")
   
   # if (grepl(pattern = "[A-Z]", x = name)) 
   #   stop("Area's name must be lower case")

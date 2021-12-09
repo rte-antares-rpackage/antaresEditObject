@@ -1,6 +1,14 @@
 
-dropNulls <- function (x) {
+dropNulls <- function(x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+}
+
+`%||%` <- function(x, y)  {
+  if (is.null(x)) { 
+    y
+  } else {
+    x
+  }
 }
 
 #TODO to copy/paste to antaresRead in a next release. 
