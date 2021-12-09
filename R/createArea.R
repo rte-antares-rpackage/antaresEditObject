@@ -48,6 +48,21 @@ createArea <- function(name,
     api_command_register(cmd, opts = opts)
     if (should_command_be_executed(opts))
       api_command_execute(cmd, opts = opts)
+    
+    if (!identical(nodalOptimization, nodalOptimizationOptions()) | !identical(filtering, filteringOptions()) ){
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization", name),
+        data = list(
+          "nodal optimization" = nodalOptimization,
+          "filtering" = filtering
+        )
+      )
+      api_command_register(cmd, opts = opts)
+      if (should_command_be_executed(opts))
+        api_command_execute(cmd, opts = opts)
+    }
+    
     return(invisible(opts))
   }
   
@@ -444,8 +459,8 @@ createArea <- function(name,
 filteringOptions <- function(filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
                              filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
   list(
-    `filter-synthesis` = filter_synthesis,
-    `filter-year-by-year` = filter_year_by_year
+    `filter-synthesis` = paste(filter_synthesis, collapse = ", "),
+    `filter-year-by-year` = paste(filter_year_by_year, collapse = ", ")
   )
 }
 
