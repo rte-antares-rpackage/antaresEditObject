@@ -1,95 +1,93 @@
 
-
-is_api_study <- function(opts) {
-  isTRUE(opts$typeLoad == "api")
+#' @title Set API mode
+#' 
+#' @description Two modes are available when using the API:
+#'  * **async**: record all API calls, but nothing is sent to the server
+#'  * **sync**: send query to the API each time a function is used
+#'
+#' @param mode The mode you want to use.
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'  [antaresRead::setSimulationPath()]
+#' 
+#' @return An updated list containing various information about the simulation.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # See vignette for complete documentation
+#' vignette("api-variant-management")
+#' 
+#' # Usage :
+#' setAPImode("sync")
+#' 
+#' }
+setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions()) {
+  mode <- match.arg(mode)
+  opts$apiMode <- mode
+  return(invisible(opts))
 }
 
-#' api_command_generate("create_area", area_name = "new area")
-api_command_generate <- function(action, ...) {
-  command <- list(
-    action = action,
-    args = list(...)
-  )
-  class(command) <- c(class(command), "antares.api.command")
-  return(command)
-}
 
-#' api_commands_generate(
-#'   create_area = list(area_name = "new area"),
-#'   create_area = list(area_name = "other area")
-#' )
-api_commands_generate <- function(...) {
-  commands <- list(...)
-  commands <- lapply(
-    X = seq_along(commands),
-    FUN = function(i) {
-      list(
-        action = names(commands)[i],
-        args = commands[[i]]
-      )
-    }
-  )
-  class(commands) <- c(class(commands), "antares.api.commands")
-  return(commands)
-}
-
-api_command_register <- function(command, opts) {
-  commands <- opts$apiCommands %||% list()
-  if (inherits(command, "antares.api.command")) {
-    opts$apiCommands <- append(commands, list(command))
-  } else if (inherits(command, "antares.api.commands")) {
-    opts$apiCommands <- c(commands, command)
-  } else {
-    stop(
-      "'command' must be a command generetad with api_command_generate() or api_commands_generate()"
-    )
-  }
-  return(invisible(command))
-}
-
-#' @importFrom httr POST accept_json content_type_json stop_for_status content
-#' @importFrom jsonlite toJSON
-api_command_execute <- function(command, opts) {
-  if (inherits(command, "antares.api.command")) {
-    body <- jsonlite::toJSON(list(command), auto_unbox = TRUE)
-  } else if (inherits(command, "antares.api.commands")) {
-    body <- jsonlite::toJSON(command, auto_unbox = TRUE)
-  } else {
-    stop(
-      "'command' must be a command generetad with api_command_generate() or api_commands_generate()"
-    )
-  }
+#' @title Create a study's variant
+#' 
+#' @description **API**: create a new variant for a given study or use a pre-existing one. 
+#'
+#' @param name Name for the variant to create or the name of an existent variant.
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'  [antaresRead::setSimulationPath()]
+#' 
+#' @return An updated list containing various information about the simulation.
+#' @export
+#' @name variant
+#' 
+#' @importFrom httr POST accept_json stop_for_status content
+#'
+#' @examples
+#' \dontrun{
+#' # See vignette for complete documentation
+#' vignette("api-variant-management")
+#' }
+createVariant <- function(name, opts = antaresRead::simOptions()) {
+  check_api_study(opts)
   result <- POST(
     url = sprintf(
-      "%s/v1/studies/%s/commands",
+      "%s/v1/studies/%s/variants",
       opts$host, opts$study_id
     ),
     accept_json(),
-    content_type_json(),
-    body = body,
-    encode = "raw"
+    query = list(name = name)
   )
   stop_for_status(result)
-  return(invisible(content(result)))
+  opts$variant_id <- content(result)
+  opts$apiCommands <- NULL
+  options(antares = opts)
+  return(invisible(opts))
 }
 
-should_command_be_executed <- function(opts) {
-  isTRUE(opts$apiMode == "sync")
+#' @export
+#' @rdname variant
+useVariant <- function(name, opts = antaresRead::simOptions()) {
+  variants <- api_get_variants(opts$study_id, opts)
+  variants_names <- vapply(variants, `[[`, "name", FUN.VALUE = character(1))
+  if (name %in% variants_names) {
+    index <- which(variants_names == name)
+    if (length(index) > 1) {
+      warning("'name' match (exactly) more than one variant, first one is used.")
+      index <- index[1]
+    }
+    variant_id <- variants[[index]]$id
+    opts$variant_id <- variant_id
+    opts$apiCommands <- NULL
+  } else {
+    stop("Variant not found")
+  }
+  options(antares = opts)
+  return(invisible(opts))
 }
 
 
-api_get_raw_data <- function(id, path) {
-  result <- GET(
-    url = sprintf(
-      "%s/v1/studies/%s/raw",
-      opts$host, id
-    ),
-    accept_json(),
-    query = list(
-      path = path, 
-      formatted = TRUE
-    )
-  )
-  stop_for_status(result)
-  content(result)
-}
+
+
+
