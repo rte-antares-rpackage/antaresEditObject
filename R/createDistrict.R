@@ -28,7 +28,7 @@ createDistrict <- function(name, caption = NULL, comments = NULL, apply_filter =
                            add_area = NULL, remove_area = NULL, output = FALSE, 
                            overwrite = FALSE, opts = antaresRead::simOptions()) {
   apply_filter <- match.arg(arg = apply_filter, choices = c("none", "add-all", "remove-all"))
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))

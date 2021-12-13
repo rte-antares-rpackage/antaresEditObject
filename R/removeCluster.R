@@ -46,7 +46,7 @@ removeClusterRES <- function(area,
                              cluster_name, 
                              add_prefix = TRUE, 
                              opts = antaresRead::simOptions()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_RES(opts, check_dir = TRUE)
   .removeCluster(
     area = area, 

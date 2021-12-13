@@ -43,7 +43,7 @@ editArea <- function(name, color = NULL,
                      filtering = NULL,
                      opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   v7 <- is_antares_v7(opts)
   

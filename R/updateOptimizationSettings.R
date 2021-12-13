@@ -49,7 +49,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
                                        renewable.generation.modelling = NULL,
                                        day.ahead.reserve.management = NULL,
                                        opts = antaresRead::simOptions()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   # check inputs
   if (!is.null(simplex.range))

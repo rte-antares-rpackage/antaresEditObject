@@ -29,7 +29,7 @@ writeInputTS <- function(area, type = c("load", "hydroROR", "hydroSTOR", "wind",
   
   type <- match.arg(type)
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   check_area_name(area, opts)
   

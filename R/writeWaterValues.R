@@ -28,7 +28,7 @@ writeWaterValues <- function(area,
                              overwrite = TRUE,
                              opts = antaresRead::simOptions()) {
 
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
 
   # Input path
   inputPath <- opts$inputPath

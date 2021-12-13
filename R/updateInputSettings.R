@@ -17,7 +17,7 @@
 #' 
 #' }
 updateInputSettings <- function(import, opts = antaresRead::simOptions()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   if ("renewables" %in% import) {
     warning("import parameter cannot be 'renewables', it will be discarded.")

@@ -39,7 +39,7 @@ createBindingConstraint <- function(name, id = tolower(name),
                                     overwrite = FALSE,
                                     opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   timeStep <- match.arg(arg = timeStep)
   operator <- match.arg(arg = operator)

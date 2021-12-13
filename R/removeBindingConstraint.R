@@ -14,7 +14,7 @@
 #' }
 removeBindingConstraint <- function(name, opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   ## Ini file
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")

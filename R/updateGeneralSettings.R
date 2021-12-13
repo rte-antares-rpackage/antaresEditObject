@@ -87,7 +87,7 @@ updateGeneralSettings <- function(mode = NULL,
                                   readonly = NULL,
                                   opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   # read current settings
   generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")

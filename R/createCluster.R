@@ -192,7 +192,7 @@ createClusterRES <- function(area,
                              add_prefix = TRUE, 
                              overwrite = FALSE,
                              opts = antaresRead::simOptions()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_RES(opts)
   renewables_group <- c("Wind Onshore",
                         "Wind Offshore",

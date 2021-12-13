@@ -29,7 +29,7 @@ updateOutputSettings <- function(
   opts = antaresRead::simOptions()
   ) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   pathIni <- file.path(opts$studyPath, "settings", "generaldata.ini")
   general <- readIniFile(file = pathIni)

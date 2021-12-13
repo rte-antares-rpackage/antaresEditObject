@@ -38,7 +38,7 @@ createArea <- function(name,
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
 
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
     stop("Area's name must not contain ponctuation except - and _")
   

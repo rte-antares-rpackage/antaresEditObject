@@ -29,7 +29,7 @@
 #' 
 #' }
 activateRES <- function(opts = antaresRead::simOptions(), quietly = !interactive()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   updateOptimizationSettings(renewable.generation.modelling = "clusters")
   initialize_RES(opts)
   if (!isTRUE(quietly))

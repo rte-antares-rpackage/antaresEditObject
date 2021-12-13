@@ -41,7 +41,7 @@ writeEconomicOptions <- function(
   opts = antaresRead::simOptions()
 ) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   assertthat::assert_that(is.data.frame(x))
   
   if (!"area" %in% names(x)) {

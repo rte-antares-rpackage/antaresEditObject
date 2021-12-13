@@ -24,7 +24,7 @@ backupStudy <- function(backupfile, what = c("input", "study"), opts = antaresRe
   
   what <- match.arg(arg = what)
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   assertthat::assert_that(!is.null(opts$studyPath) && dir.exists(opts$studyPath))
   
   if (missing(backupfile))
