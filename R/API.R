@@ -1,4 +1,30 @@
 
+#' @title Mock API usage
+#' 
+#' @description Use this to generate command without an active API connection,
+#'  it allow to use function to edit a study to later on get API commands.
+#'
+#' @template opts
+#' @export
+#'
+#' @examples
+#' # Mock simulation API
+#' mockSimulationAPI()
+#' # Create an area
+#' createArea("new area")
+#' # Get commands
+#' getAPIcommands()
+mockSimulationAPI <- function() {
+  opts <- list(
+    typeLoad = "api",
+    modeAPI = "async",
+    mockAPI = TRUE
+  )
+  class(opts) <- c("list", "simOptions")
+  options(antares = opts)
+  return(invisible(opts))
+}
+
 #' @title Set API mode
 #' 
 #' @description Two modes are available when using the API:
@@ -6,11 +32,9 @@
 #'  * **sync**: send query to the API each time a function is used
 #'
 #' @param mode The mode you want to use.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'  [antaresRead::setSimulationPath()]
 #' 
-#' @return An updated list containing various information about the simulation.
+#' @template opts
+#' 
 #' @export
 #'
 #' @examples
@@ -24,21 +48,23 @@
 #' }
 setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions()) {
   mode <- match.arg(mode)
-  opts$apiMode <- mode
+  if (isTRUE(opts$mockAPI)) {
+    warning("Cannot set API mode on sync when using mockSimulationAPI()")
+    return(invisible(opts))
+  }
+  opts$modeAPI <- mode
   return(invisible(opts))
 }
 
 
 #' Get API commands generated
 #'
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'  [antaresRead::setSimulationPath()]
+#' @template opts-arg
 #'
 #' @return a list of API commands
 #' @export
 #'
-getCommands <- function(opts = antaresRead::simOptions()) {
+getAPIcommands <- function(opts = antaresRead::simOptions()) {
   commands <- getOption("antaresEditObject.apiCommands", default = list())
   class(commands) <- c("list", "antares.api.commands")
   commands
@@ -50,11 +76,9 @@ getCommands <- function(opts = antaresRead::simOptions()) {
 #' @description **API**: create a new variant for a given study or use a pre-existing one. 
 #'
 #' @param name Name for the variant to create or the name of an existent variant.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'  [antaresRead::setSimulationPath()]
 #' 
-#' @return An updated list containing various information about the simulation.
+#' @template opts
+#' 
 #' @export
 #' @name variant
 #' 

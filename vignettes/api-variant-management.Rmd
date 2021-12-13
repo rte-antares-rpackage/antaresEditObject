@@ -53,7 +53,7 @@ createVariant("variant-1")
 createArea(name = "earth")
 
 # List commands recorded (one normally at this point)
-getCommands()
+getAPIcommands()
 
 # Create another area with more options
 createArea(
@@ -62,7 +62,7 @@ createArea(
 )
 
 # List commands
-getCommands()
+getAPIcommands()
 
 ```
 

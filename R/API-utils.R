@@ -10,7 +10,7 @@ is_api_study <- function(opts) {
 }
 
 should_command_be_executed <- function(opts) {
-  isTRUE(opts$apiMode == "sync")
+  isTRUE(opts$modeAPI == "sync")
 }
 
 
@@ -108,7 +108,7 @@ api_command_execute <- function(command, opts) {
 }
 
 #' @importFrom httr GET accept_json stop_for_status content
-api_get_raw_data <- function(id, path) {
+api_get_raw_data <- function(id, path, opts) {
   result <- GET(
     url = sprintf(
       "%s/v1/studies/%s/raw",
