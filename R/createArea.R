@@ -6,11 +6,9 @@
 #' @param nodalOptimization Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.
 #' @param filtering Filtering parameters, see \code{\link{filteringOptions}}.
 #' @param overwrite Overwrite the area if already exist.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' 
+#' @template opts
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath
