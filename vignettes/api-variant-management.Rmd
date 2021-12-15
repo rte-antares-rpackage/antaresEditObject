@@ -83,12 +83,17 @@ getAPIcommands()
 
 ## Usage example
 
-Below are listed all functions from {antaresEditObject} that can be used with the API.
+Below are listed all functions from {antaresEditObject} that can be used with the API. These functions will include the following badge in their documentation:
+
+```{r, echo=FALSE}
+knitr::include_graphics("figures/badge_api_ok.svg")
+```
+
 
 ### Create area
 
 
-```{r}
+```{r, eval=FALSE}
 
 
 
