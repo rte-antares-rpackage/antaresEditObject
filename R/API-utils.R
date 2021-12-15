@@ -90,52 +90,51 @@ api_command_execute <- function(command, opts) {
     body <- jsonlite::toJSON(command, auto_unbox = TRUE)
   } else {
     stop(
-      "'command' must be a command generetad with api_command_generate() or api_commands_generate()"
+      "'command' must be a command generated with api_command_generate() or api_commands_generate()"
     )
   }
-  result <- POST(
-    url = sprintf(
-      "%s/v1/studies/%s/commands",
-      opts$host, opts$variant_id
-    ),
-    accept_json(),
-    content_type_json(),
-    body = body,
-    encode = "raw"
-  )
-  stop_for_status(result)
-  return(invisible(content(result)))
+  api_post(opts, paste0(opts$variant_id, "/commands"), body = body, encode = "raw")
+  api_put(opts, paste0(opts$variant_id, "/generate"))
+  result <- api_get(opts, paste0(opts$variant_id, "/task"))
+  while(is.null(result$result)) {
+    result <- api_get(opts, paste0(opts$variant_id, "/task"))
+  }
+  result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
+  if (identical(result_log$success, TRUE)) {
+    cli::cli_alert_success(result_log$message)
+  }
+  if (identical(result_log$success, FALSE)) {
+    cli::cli_alert_danger(result_log$message)
+    # cli::cli_alert_danger(paste("Command ID:", result_log$id))
+    api_delete(opts, paste0(opts$variant_id, "/commands/", result_log$id))
+    cli::cli_alert_info("Command has been deleted")
+  }
+  return(invisible(result$result$success))
 }
 
-#' @importFrom httr GET accept_json stop_for_status content
+
+
+
+# utils -------------------------------------------------------------------
+
 api_get_raw_data <- function(id, path, opts) {
-  result <- GET(
-    url = sprintf(
-      "%s/v1/studies/%s/raw",
-      opts$host, id
-    ),
-    accept_json(),
+  api_get(
+    opts, 
+    url = paste0(id, "/raw"), 
     query = list(
       path = path, 
       formatted = TRUE
     )
   )
-  stop_for_status(result)
-  content(result)
 }
 
-#' @importFrom httr GET accept_json stop_for_status content
 api_get_variants <- function(id, opts) {
-  result <- GET(
-    url = sprintf(
-      "%s/v1/studies/%s/variants",
-      opts$host, id
-    ),
-    accept_json()
+  variants <- api_get(
+    opts, 
+    url = paste0(id, "/variants")
   )
-  stop_for_status(result)
   lapply(
-    X = content(result)$children,
+    X = variants$children,
     FUN = function(x) {
       list(name = x$node$name, id = x$node$id)
     }

@@ -25,6 +25,7 @@ Roxygen: list(markdown = TRUE)
 Depends: antaresRead (>= 2.2.7)
 Imports: 
     assertthat,
+    cli,
     data.table,
     httr,
     grDevices,

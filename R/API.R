@@ -53,6 +53,7 @@ setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions
     return(invisible(opts))
   }
   opts$modeAPI <- mode
+  options(antares = opts)
   return(invisible(opts))
 }
 
@@ -145,7 +146,7 @@ useVariant <- function(name, opts = antaresRead::simOptions()) {
     }
     variant_id <- variants[[index]]$id
     opts$variant_id <- variant_id
-    options("antaresEditObject.apiCommands" = list())
+    options("antaresEditObject.apiCommands" = api_get(opts, paste0(opts$variant_id, "/commands")))
   } else {
     stop("Variant not found")
   }
