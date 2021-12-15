@@ -1,4 +1,10 @@
-#' Create An Area In An Antares Study
+#' @title Create An Area In An Antares Study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Create a new area in an Antares study.
+#' 
 #'
 #' @param name Name of the area as a character, without punctuation except - and _.
 #' @param color Color of the node

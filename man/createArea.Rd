@@ -34,7 +34,9 @@ createArea(
 An updated list containing various information about the simulation.
 }
 \description{
-Create An Area In An Antares Study
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Create a new area in an Antares study.
 }
 \examples{
 \dontrun{
