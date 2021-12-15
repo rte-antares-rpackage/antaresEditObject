@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = TRUE
 )
 ```
 
@@ -19,22 +19,77 @@ knitr::opts_chunk$set(
 library(antaresEditObject)
 ```
 
+The API behind [Antares Web](https://antares-web.readthedocs.io/en/latest/) comes with a Variant Manager allowing to edit a study. Functions from {antaresEditObject} can be used send commands to the API or generate commands to be sent to the API.
 
 
-```{r}
+## Path to simulation and variant creation
 
-# Path to our study
-opts <- antaresRead::setSimulationPathAPI(
+First we need to declare which study we are going to use:
+
+```{r set-simulation-path, eval=FALSE}
+antaresRead::setSimulationPathAPI(
   host = "http://localhost:8080",
   study_id = "70a08fae-da67-444a-b2ed-df4c0f956a31", 
   token = NULL, 
   simulation = "input"
 )
+```
 
-# temp
-opts$host <- "http://localhost:8080"
-opts$study_id <- "70a08fae-da67-444a-b2ed-df4c0f956a31"
-options(antares = opts)
+Then we can create a new variant from our study or use one created through the web interface:
+
+```{r create-variant, eval=FALSE}
+# Create new variant
+createVariant("variant-1")
+
+# use an existing one
+useVariant("variant-2")
+```
+
+
+A third option is to mock the web server behavior, it can be useful if we are offline or if we just want to generate API commands to be use afterwards:
+
+```{r mock-api}
+mockSimulationAPI()
+```
+
+
+## API editing mode
+
+{antaresEditObject} allow to use two modes to use the API:
+
+* **async**: record all API calls, but nothing is sent to the server, commands can be retrieved after calling {antaresEditObject}'s functions
+* **sync**: send query to the API each time a function is used (commands are also internally recorded if needed).
+
+
+```{r set-api-mode, eval=FALSE}
+setAPImode("async")
+# or
+setAPImode("sync")
+```
+
+Default is to used **async** mode. When using `mockSimulationAPI()` only **async** mode is available.
+
+
+
+## Get API commands
+
+API commands generated after calling functions like `createArea()`, `createLink()`, ... can be retrieved at all time with:
+
+```{r get-api-commands, eval=FALSE}
+getAPIcommands()
+```
+
+
+
+## Usage example
+
+Below are listed all functions from {antaresEditObject} that can be used with the API.
+
+### Create area
+
+
+```{r}
+
 
 
 # Set mode you want to use
