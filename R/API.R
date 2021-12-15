@@ -58,16 +58,29 @@ setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions
 
 
 #' Get API commands generated
-#'
+#' 
+#' @param last Return the last command generated if `TRUE`, or a `numeric`
+#'  for returning a specified number of commands. Default is to return all commands.
+#' @param actions A `character` `vector` of actions to return.
 #' @template opts-arg
 #'
 #' @return a list of API commands
 #' @export
+#' 
+#' @importFrom utils tail
 #'
-getAPIcommands <- function(opts = antaresRead::simOptions()) {
+getAPIcommands <- function(last = NULL, actions = NULL, opts = antaresRead::simOptions()) {
   commands <- getOption("antaresEditObject.apiCommands", default = list())
+  if (is.character(actions) && length(actions) > 0) {
+    commands_actions <- vapply(commands, "[[", "action", FUN.VALUE = character(1))
+    commands <- commands[commands_actions %in% actions]
+  }
+  if (isTRUE(last))
+    commands <- tail(commands, n = 1)
+  if (is.numeric(last))
+    commands <- tail(commands, n = last)
   class(commands) <- c("list", "antares.api.commands")
-  commands
+  return(commands)
 }
 
 

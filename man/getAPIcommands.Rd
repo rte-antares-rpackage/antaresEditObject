@@ -4,9 +4,14 @@
 \alias{getAPIcommands}
 \title{Get API commands generated}
 \usage{
-getAPIcommands(opts = antaresRead::simOptions())
+getAPIcommands(last = NULL, actions = NULL, opts = antaresRead::simOptions())
 }
 \arguments{
+\item{last}{Return the last command generated if \code{TRUE}, or a \code{numeric}
+for returning a specified number of commands. Default is to return all commands.}
+
+\item{actions}{A \code{character} \code{vector} of actions to return.}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
