@@ -66,6 +66,7 @@ setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions
 #'
 #' @return a list of API commands
 #' @export
+#' @name api-commands
 #' 
 #' @importFrom utils tail
 #'
@@ -81,6 +82,18 @@ getAPIcommands <- function(last = NULL, actions = NULL, opts = antaresRead::simO
     commands <- tail(commands, n = last)
   class(commands) <- c("list", "antares.api.commands")
   return(commands)
+}
+
+#' @param path Path to the JSON file to write on disk.
+#' @param ... Additional arguments passed to [jsonlite::write_json()]
+#' 
+#' @export
+#' @rdname api-commands
+#' 
+#' @importFrom jsonlite write_json
+writeAPIcommands <- function(path, last = NULL, actions = NULL, ..., opts = antaresRead::simOptions()) {
+  commands <- getAPIcommands(last = last, actions = actions, opts = opts)
+  jsonlite::write_json(x = commands, path = path, auto_unbox = TRUE, ...)
 }
 
 

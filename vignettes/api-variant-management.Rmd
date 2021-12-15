@@ -60,7 +60,6 @@ mockSimulationAPI()
 * **async**: record all API calls, but nothing is sent to the server, commands can be retrieved after calling {antaresEditObject}'s functions
 * **sync**: send query to the API each time a function is used (commands are also internally recorded if needed).
 
-
 ```{r set-api-mode, eval=FALSE}
 setAPImode("async")
 # or
@@ -71,12 +70,32 @@ Default is to used **async** mode. When using `mockSimulationAPI()` only **async
 
 
 
-## Get API commands
+## Get / export API commands
 
 API commands generated after calling functions like `createArea()`, `createLink()`, ... can be retrieved at all time with:
 
 ```{r get-api-commands, eval=FALSE}
 getAPIcommands()
+```
+
+Last command generated can be viewed with:
+
+```{r get-api-commands-last, eval=FALSE}
+getAPIcommands(last = TRUE)
+# or use a numeric to get the last N commands
+getAPIcommands(last = 3)
+```
+
+You can also filter type of commands with:
+
+```{r get-api-commands-actions, eval=FALSE}
+getAPIcommands(actions = "create_area")
+```
+
+Export commands with:
+
+```{r write-api-commands, eval=FALSE}
+writeAPIcommands("path/to/commands.json")
 ```
 
 
