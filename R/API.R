@@ -72,7 +72,11 @@ setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions
 #' @importFrom utils tail
 #'
 getAPIcommands <- function(last = NULL, actions = NULL, opts = antaresRead::simOptions()) {
-  commands <- getOption("antaresEditObject.apiCommands", default = list())
+  if (should_command_be_executed(opts)) {
+    commands <- api_get(opts, paste0(opts$variant_id, "/commands"))
+  } else {
+    commands <- getOption("antaresEditObject.apiCommands", default = list())
+  }
   if (is.character(actions) && length(actions) > 0) {
     commands_actions <- vapply(commands, "[[", "action", FUN.VALUE = character(1))
     commands <- commands[commands_actions %in% actions]
