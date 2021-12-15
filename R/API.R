@@ -65,13 +65,13 @@ setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions
 #' @param actions A `character` `vector` of actions to return.
 #' @template opts-arg
 #'
-#' @return a list of API commands
+#' @return a list of commands to edit a variant
 #' @export
-#' @name api-commands
+#' @name variant-commands
 #' 
 #' @importFrom utils tail
 #'
-getAPIcommands <- function(last = NULL, actions = NULL, opts = antaresRead::simOptions()) {
+getVariantCommands <- function(last = NULL, actions = NULL, opts = antaresRead::simOptions()) {
   if (should_command_be_executed(opts)) {
     commands <- api_get(opts, paste0(opts$variant_id, "/commands"))
   } else {
@@ -93,10 +93,10 @@ getAPIcommands <- function(last = NULL, actions = NULL, opts = antaresRead::simO
 #' @param ... Additional arguments passed to [jsonlite::write_json()]
 #' 
 #' @export
-#' @rdname api-commands
+#' @rdname variant-commands
 #' 
 #' @importFrom jsonlite write_json
-writeAPIcommands <- function(path, last = NULL, actions = NULL, ..., opts = antaresRead::simOptions()) {
+writeVariantCommands <- function(path, last = NULL, actions = NULL, ..., opts = antaresRead::simOptions()) {
   commands <- getAPIcommands(last = last, actions = actions, opts = opts)
   jsonlite::write_json(x = commands, path = path, auto_unbox = TRUE, ...)
 }

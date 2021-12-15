@@ -70,32 +70,32 @@ Default is to used **async** mode. When using `mockSimulationAPI()` only **async
 
 
 
-## Get / export API commands
+## Get / export variant management commands
 
-API commands generated after calling functions like `createArea()`, `createLink()`, ... can be retrieved at all time with:
+Variant commands generated after calling functions like `createArea()`, `createLink()`, ... can be retrieved at all time with:
 
 ```{r get-api-commands, eval=FALSE}
-getAPIcommands()
+getVariantCommands()
 ```
 
 Last command generated can be viewed with:
 
 ```{r get-api-commands-last, eval=FALSE}
-getAPIcommands(last = TRUE)
+getVariantCommands(last = TRUE)
 # or use a numeric to get the last N commands
-getAPIcommands(last = 3)
+getVariantCommands(last = 3)
 ```
 
 You can also filter type of commands with:
 
 ```{r get-api-commands-actions, eval=FALSE}
-getAPIcommands(actions = "create_area")
+getVariantCommands(actions = "create_area")
 ```
 
 Export commands with:
 
 ```{r write-api-commands, eval=FALSE}
-writeAPIcommands("path/to/commands.json")
+writeVariantCommands("path/to/commands.json")
 ```
 
 
