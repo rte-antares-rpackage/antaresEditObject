@@ -43,8 +43,7 @@ createArea <- function(name,
                        opts = antaresRead::simOptions()) {
 
   assertthat::assert_that(inherits(opts, "simOptions"))
-  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
-    stop("Area's name must not contain ponctuation except - and _")
+  validate_area_name(name)
   
   # API block
   if (is_api_study(opts)) {

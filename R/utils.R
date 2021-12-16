@@ -31,6 +31,12 @@ check_area_name <- function(area, opts = antaresRead::simOptions()) {
     stop("'", area, "' is not a valid area name, possible names are: ", paste(areaList, collapse = ", "), call. = FALSE)
 }
 
+validate_area_name <- function(name) {
+  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) {
+    stop("Area's name must not contain ponctuation except - and _")
+  }
+}
+
 
 
 hyphenize_names <- function(.list) {
