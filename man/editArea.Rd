@@ -2,7 +2,7 @@
 % Please edit documentation in R/editArea.R
 \name{editArea}
 \alias{editArea}
-\title{Edit An Existing Area In An Antares Study}
+\title{Edit an area in an Antares study}
 \usage{
 editArea(
   name,
@@ -20,18 +20,20 @@ editArea(
 
 \item{localization}{Localization on the map}
 
-\item{nodalOptimization}{Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.}
+\item{nodalOptimization}{Nodal optimization parameters, see \code{\link[=nodalOptimizationOptions]{nodalOptimizationOptions()}}.}
 
-\item{filtering}{Filtering parameters, see \code{\link{filteringOptions}}.}
+\item{filtering}{Filtering parameters, see [filteringOptions().}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Edit An Existing Area In An Antares Study
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Edit an existing area in an Antares study.
 }
 \examples{
 \dontrun{

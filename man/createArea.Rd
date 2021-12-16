@@ -2,7 +2,7 @@
 % Please edit documentation in R/createArea.R
 \name{createArea}
 \alias{createArea}
-\title{Create An Area In An Antares Study}
+\title{Create an area in an Antares study}
 \usage{
 createArea(
   name,
@@ -21,9 +21,9 @@ createArea(
 
 \item{localization}{Localization on the map}
 
-\item{nodalOptimization}{Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.}
+\item{nodalOptimization}{Nodal optimization parameters, see \code{\link[=nodalOptimizationOptions]{nodalOptimizationOptions()}}.}
 
-\item{filtering}{Filtering parameters, see \code{\link{filteringOptions}}.}
+\item{filtering}{Filtering parameters, see [filteringOptions().}
 
 \item{overwrite}{Overwrite the area if already exist.}
 

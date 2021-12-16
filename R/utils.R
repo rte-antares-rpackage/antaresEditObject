@@ -11,6 +11,12 @@ dropNulls <- function(x) {
   }
 }
 
+is_different <- function(x, y) {
+  if (is.null(x))
+    return(FALSE)
+  !identical(x, y)
+}
+
 #TODO to copy/paste to antaresRead in a next release. 
 .getLinkName<-function(areaX=NULL, areaY=NULL){
   if(areaX<areaY){

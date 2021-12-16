@@ -1,4 +1,4 @@
-#' @title Create An Area In An Antares Study
+#' @title Create an area in an Antares study
 #' 
 #' @description 
 #' `r antaresEditObject::badge_api_ok()`
@@ -9,8 +9,8 @@
 #' @param name Name of the area as a character, without punctuation except - and _.
 #' @param color Color of the node
 #' @param localization Localization on the map
-#' @param nodalOptimization Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.
-#' @param filtering Filtering parameters, see \code{\link{filteringOptions}}.
+#' @param nodalOptimization Nodal optimization parameters, see [nodalOptimizationOptions()].
+#' @param filtering Filtering parameters, see [filteringOptions().
 #' @param overwrite Overwrite the area if already exist.
 #' 
 #' @template opts
@@ -52,7 +52,7 @@ createArea <- function(name,
     if (should_command_be_executed(opts))
       api_command_execute(cmd, opts = opts)
     
-    if (!identical(nodalOptimization, nodalOptimizationOptions()) | !identical(filtering, filteringOptions()) ){
+    if (is_different(nodalOptimization, nodalOptimizationOptions()) | is_different(filtering, filteringOptions())){
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/areas/%s/optimization", name),

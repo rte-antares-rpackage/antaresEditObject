@@ -1,15 +1,14 @@
-#' Edit An Existing Area In An Antares Study
+#' @title Edit an area in an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Edit an existing area in an Antares study.
 #'
-#' @param name Name of the area as a character, without punctuation except - and _.
-#' @param color Color of the node
-#' @param localization Localization on the map
-#' @param nodalOptimization Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.
-#' @param filtering Filtering parameters, see \code{\link{filteringOptions}}.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' @inheritParams createArea
+#' 
+#' @template opts
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath
@@ -46,6 +45,25 @@ editArea <- function(name,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   validate_area_name(name)
+  
+  # API block
+  if (is_api_study(opts)) {
+    if (is_different(nodalOptimization, nodalOptimizationOptions()) | is_different(filtering, filteringOptions())){
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization", name),
+        data = list(
+          "nodal optimization" = nodalOptimization,
+          "filtering" = filtering
+        )
+      )
+      api_command_register(cmd, opts = opts)
+      if (should_command_be_executed(opts))
+        api_command_execute(cmd, opts = opts)
+    }
+    
+    return(invisible(opts))
+  }
   
   v7 <- is_antares_v7(opts)
   
