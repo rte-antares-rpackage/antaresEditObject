@@ -13,6 +13,19 @@ should_command_be_executed <- function(opts) {
   isTRUE(opts$modeAPI == "sync")
 }
 
+has_variant <- function(opts) {
+  isTRUE(is.character(opts$variant_id) & length(opts$variant_id) == 1)
+}
+
+check_variant <- function(opts) {
+  if (!has_variant(opts)) {
+    stop(
+      "No variant registered, please create a variant with createVariant() or use an existing one with useVariant()",
+      call. = FALSE
+    )
+  }
+}
+
 
 #' @export
 print.antares.api.commands <- function(x, ...) {
@@ -93,6 +106,7 @@ api_command_execute <- function(command, opts) {
       "'command' must be a command generated with api_command_generate() or api_commands_generate()"
     )
   }
+  check_variant(opts)
   api_post(opts, paste0(opts$variant_id, "/commands"), body = body, encode = "raw")
   api_put(opts, paste0(opts$variant_id, "/generate"))
   result <- api_get(opts, paste0(opts$variant_id, "/task"))
