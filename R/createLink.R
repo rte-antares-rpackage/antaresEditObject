@@ -60,6 +60,16 @@ createLink <- function(from,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  # API block
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate("create_link", area1 = from, area2 = to)
+    api_command_register(cmd, opts = opts)
+    if (should_command_be_executed(opts))
+      api_command_execute(cmd, opts = opts)
+    
+    return(invisible(opts))
+  }
+  
   v7 <- is_antares_v7(opts)
   
   if (!is.null(dataLink)) {

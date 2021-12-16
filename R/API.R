@@ -3,6 +3,9 @@
 #' 
 #' @description Use this to generate command without an active API connection,
 #'  it allow to use function to edit a study to later on get API commands.
+#'  
+#' @param force Logical, force mocking simulation even if
+#'  [antaresRead::setSimulationPathAPI] has already been called.
 #'
 #' @template opts-value
 #' @export
@@ -118,7 +121,7 @@ writeVariantCommands <- function(path, last = NULL, actions = NULL, ..., opts = 
 #' @export
 #' @name variant
 #' 
-#' @importFrom httr POST accept_json stop_for_status content
+#' @importFrom httr POST accept_json status_code content
 #'
 #' @examples
 #' \dontrun{
@@ -138,7 +141,11 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
     accept_json(),
     query = list(name = name)
   )
-  stop_for_status(result)
+  if (status_code(result) < 300) {
+    cli::cli_alert_success("Variant succesfully created!")
+  } else {
+    cli::cli_alert_danger("Failed to create variant")
+  }
   opts$variant_id <- content(result)
   options("antaresEditObject.apiCommands" = list())
   options(antares = opts)

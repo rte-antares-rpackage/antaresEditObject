@@ -4,7 +4,11 @@
 \alias{mockSimulationAPI}
 \title{Mock API usage}
 \usage{
-mockSimulationAPI()
+mockSimulationAPI(force = FALSE)
+}
+\arguments{
+\item{force}{Logical, force mocking simulation even if
+\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPathAPI} has already been called.}
 }
 \value{
 An updated list containing various information about the simulation.
