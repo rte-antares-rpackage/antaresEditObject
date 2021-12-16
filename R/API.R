@@ -16,7 +16,10 @@
 #' # Get commands
 #' getVariantCommands()
 #' }
-mockSimulationAPI <- function() {
+mockSimulationAPI <- function(force = FALSE) {
+  if (!is.null(getOption("antares")) & !isTRUE(force)) {
+    stop("A study is already registered, use force = TRUE to overwrite.", call. = FALSE)
+  }
   opts <- list(
     typeLoad = "api",
     modeAPI = "async",
