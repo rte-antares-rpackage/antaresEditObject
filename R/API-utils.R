@@ -9,6 +9,10 @@ is_api_study <- function(opts) {
   isTRUE(opts$typeLoad == "api")
 }
 
+is_api_mocked <- function(opts) {
+  isTRUE(opts$mockAPI)
+}
+
 should_command_be_executed <- function(opts) {
   isTRUE(opts$modeAPI == "sync")
 }

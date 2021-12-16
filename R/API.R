@@ -50,7 +50,7 @@ mockSimulationAPI <- function() {
 #' }
 setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions()) {
   mode <- match.arg(mode)
-  if (isTRUE(opts$mockAPI)) {
+  if (is_api_mocked(opts)) {
     warning("Cannot set API mode on sync when using mockSimulationAPI()")
     return(invisible(opts))
   }
@@ -124,6 +124,9 @@ writeVariantCommands <- function(path, last = NULL, actions = NULL, ..., opts = 
 #' }
 createVariant <- function(name, opts = antaresRead::simOptions()) {
   check_api_study(opts)
+  if (is_api_mocked(opts)) {
+    stop("Cannot create a variant when using mockSimulationAPI()", call. = FALSE)
+  }
   result <- POST(
     url = sprintf(
       "%s/v1/studies/%s/variants",
@@ -142,6 +145,10 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
 #' @export
 #' @rdname variant
 useVariant <- function(name, opts = antaresRead::simOptions()) {
+  check_api_study(opts)
+  if (is_api_mocked(opts)) {
+    stop("Cannot use a variant when using mockSimulationAPI()", call. = FALSE)
+  }
   variants <- api_get_variants(opts$study_id, opts)
   variants_names <- vapply(variants, `[[`, "name", FUN.VALUE = character(1))
   if (name %in% variants_names) {
