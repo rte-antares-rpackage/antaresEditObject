@@ -6,10 +6,6 @@
 \usage{
 mockSimulationAPI()
 }
-\arguments{
-\item{opts}{List of simulation parameters returned by the function
-\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
-}
 \value{
 An updated list containing various information about the simulation.
 }
@@ -18,10 +14,12 @@ Use this to generate command without an active API connection,
 it allow to use function to edit a study to later on get API commands.
 }
 \examples{
+\dontrun{
 # Mock simulation API
 mockSimulationAPI()
 # Create an area
 createArea("new area")
 # Get commands
-getAPIcommands()
+getVariantCommands()
+}
 }

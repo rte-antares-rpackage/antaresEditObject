@@ -4,16 +4,18 @@
 #' @description Use this to generate command without an active API connection,
 #'  it allow to use function to edit a study to later on get API commands.
 #'
-#' @template opts
+#' @template opts-value
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Mock simulation API
 #' mockSimulationAPI()
 #' # Create an area
 #' createArea("new area")
 #' # Get commands
-#' getAPIcommands()
+#' getVariantCommands()
+#' }
 mockSimulationAPI <- function() {
   opts <- list(
     typeLoad = "api",
@@ -97,7 +99,7 @@ getVariantCommands <- function(last = NULL, actions = NULL, opts = antaresRead::
 #' 
 #' @importFrom jsonlite write_json
 writeVariantCommands <- function(path, last = NULL, actions = NULL, ..., opts = antaresRead::simOptions()) {
-  commands <- getAPIcommands(last = last, actions = actions, opts = opts)
+  commands <- getVariantCommands(last = last, actions = actions, opts = opts)
   jsonlite::write_json(x = commands, path = path, auto_unbox = TRUE, ...)
 }
 
