@@ -18,9 +18,9 @@ editLink(
 )
 }
 \arguments{
-\item{from}{The first area from which to create a link}
+\item{from}{The two areas linked together.}
 
-\item{to}{The second one}
+\item{to}{The two areas linked together.}
 
 \item{hurdles_cost}{Logical, which is used to state whether (linear)
 transmission fees should be taken into account or not in economy and adequacy simulations}

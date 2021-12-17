@@ -1,12 +1,15 @@
-#' Remove a link between two areas
+#' @title Remove a link between two areas
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Remove a link between two areas in an Antares study.
+#' 
 #'
-#' @param from The first area from which to create a link
-#' @param to The second one 
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' @inheritParams createLink
+#' 
+#' @template opts
+#' 
 #' @export
 #'
 #' @examples
@@ -17,6 +20,23 @@
 removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # API block
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate(
+      action = "remove_link",
+      area1 = from,
+      area2 = to
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts),
+      cli_command_registered()
+    )
+    
+    return(invisible(opts))
+  }
   
   # Input path
   inputPath <- opts$inputPath

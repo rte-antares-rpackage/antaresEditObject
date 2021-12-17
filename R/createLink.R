@@ -6,8 +6,7 @@
 #' Create a new link between two areas in an Antares study.
 #' 
 #'
-#' @param from The first area from which to create a link
-#' @param to The second one
+#' @param from,to The two areas linked together.
 #' @param propertiesLink a named list containing the link properties, e.g. hurdles-cost
 #' or transmission-capacities for example. See [propertiesLinkOptions()].
 #' @param dataLink For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)

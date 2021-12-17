@@ -14,9 +14,7 @@ createLink(
 )
 }
 \arguments{
-\item{from}{The first area from which to create a link}
-
-\item{to}{The second one}
+\item{from, to}{The two areas linked together.}
 
 \item{propertiesLink}{a named list containing the link properties, e.g. hurdles-cost
 or transmission-capacities for example. See \code{\link[=propertiesLinkOptions]{propertiesLinkOptions()}}.}
