@@ -56,3 +56,6 @@ opts = antaresRead::simOptions())
 
 }
 }
+\seealso{
+\code{\link[=createArea]{createArea()}}, \code{\link[=removeArea]{removeArea()}}
+}

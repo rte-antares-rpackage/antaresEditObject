@@ -15,6 +15,8 @@
 #' 
 #' @template opts
 #' 
+#' @seealso [editArea()], [removeArea()]
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath

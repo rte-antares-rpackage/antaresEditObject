@@ -9,6 +9,8 @@
 #' 
 #' @template opts
 #' 
+#' @seealso [createArea()], [removeArea()]
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath

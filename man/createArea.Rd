@@ -51,3 +51,6 @@ createArea("fictive_area")
 
 }
 }
+\seealso{
+\code{\link[=editArea]{editArea()}}, \code{\link[=removeArea]{removeArea()}}
+}
