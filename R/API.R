@@ -152,27 +152,36 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
   return(invisible(opts))
 }
 
+#' @param variant_id ID of the variant to use, if specified `name` is ignored.
+#' 
 #' @export
 #' @rdname variant
-useVariant <- function(name, opts = antaresRead::simOptions()) {
+useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()) {
   check_api_study(opts)
   if (is_api_mocked(opts)) {
     stop("Cannot use a variant when using mockSimulationAPI()", call. = FALSE)
   }
   variants <- api_get_variants(opts$study_id, opts)
   variants_names <- vapply(variants, `[[`, "name", FUN.VALUE = character(1))
-  if (name %in% variants_names) {
-    index <- which(variants_names == name)
-    if (length(index) > 1) {
-      warning("'name' match (exactly) more than one variant, first one is used.")
-      index <- index[1]
+  variants_ids <- vapply(variants, `[[`, "id", FUN.VALUE = character(1))
+  if (!is.null(variant_id)) {
+    if (!isTRUE(variant_id %in% variants_ids)) {
+      stop("There's no variant with ID: ", variant_id)
     }
-    variant_id <- variants[[index]]$id
-    opts$variant_id <- variant_id
-    options("antaresEditObject.apiCommands" = api_get(opts, paste0(opts$variant_id, "/commands")))
   } else {
-    stop("Variant not found")
+    if (name %in% variants_names) {
+      index <- which(variants_names == name)
+      if (length(index) > 1) {
+        warning("'name' match (exactly) more than one variant, first one is used.")
+        index <- index[1]
+      }
+      variant_id <- variants[[index]]$id
+    } else {
+      stop("Variant not found")
+    }
   }
+  opts$variant_id <- variant_id
+  options("antaresEditObject.apiCommands" = api_get(opts, paste0(opts$variant_id, "/commands")))
   options(antares = opts)
   return(invisible(opts))
 }

@@ -8,13 +8,15 @@
 \usage{
 createVariant(name, opts = antaresRead::simOptions())
 
-useVariant(name, opts = antaresRead::simOptions())
+useVariant(name, variant_id = NULL, opts = antaresRead::simOptions())
 }
 \arguments{
 \item{name}{Name for the variant to create or the name of an existent variant.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
+
+\item{variant_id}{ID of the variant to use, if specified \code{name} is ignored.}
 }
 \value{
 An updated list containing various information about the simulation.
