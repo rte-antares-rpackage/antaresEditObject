@@ -25,20 +25,18 @@ if zero or infinite values should be used instead (actual values / set to zero /
 state whether the link is either an AC component (subject to Kirchhoff’s laws), a DC component,
 or another type of asset.}
 
-\item{display_comments}{Logical.}
+\item{display_comments}{Logical, display comments or not.}
 
 \item{filter_synthesis}{Output synthesis.}
 
 \item{filter_year_by_year}{Output year-by-year.}
 }
 \value{
-A named list taht can be used in \code{\link[=createLink]{createLink()}}.
+A named list that can be used in \code{\link[=createLink]{createLink()}}.
 }
 \description{
 Properties for creating a link
 }
 \examples{
-\dontrun{
-propertiesLinkOptions()
-}
+propertiesLinkOptions(hurdles_cost = TRUE)
 }

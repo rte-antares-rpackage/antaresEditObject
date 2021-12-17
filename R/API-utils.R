@@ -31,11 +31,18 @@ check_variant <- function(opts) {
 }
 
 
+cli_command_registered <- function() {
+  cli::cli_alert_info("Command registered, see all commands with getVariantCommands()")
+}
+
 #' @export
 print.antares.api.commands <- function(x, ...) {
   print(jsonlite::toJSON(as.list(x), pretty = TRUE, auto_unbox = TRUE))
 }
-
+#' @export
+print.antares.api.command <- function(x, ...) {
+  print(jsonlite::toJSON(list(as.list(x)), pretty = TRUE, auto_unbox = TRUE))
+}
 
 #' Generate a command
 #'
@@ -50,7 +57,7 @@ print.antares.api.commands <- function(x, ...) {
 api_command_generate <- function(action, ...) {
   command <- list(
     action = action,
-    args = list(...)
+    args = dropNulls(list(...))
   )
   class(command) <- c(class(command), "antares.api.command")
   return(command)

@@ -35,7 +35,9 @@ If \code{NULL} (default), a matrix whose rows are equal to \verb{1, 1, 0, 0, 0, 
 An updated list containing various information about the simulation.
 }
 \description{
-Create a link between two areas
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Create a new link between two areas in an Antares study.
 }
 \details{
 The eight times-series are:

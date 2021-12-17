@@ -1,4 +1,10 @@
-#' Create a link between two areas
+#' @title Create a link between two areas
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Create a new link between two areas in an Antares study.
+#' 
 #'
 #' @param from The first area from which to create a link
 #' @param to The second one
@@ -7,7 +13,7 @@
 #' @param dataLink For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
 #' trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
 #' PST min, PST max.
-#' If \code{NULL} (default), a matrix whose rows are equal to `1, 1, 0, 0, 0, 0, 0, 0` is set. See Details
+#' If `NULL` (default), a matrix whose rows are equal to `1, 1, 0, 0, 0, 0, 0, 0` is set. See Details
 #' @param overwrite Logical, overwrite the previous between the two areas if exist
 #'  
 #' @template opts
@@ -62,10 +68,19 @@ createLink <- function(from,
   
   # API block
   if (is_api_study(opts)) {
-    cmd <- api_command_generate("create_link", area1 = from, area2 = to)
+    cmd <- api_command_generate(
+      action = "create_link",
+      area1 = from,
+      area2 = to,
+      parameters = if (is_different(propertiesLink, propertiesLinkOptions())) propertiesLink else NULL,
+      series = dataLink
+    )
     api_command_register(cmd, opts = opts)
-    if (should_command_be_executed(opts))
-      api_command_execute(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts),
+      cli_command_registered()
+    )
     
     return(invisible(opts))
   }
@@ -172,30 +187,28 @@ createLink <- function(from,
 #' @param asset_type Character, one of `ac`, `dc`, `gas`, `virt` or `other`. Used to
 #'   state whether the link is either an AC component (subject to Kirchhoff’s laws), a DC component, 
 #'   or another type of asset.
-#' @param display_comments Logical.
+#' @param display_comments Logical, display comments or not.
 #' @param filter_synthesis Output synthesis.
 #' @param filter_year_by_year Output year-by-year.
 #'
-#' @return A named list taht can be used in [createLink()].
+#' @return A named list that can be used in [createLink()].
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' propertiesLinkOptions()
-#' }
+#' propertiesLinkOptions(hurdles_cost = TRUE)
 propertiesLinkOptions <- function(hurdles_cost = FALSE, 
-                           transmission_capacities = "enabled",
-                           asset_type = "ac",
-                           display_comments = TRUE,
-                           filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
-                           filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
+                                  transmission_capacities = "enabled",
+                                  asset_type = "ac",
+                                  display_comments = TRUE,
+                                  filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
+                                  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
   list(
     `hurdles-cost` = hurdles_cost,
     `transmission-capacities` = transmission_capacities,
     `asset-type` = asset_type,
     `display-comments` = display_comments,
-    `filter-synthesis` = filter_synthesis,
-    `filter-year-by-year` = filter_year_by_year
+    `filter-synthesis` = paste(filter_synthesis, collapse = ", "),
+    `filter-year-by-year` = paste(filter_year_by_year, collapse = ", ")
   )
 }
 
