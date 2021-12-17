@@ -1,4 +1,10 @@
-#' Edit a link between two areas
+#' @title Edit a link between two areas
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Edit a link between two areas in an Antares study.
+#' 
 #'
 #' @inheritParams createLink
 #' @inheritParams propertiesLinkOptions
@@ -23,7 +29,8 @@
 #'   transmission_capacities = "infinite"
 #' )
 #' }
-editLink <- function(from, to,
+editLink <- function(from, 
+                     to,
                      hurdles_cost = NULL, 
                      transmission_capacities = NULL, 
                      asset_type = NULL,
@@ -34,6 +41,48 @@ editLink <- function(from, to,
                      opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  propertiesLink <- dropNulls(list(
+    `hurdles-cost` = hurdles_cost,
+    `transmission-capacities` = transmission_capacities,
+    `asset-type` = asset_type,
+    `display-comments` = display_comments,
+    `filter-synthesis` = filter_synthesis,
+    `filter-year-by-year` = filter_year_by_year
+  ))
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    # Link properties
+    if (length(propertiesLink) > 0) {
+      cmd <- api_command_generate(
+        action = "update_config",
+        target = sprintf("input/links/%s/properties", from),
+        data = setNames(list(propertiesLink), to)
+      )
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update link's properties: {result_log$message}"),
+        cli_command_registered()
+      )
+    }
+    
+    if (!is.null(dataLink)) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/links/%s/%s", from, to),
+        value = dataLink
+      )
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update link's series: {result_log$message}"),
+        cli_command_registered()
+      )
+    }
+    
+    return(invisible(opts))
+  }
   
   v7 <- is_antares_v7(opts)
   
@@ -68,15 +117,6 @@ editLink <- function(from, to,
   prev_links <- readIniFile(
     file = file.path(inputPath, "links", from, "properties.ini")
   )
-
-  propertiesLink <- dropNulls(list(
-    `hurdles-cost` = hurdles_cost,
-    `transmission-capacities` = transmission_capacities,
-    `asset-type` = asset_type,
-    `display-comments` = display_comments,
-    `filter-synthesis` = filter_synthesis,
-    `filter-year-by-year` = filter_year_by_year
-  ))
   
   prev_links[[to]] <- modifyList(x = prev_links[[to]], val = propertiesLink)
   

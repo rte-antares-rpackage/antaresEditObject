@@ -107,7 +107,7 @@ api_command_register <- function(command, opts) {
 
 #' @importFrom httr POST accept_json content_type_json stop_for_status content
 #' @importFrom jsonlite toJSON
-api_command_execute <- function(command, opts) {
+api_command_execute <- function(command, opts, text_alert = "{result_log$message}") {
   if (inherits(command, "antares.api.command")) {
     body <- jsonlite::toJSON(list(command), auto_unbox = TRUE)
   } else if (inherits(command, "antares.api.commands")) {
@@ -126,13 +126,13 @@ api_command_execute <- function(command, opts) {
   }
   result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
   if (identical(result_log$success, TRUE)) {
-    cli::cli_alert_success(result_log$message)
+    cli::cli_alert_success(text_alert)
   }
   if (identical(result_log$success, FALSE)) {
-    cli::cli_alert_danger(result_log$message)
+    cli::cli_alert_danger(text_alert)
     # cli::cli_alert_danger(paste("Command ID:", result_log$id))
     api_delete(opts, paste0(opts$variant_id, "/commands/", result_log$id))
-    cli::cli_alert_info("Command has been deleted")
+    cli::cli_alert_warning("Command has been deleted")
   }
   return(invisible(result$result$success))
 }
