@@ -61,6 +61,7 @@ editLink <- function(from,
         target = sprintf("input/links/%s/properties", from),
         data = setNames(list(propertiesLink), to)
       )
+      api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
         api_command_execute(cmd, opts = opts, text_alert = "Update link's properties: {result_log$message}"),
@@ -74,6 +75,7 @@ editLink <- function(from,
         target = sprintf("input/links/%s/%s", from, to),
         matrix = dataLink
       )
+      api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
         api_command_execute(cmd, opts = opts, text_alert = "Update link's series: {result_log$message}"),

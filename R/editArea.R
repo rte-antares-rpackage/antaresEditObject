@@ -60,8 +60,11 @@ editArea <- function(name,
         )
       )
       api_command_register(cmd, opts = opts)
-      if (should_command_be_executed(opts))
-        api_command_execute(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update area's properties: {result_log$message}"),
+        cli_command_registered()
+      )
     }
     
     return(invisible(opts))
