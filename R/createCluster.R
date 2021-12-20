@@ -283,6 +283,7 @@ createClusterRES <- function(area,
         target = sprintf("input/thermal/series/%s/%s/series", area, cluster_name),
         matrix = time_series
       )
+      api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
         api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {result_log$message}"),

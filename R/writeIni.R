@@ -61,7 +61,7 @@ writeIni <- function(listData, pathIni, overwrite = FALSE) {
   }
 }
 
-#' write ini (raw by raw)
+#' write ini 
 #'
 #' @param dtaToTransform \code{list} data to write
 #' @param namesdtaToTransform \code{character} names of data to write
