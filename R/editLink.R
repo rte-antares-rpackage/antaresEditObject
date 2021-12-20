@@ -72,7 +72,7 @@ editLink <- function(from,
       cmd <- api_command_generate(
         action = "replace_matrix",
         target = sprintf("input/links/%s/%s", from, to),
-        value = dataLink
+        matrix = dataLink
       )
       `if`(
         should_command_be_executed(opts), 
