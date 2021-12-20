@@ -1,18 +1,16 @@
-
 #' @title Remove a cluster
 #' 
-#' @description Remove a cluster, thermal or RES (renewable energy source), and all its data.
-#'
-#' @param area Area from which to remove a cluster.
-#' @param cluster_name Cluster to remove.
-#' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area's name.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   [antaresRead::setSimulationPath]
-#'
-#' @return An updated list containing various information about the simulation.
+#' @description 
+#' `r antaresEditObject::badge_api_ok()` (thermal clusters only)
 #' 
-#' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [editCluster()] or [editClusterRES()] to edit existing clusters.
+#' Remove a cluster, thermal or RES (renewable energy source), and all its data.
+#' 
+#'
+#' @inheritParams create-cluster
+#' @template opts
+#' 
+#' @seealso [createCluster()] or [createClusterRES()] to create new clusters,
+#'  [editCluster()] or [editClusterRES()] to edit existing clusters.
 #' 
 #' @export
 #' 
@@ -20,11 +18,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' createCluster(area = "fr", cluster_name = "fr_gas",
-#'               group = "other", `marginal-cost` = 50)
+#' createCluster(
+#'   area = "fr", 
+#'   cluster_name = "fr_gas",
+#'   group = "other", 
+#'   `marginal-cost` = 50
+#' )
 #' 
 #' removeCluster(area = "fr", cluster_name = "fr_gas")
-#' 
 #' }
 removeCluster <- function(area, 
                           cluster_name, 
@@ -71,6 +72,26 @@ removeClusterRES <- function(area,
   
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
+  
+  if (is_api_study(opts)) {
+    
+    if (identical(cluster_type, "renewables"))
+      stop("RES clusters not implemented with the API yet.")
+    
+    cmd <- api_command_generate(
+      action = "remove_cluster",
+      area_id = area,
+      cluster_id = cluster_name
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts),
+      cli_command_registered()
+    )
+    
+    return(invisible(opts))
+  }
   
   # Remove from Ini file
   # path to ini file

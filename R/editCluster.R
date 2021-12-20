@@ -1,7 +1,7 @@
 #' @title Edit an existing cluster
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject::badge_api_ok()` (thermal clusters only)
 #' 
 #' Edit parameters, pre-process data and time series of an existing cluster, thermal or RES (renewable energy source).
 #'
