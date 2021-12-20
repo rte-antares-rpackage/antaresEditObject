@@ -35,9 +35,32 @@ cli_command_registered <- function() {
   cli::cli_alert_info("Command registered, see all commands with getVariantCommands()")
 }
 
+#' @importFrom utils head
+#' @importFrom jsonlite toJSON
 #' @export
 print.antares.api.commands <- function(x, ...) {
-  print(jsonlite::toJSON(as.list(x), pretty = TRUE, auto_unbox = TRUE))
+  p <- lapply(
+    X = x,
+    FUN = function(x) {
+      if (!is.null(x$args)) {
+        x$args <- lapply(
+          X = x$args,
+          FUN = function(y) {
+            if (length(y) > 10) {
+              y <- paste(
+                jsonlite::toJSON(head(y), pretty = FALSE, auto_unbox = TRUE),
+                "[truncated]..."
+              )
+              class(y) <- "json"
+            } 
+            y
+          }
+        )
+      }
+      x
+    }
+  )
+  print(jsonlite::toJSON(as.list(p), pretty = TRUE, auto_unbox = TRUE, force = TRUE, json_verbatim = TRUE))
 }
 #' @export
 print.antares.api.command <- function(x, ...) {
