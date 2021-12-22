@@ -71,7 +71,7 @@ createArea <- function(name,
         api_command_execute(cmd, opts = opts, text_alert = "{.emph update_config}: {msg_api}")
     }
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
   v7 <- is_antares_v7(opts)

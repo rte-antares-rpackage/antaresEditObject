@@ -140,7 +140,7 @@ updateGeneralSettings <- function(mode = NULL,
     if (is_api_mocked(opts)) {
       l_general <- list()
     } else {
-      l_general <- api_get_raw_data(opts$variant_id, path = "settings/generaldata/general", opts = opts)
+      l_general <- api_get_raw_data(opts$study_id, path = "settings/generaldata/general", opts = opts)
     }
     
     new_params <- utils::modifyList(x = l_general, val = new_params)

@@ -17,14 +17,11 @@ should_command_be_executed <- function(opts) {
   isTRUE(opts$modeAPI == "sync")
 }
 
-has_variant <- function(opts) {
-  isTRUE(is.character(opts$variant_id) & length(opts$variant_id) == 1)
-}
-
 check_variant <- function(opts) {
-  if (!has_variant(opts)) {
+  infos <- api_get(opts, opts$study_id)
+  if (!identical(infos$type, "variantstudy")) {
     stop(
-      "No variant registered, please create a variant with createVariant() or use an existing one with useVariant()",
+      "Study isn't a variant, please create a variant from your study with createVariant() or use an existing one with useVariant()",
       call. = FALSE
     )
   }
@@ -38,6 +35,33 @@ cli_command_registered <- function(command = "") {
   if (!is_quiet())
     cli::cli_alert_info("Command {.emph {command}} registered, see all commands with {.code getVariantCommands()}")
 }
+
+
+update_api_opts <- function(opts) {
+  if (is_api_mocked(opts))
+    return(invisible(opts))
+  modeAPI <- opts$modeAPI
+  if (identical(modeAPI, "async"))
+    return(invisible(opts))
+  host <- opts$host
+  study_id <- opts$study_id
+  suppressWarnings({
+    opts <- antaresRead::setSimulationPathAPI(
+      host = host,
+      study_id = study_id,
+      token = opts$token,
+      simulation = "input"
+    )
+  })
+  opts$host <- host
+  opts$study_id <- study_id
+  opts$modeAPI <- modeAPI
+  options(antares = opts)
+  return(invisible(opts))
+}
+
+
+# Print methods -----------------------------------------------------------
 
 #' @importFrom utils head
 #' @importFrom jsonlite toJSON
@@ -70,6 +94,10 @@ print.antares.api.commands <- function(x, ...) {
 print.antares.api.command <- function(x, ...) {
   print(jsonlite::toJSON(list(as.list(x)), pretty = TRUE, auto_unbox = TRUE))
 }
+
+
+
+# API commands ------------------------------------------------------------
 
 #' Generate a command
 #'
@@ -145,11 +173,11 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
     )
   }
   check_variant(opts)
-  api_post(opts, paste0(opts$variant_id, "/commands"), body = body, encode = "raw")
-  api_put(opts, paste0(opts$variant_id, "/generate"))
-  result <- api_get(opts, paste0(opts$variant_id, "/task"))
+  api_post(opts, paste0(opts$study_id, "/commands"), body = body, encode = "raw")
+  api_put(opts, paste0(opts$study_id, "/generate"))
+  result <- api_get(opts, paste0(opts$study_id, "/task"))
   while(is.null(result$result)) {
-    result <- api_get(opts, paste0(opts$variant_id, "/task"))
+    result <- api_get(opts, paste0(opts$study_id, "/task"))
   }
   result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
   msg_api <- result_log$message
@@ -162,7 +190,7 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
   if (identical(result_log$success, FALSE)) {
     if (!is_quiet())
       cli::cli_alert_danger(text_alert)
-    api_delete(opts, paste0(opts$variant_id, "/commands/", result_log$id))
+    api_delete(opts, paste0(opts$study_id, "/commands/", result_log$id))
     if (!is_quiet())
       cli::cli_alert_warning("Command has been deleted")
   }

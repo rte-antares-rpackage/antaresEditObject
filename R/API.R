@@ -81,7 +81,8 @@ setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions
 #'
 getVariantCommands <- function(last = NULL, actions = NULL, opts = antaresRead::simOptions()) {
   if (should_command_be_executed(opts)) {
-    commands <- api_get(opts, paste0(opts$variant_id, "/commands"))
+    check_variant(opts)
+    commands <- api_get(opts, paste0(opts$study_id, "/commands"))
   } else {
     commands <- getOption("antaresEditObject.apiCommands", default = list())
   }
@@ -146,7 +147,7 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
   } else {
     cli::cli_alert_danger("Failed to create variant")
   }
-  opts$variant_id <- content(result)
+  opts$study_id <- content(result)
   options("antaresEditObject.apiCommands" = list())
   options(antares = opts)
   return(invisible(opts))
@@ -180,8 +181,8 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
       stop("Variant not found")
     }
   }
-  opts$variant_id <- variant_id
-  options("antaresEditObject.apiCommands" = api_get(opts, paste0(opts$variant_id, "/commands")))
+  opts$study_id <- variant_id
+  options("antaresEditObject.apiCommands" = api_get(opts, paste0(opts$study_id, "/commands")))
   options(antares = opts)
   return(invisible(opts))
 }
