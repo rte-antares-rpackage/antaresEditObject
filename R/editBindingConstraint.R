@@ -1,18 +1,14 @@
-#' Update An Existing Binding Constraint
+#' @title Update an existing binding constraint
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Update an existing binding constraint in an Antares study.
+#' 
 #'
-#' @param name The name for the binding constraint
-#' @param id An id
-#' @param values Values used by the constraint.
-#'  It contains one line per time step and three columns "less", "greater" and "equal".
-#' @param enabled Logical, is the constraint enabled ?
-#' @param timeStep Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}
-#' @param operator Type of constraint: equality, inequality on one side or both sides.
-#' @param coefficients A named vector containing the coefficients used by the constraint.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath} 
-#'
-#' @return An updated list containing various information about the simulation.
+#' @inheritParams createBindingConstraint
+#' @template opts
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead getLinks setSimulationPath
@@ -21,7 +17,7 @@
 #' @examples
 #' \dontrun{
 #' editBindingConstraint(
-#'   name = "toto", 
+#'   name = "myconstraint", 
 #'   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
 #'   enabled = FALSE, 
 #'   timeStep = "hourly",
@@ -30,13 +26,43 @@
 #' )
 #' }
 editBindingConstraint <- function(name,
-                                    id = tolower(name),
-                                    values = NULL,
-                                    enabled = NULL,
-                                    timeStep = NULL,
-                                    operator = NULL,
-                                    coefficients = NULL,
-                                    opts = antaresRead::simOptions()) {
+                                  id = tolower(name),
+                                  values = NULL,
+                                  enabled = NULL,
+                                  timeStep = NULL,
+                                  operator = NULL,
+                                  coefficients = NULL,
+                                  opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    if (is.null(timeStep))
+      stop("You must provide `timeStep` argument with API.", call. = FALSE)
+    if (is.null(operator))
+      stop("You must provide `operator` argument with API.", call. = FALSE)
+    
+    cmd <- api_command_generate(
+      "update_binding_constraint", 
+      id = name,
+      enabled = enabled,
+      time_step = timeStep,
+      operator = operator,
+      values = values,
+      coeffs = lapply(as.list(coefficients), as.list)
+    )
+    
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "update_binding_constraint: {msg_api}"),
+      cli_command_registered("update_binding_constraint")
+    )
+    
+    return(invisible(opts))
+  }
+  
   valuesIn <- values
   # Ini file
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
