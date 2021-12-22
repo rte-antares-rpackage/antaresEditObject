@@ -1,11 +1,15 @@
-#' Remove a Binding Constraint
-#'
+#' @title Remove a Binding Constraint
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Remove a binding constraint in an Antares study.
+#' 
+#' 
 #' @param name Name(s) of the binding constraint(s) to remove.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath} 
-#'
-#' @return An updated list containing various information about the simulation.
+#' 
+#' @template opts
+#' 
 #' @export
 #'
 #' @examples
@@ -15,6 +19,26 @@
 removeBindingConstraint <- function(name, opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    for (i in name) {
+      cmd <- api_command_generate(
+        "remove_binding_constraint", 
+        id = i
+      )
+      
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "remove_binding_constraint: {msg_api}"),
+        cli_command_registered("remove_binding_constraint")
+      )
+    }
+    
+    return(invisible(opts))
+  }
   
   ## Ini file
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
