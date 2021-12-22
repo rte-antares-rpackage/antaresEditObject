@@ -59,7 +59,7 @@ createBindingConstraint <- function(name,
       time_step = timeStep,
       operator = operator,
       values = values,
-      coeffs = lapply(as.list(coeff), as.list)
+      coeffs = lapply(as.list(coefficients), as.list)
     )
     
     api_command_register(cmd, opts = opts)
