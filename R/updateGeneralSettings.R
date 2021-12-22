@@ -137,7 +137,11 @@ updateGeneralSettings <- function(mode = NULL,
   
   # API block
   if (is_api_study(opts)) {
-    l_general <- api_get_raw_data(opts$variant_id, path = "settings/generaldata/general", opts = opts)
+    if (is_api_mocked(opts)) {
+      l_general <- list()
+    } else {
+      l_general <- api_get_raw_data(opts$variant_id, path = "settings/generaldata/general", opts = opts)
+    }
     
     new_params <- utils::modifyList(x = l_general, val = new_params)
     
@@ -149,7 +153,7 @@ updateGeneralSettings <- function(mode = NULL,
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "Update general settings: {msg_api}"),
+      api_command_execute(cmd, opts = opts, text_alert = "Updating general settings: {msg_api}"),
       cli_command_registered("update_config")
     )
     
