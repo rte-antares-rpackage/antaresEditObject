@@ -273,8 +273,8 @@ createClusterRES <- function(area,
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts),
-      cli_command_registered()
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_cluster}: {msg_api}"),
+      cli_command_registered("create_cluster")
     )
     
     if (!is.null(time_series)) {
@@ -286,8 +286,8 @@ createClusterRES <- function(area,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {result_log$message}"),
-        cli_command_registered()
+        api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
       )
     }
     

@@ -53,8 +53,8 @@ createArea <- function(name,
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts),
-      cli_command_registered()
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_area}: {msg_api}"),
+      cli_command_registered("create_area")
     )
     
     if (is_different(nodalOptimization, nodalOptimizationOptions()) | is_different(filtering, filteringOptions())){
@@ -68,7 +68,7 @@ createArea <- function(name,
       )
       api_command_register(cmd, opts = opts)
       if (should_command_be_executed(opts))
-        api_command_execute(cmd, opts = opts)
+        api_command_execute(cmd, opts = opts, text_alert = "{.emph update_config}: {msg_api}")
     }
     
     return(invisible(opts))

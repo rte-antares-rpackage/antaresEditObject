@@ -31,8 +31,8 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts),
-      cli_command_registered()
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_link}: {msg_api}"),
+      cli_command_registered("remove_link")
     )
     
     return(invisible(opts))

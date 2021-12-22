@@ -30,9 +30,13 @@ check_variant <- function(opts) {
   }
 }
 
+is_quiet <- function() {
+  getOption("antaresEditObject.quiet", default = FALSE)
+}
 
-cli_command_registered <- function() {
-  cli::cli_alert_info("Command registered, see all commands with getVariantCommands()")
+cli_command_registered <- function(command = "") {
+  if (!is_quiet())
+    cli::cli_alert_info("Command {.emph {command}} registered, see all commands with {.code getVariantCommands()}")
 }
 
 #' @importFrom utils head
@@ -130,7 +134,7 @@ api_command_register <- function(command, opts) {
 
 #' @importFrom httr POST accept_json content_type_json stop_for_status content
 #' @importFrom jsonlite toJSON
-api_command_execute <- function(command, opts, text_alert = "{result_log$message}") {
+api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
   if (inherits(command, "antares.api.command")) {
     body <- jsonlite::toJSON(list(command), auto_unbox = TRUE)
   } else if (inherits(command, "antares.api.commands")) {
@@ -148,14 +152,19 @@ api_command_execute <- function(command, opts, text_alert = "{result_log$message
     result <- api_get(opts, paste0(opts$variant_id, "/task"))
   }
   result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
+  msg_api <- result_log$message
+  if (is.null(msg_api) | identical(msg_api, ""))
+    msg_api <- "<no feedback from API>"
   if (identical(result_log$success, TRUE)) {
-    cli::cli_alert_success(text_alert)
+    if (!is_quiet())
+      cli::cli_alert_success(text_alert)
   }
   if (identical(result_log$success, FALSE)) {
-    cli::cli_alert_danger(text_alert)
-    # cli::cli_alert_danger(paste("Command ID:", result_log$id))
+    if (!is_quiet())
+      cli::cli_alert_danger(text_alert)
     api_delete(opts, paste0(opts$variant_id, "/commands/", result_log$id))
-    cli::cli_alert_warning("Command has been deleted")
+    if (!is_quiet())
+      cli::cli_alert_warning("Command has been deleted")
   }
   return(invisible(result$result$success))
 }

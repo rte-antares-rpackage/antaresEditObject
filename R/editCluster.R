@@ -125,8 +125,8 @@ editClusterRES <- function(area,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's properties: {result_log$message}"),
-        cli_command_registered()
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's properties: {msg_api}"),
+        cli_command_registered("update_config")
       )
     }
     
@@ -140,8 +140,8 @@ editClusterRES <- function(area,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process modulation: {result_log$message}"),
-        cli_command_registered()
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process modulation: {msg_api}"),
+        cli_command_registered("replace_matrix")
       )
     }
     
@@ -155,8 +155,8 @@ editClusterRES <- function(area,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process data: {result_log$message}"),
-        cli_command_registered()
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process data: {msg_api}"),
+        cli_command_registered("replace_matrix")
       )
     }
     
@@ -170,8 +170,8 @@ editClusterRES <- function(area,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's series: {result_log$message}"),
-        cli_command_registered()
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
       )
     }
     

@@ -64,8 +64,8 @@ editLink <- function(from,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update link's properties: {result_log$message}"),
-        cli_command_registered()
+        api_command_execute(cmd, opts = opts, text_alert = "Update link's properties: {msg_api}"),
+        cli_command_registered("update_config")
       )
     }
     
@@ -78,8 +78,8 @@ editLink <- function(from,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update link's series: {result_log$message}"),
-        cli_command_registered()
+        api_command_execute(cmd, opts = opts, text_alert = "Update link's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
       )
     }
     

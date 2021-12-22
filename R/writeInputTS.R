@@ -61,8 +61,8 @@ writeInputTS <- function(area,
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "Writing time-series: {result_log$message}"),
-      cli_command_registered()
+      api_command_execute(cmd, opts = opts, text_alert = "Writing time-series: {msg_api}"),
+      cli_command_registered("replace_matrix")
     )
     
     return(invisible(opts))
