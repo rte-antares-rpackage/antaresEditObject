@@ -111,16 +111,10 @@ editClusterRES <- function(area,
     
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
-      parameters <- api_get_raw_data(
-        id = opts$variant_id, 
-        path = sprintf("input/thermal/clusters/%s/list", area),
-        opts = opts
-      )
-      parameters[[cluster_name]] <- params_cluster
       cmd <- api_command_generate(
         action = "update_config",
-        target = sprintf("input/thermal/clusters/%s/list", area),
-        data = parameters
+        target = sprintf("input/thermal/clusters/%s/list/%s", area, cluster_name),
+        data = params_cluster
       )
       api_command_register(cmd, opts = opts)
       `if`(
