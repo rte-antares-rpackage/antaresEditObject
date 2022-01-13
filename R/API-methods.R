@@ -46,20 +46,17 @@ api_post <- function(opts, url, ...) {
 
 #' @importFrom httr PUT accept_json stop_for_status content add_headers
 api_put <- function(opts, url, ...) {
-  config <- list(
-    accept_json()
-  )
   if (!is.null(opts$token) && opts$token != "") {
-    config <- c(config, list(
-      add_headers(Authorization = paste("Bearer", opts$token))
-    ))
+    config <- add_headers(Authorization = paste("Bearer", opts$token), Accept = "application/json")
+  } else {
+    config <- add_headers(Accept = "application/json")
   }
   result <- PUT(
     url = sprintf(
       "%s/v1/studies/%s",
       opts$host, url
     ),
-    config = config,
+    config,
     ...
   )
   stop_for_status(result)

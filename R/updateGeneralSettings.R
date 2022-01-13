@@ -137,19 +137,18 @@ updateGeneralSettings <- function(mode = NULL,
   
   # API block
   if (is_api_study(opts)) {
-    if (is_api_mocked(opts)) {
-      l_general <- list()
-    } else {
-      l_general <- api_get_raw_data(opts$study_id, path = "settings/generaldata/general", opts = opts)
-    }
-    
-    new_params <- utils::modifyList(x = l_general, val = new_params)
-    
-    cmd <- api_command_generate(
-      action = "update_config",
-      target = "settings/generaldata/general",
-      data = new_params
+
+    actions <- lapply(
+      X = seq_along(new_params),
+      FUN = function(i) {
+        list(
+          target = paste0("settings/generaldata/general/", names(new_params)[i]),
+          data = new_params[[i]]
+        )
+      }
     )
+    actions <- setNames(actions, rep("update_config", length(actions)))
+    cmd <- do.call(api_commands_generate, actions)
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 

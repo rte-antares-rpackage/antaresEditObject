@@ -17,7 +17,7 @@ opts$study_id <- "0b26b7e9-57d3-47cb-82c6-d118427eaf7d"
 options(antares = opts)
 
 # send commands to API
-setAPImode("async")
+setAPImode("sync")
 
 # createVariant("myvariant")
 useVariant("myvariant")
@@ -98,8 +98,11 @@ writeInputTS("area01", type = "hydroROR", data = ts)
 
 updateGeneralSettings(mode = "Adequacy")
 updateGeneralSettings(generate = c("thermal", "hydro"))
+updateGeneralSettings(mode = "Economy")
 
 
+updateGeneralSettings(mode = "Draft", nbyears = 42)
+getVariantCommands()
 
 createBindingConstraint(
   name = "myconstraint2",
