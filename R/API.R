@@ -184,7 +184,7 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
   opts$study_id <- variant_id
   options("antaresEditObject.apiCommands" = api_get(opts, paste0(opts$study_id, "/commands")))
   options(antares = opts)
-  return(invisible(opts))
+  return(update_api_opts(opts))
 }
 
 
