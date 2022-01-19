@@ -64,11 +64,23 @@ updateOptimizationSettings(
 \item{day.ahead.reserve.management}{global}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
-An updated list containing various information about the simulation options.
+An updated list containing various information about the simulation.
 }
 \description{
-Update optimization parameters of an Antares study
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Update optimization parameters and other preferences of an Antares study
+}
+\examples{
+\dontrun{
+
+updateOptimizationSettings(
+  simplex.range = "week", 
+  power.fluctuations = "minimize ramping"
+)
+
+}
 }

@@ -1,4 +1,9 @@
-#' Update optimization parameters of an Antares study
+#' @title Update optimization parameters of an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Update optimization parameters and other preferences of an Antares study
 #'
 #' @param simplex.range week or day
 #' @param transmission.capacities true, false or infinite
@@ -18,18 +23,24 @@
 #' @param number.of.cores.mode minimum, low, medium, high or maximum
 #' @param renewable.generation.modelling aggregated or clusters
 #' @param day.ahead.reserve.management global
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#' 
+#' @template opts
 #'
-#' @return An updated list containing various information about the simulation options.
 #' @export
 #'
 #' @importFrom utils modifyList
 #' @importFrom assertthat assert_that
 #' @importFrom antaresRead setSimulationPath
 #'
-# @examples
+#' @examples
+#' \dontrun{
+#' 
+#' updateOptimizationSettings(
+#'   simplex.range = "week", 
+#'   power.fluctuations = "minimize ramping"
+#' )
+#' 
+#' }
 updateOptimizationSettings <- function(simplex.range = NULL,
                                        transmission.capacities = NULL,
                                        include.constraints = NULL,
@@ -96,15 +107,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     assertthat::assert_that(day.ahead.reserve.management %in% c("global"))
   
   
-  # read
-  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  
-  # update
-  l_optimization <- generaldata$optimization
-  l_others <- generaldata$`other preferences`
-  
-  new_params_optimization <- list(
+  new_params_optimization <- dropNulls(list(
     simplex.range = simplex.range,
     transmission.capacities = transmission.capacities,
     include.constraints = include.constraints,
@@ -116,11 +119,13 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     include.spinningreserve = include.spinningreserve,
     include.primaryreserve = include.primaryreserve,
     include.exportmps = include.exportmps
-  )
+  ))
+  for (i in seq_along(new_params_optimization)) {
+    new_params_optimization[[i]] <- as.character(new_params_optimization[[i]])
+    names(new_params_optimization)[i] <- dicoOptimizationSettings(names(new_params_optimization)[i])
+  }
   
-  new_params_optimization <- dropNulls(new_params_optimization)
-  
-  new_params_others <- list(
+  new_params_others <- dropNulls(list(
     power.fluctuations = power.fluctuations,
     shedding.strategy = shedding.strategy,
     shedding.policy = shedding.policy,
@@ -128,41 +133,86 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     number.of.cores.mode = number.of.cores.mode,
     renewable.generation.modelling = renewable.generation.modelling,
     day.ahead.reserve.management = day.ahead.reserve.management
-  )
-  
-  new_params_others <- dropNulls(new_params_others)
-  
-  for (i in seq_along(new_params_optimization)) {
-    new_params_optimization[[i]] <-
-      as.character(new_params_optimization[[i]])
-    names(new_params_optimization)[i] <-
-      dicoOptimizationSettings(names(new_params_optimization)[i])
-  }
-  
+  ))
   for (i in seq_along(new_params_others)) {
     new_params_others[[i]] <- as.character(new_params_others[[i]])
-    names(new_params_others)[i] <-
-      dicoOptimizationSettings(names(new_params_others)[i])
+    names(new_params_others)[i] <- dicoOptimizationSettings(names(new_params_others)[i])
   }
   
-  l_optimization <-
-    utils::modifyList(x = l_optimization, val = new_params_optimization)
-  l_others <-
-    utils::modifyList(x = l_others, val = new_params_others)
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    if (length(new_params_optimization) > 0) {
+      actions <- lapply(
+        X = seq_along(new_params_optimization),
+        FUN = function(i) {
+          list(
+            target = paste0("settings/generaldata/optimization/", names(new_params_optimization)[i]),
+            data = new_params_optimization[[i]]
+          )
+        }
+      )
+      actions <- setNames(actions, rep("update_config", length(actions)))
+      cmd <- do.call(api_commands_generate, actions)
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Updating optimization settings: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    if (length(new_params_others) > 0) {
+      actions <- lapply(
+        X = seq_along(new_params_others),
+        FUN = function(i) {
+          list(
+            target = paste0("settings/generaldata/other preferences/", names(new_params_others)[i]),
+            data = new_params_others[[i]]
+          )
+        }
+      )
+      actions <- setNames(actions, rep("update_config", length(actions)))
+      cmd <- do.call(api_commands_generate, actions)
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Updating other preferences settings: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    return(invisible(opts))
+  }
+  
+  
+  # read
+  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
+  generaldata <- readIniFile(file = generaldatapath)
+  
+  # previous parameters
+  l_optimization <- generaldata$optimization
+  l_others <- generaldata$`other preferences`
+  
+  
+  l_optimization <- utils::modifyList(x = l_optimization, val = new_params_optimization)
+  l_others <- utils::modifyList(x = l_others, val = new_params_others)
   
   generaldata$optimization <- l_optimization
   generaldata$`other preferences` <- l_others
   
   
   # write
-  writeIni(listData = generaldata,
-           pathIni = generaldatapath,
-           overwrite = TRUE)
+  writeIni(
+    listData = generaldata,
+    pathIni = generaldatapath,
+    overwrite = TRUE
+  )
   
   # Maj simulation
   suppressWarnings({
-    res <-
-      antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   })
   
   invisible(res)
