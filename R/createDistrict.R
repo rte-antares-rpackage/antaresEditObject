@@ -82,7 +82,7 @@ createDistrict <- function(name,
     `if`(
       should_command_be_executed(opts), 
       api_command_execute(cmd, opts = opts, text_alert = "{.emph create_district}: {msg_api}"),
-      cli_command_registered("create_area")
+      cli_command_registered("create_district")
     )
     
     return(update_api_opts(opts))

@@ -206,7 +206,7 @@ updateScenarioBuilder <- function(ldata,
                                   series = NULL,
                                   clusters_areas = NULL,
                                   opts = antaresRead::simOptions()) {
-  prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
+  suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
   if (!is.list(ldata)) {
     if (!is.null(series)) {
       series <- match.arg(
@@ -244,11 +244,27 @@ updateScenarioBuilder <- function(ldata,
   res <- list(as.list(res))
   names(res) <- ruleset
   
-  pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
-  writeIni(listData = res, pathIni = pathSB, overwrite = TRUE)
-  if (interactive())
-    cat("\u2713", "Scenario Builder updated\n")
-  return(invisible(res))
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate(
+      action = "update_config",
+      target = paste0("settings/scenariobuilder/", ruleset),
+      data = res[[1]]
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph update_config (scenariobuilder)}: {msg_api}"),
+      cli_command_registered("update_config")
+    )
+    
+    return(update_api_opts(opts))
+  } else {
+    pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+    writeIni(listData = res, pathIni = pathSB, overwrite = TRUE)
+    if (interactive())
+      cat("\u2713", "Scenario Builder updated\n")
+    return(invisible(res))
+  }
 } 
 
 
@@ -257,18 +273,32 @@ updateScenarioBuilder <- function(ldata,
 #' @rdname scenario-builder
 clearScenarioBuilder <- function(ruleset = "Default Ruleset",
                                  opts = antaresRead::simOptions()) {
-  opts <- antaresRead::simOptions()
-  pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
-  sb <- readIniFile(file = pathSB)
-  if (!isTRUE(ruleset %in% names(sb))) {
-    warning("Invalid ruleset provided.")
-    return(invisible(FALSE))
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate(
+      action = "update_config",
+      target = paste0("settings/scenariobuilder/", ruleset),
+      data = list()
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph update_config (clearScenarioBuilder)}: {msg_api}"),
+      cli_command_registered("update_config")
+    )
+    return(update_api_opts(opts))
+  } else {
+    pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+    sb <- readIniFile(file = pathSB)
+    if (!isTRUE(ruleset %in% names(sb))) {
+      warning("Invalid ruleset provided.")
+      return(invisible(FALSE))
+    }
+    sb[[ruleset]] <- list()
+    writeIni(listData = sb, pathIni = pathSB, overwrite = TRUE)
+    if (interactive())
+      cat("\u2713", "Scenario Builder cleared\n")
+    return(invisible(TRUE))
   }
-  sb[[ruleset]] <- list()
-  writeIni(listData = sb, pathIni = pathSB, overwrite = TRUE)
-  if (interactive())
-    cat("\u2713", "Scenario Builder cleared\n")
-  return(invisible(TRUE))
 }
 
 
