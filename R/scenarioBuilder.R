@@ -120,8 +120,12 @@ scenarioBuilder <- function(n_scenario,
 readScenarioBuilder <- function(ruleset = "Default Ruleset",
                                 as_matrix = TRUE,
                                 opts = antaresRead::simOptions()) {
-  pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
-  sb <- readIniFile(file = pathSB)
+  if (is_api_study(opts)) {
+    sb <- api_get_raw_data(opts$study_id, path = "settings/scenariobuilder", opts = opts)
+  } else {
+    pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+    sb <- readIniFile(file = pathSB)
+  }
   if (!ruleset %in% names(sb)) {
     ruleset1 <- names(sb)[1]
     warning(sprintf("Ruleset '%s' not found, returning: '%s'", ruleset, ruleset1), call. = FALSE)
