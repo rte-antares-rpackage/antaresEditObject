@@ -1,37 +1,40 @@
-#' Create a district
+#' @title Create a district
 #' 
-#' Allows selecting a set of areas so as to bundle them together in a "district".
+#' @description Allows selecting a set of areas so as to bundle them together in a "district".
 #'
 #' @param name District's name.
 #' @param caption Caption for the district.
 #' @param comments Comments for the district.
-#' @param apply_filter Possible values are \code{add-all} to add all areas to the district,
-#' \code{remove-all} to clear the district, or \code{none} (default) to don't apply a filter.
+#' @param apply_filter Possible values are `add-all` to add all areas to the district,
+#'  `remove-all` to clear the district, or `none` (default) to don't apply a filter.
 #' @param add_area Character vector of area(s) to add to the district.
 #' @param remove_area Character vector of area(s) to remove from the district.
 #' @param output Logical, compute the results for the district or not?
 #' @param overwrite Logical, should the district be overwritten if already exist?
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#' 
+#' @template opts
 #'
 #' @export
-#' @return An updated list containing various information about the simulation.
 #'
 #' @examples
 #' \dontrun{
-#' createDistrict(name = "mydistrict", 
-#'                 apply_filter = "add-all", 
-#'                 remove_area = c("fr", "be"))
+#' createDistrict(
+#'   name = "mydistrict",
+#'   apply_filter = "add-all",
+#'   remove_area = c("fr", "be")
+#' )
 #' }
-createDistrict <- function(name, caption = NULL, comments = NULL, apply_filter = "none",
-                           add_area = NULL, remove_area = NULL, output = FALSE, 
-                           overwrite = FALSE, opts = antaresRead::simOptions()) {
-  apply_filter <- match.arg(arg = apply_filter, choices = c("none", "add-all", "remove-all"))
+createDistrict <- function(name, 
+                           caption = NULL, 
+                           comments = NULL,
+                           apply_filter = c("none", "add-all", "remove-all"),
+                           add_area = NULL, 
+                           remove_area = NULL,
+                           output = FALSE, 
+                           overwrite = FALSE, 
+                           opts = antaresRead::simOptions()) {
+  apply_filter <- match.arg(arg = apply_filter)
   assertthat::assert_that(inherits(opts, "simOptions"))
-  # Input path
-  inputPath <- opts$inputPath
-  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
   if (name %in% antaresRead::getDistricts() & !overwrite)
     stop(paste("District", name, "already exist!"))
@@ -41,11 +44,6 @@ createDistrict <- function(name, caption = NULL, comments = NULL, apply_filter =
   
   if (length(setdiff(remove_area, antaresRead::getAreas())) != 0)
     stop("Invalid area in 'remove_area'")
-  
-  
-  dropNulls <- function (x) {
-    x[!vapply(x, is.null, FUN.VALUE = logical(1))]
-  }
   
   new_district <- list(
     caption = caption,
@@ -61,6 +59,38 @@ createDistrict <- function(name, caption = NULL, comments = NULL, apply_filter =
     setNames(as.list(add_area), rep_len("+", length(add_area))),
     setNames(as.list(remove_area), rep_len("-", length(remove_area)))
   )
+  
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    # cmd <- api_command_generate(
+    #   action = "update_config",
+    #   target = paste0("input/areas/sets/", name),
+    #   data = dropNulls(new_district)
+    # )
+    
+    cmd <- api_command_generate(
+      action = "create_district",
+      name = name,
+      base_filter = if (apply_filter != "none") apply_filter else NULL,
+      # filter_items = ,# ?
+      output = output,
+      comments = comments
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_district}: {msg_api}"),
+      cli_command_registered("create_area")
+    )
+    
+    return(update_api_opts(opts))
+  }
+  
+  # Input path
+  inputPath <- opts$inputPath
+  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
   # Read previous sets
   sets_path <- file.path(inputPath, "areas", "sets.ini")
