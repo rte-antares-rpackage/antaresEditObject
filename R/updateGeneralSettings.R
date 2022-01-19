@@ -156,7 +156,7 @@ updateGeneralSettings <- function(mode = NULL,
       cli_command_registered("update_config")
     )
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
   # read current settings

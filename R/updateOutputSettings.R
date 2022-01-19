@@ -53,7 +53,7 @@ updateOutputSettings <- function(synthesis = NULL,
       cli_command_registered("update_config")
     )
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
   pathIni <- file.path(opts$studyPath, "settings", "generaldata.ini")

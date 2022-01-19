@@ -183,7 +183,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
       )
     }
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
   
