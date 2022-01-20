@@ -1,6 +1,9 @@
-
-
-#' Read, create & update scenario builder
+#' @title Read, create & update scenario builder
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Read, create & update scenario builder.
 #'
 #' @param n_scenario Number of scenario.
 #' @param n_mc Number of Monte-Carlo years.
@@ -121,17 +124,21 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
                                 as_matrix = TRUE,
                                 opts = antaresRead::simOptions()) {
   if (is_api_study(opts)) {
-    sb <- api_get_raw_data(opts$study_id, path = "settings/scenariobuilder", opts = opts)
+    if (is_api_mocked(opts)) {
+      sb <- list("Default Ruleset" = list())
+    } else {
+      sb <- api_get_raw_data(opts$study_id, path = "settings/scenariobuilder", opts = opts)
+    }
   } else {
     pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
     sb <- readIniFile(file = pathSB)
   }
   if (!ruleset %in% names(sb)) {
-    ruleset1 <- names(sb)[1]
-    warning(sprintf("Ruleset '%s' not found, returning: '%s'", ruleset, ruleset1), call. = FALSE)
-    ruleset <- ruleset1
+    warning(sprintf("Ruleset '%s' not found, possible values are: %s", ruleset, paste(names(sb), collapse = ", ")), call. = FALSE)
+    sb <- NULL
+  } else {
+    sb <- sb[[ruleset]]
   }
-  sb <- sb[[ruleset]]
   if (is.null(sb))
     return(list())
   extract_el <- function(l, indice) {
@@ -300,7 +307,6 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
     return(invisible(TRUE))
   }
 }
-
 
 
 
