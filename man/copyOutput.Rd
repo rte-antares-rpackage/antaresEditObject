@@ -15,7 +15,9 @@ copyOutput(opts, extname, mcYears = "all")
 \item{mcYears}{mcYears to copy. Can be \code{"all"}.}
 }
 \description{
-Copy of the output files of an Antares study
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+
+Copy of the output files of an Antares study.
 }
 \examples{
 \dontrun{

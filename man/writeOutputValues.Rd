@@ -10,9 +10,11 @@ writeOutputValues(data, opts = NULL)
 \item{data}{obtain with readAntares}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \description{
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+
 This function write all output values for an Antares study.
 }
 \examples{
@@ -23,7 +25,6 @@ library(data.table)
 opts <- setSimulationPath("my_study")
 data <- readAntares(links = "all", areas = "all", clusters = "all")
 writeOutputValues(data)
-
 
 }
 

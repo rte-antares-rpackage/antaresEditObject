@@ -1,4 +1,10 @@
-#' Copy of the output files of an Antares study
+#' @title Copy of the output files of an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_no()`
+#' 
+#' Copy of the output files of an Antares study.
+#' 
 #'
 #' @param opts
 #'   List of simulation parameters returned by the function
@@ -21,9 +27,11 @@
 #' }
 #' 
 #' @export
-copyOutput <- function(opts, extname, mcYears = "all"){
+copyOutput <- function(opts, extname, mcYears = "all") {
+  assertthat::assert_that(inherits(opts, "simOptions"))
   if (!file.exists(opts$simPath))
     stop("Invalid simulation path, are you sure to have a simulation to copy?", call. = FALSE)
+  api_not_implemented(opts)
   fil <- paste0(opts$simPath, extname)
   dir.create(fil)
   

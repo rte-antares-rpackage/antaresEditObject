@@ -1,4 +1,7 @@
-#' Write Economic Options
+#' @title Write Economic Options
+#' 
+#' @description
+#' `r antaresEditObject::badge_api_no()`
 #' 
 #' This function allows to create or edit economic options. Areas/options present
 #' in the input dataframe are edited, while all other values are left unchanged.
@@ -36,13 +39,12 @@
 #' ))
 #' 
 #' }
-writeEconomicOptions <- function(
-  x,
-  opts = antaresRead::simOptions()
-) {
+writeEconomicOptions <- function(x,
+                                 opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   assertthat::assert_that(is.data.frame(x))
+  api_not_implemented(opts)
   
   if (!"area" %in% names(x)) {
     stop("'x' must contain an 'area' column.", call. = FALSE)

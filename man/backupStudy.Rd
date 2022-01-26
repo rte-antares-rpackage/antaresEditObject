@@ -24,6 +24,8 @@ or \code{study} for the whole study.}
 The path of the backup
 }
 \description{
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+
 Save an Antares Study or only inputs in a \code{.tar.gz} file
 }
 \examples{
