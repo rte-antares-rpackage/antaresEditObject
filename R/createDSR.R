@@ -1,3 +1,8 @@
+#' @title Create a Demand Side Response (DSR)
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_no()`
+#' 
 #' Create a Demand Side Response (DSR)
 #'
 #' @param areasAndDSRParam A `data.frame` with 4 columns `area`, `unit`,
@@ -30,7 +35,13 @@
 #' }
 #' @export
 #' 
-createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, opts = antaresRead::simOptions()) {
+createDSR <- function(areasAndDSRParam = NULL, 
+                      spinning = 2,
+                      overwrite = FALSE,
+                      opts = antaresRead::simOptions()) {
+  
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  api_not_implemented(opts)
   
   oldOps <- opts
   areasAndDSRParam <- .checkDataForAddDSR(areasAndDSRParam, spinning, overwrite, oldOps)
@@ -46,7 +57,6 @@ createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, 
   })
   
   invisible(res)
-  
 }
 
 .checkDataForAddDSR <- function(areasAndDSRParam = NULL, spinning = NULL, overwrite = NULL, opts = NULL) {

@@ -35,7 +35,7 @@ editPSP(
 )
 }
 \arguments{
-\item{areasAndCapacities}{A data.frame with 2 columns \code{installedCapacity} and \code{area}}
+\item{areasAndCapacities}{A data.frame with 2 columns \code{installedCapacity} and \code{area}.}
 
 \item{namePumping}{The name of the pumping area}
 
@@ -51,18 +51,20 @@ editPSP(
 This will overwrite the previous area and links.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 
 \item{area}{an area name}
 
 \item{capacity}{PSP capacity for the area}
 }
 \value{
-\code{createPSP()} and \code{editPSP()}  returns an updated list containing various information about the simulation.
+An updated list containing various information about the simulation.
 
 \code{getCapacityPSP()} returns PSP capacity of the area
 }
 \description{
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+
 Create a Pumped Storage Power plant (PSP)
 }
 \examples{
