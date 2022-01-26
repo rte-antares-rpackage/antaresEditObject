@@ -16,7 +16,11 @@ createArea(name = "area03")
 getVariantCommands()
 
 createLink(from = "area01", to = "area02")
-editLink(from = "area01", to = "area02", dataLink = matrix(data = c(rep(9, 8760*2), rep(6, 8760*6)), ncol = 8))
+editLink(
+  from = "area01", 
+  to = "area02",
+  dataLink = matrix(data = c(rep(9, 8760*2), rep(6, 8760*6)), ncol = 8)
+)
 
 createLink(from = "area02", to = "area03")
 
@@ -85,7 +89,17 @@ writeInputTS("area01", type = "hydroROR", data = ts)
 updateGeneralSettings(mode = "Adequacy")
 updateGeneralSettings(generate = c("thermal", "hydro"))
 
+updateOptimizationSettings(
+  simplex.range = "week",
+  power.fluctuations = "minimize ramping"
+)
 
+
+updateOutputSettings(
+  synthesis = TRUE,
+  storenewset = FALSE,
+  archives = c("load", "wind")
+)
 
 createBindingConstraint(
   name = "myconstraint2",

@@ -54,3 +54,6 @@ editBindingConstraint(
 )
 }
 }
+\seealso{
+\code{\link[=createBindingConstraint]{createBindingConstraint()}} to create new binding constraints, \code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
+}

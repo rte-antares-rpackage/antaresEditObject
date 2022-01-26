@@ -10,6 +10,8 @@
 #' 
 #' @template opts
 #' 
+#' @seealso [createBindingConstraint()] to create new binding constraints, [editBindingConstraint()] to edit existing binding constraints.
+#' 
 #' @export
 #'
 #' @examples

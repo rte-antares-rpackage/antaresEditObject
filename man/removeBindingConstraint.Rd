@@ -25,3 +25,6 @@ Remove a binding constraint in an Antares study.
 removeBindingConstraint("mybindingconstraint")
 }
 }
+\seealso{
+\code{\link[=createBindingConstraint]{createBindingConstraint()}} to create new binding constraints, \code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints.
+}

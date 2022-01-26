@@ -18,6 +18,8 @@
 #' 
 #' @template opts
 #' 
+#' @seealso [editBindingConstraint()] to edit existing binding constraints, [removeBindingConstraint()] to remove binding constraints.
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead getLinks setSimulationPath

@@ -9,6 +9,8 @@
 #' @inheritParams createBindingConstraint
 #' @template opts
 #' 
+#' @seealso [createBindingConstraint()] to create new binding constraints, [removeBindingConstraint()] to remove binding constraints.
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead getLinks setSimulationPath

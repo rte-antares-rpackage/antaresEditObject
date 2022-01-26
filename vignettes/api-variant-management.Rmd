@@ -109,39 +109,166 @@ knitr::include_graphics("figures/badge_api_ok.svg")
 ```
 
 
-### Create area
+### Create an area
 
+Create a new area:
 
-```{r, eval=FALSE}
+```{r create_area}
+createArea(name = "area01")
+getVariantCommands()
+```
 
+Create a second area with some default parameters:
 
-
-# Set mode you want to use
-# setAPImode("sync") # send all commands to API
-# setAPImode("async") # just record all commands
-
-
-# Create a New Variant
-createVariant("variant-1")
-
-# or use a pre-existing one:
-# useVariant("variant-2")
-
-
-# Create a new area
-createArea(name = "earth")
-
-# List commands recorded (one normally at this point)
-getAPIcommands()
-
-# Create another area with more options
+```{r create_area2}
 createArea(
-  name = "moon", 
+  name = "area02", 
   filtering = filteringOptions(filter_synthesis = c("hourly", "daily"))
 )
-
-# List commands
-getAPIcommands()
-
+getVariantCommands()
 ```
+
+
+You can also edit an area or remove it:
+
+```{r remove_area}
+createArea(name = "area000")
+# editArea(name = "area000", ...)
+removeArea(name = "area000")
+getVariantCommands(last = TRUE)
+```
+
+
+### Create a link
+
+Create a new link between two areas like this:
+
+```{r create_link}
+createLink(from = "area01", to = "area02")
+getVariantCommands(last = TRUE)
+```
+
+Edit an existing link with:
+
+```{r edit_link}
+editLink(
+  from = "area01", 
+  to = "area02",
+  dataLink = matrix(data = c(rep(9, 8760*2), rep(6, 8760*6)), ncol = 8)
+)
+getVariantCommands(last = 2)
+```
+
+Remove a link with (not executed here):
+
+```{r, eval=FALSE}
+removeLink(from = "area01", to = "area02")
+```
+
+
+### Create a cluster
+
+Create a new cluster with:
+
+```{r create_cluster}
+createCluster(
+  area = "area01", 
+  cluster_name = "clus01"
+)
+getVariantCommands(last = TRUE)
+```
+
+With more parameters:
+
+```{r create_cluster2}
+createCluster(
+  area = "area01", 
+  cluster_name = "clus02",
+  unitcount = 1L,
+  marginal_cost = 50,
+  ts_interpretation = "production-factor",
+  group = "Nuclear",
+  add_prefix = FALSE,
+  prepro_data = matrix(
+    data = c(rep(9, times = 365 * 2),
+             rep(7, times = 365 * 4)), 
+    ncol = 6
+  ),
+  prepro_modulation = matrix(
+    data = c(rep(8, times = 365 * 24 * 3),
+             rep(6, times = 365 * 24 * 1)),
+    ncol = 4
+  ),
+  time_series = matrix(
+    data = c(rep(22, times = 365 * 24 * 8),
+             rep(44, times = 365 * 24 * 4)),
+    ncol = 12
+  )
+)
+getVariantCommands(last = 2)
+```
+
+You can edit a cluster with `editCluster()` and remove one with `removeCluster()`.
+
+
+
+### Create a binding constraint
+
+Create a new binding constraint with:
+
+```{r create_binding_constraint}
+createBindingConstraint(
+  name = "myconstraint",
+  values = NULL,
+  enabled = FALSE,
+  timeStep = "hourly",
+  operator = "both",
+  coefficients = c("area01%area02" = 1)
+)
+getVariantCommands(last = TRUE)
+```
+
+You can edit a binding constraint with `editBindingConstraint()` and remove one with `removeBindingConstraint()`.
+
+
+### Update settings
+
+Update general settings:
+
+```{r update_general_settings}
+updateGeneralSettings(mode = "Adequacy", generate = c("thermal", "hydro"))
+getVariantCommands(last = 2)
+```
+
+
+Update input settings:
+
+```{r update_input_settings}
+updateInputSettings(import = c("hydro", "thermal"))
+getVariantCommands(last = TRUE)
+```
+
+
+Update optimization settings:
+
+```{r update_optimization_settings}
+updateOptimizationSettings(
+  simplex.range = "week",
+  power.fluctuations = "minimize ramping"
+)
+getVariantCommands(last = 2)
+```
+
+
+Update output settings:
+
+```{r update_output_settings}
+updateOutputSettings(
+  synthesis = TRUE,
+  storenewset = FALSE,
+  archives = c("load", "wind")
+)
+getVariantCommands(last = TRUE)
+```
+
 

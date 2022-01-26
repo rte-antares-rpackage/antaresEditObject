@@ -21,9 +21,11 @@
 #' @examples
 #' \dontrun{
 #'
-#' updateOutputSettings(synthesis = TRUE,
-#'                      storenewset = FALSE,
-#'                      archives = c("load", "wind"))
+#' updateOutputSettings(
+#'   synthesis = TRUE,
+#'   storenewset = FALSE,
+#'   archives = c("load", "wind")
+#' )
 #' 
 #' }
 #'

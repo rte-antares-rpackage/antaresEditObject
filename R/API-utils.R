@@ -9,6 +9,12 @@ is_api_study <- function(opts) {
   isTRUE(opts$typeLoad == "api")
 }
 
+api_not_implemented <- function(opts, fun = as.character(sys.call(sys.parent()))[1L]) {
+  if (is_api_study(opts)) {
+    stop(fun, " is not implemented in API mode.", call. = FALSE)
+  }
+}
+
 is_api_mocked <- function(opts) {
   isTRUE(opts$mockAPI)
 }
