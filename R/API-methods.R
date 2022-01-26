@@ -22,7 +22,7 @@ api_get <- function(opts, url, ...) {
 }
 
 #' @importFrom httr POST accept_json content_type_json stop_for_status content add_headers
-api_post <- function(opts, url, ...) {
+api_post <- function(opts, url, ..., default_endpoint = "/v1/studies") {
   config <- list(
     accept_json(),
     content_type_json()
@@ -34,8 +34,8 @@ api_post <- function(opts, url, ...) {
   }
   result <- POST(
     url = sprintf(
-      "%s/v1/studies/%s",
-      opts$host, url
+      "%s/%s/%s",
+      opts$host, default_endpoint, url
     ),
     config = config,
     ...

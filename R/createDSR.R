@@ -1,16 +1,13 @@
 #' Create a Demand Side Response (DSR)
 #'
-#' @param areasAndDSRParam A data.frame with 4 columns \code{area}, \code{unit},
-#'  \code{nominalCapacity}, \code{marginalCost} and \code{hour}. 
+#' @param areasAndDSRParam A `data.frame` with 4 columns `area`, `unit`,
+#'  `nominalCapacity`, `marginalCost` and `hour`. 
 #'  Hour represent the number of activation hours for the DSR per day.
 #' @param spinning DSR spinning
 #' @param overwrite Overwrite the DSR plant if already exist.
-#' This will overwrite the previous area and links. 
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
+#'  This will overwrite the previous area and links. 
 #' 
-#' @return \code{createDSR()} and \code{editDSR()}  returns an updated list containing various information about the simulation.
+#' @template opts
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath readLayout getLinks getAreas
 #' @importFrom utils write.table
@@ -33,7 +30,7 @@
 #' }
 #' @export
 #' 
-createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, opts = antaresRead::simOptions() ){
+createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, opts = antaresRead::simOptions()) {
   
   oldOps <- opts
   areasAndDSRParam <- .checkDataForAddDSR(areasAndDSRParam, spinning, overwrite, oldOps)
@@ -52,7 +49,7 @@ createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, 
   
 }
 
-.checkDataForAddDSR <- function(areasAndDSRParam = NULL, spinning = NULL, overwrite = NULL, opts = NULL){
+.checkDataForAddDSR <- function(areasAndDSRParam = NULL, spinning = NULL, overwrite = NULL, opts = NULL) {
 
   #check if we have the necessary data : class
   if (!is.data.frame(areasAndDSRParam)){
@@ -64,8 +61,8 @@ createDSR <- function(areasAndDSRParam = NULL, spinning = 2, overwrite = FALSE, 
     stop("areasAndDSRParam must be a data.frame with a column area, unit, nominalCapacity, marginalCost and hour", call. = FALSE)
   }
   
-  for ( i in c("marginalCost", "hour", "unit")){
-    if (!is.numeric(areasAndDSRParam[i][1, ])){
+  for ( i in c("marginalCost", "hour", "unit")) {
+    if (!is.numeric(areasAndDSRParam[i][1, ])) {
       stop(paste0(i, " is not numeric."), call. = FALSE)
     }
   }

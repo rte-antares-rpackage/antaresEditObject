@@ -32,13 +32,12 @@ only with ANTARES v6.0.0 or more). In that case, the number of cores used by the
 is the one set in advanced_settings/simulation_cores (see ANTARES interface).}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 The function does not return anything. It is  used to launch an
 ANTARES simulation
 }
 \description{
-\code{run_simulation} is a function which runs an ANTARES study
-in economic mode
+Run an ANTARES study
 }
