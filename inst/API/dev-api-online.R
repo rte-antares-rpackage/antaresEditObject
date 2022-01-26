@@ -117,3 +117,12 @@ createBindingConstraint(
 
 getVariantCommands()
 
+
+
+writeWaterValues("area01", data = matrix(rep(0, 365*101), nrow = 365))
+
+
+
+
+
+
