@@ -50,19 +50,31 @@ editArea <- function(name,
   
   # API block
   if (is_api_study(opts)) {
-    if (is_different(nodalOptimization, nodalOptimizationOptions()) | is_different(filtering, filteringOptions())){
+    
+    if (!is.null(nodalOptimization)) {
       cmd <- api_command_generate(
         action = "update_config", 
-        target = sprintf("input/areas/%s/optimization", name),
-        data = list(
-          "nodal optimization" = nodalOptimization,
-          "filtering" = filtering
-        )
+        target = sprintf("input/areas/%s/optimization/nodal optimization", name),
+        data = nodalOptimization
       )
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update area's properties: {msg_api}"),
+        api_command_execute(cmd, opts = opts, text_alert = "Update area's nodal optimization option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    if (!is.null(filtering)) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization/filtering", name),
+        data = filtering
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update area's filtering option: {msg_api}"),
         cli_command_registered("update_config")
       )
     }

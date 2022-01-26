@@ -57,18 +57,31 @@ createArea <- function(name,
       cli_command_registered("create_area")
     )
     
-    if (is_different(nodalOptimization, nodalOptimizationOptions()) | is_different(filtering, filteringOptions())){
+    if (is_different(nodalOptimization, nodalOptimizationOptions())){
       cmd <- api_command_generate(
         action = "update_config", 
-        target = sprintf("input/areas/%s/optimization", name),
-        data = list(
-          "nodal optimization" = nodalOptimization,
-          "filtering" = filtering
-        )
+        target = sprintf("input/areas/%s/optimization/nodal optimization", name),
+        data = nodalOptimization
       )
       api_command_register(cmd, opts = opts)
-      if (should_command_be_executed(opts))
-        api_command_execute(cmd, opts = opts, text_alert = "{.emph update_config}: {msg_api}")
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's nodal optimization option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    if (is_different(filtering, filteringOptions())){
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization/filtering", name),
+        data = filtering
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's filtering: {msg_api}"),
+        cli_command_registered("update_config")
+      )
     }
     
     return(update_api_opts(opts))

@@ -56,11 +56,17 @@ editLink <- function(from,
     
     # Link properties
     if (length(propertiesLink) > 0) {
-      cmd <- api_command_generate(
-        action = "update_config",
-        target = sprintf("input/links/%s/properties", from),
-        data = setNames(list(propertiesLink), to)
+      actions <- lapply(
+        X = seq_along(propertiesLink),
+        FUN = function(i) {
+          list(
+            target = sprintf("input/links/%s/properties/%s/%s", from, to, names(propertiesLink)[i]),
+            data = propertiesLink[[i]]
+          )
+        }
       )
+      actions <- setNames(actions, rep("update_config", length(actions)))
+      cmd <- do.call(api_commands_generate, actions)
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
