@@ -115,6 +115,8 @@ Create a new area:
 
 ```{r create_area}
 createArea(name = "area01")
+createArea(name = "area02")
+createArea(name = "area03")
 getVariantCommands()
 ```
 
@@ -122,7 +124,7 @@ Create a second area with some default parameters:
 
 ```{r create_area2}
 createArea(
-  name = "area02", 
+  name = "area04", 
   filtering = filteringOptions(filter_synthesis = c("hourly", "daily"))
 )
 getVariantCommands()
@@ -145,7 +147,8 @@ Create a new link between two areas like this:
 
 ```{r create_link}
 createLink(from = "area01", to = "area02")
-getVariantCommands(last = TRUE)
+createLink(from = "area01", to = "area03")
+getVariantCommands(last = 2)
 ```
 
 Edit an existing link with:
@@ -159,10 +162,11 @@ editLink(
 getVariantCommands(last = 2)
 ```
 
-Remove a link with (not executed here):
+Remove a link with:
 
-```{r, eval=FALSE}
-removeLink(from = "area01", to = "area02")
+```{r remove_link}
+removeLink(from = "area01", to = "area03")
+getVariantCommands(last = TRUE)
 ```
 
 
@@ -208,7 +212,38 @@ createCluster(
 getVariantCommands(last = 2)
 ```
 
-You can edit a cluster with `editCluster()` and remove one with `removeCluster()`.
+
+Edit a cluster with:
+
+```{r edit_cluster}
+createCluster(
+  area = "area02", 
+  cluster_name = "clus02"
+)
+editCluster(
+  area = "area02", 
+  cluster_name = "clus02", 
+  unitcount = 5L
+)
+getVariantCommands(last = TRUE)
+```
+
+
+Remove a cluster with:
+
+```{r remove_cluster}
+createCluster(
+  area = "area02", 
+  cluster_name = "clus000"
+)
+removeCluster(
+  area = "area02", 
+  cluster_name = "clus000"
+)
+getVariantCommands(last = TRUE)
+```
+
+
 
 
 
@@ -270,5 +305,47 @@ updateOutputSettings(
 )
 getVariantCommands(last = TRUE)
 ```
+
+
+### Scenario builder
+
+Read data from scenario builder (here's it's empty since we're mocking the API):
+
+```{r read_scenario_builder}
+readScenarioBuilder()
+```
+
+Create new data to use as scenario builder, since we're mocking the API parameters must be set explicitly, otherwise thez are retrieved from the study.
+
+```{r scenario_builder}
+my_scenario <- scenarioBuilder(n_scenario = 3, areas = c("area01", "area02"), n_mc = 10)
+my_scenario
+```
+
+Then you can update the scenario builder itself:
+
+```{r update_scenario_builder}
+updateScenarioBuilder(ldata = my_scenario, series = "load")
+getVariantCommands(last = TRUE)
+```
+
+
+### Other functions
+
+Write input time series:
+
+```{r write_input_ts}
+writeInputTS("area01", type = "solar", data = matrix(rep(4, 8760*2), nrow = 8760))
+getVariantCommands(last = TRUE)
+```
+
+Write water values:
+```{r write_water_values}
+writeWaterValues("area01", data = matrix(rep(0, 365*101), nrow = 365))
+getVariantCommands(last = TRUE)
+```
+
+
+
 
 
