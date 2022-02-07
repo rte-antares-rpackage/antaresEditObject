@@ -78,6 +78,10 @@ scenarioBuilder <- function(n_scenario,
                             areas = NULL,
                             areas_rand = NULL,
                             opts = antaresRead::simOptions()) {
+  if (is_api_study(opts) && is_api_mocked(opts)) {
+    stopifnot("In mocked API mode, n_mc cannot be NULL" = !is.null(n_mc))
+    stopifnot("In mocked API mode, areas cannot be NULL" = !is.null(n_mc))
+  }
   if (is.null(areas)) {
     areas <- antaresRead::getAreas(opts = opts)
   } else {
@@ -89,7 +93,7 @@ scenarioBuilder <- function(n_scenario,
   if (is.null(n_mc)) {
     n_mc <- opts$parameters$general$nbyears
   } else {
-    if (n_mc != opts$parameters$general$nbyears) {
+    if (isTRUE(n_mc != opts$parameters$general$nbyears)) {
       warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
     }
   }
@@ -125,7 +129,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
                                 opts = antaresRead::simOptions()) {
   if (is_api_study(opts)) {
     if (is_api_mocked(opts)) {
-      sb <- list("Default Ruleset" = list())
+      sb <- list("Default Ruleset" = NULL)
     } else {
       sb <- api_get_raw_data(opts$study_id, path = "settings/scenariobuilder", opts = opts)
     }

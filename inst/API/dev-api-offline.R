@@ -113,4 +113,17 @@ createBindingConstraint(
 
 
 
+readScenarioBuilder()
+# scenarioBuilder()
+my_scenario <- scenarioBuilder(n_scenario = 3, areas = c("area01", "area02"), n_mc = 10)
+
+
+updateScenarioBuilder(ldata = my_scenario, series = "load")
+getVariantCommands(last = TRUE)
+
+
+
+
+
+
 
