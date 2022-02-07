@@ -1,3 +1,14 @@
+# antaresEditObject (unreleased)
+
+### Variant management with API
+This release include some new features to interact with Antares Web.
+
+* Main functions are now compatible to interact with a variant through the API: `createArea()`, `editArea()`, `removeArea()`, `createLink()`, `editLink()`, `removeLink()`, `createCluster()`, `editCluster()`, `removeCluster()`, `createBindingConstraint()`, `editBindingConstraint()`, `removeBindingConstraint()`, `createDistrict()`, `updateGeneralSettings()`, `updateInputSettings()`, `updateOptimizationSettings()`, `updateOutputSettings()`, `writeInputTS()`, `readScenarioBuilder()`, `updateScenarioBuilder()`, `clearScenarioBuilder()`, `writeWaterValues()`.
+* New functions to use or create variants: `useVariant()`, `createVariant()`.
+* API calls can be synchronous or asynchronous.
+
+
+
 # antaresEditObject 0.3.0
 
 ### Breaking changes

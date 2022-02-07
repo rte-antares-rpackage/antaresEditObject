@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/antaresEditObject.html">Get started</a>
 </li>
@@ -57,6 +53,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/api-variant-management.html">Variant management with API</a>
+    </li>
+    <li>
       <a href="../articles/renewables-energy-sources.html">Renewables Energy Sources</a>
     </li>
     <li>
@@ -68,7 +67,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/rte-antares-rpackage/antaresEditObject/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -78,13 +84,13 @@
 
       
 
-      </header><script src="renewables-energy-sources_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Renewables Energy Sources</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/HEAD/vignettes/renewables-energy-sources.Rmd" class="external-link"><code>vignettes/renewables-energy-sources.Rmd</code></a></small>
       <div class="hidden name"><code>renewables-energy-sources.Rmd</code></div>
 
     </div>
@@ -92,16 +98,16 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">antaresEditObject</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></code></pre></div>
 <p>Antares v8.0.3 allow to work with renewable energy sources, implemented in Antares as a new functionnality: renewables clusters. Here’s a quick start guide to use those new features.</p>
 <p>As always, setup the study you want to use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="../reference/createStudy.html">createStudy</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">tmp</span>, study_name <span class="op">=</span> <span class="st">"res-study"</span><span class="op">)</span>
-<span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html">setSimulationPath</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></code></pre></div>
-<div id="activate-res" class="section level2">
-<h2 class="hasAnchor">
-<a href="#activate-res" class="anchor"></a>Activate RES</h2>
+<span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="activate-res">Activate RES<a class="anchor" aria-label="anchor" href="#activate-res"></a>
+</h2>
 <p>First you need to activate RES functionality, to do so you can use:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/activateRES.html">activateRES</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -110,9 +116,9 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings</a></span><span class="op">(</span>renewable.generation.modelling <span class="op">=</span> <span class="st">"clusters"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="manipulate-clusters" class="section level2">
-<h2 class="hasAnchor">
-<a href="#manipulate-clusters" class="anchor"></a>Manipulate clusters</h2>
+<div class="section level2">
+<h2 id="manipulate-clusters">Manipulate clusters<a class="anchor" aria-label="anchor" href="#manipulate-clusters"></a>
+</h2>
 <p>Like thermal clusters, there’s equivalent functions to create, edit and remove RES clusters:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># create an area to create a cluster in it</span>
@@ -146,9 +152,9 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/remove-cluster.html">removeClusterRES</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"area51"</span>, cluster_name <span class="op">=</span> <span class="st">"ren01"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="scenario-builder" class="section level2">
-<h2 class="hasAnchor">
-<a href="#scenario-builder" class="anchor"></a>Scenario builder</h2>
+<div class="section level2">
+<h2 id="scenario-builder">Scenario builder<a class="anchor" aria-label="anchor" href="#scenario-builder"></a>
+</h2>
 <p>There’s a new type of serie allowed in scenario builder for renewable clusters called <code>r</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -163,7 +169,7 @@
 <span class="co"># Update with:</span>
 <span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"renewables"</span><span class="op">)</span>
 <span class="co"># OR</span>
-<span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">sbuilder</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">sbuilder</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 
@@ -178,11 +184,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
+  <p></p>
+<p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -190,6 +198,8 @@
 
   
 
+
+  
 
   </body>
 </html>

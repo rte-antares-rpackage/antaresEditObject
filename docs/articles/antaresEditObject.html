@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/antaresEditObject.html">Get started</a>
 </li>
@@ -57,6 +53,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/api-variant-management.html">Variant management with API</a>
+    </li>
+    <li>
       <a href="../articles/renewables-energy-sources.html">Renewables Energy Sources</a>
     </li>
     <li>
@@ -68,7 +67,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/rte-antares-rpackage/antaresEditObject/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -78,49 +84,49 @@
 
       
 
-      </header><script src="antaresEditObject_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>User guide</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/HEAD/vignettes/antaresEditObject.Rmd" class="external-link"><code>vignettes/antaresEditObject.Rmd</code></a></small>
       <div class="hidden name"><code>antaresEditObject.Rmd</code></div>
 
     </div>
 
     
     
-<div id="prerequisites" class="section level2">
-<h2 class="hasAnchor">
-<a href="#prerequisites" class="anchor"></a>Prerequisites</h2>
+<div class="section level2">
+<h2 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
+</h2>
 <p>First it’s necessary to load the package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">antaresEditObject</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></code></pre></div>
 <p>You need to set the path to an Antares study in “input” mode:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"path/to/study"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"path/to/study"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></code></pre></div>
 <p>Or you can simply create a new study:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/createStudy.html">createStudy</a></span><span class="op">(</span><span class="st">"path/to/study"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="save-study" class="section level2">
-<h2 class="hasAnchor">
-<a href="#save-study" class="anchor"></a>Save study</h2>
+<div class="section level2">
+<h2 id="save-study">Save study<a class="anchor" aria-label="anchor" href="#save-study"></a>
+</h2>
 <p>Before modifying your study, you can save it in an archive:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/backupStudy.html">backupStudy</a></span><span class="op">(</span>what <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></code></pre></div>
 <p>This will create a <code>.tar.gz</code> file in your study folder.</p>
 </div>
-<div id="create-a-new-area" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-a-new-area" class="anchor"></a>Create a new area</h2>
+<div class="section level2">
+<h2 id="create-a-new-area">Create a new area<a class="anchor" aria-label="anchor" href="#create-a-new-area"></a>
+</h2>
 <p>You can create a new area with:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"myarea"</span><span class="op">)</span>
 
 <span class="co"># The new area should appear here:</span>
-<span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getAreas.html">getAreas</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>You can specify the localization of the area on the map, and also its color.</p>
 <p>There are two helper functions for area parameters:</p>
 <ul>
@@ -131,9 +137,9 @@
 <code><a href="../reference/nodalOptimizationOptions.html">nodalOptimizationOptions()</a></code> for nodal optimizations options.</li>
 </ul>
 </div>
-<div id="create-a-new-cluster" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-a-new-cluster" class="anchor"></a>Create a new cluster</h2>
+<div class="section level2">
+<h2 id="create-a-new-cluster">Create a new cluster<a class="anchor" aria-label="anchor" href="#create-a-new-cluster"></a>
+</h2>
 <p>You can initialize a cluster with some parameters:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/create-cluster.html">createCluster</a></span><span class="op">(</span>
@@ -154,9 +160,9 @@
   nominalcapacity <span class="op">=</span> <span class="fl">10600.000</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="create-a-new-link" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-a-new-link" class="anchor"></a>Create a new link</h2>
+<div class="section level2">
+<h2 id="create-a-new-link">Create a new link<a class="anchor" aria-label="anchor" href="#create-a-new-link"></a>
+</h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>
   from <span class="op">=</span> <span class="st">"area1"</span>, 
@@ -175,26 +181,26 @@
   transmission_capacities <span class="op">=</span> <span class="st">"infinite"</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="create-a-binding-constraint" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-a-binding-constraint" class="anchor"></a>Create a binding constraint</h2>
+<div class="section level2">
+<h2 id="create-a-binding-constraint">Create a binding constraint<a class="anchor" aria-label="anchor" href="#create-a-binding-constraint"></a>
+</h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/createBindingConstraint.html">createBindingConstraint</a></span><span class="op">(</span>
   name <span class="op">=</span> <span class="st">"myconstraint"</span>, 
-  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">19200</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">366</span><span class="op">)</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, 
+  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">19200</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">366</span><span class="op">)</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, 
   enabled <span class="op">=</span> <span class="cn">FALSE</span>, 
   timeStep <span class="op">=</span> <span class="st">"daily"</span>,
   operator <span class="op">=</span> <span class="st">"both"</span>,
-  coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"fr%myarea"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+  coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr%myarea"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="create-several-pumped-storage-power-plant-psp" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-several-pumped-storage-power-plant-psp" class="anchor"></a>Create several Pumped Storage Power plant (PSP)</h2>
+<div class="section level2">
+<h2 id="create-several-pumped-storage-power-plant-psp">Create several Pumped Storage Power plant (PSP)<a class="anchor" aria-label="anchor" href="#create-several-pumped-storage-power-plant-psp"></a>
+</h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pspData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, 
-  installedCapacity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">800</span>,<span class="fl">900</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">pspData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
+  area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, 
+  installedCapacity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>,<span class="fl">900</span><span class="op">)</span>
 <span class="op">)</span>
 
 <span class="fu"><a href="../reference/createPSP.html">createPSP</a></span><span class="op">(</span>
@@ -202,37 +208,37 @@
   efficiency <span class="op">=</span> <span class="fl">0.75</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="create-several-demand-side-response-dsr" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-several-demand-side-response-dsr" class="anchor"></a>Create several Demand Side Response (DSR)</h2>
+<div class="section level2">
+<h2 id="create-several-demand-side-response-dsr">Create several Demand Side Response (DSR)<a class="anchor" aria-label="anchor" href="#create-several-demand-side-response-dsr"></a>
+</h2>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dsrData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
-  area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>,
-  unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span>, 
-  nominalCapacity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">120</span><span class="op">)</span>,
-  marginalCost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">65</span><span class="op">)</span>,
-  hour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">7</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">dsrData</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
+  area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>,
+  unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">20</span><span class="op">)</span>, 
+  nominalCapacity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">120</span><span class="op">)</span>,
+  marginalCost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">65</span><span class="op">)</span>,
+  hour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">7</span><span class="op">)</span>
 <span class="op">)</span>
   
 <span class="fu"><a href="../reference/createDSR.html">createDSR</a></span><span class="op">(</span><span class="va">dsrData</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="update-general-settings" class="section level2">
-<h2 class="hasAnchor">
-<a href="#update-general-settings" class="anchor"></a>Update general settings</h2>
+<div class="section level2">
+<h2 id="update-general-settings">Update general settings<a class="anchor" aria-label="anchor" href="#update-general-settings"></a>
+</h2>
 <p>For example, set the output of simulation year by year, and limit the number of Monte-Carlo years to 10:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/updateGeneralSettings.html">updateGeneralSettings</a></span><span class="op">(</span>year.by.year <span class="op">=</span> <span class="cn">TRUE</span>, nbyears <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="remove-methods" class="section level2">
-<h2 class="hasAnchor">
-<a href="#remove-methods" class="anchor"></a>Remove methods</h2>
+<div class="section level2">
+<h2 id="remove-methods">Remove methods<a class="anchor" aria-label="anchor" href="#remove-methods"></a>
+</h2>
 <p>You can remove areas, links, clusters and binding constraints from input folder with <code>remove*</code> functions, e.g.:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/removeArea.html">removeArea</a></span><span class="op">(</span><span class="st">"myarea"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="run-time-series-generator" class="section level2">
-<h2 class="hasAnchor">
-<a href="#run-time-series-generator" class="anchor"></a>Run Time-Series Generator</h2>
+<div class="section level2">
+<h2 id="run-time-series-generator">Run Time-Series Generator<a class="anchor" aria-label="anchor" href="#run-time-series-generator"></a>
+</h2>
 <p>First, update general settings to activate time series to generate:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/updateGeneralSettings.html">updateGeneralSettings</a></span><span class="op">(</span>generate <span class="op">=</span> <span class="st">"thermal"</span><span class="op">)</span></code></pre></div>
@@ -243,9 +249,9 @@
   show_output_on_console <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 </div>
-<div id="run-an-antares-simulation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#run-an-antares-simulation" class="anchor"></a>Run an Antares simulation</h2>
+<div class="section level2">
+<h2 id="run-an-antares-simulation">Run an Antares simulation<a class="anchor" aria-label="anchor" href="#run-an-antares-simulation"></a>
+</h2>
 <p>Launch an Antares simulation from R:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/runSimulation.html">runSimulation</a></span><span class="op">(</span>
@@ -268,11 +274,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
+  <p></p>
+<p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -280,6 +288,8 @@
 
   
 
+
+  
 
   </body>
 </html>
