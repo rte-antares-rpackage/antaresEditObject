@@ -1,11 +1,16 @@
-#' Remove An Area From inputs
+#' @title Remove an area from an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Remove an area in an Antares study.
 #'
-#' @param name An area name
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' @param name An area name.
+#' 
+#' @template opts
+#' 
+#' @seealso [createArea()], [editArea()]
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath readBindingConstraints
@@ -15,6 +20,19 @@
 #' removeArea("fictive_area")
 #' }
 removeArea <- function(name, opts = antaresRead::simOptions()) {
+  
+  # API block
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate("remove_area", id = name)
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_area}: {msg_api}"),
+      cli_command_registered("remove_area")
+    )
+    
+    return(invisible(opts))
+  }
 
   # name of the area can contain upper case in areas/list.txt (and use in graphics)
   # (and use in graphics) but not in the folder name (and use in all other case)

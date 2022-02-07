@@ -1,15 +1,16 @@
-#' Edit An Existing Area In An Antares Study
+#' @title Edit an area in an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Edit an existing area in an Antares study.
 #'
-#' @param name Name of the area as a character, without punctuation except - and _.
-#' @param color Color of the node
-#' @param localization Localization on the map
-#' @param nodalOptimization Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.
-#' @param filtering Filtering parameters, see \code{\link{filteringOptions}}.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' @inheritParams createArea
+#' 
+#' @template opts
+#' 
+#' @seealso [createArea()], [removeArea()]
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath
@@ -37,21 +38,51 @@
 #' opts = antaresRead::simOptions())
 #' 
 #' }
-editArea <- function(name, color = NULL,
+editArea <- function(name, 
+                     color = NULL,
                      localization = NULL,
                      nodalOptimization = NULL,
                      filtering = NULL,
                      opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  validate_area_name(name)
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    if (!is.null(nodalOptimization)) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization/nodal optimization", name),
+        data = nodalOptimization
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update area's nodal optimization option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    if (!is.null(filtering)) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization/filtering", name),
+        data = filtering
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update area's filtering option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    return(invisible(opts))
+  }
   
   v7 <- is_antares_v7(opts)
-  
-  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
-    stop("Area's name must not ponctuation except - and _")
-  
-  # if (grepl(pattern = "[A-Z]", x = name)) 
-  #   stop("Area's name must be lower case")
   
   # name of the area can contain upper case in areas/list.txt (and use in graphics)
   # (and use in graphics) but not in the folder name (and use in all other case)
@@ -70,14 +101,14 @@ editArea <- function(name, color = NULL,
   
   nodalOptimizationThermal <- nodalOptimization[names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
   nodalOptimization <- nodalOptimization[!names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
-  if(!is.null(nodalOptimization)){
-    for(i in names(nodalOptimization)){
+  if (!is.null(nodalOptimization)) {
+    for (i in names(nodalOptimization)) {
       infoIni$`nodal optimization`[[i]] <- nodalOptimization[[i]]
     }
   }
   
-  if(!is.null(filtering)){
-    for(i in names(filtering)){
+  if (!is.null(filtering)) {
+    for (i in names(filtering)) {
       infoIni$filtering[[i]] <- filtering[[i]]
     }
   }
@@ -93,13 +124,13 @@ editArea <- function(name, color = NULL,
   
   names(color_loc_ini)
   
-  if(!is.null(localization)){
+  if (!is.null(localization)) {
     localization <- as.character(localization)
     color_loc_ini$ui$x <- localization[1]
     color_loc_ini$ui$y <- localization[2]
   }
   
-  if(!is.null(localization)){
+  if (!is.null(localization)) {
     localization <- as.character(localization)
     color_loc_ini$ui$x <- localization[1]
     color_loc_ini$ui$y <- localization[2]
@@ -107,7 +138,7 @@ editArea <- function(name, color = NULL,
     color_loc_ini$layerY$`0` <- localization[2]
   }
   
-  if(!is.null(color)){
+  if (!is.null(color)) {
     color_loc_ini$ui$color_r <- unname(grDevices::col2rgb(color)["red", 1])
     color_loc_ini$ui$color_g <- unname(grDevices::col2rgb(color)["green", 1])
     color_loc_ini$ui$color_b <- unname(grDevices::col2rgb(color)["blue", 1])
@@ -120,7 +151,7 @@ editArea <- function(name, color = NULL,
     overwrite = TRUE
   )
   
-  if(!is.null(nodalOptimizationThermal)){
+  if (!is.null(nodalOptimizationThermal)) {
     
     
     thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")

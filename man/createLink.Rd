@@ -14,28 +14,28 @@ createLink(
 )
 }
 \arguments{
-\item{from}{The first area from which to create a link}
-
-\item{to}{The second one}
+\item{from, to}{The two areas linked together.}
 
 \item{propertiesLink}{a named list containing the link properties, e.g. hurdles-cost
-or transmission-capacities for example. See \code{\link{propertiesLinkOptions}}.}
+or transmission-capacities for example. See \code{\link[=propertiesLinkOptions]{propertiesLinkOptions()}}.}
 
 \item{dataLink}{For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
 trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
 PST min, PST max.
-If \code{NULL} (default), a matrix whose rows are equal to \code{1, 1, 0, 0, 0, 0, 0, 0} is set. See Details}
+If \code{NULL} (default), a matrix whose rows are equal to \verb{1, 1, 0, 0, 0, 0, 0, 0} is set. See Details}
 
 \item{overwrite}{Logical, overwrite the previous between the two areas if exist}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Create a link between two areas
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Create a new link between two areas in an Antares study.
 }
 \details{
 The eight times-series are:
@@ -49,16 +49,16 @@ The eight times-series are:
 \item \strong{PST min} : lower bound of phase-shifting that can be reached by a PST installed on the link, if any.
 \item \strong{PST max} : upper bound of phase-shifting that can be reached by a PST installed on the link, if any.
 }
-
-NB: For Antares v7 the eight columns must conform to above order. For Antares v6, only five columns are
-expected, and they must follow this other order: NTC direct, NTC indirect, Impedances, Hurdle cost direct,
-Hurdle cost indirect.
 }
 \note{
 In Antares, areas are sorted in alphabetical order to establish links between.
 For example, link between "fr" and "be" will appear under "be".
 So the areas are sorted before creating the link between them, and \code{dataLink} is
 rearranged to match the new order.
+
+For Antares v7 the eight columns must conform to above order. For Antares v6, only five columns are
+expected, and they must follow this other order: NTC direct, NTC indirect, Impedances, Hurdle cost direct,
+Hurdle cost indirect.
 }
 \examples{
 \dontrun{

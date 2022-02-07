@@ -21,19 +21,24 @@ synthesis will be printed out.}
 \item{archives}{Character vector. Series to archive.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
 Update output parameters of an Antares study
 }
 \examples{
 \dontrun{
 
-updateOutputSettings(synthesis = TRUE, storenewset = FALSE,
-                     archives = c("load", "wind"))
+updateOutputSettings(
+  synthesis = TRUE,
+  storenewset = FALSE,
+  archives = c("load", "wind")
+)
 
 }
 

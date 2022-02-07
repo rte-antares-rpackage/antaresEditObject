@@ -67,7 +67,9 @@ Default is to read clusters description and update all couples area/cluster.}
 \code{readScenarioBuilder} : a \code{list} of \code{matrix} or \code{list} according to \code{as_matrix} parameters.
 }
 \description{
-Read, create & update scenario builder
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Read, create & update scenario builder.
 }
 \examples{
 \dontrun{

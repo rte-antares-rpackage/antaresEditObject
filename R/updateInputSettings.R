@@ -1,12 +1,15 @@
-
+#' @title Update input parameters of an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
 #' Update input parameters of an Antares study
+#' 
 #'
 #' @param import Series to import.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   [antaresRead::setSimulationPath()]
-#'
-#' @return An updated list containing various information about the simulation.
+#' 
+#' @template opts
+#' 
 #' @export
 #'
 #' @examples
@@ -17,11 +20,29 @@
 #' 
 #' }
 updateInputSettings <- function(import, opts = antaresRead::simOptions()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   if ("renewables" %in% import) {
     warning("import parameter cannot be 'renewables', it will be discarded.")
     import <- setdiff(import, "renewables")
+  }
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    cmd <- api_command_generate(
+      action = "update_config",
+      target = "settings/generaldata/input",
+      data = list(import = paste(import, collapse = ", "))
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "Updating input settings: {msg_api}"),
+      cli_command_registered("update_config")
+    )
+    
+    return(update_api_opts(opts))
   }
   
   # read

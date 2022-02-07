@@ -2,7 +2,7 @@
 % Please edit documentation in R/editBindingConstraint.R
 \name{editBindingConstraint}
 \alias{editBindingConstraint}
-\title{Update An Existing Binding Constraint}
+\title{Update an existing binding constraint}
 \usage{
 editBindingConstraint(
   name,
@@ -16,34 +16,36 @@ editBindingConstraint(
 )
 }
 \arguments{
-\item{name}{The name for the binding constraint}
+\item{name}{The name for the binding constraint.}
 
-\item{id}{An id}
+\item{id}{An id, default is to use the name.}
 
 \item{values}{Values used by the constraint.
 It contains one line per time step and three columns "less", "greater" and "equal".}
 
 \item{enabled}{Logical, is the constraint enabled ?}
 
-\item{timeStep}{Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}}
+\item{timeStep}{Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}.}
 
 \item{operator}{Type of constraint: equality, inequality on one side or both sides.}
 
 \item{coefficients}{A named vector containing the coefficients used by the constraint.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Update An Existing Binding Constraint
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Update an existing binding constraint in an Antares study.
 }
 \examples{
 \dontrun{
 editBindingConstraint(
-  name = "toto", 
+  name = "myconstraint", 
   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
   enabled = FALSE, 
   timeStep = "hourly",
@@ -51,4 +53,7 @@ editBindingConstraint(
   coefficients = c("fr\%de" = 1)
 )
 }
+}
+\seealso{
+\code{\link[=createBindingConstraint]{createBindingConstraint()}} to create new binding constraints, \code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/createBindingConstraint.R
 \name{createBindingConstraint}
 \alias{createBindingConstraint}
-\title{Create a Binding Constraint}
+\title{Create a binding constraint}
 \usage{
 createBindingConstraint(
   name,
@@ -17,16 +17,16 @@ createBindingConstraint(
 )
 }
 \arguments{
-\item{name}{The name for the binding constraint}
+\item{name}{The name for the binding constraint.}
 
-\item{id}{An id}
+\item{id}{An id, default is to use the name.}
 
 \item{values}{Values used by the constraint.
 It contains one line per time step and three columns "less", "greater" and "equal".}
 
 \item{enabled}{Logical, is the constraint enabled ?}
 
-\item{timeStep}{Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}}
+\item{timeStep}{Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}.}
 
 \item{operator}{Type of constraint: equality, inequality on one side or both sides.}
 
@@ -35,13 +35,15 @@ It contains one line per time step and three columns "less", "greater" and "equa
 \item{overwrite}{If the constraint already exist, overwrite the previous value.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Create a Binding Constraint
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Create a new binding constraint in an Antares study.
 }
 \examples{
 \dontrun{
@@ -54,4 +56,7 @@ createBindingConstraint(
   coefficients = c("fr\%myarea" = 1)
 )
 }
+}
+\seealso{
+\code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints, \code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
 }

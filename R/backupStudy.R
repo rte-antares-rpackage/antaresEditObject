@@ -1,6 +1,9 @@
 #' @title Create a backup with an Antares Study
 #' 
-#' @description Save an Antares Study or only inputs in a \code{.tar.gz} file
+#' @description 
+#' `r antaresEditObject::badge_api_no()`
+#' 
+#' Save an Antares Study or only inputs in a \code{.tar.gz} file
 #'
 #' @param backupfile Name of the backup, without extension. If missing, 
 #' either the name of the study or 'input' according argument \code{what}.
@@ -24,7 +27,8 @@ backupStudy <- function(backupfile, what = c("input", "study"), opts = antaresRe
   
   what <- match.arg(arg = what)
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  api_not_implemented(opts)
   assertthat::assert_that(!is.null(opts$studyPath) && dir.exists(opts$studyPath))
   
   if (missing(backupfile))

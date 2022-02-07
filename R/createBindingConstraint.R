@@ -1,19 +1,25 @@
-#' Create a Binding Constraint
+#' @title Create a binding constraint
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Create a new binding constraint in an Antares study.
+#' 
 #'
-#' @param name The name for the binding constraint
-#' @param id An id
+#' @param name The name for the binding constraint.
+#' @param id An id, default is to use the name.
 #' @param values Values used by the constraint.
 #'  It contains one line per time step and three columns "less", "greater" and "equal".
 #' @param enabled Logical, is the constraint enabled ?
-#' @param timeStep Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}
+#' @param timeStep Time step the constraint applies to : `hourly`, `daily` or `weekly`.
 #' @param operator Type of constraint: equality, inequality on one side or both sides.
 #' @param coefficients A named vector containing the coefficients used by the constraint.
 #' @param overwrite If the constraint already exist, overwrite the previous value.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath} 
-#'
-#' @return An updated list containing various information about the simulation.
+#' 
+#' @template opts
+#' 
+#' @seealso [editBindingConstraint()] to edit existing binding constraints, [removeBindingConstraint()] to remove binding constraints.
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead getLinks setSimulationPath
@@ -30,7 +36,8 @@
 #'   coefficients = c("fr%myarea" = 1)
 #' )
 #' }
-createBindingConstraint <- function(name, id = tolower(name),
+createBindingConstraint <- function(name, 
+                                    id = tolower(name),
                                     values = NULL,
                                     enabled = TRUE,
                                     timeStep = c("hourly", "daily", "weekly"),
@@ -39,12 +46,33 @@ createBindingConstraint <- function(name, id = tolower(name),
                                     overwrite = FALSE,
                                     opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   timeStep <- match.arg(arg = timeStep)
   operator <- match.arg(arg = operator)
   
-  
+  # API block
+  if (is_api_study(opts)) {
+    
+    cmd <- api_command_generate(
+      "create_binding_constraint", 
+      name = name,
+      enabled = enabled,
+      time_step = timeStep,
+      operator = operator,
+      values = values,
+      coeffs = lapply(as.list(coefficients), as.list)
+    )
+    
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
+      cli_command_registered("create_binding_constraint")
+    )
+    
+    return(invisible(opts))
+  }
   
   ## Ini file
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")

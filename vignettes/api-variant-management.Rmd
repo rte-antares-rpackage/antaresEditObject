@@ -1,0 +1,351 @@
+---
+title: "Variant management with API"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Variant management with API}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+```
+
+```{r setup}
+library(antaresEditObject)
+```
+
+The API behind [Antares Web](https://antares-web.readthedocs.io/en/latest/) comes with a Variant Manager allowing to edit a study. Functions from {antaresEditObject} can be used send commands to the API or generate commands to be sent to the API.
+
+
+## Path to simulation and variant creation
+
+First we need to declare which study we are going to use:
+
+```{r set-simulation-path, eval=FALSE}
+antaresRead::setSimulationPathAPI(
+  host = "http://localhost:8080",
+  study_id = "70a08fae-da67-444a-b2ed-df4c0f956a31", 
+  token = NULL, 
+  simulation = "input"
+)
+```
+
+Then we can create a new variant from our study or use one created through the web interface:
+
+```{r create-variant, eval=FALSE}
+# Create new variant
+createVariant("variant-1")
+
+# use an existing one
+useVariant("variant-2")
+```
+
+
+A third option is to mock the web server behavior, it can be useful if we are offline or if we just want to generate API commands to be use afterwards:
+
+```{r mock-api}
+mockSimulationAPI()
+```
+
+
+## API editing mode
+
+{antaresEditObject} allow to use two modes to use the API:
+
+* **async**: record all API calls, but nothing is sent to the server, commands can be retrieved after calling {antaresEditObject}'s functions
+* **sync**: send query to the API each time a function is used (commands are also internally recorded if needed).
+
+```{r set-api-mode, eval=FALSE}
+setAPImode("async")
+# or
+setAPImode("sync")
+```
+
+Default is to used **async** mode. When using `mockSimulationAPI()` only **async** mode is available.
+
+
+
+## Get / export variant management commands
+
+Variant commands generated after calling functions like `createArea()`, `createLink()`, ... can be retrieved at all time with:
+
+```{r get-api-commands, eval=FALSE}
+getVariantCommands()
+```
+
+Last command generated can be viewed with:
+
+```{r get-api-commands-last, eval=FALSE}
+getVariantCommands(last = TRUE)
+# or use a numeric to get the last N commands
+getVariantCommands(last = 3)
+```
+
+You can also filter type of commands with:
+
+```{r get-api-commands-actions, eval=FALSE}
+getVariantCommands(actions = "create_area")
+```
+
+Export commands with:
+
+```{r write-api-commands, eval=FALSE}
+writeVariantCommands("path/to/commands.json")
+```
+
+
+
+## Usage example
+
+Below are listed all functions from {antaresEditObject} that can be used with the API. These functions will include the following badge in their documentation:
+
+```{r, echo=FALSE}
+knitr::include_graphics("figures/badge_api_ok.svg")
+```
+
+
+### Create an area
+
+Create a new area:
+
+```{r create_area}
+createArea(name = "area01")
+createArea(name = "area02")
+createArea(name = "area03")
+getVariantCommands()
+```
+
+Create a second area with some default parameters:
+
+```{r create_area2}
+createArea(
+  name = "area04", 
+  filtering = filteringOptions(filter_synthesis = c("hourly", "daily"))
+)
+getVariantCommands()
+```
+
+
+You can also edit an area or remove it:
+
+```{r remove_area}
+createArea(name = "area000")
+# editArea(name = "area000", ...)
+removeArea(name = "area000")
+getVariantCommands(last = TRUE)
+```
+
+
+### Create a link
+
+Create a new link between two areas like this:
+
+```{r create_link}
+createLink(from = "area01", to = "area02")
+createLink(from = "area01", to = "area03")
+getVariantCommands(last = 2)
+```
+
+Edit an existing link with:
+
+```{r edit_link}
+editLink(
+  from = "area01", 
+  to = "area02",
+  dataLink = matrix(data = c(rep(9, 8760*2), rep(6, 8760*6)), ncol = 8)
+)
+getVariantCommands(last = 2)
+```
+
+Remove a link with:
+
+```{r remove_link}
+removeLink(from = "area01", to = "area03")
+getVariantCommands(last = TRUE)
+```
+
+
+### Create a cluster
+
+Create a new cluster with:
+
+```{r create_cluster}
+createCluster(
+  area = "area01", 
+  cluster_name = "clus01"
+)
+getVariantCommands(last = TRUE)
+```
+
+With more parameters:
+
+```{r create_cluster2}
+createCluster(
+  area = "area01", 
+  cluster_name = "clus02",
+  unitcount = 1L,
+  marginal_cost = 50,
+  ts_interpretation = "production-factor",
+  group = "Nuclear",
+  add_prefix = FALSE,
+  prepro_data = matrix(
+    data = c(rep(9, times = 365 * 2),
+             rep(7, times = 365 * 4)), 
+    ncol = 6
+  ),
+  prepro_modulation = matrix(
+    data = c(rep(8, times = 365 * 24 * 3),
+             rep(6, times = 365 * 24 * 1)),
+    ncol = 4
+  ),
+  time_series = matrix(
+    data = c(rep(22, times = 365 * 24 * 8),
+             rep(44, times = 365 * 24 * 4)),
+    ncol = 12
+  )
+)
+getVariantCommands(last = 2)
+```
+
+
+Edit a cluster with:
+
+```{r edit_cluster}
+createCluster(
+  area = "area02", 
+  cluster_name = "clus02"
+)
+editCluster(
+  area = "area02", 
+  cluster_name = "clus02", 
+  unitcount = 5L
+)
+getVariantCommands(last = TRUE)
+```
+
+
+Remove a cluster with:
+
+```{r remove_cluster}
+createCluster(
+  area = "area02", 
+  cluster_name = "clus000"
+)
+removeCluster(
+  area = "area02", 
+  cluster_name = "clus000"
+)
+getVariantCommands(last = TRUE)
+```
+
+
+
+
+
+### Create a binding constraint
+
+Create a new binding constraint with:
+
+```{r create_binding_constraint}
+createBindingConstraint(
+  name = "myconstraint",
+  values = NULL,
+  enabled = FALSE,
+  timeStep = "hourly",
+  operator = "both",
+  coefficients = c("area01%area02" = 1)
+)
+getVariantCommands(last = TRUE)
+```
+
+You can edit a binding constraint with `editBindingConstraint()` and remove one with `removeBindingConstraint()`.
+
+
+### Update settings
+
+Update general settings:
+
+```{r update_general_settings}
+updateGeneralSettings(mode = "Adequacy", generate = c("thermal", "hydro"))
+getVariantCommands(last = 2)
+```
+
+
+Update input settings:
+
+```{r update_input_settings}
+updateInputSettings(import = c("hydro", "thermal"))
+getVariantCommands(last = TRUE)
+```
+
+
+Update optimization settings:
+
+```{r update_optimization_settings}
+updateOptimizationSettings(
+  simplex.range = "week",
+  power.fluctuations = "minimize ramping"
+)
+getVariantCommands(last = 2)
+```
+
+
+Update output settings:
+
+```{r update_output_settings}
+updateOutputSettings(
+  synthesis = TRUE,
+  storenewset = FALSE,
+  archives = c("load", "wind")
+)
+getVariantCommands(last = TRUE)
+```
+
+
+### Scenario builder
+
+Read data from scenario builder (here's it's empty since we're mocking the API):
+
+```{r read_scenario_builder}
+readScenarioBuilder()
+```
+
+Create new data to use as scenario builder, since we're mocking the API parameters must be set explicitly, otherwise thez are retrieved from the study.
+
+```{r scenario_builder}
+my_scenario <- scenarioBuilder(n_scenario = 3, areas = c("area01", "area02"), n_mc = 10)
+my_scenario
+```
+
+Then you can update the scenario builder itself:
+
+```{r update_scenario_builder}
+updateScenarioBuilder(ldata = my_scenario, series = "load")
+getVariantCommands(last = TRUE)
+```
+
+
+### Other functions
+
+Write input time series:
+
+```{r write_input_ts}
+writeInputTS("area01", type = "solar", data = matrix(rep(4, 8760*2), nrow = 8760))
+getVariantCommands(last = TRUE)
+```
+
+Write water values:
+```{r write_water_values}
+writeWaterValues("area01", data = matrix(rep(0, 365*101), nrow = 365))
+getVariantCommands(last = TRUE)
+```
+
+
+
+
+

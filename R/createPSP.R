@@ -1,21 +1,22 @@
-
+#' @title Create a Pumped Storage Power plant (PSP)
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_no()`
+#' 
 #' Create a Pumped Storage Power plant (PSP)
 #'
-#' @param areasAndCapacities A data.frame with 2 columns \code{installedCapacity} and \code{area}
+#' @param areasAndCapacities A data.frame with 2 columns `installedCapacity` and `area`.
 #' @param namePumping The name of the pumping area
 #' @param nameTurbining The name of the turbining area
 #' @param hurdleCost The cost of the PSP
-#' @param timeStepBindConstraint Time step for the binding constraint : \code{daily} or \code{weekly}
+#' @param timeStepBindConstraint Time step for the binding constraint : `daily` or `weekly`
 #' @param efficiency The efficiency of the PSP
 #' @param overwrite Overwrite the Pumped Storage Power plant if already exist.
 #' This will overwrite the previous area and links. 
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
 #' @param area an area name 
 #' @param capacity PSP capacity for the area
 #' 
-#' @return \code{createPSP()} and \code{editPSP()}  returns an updated list containing various information about the simulation.
+#' @template opts
 #' 
 #' @export
 #' 
@@ -46,43 +47,70 @@ createPSP <- function(areasAndCapacities = NULL,
                       timeStepBindConstraint = "weekly", 
                       efficiency = NULL, 
                       overwrite = FALSE, 
-                      opts = antaresRead::simOptions() ){
+                      opts = antaresRead::simOptions()) {
   
-  oldOps<-opts
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  api_not_implemented(opts)
+  
+  oldOps <- opts
   areasAndCapacities <- .checkDataForAddPSP(
     areasAndCapacities, namePumping, nameTurbining, overwrite,
     oldOps, hurdleCost, timeStepBindConstraint, efficiency
   )
   namePumping <- .getTheLastVirualName(
-    namePumping, timeStepBindConstraint = timeStepBindConstraint
+    namePumping,
+    timeStepBindConstraint = timeStepBindConstraint
   )
   nameTurbining <- .getTheLastVirualName(
-    nameTurbining, timeStepBindConstraint = timeStepBindConstraint
+    nameTurbining, 
+    timeStepBindConstraint = timeStepBindConstraint
   )
   
   newOpts <- .addOneOfTheVirtualArea(
-    nameTurbining, pump = FALSE, overwrite, timeStepBindConstraint = timeStepBindConstraint, opts = oldOps
+    nameTurbining,
+    pump = FALSE,
+    overwrite, 
+    timeStepBindConstraint = timeStepBindConstraint, 
+    opts = oldOps
   )
   newOpts <- .addOneOfTheVirtualArea(
-    namePumping, pump = TRUE, overwrite, timeStepBindConstraint = timeStepBindConstraint, opts = newOpts
+    namePumping,
+    pump = TRUE, 
+    overwrite, 
+    timeStepBindConstraint = timeStepBindConstraint,
+    opts = newOpts
   )
   newOpts <- .addLinksBetweenPspAndAreas(
-    areasAndCapacities = areasAndCapacities, nameVirtualArea = nameTurbining, 
-    pumpP = FALSE, overwrite = overwrite, hurdleCost = hurdleCost, opts = newOpts
+    areasAndCapacities = areasAndCapacities, 
+    nameVirtualArea = nameTurbining, 
+    pumpP = FALSE,
+    overwrite = overwrite, 
+    hurdleCost = hurdleCost, 
+    opts = newOpts
   )
   newOpts <- .addLinksBetweenPspAndAreas(
-    areasAndCapacities = areasAndCapacities, nameVirtualArea = namePumping, 
-    pumpP = TRUE, overwrite = overwrite, hurdleCost = hurdleCost, opts = newOpts
+    areasAndCapacities = areasAndCapacities, 
+    nameVirtualArea = namePumping, 
+    pumpP = TRUE, 
+    overwrite = overwrite, 
+    hurdleCost = hurdleCost,
+    opts = newOpts
   )
   
   .addRowBalance(
-    namePumping = namePumping, nameTurbining = nameTurbining, opts = newOpts
+    namePumping = namePumping,
+    nameTurbining = nameTurbining,
+    opts = newOpts
   )
   
   newOpts <- .addBindingConstraintToPSP(
-    areasAndCapacities = areasAndCapacities, namePumping = namePumping, 
-    nameTurbining = nameTurbining, opts = newOpts, overwrite = overwrite, 
-    timeStepBindConstraint = timeStepBindConstraint, efficiency = efficiency
+    areasAndCapacities = areasAndCapacities, 
+    namePumping = namePumping, 
+    nameTurbining = nameTurbining, 
+    opts = newOpts, 
+    overwrite = overwrite, 
+    timeStepBindConstraint = timeStepBindConstraint,
+    efficiency = efficiency
   )
   
   # Maj simulation
@@ -91,7 +119,6 @@ createPSP <- function(areasAndCapacities = NULL,
   })
   
   invisible(res)
-  
 }
 
 

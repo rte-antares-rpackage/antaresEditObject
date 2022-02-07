@@ -8,7 +8,7 @@ is_antares_v7(opts = antaresRead::simOptions())
 }
 \arguments{
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 a logical, \code{TRUE} if study is v7 or above, \code{FALSE} otherwise

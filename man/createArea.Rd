@@ -2,7 +2,7 @@
 % Please edit documentation in R/createArea.R
 \name{createArea}
 \alias{createArea}
-\title{Create An Area In An Antares Study}
+\title{Create an area in an Antares study}
 \usage{
 createArea(
   name,
@@ -21,20 +21,22 @@ createArea(
 
 \item{localization}{Localization on the map}
 
-\item{nodalOptimization}{Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.}
+\item{nodalOptimization}{Nodal optimization parameters, see \code{\link[=nodalOptimizationOptions]{nodalOptimizationOptions()}}.}
 
-\item{filtering}{Filtering parameters, see \code{\link{filteringOptions}}.}
+\item{filtering}{Filtering parameters, see [filteringOptions().}
 
 \item{overwrite}{Overwrite the area if already exist.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Create An Area In An Antares Study
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Create a new area in an Antares study.
 }
 \examples{
 \dontrun{
@@ -48,4 +50,7 @@ setSimulationPath(path = "PATH/TO/SIMULATION", simulation = "input")
 createArea("fictive_area")
 
 }
+}
+\seealso{
+\code{\link[=editArea]{editArea()}}, \code{\link[=removeArea]{removeArea()}}
 }

@@ -1,7 +1,9 @@
-
 #' @title Create a cluster
 #' 
-#' @description Create a new thermal or RES (renewable energy source) cluster.
+#' @description 
+#' `r antaresEditObject::badge_api_ok()` (thermal clusters only)
+#' 
+#' Create a new thermal or RES (renewable energy source) cluster.
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
@@ -10,7 +12,7 @@
 #'  - renewable cluster, one of: Wind Onshore, Wind Offshore, Solar Thermal, Solar PV, Solar Rooftop, Other RES 1, Other RES 2, Other RES 3, Other RES 4.
 #' @param ... Parameters to write in the Ini file. Careful!
 #'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
-#'  to set \code{unitcount}, you'll have to use `unitcount = 1L`.
+#'  to set `unitcount`, you'll have to use `unitcount = 1L`.
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
 #' @param prepro_data Pre-process data, a `data.frame` or `matrix`, 
 #'  default is a matrix with 365 rows and 6 columns.
@@ -18,11 +20,8 @@
 #'  if specified, must have 8760 rows and 1 or 4 columns.
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite Logical, overwrite the cluster or not.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'  [antaresRead::setSimulationPath()]
-#'
-#' @return An updated list containing various information about the simulation.
+#' 
+#' @template opts
 #' 
 #' @seealso [editCluster()] or [editClusterRES()] to edit existing clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
 #' 
@@ -192,7 +191,7 @@ createClusterRES <- function(area,
                              add_prefix = TRUE, 
                              overwrite = FALSE,
                              opts = antaresRead::simOptions()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_RES(opts)
   renewables_group <- c("Wind Onshore",
                         "Wind Offshore",
@@ -238,10 +237,7 @@ createClusterRES <- function(area,
   
   # Input path
   inputPath <- opts$inputPath
-  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   cluster_type <- match.arg(cluster_type)
-  
-  check_area_name(area, opts)
   
   if (!NROW(time_series) %in% c(0, 8736, 8760)) {
     stop("Number of rows for time series must be 0 or 8760")
@@ -259,6 +255,47 @@ createClusterRES <- function(area,
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    if (identical(cluster_type, "renewables"))
+      stop("RES clusters not implemented with the API yet.")
+    
+    cmd <- api_command_generate(
+      action = "create_cluster",
+      area_id = area,
+      cluster_name = cluster_name,
+      prepro = prepro_data,
+      modulation = prepro_modulation,
+      parameters = params_cluster
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_cluster}: {msg_api}"),
+      cli_command_registered("create_cluster")
+    )
+    
+    if (!is.null(time_series)) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/thermal/series/%s/%s/series", area, cluster_name),
+        matrix = time_series
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+    }
+    
+    return(invisible(opts))
+  }
+  
+  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
+  check_area_name(area, opts)
   
   # named list for writing ini file
   # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)

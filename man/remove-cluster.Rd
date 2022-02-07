@@ -21,30 +21,36 @@ removeClusterRES(
 )
 }
 \arguments{
-\item{area}{Area from which to remove a cluster.}
+\item{area}{The area where to create the cluster.}
 
-\item{cluster_name}{Cluster to remove.}
+\item{cluster_name}{Name for the cluster, it will prefixed by area name, unless you set \code{add_prefix = FALSE}.}
 
-\item{add_prefix}{If \code{TRUE}, cluster_name will be prefixed by area's name.}
+\item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
 \item{opts}{List of simulation parameters returned by the function
-\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}} (thermal clusters only)
+
 Remove a cluster, thermal or RES (renewable energy source), and all its data.
 }
 \examples{
 \dontrun{
-createCluster(area = "fr", cluster_name = "fr_gas",
-              group = "other", `marginal-cost` = 50)
+createCluster(
+  area = "fr", 
+  cluster_name = "fr_gas",
+  group = "other", 
+  `marginal-cost` = 50
+)
 
 removeCluster(area = "fr", cluster_name = "fr_gas")
-
 }
 }
 \seealso{
-\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRES]{createClusterRES()}} to create new clusters, \code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} to edit existing clusters.
+\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRES]{createClusterRES()}} to create new clusters,
+\code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} to edit existing clusters.
 }

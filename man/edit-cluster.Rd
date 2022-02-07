@@ -27,11 +27,13 @@ editClusterRES(
 )
 }
 \arguments{
-\item{area}{The area where the cluster is.}
+\item{area}{The area where to create the cluster.}
 
-\item{cluster_name}{cluster name.}
+\item{cluster_name}{Name for the cluster, it will prefixed by area name, unless you set \code{add_prefix = FALSE}.}
 
-\item{...}{Parameters to write in the Ini file.}
+\item{...}{Parameters to write in the Ini file. Careful!
+Some parameters must be set as \code{integers} to avoid warnings in Antares, for example,
+to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 
 \item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes.}
 
@@ -41,7 +43,7 @@ default is a matrix with 365 rows and 6 columns.}
 \item{prepro_modulation}{Pre-process modulation, a \code{data.frame} or \code{matrix},
 if specified, must have 8760 rows and 1 or 4 columns.}
 
-\item{add_prefix}{If \code{TRUE}, cluster_name will be prefixed by area name.}
+\item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -50,7 +52,9 @@ if specified, must have 8760 rows and 1 or 4 columns.}
 An updated list containing various information about the simulation.
 }
 \description{
-Edit parameters of an existing cluster, thermal or RES (renewable energy source).
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}} (thermal clusters only)
+
+Edit parameters, pre-process data and time series of an existing cluster, thermal or RES (renewable energy source).
 }
 \examples{
 \dontrun{

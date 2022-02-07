@@ -1,3 +1,8 @@
+#' @title Update general parameters of an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
 #' Update general parameters of an Antares study
 #'
 #' @param mode Economy, Adequacy, Draft.
@@ -33,11 +38,9 @@
 #' @param refreshintervalthermal See Antares General Reference Guide.
 #' @param refreshintervalsolar See Antares General Reference Guide.
 #' @param readonly See Antares General Reference Guide.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   [antaresRead::setSimulationPath()]
-#'
-#' @return An updated list containing various information about the simulation.
+#' 
+#' @template opts
+#' 
 #' @export
 #' 
 #' @importFrom utils modifyList
@@ -87,14 +90,7 @@ updateGeneralSettings <- function(mode = NULL,
                                   readonly = NULL,
                                   opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
-  
-  # read current settings
-  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  
-  # update general field
-  l_general <- generaldata$general
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   intra.modal <- check_param_modal(intra.modal, opts)
   inter.modal <- check_param_modal(inter.modal, opts)
@@ -135,9 +131,41 @@ updateGeneralSettings <- function(mode = NULL,
   )
   new_params <- dropNulls(new_params)
   for (i in seq_along(new_params)) {
-    new_params[[i]] <- as.character(new_params[[i]])
+    new_params[[i]] <- paste(as.character(new_params[[i]]), collapse = ", ")
     names(new_params)[i] <- dicoGeneralSettings(names(new_params)[i])
   }
+  
+  # API block
+  if (is_api_study(opts)) {
+
+    actions <- lapply(
+      X = seq_along(new_params),
+      FUN = function(i) {
+        list(
+          target = paste0("settings/generaldata/general/", names(new_params)[i]),
+          data = new_params[[i]]
+        )
+      }
+    )
+    actions <- setNames(actions, rep("update_config", length(actions)))
+    cmd <- do.call(api_commands_generate, actions)
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "Updating general settings: {msg_api}"),
+      cli_command_registered("update_config")
+    )
+    
+    return(update_api_opts(opts))
+  }
+  
+  # read current settings
+  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
+  generaldata <- readIniFile(file = generaldatapath)
+  
+  # update general field
+  l_general <- generaldata$general
+  
   l_general <- utils::modifyList(x = l_general, val = new_params)
   generaldata$general <- l_general
   

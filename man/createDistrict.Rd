@@ -8,7 +8,7 @@ createDistrict(
   name,
   caption = NULL,
   comments = NULL,
-  apply_filter = "none",
+  apply_filter = c("none", "add-all", "remove-all"),
   add_area = NULL,
   remove_area = NULL,
   output = FALSE,
@@ -35,7 +35,7 @@ createDistrict(
 \item{overwrite}{Logical, should the district be overwritten if already exist?}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
@@ -45,8 +45,10 @@ Allows selecting a set of areas so as to bundle them together in a "district".
 }
 \examples{
 \dontrun{
-createDistrict(name = "mydistrict", 
-                apply_filter = "add-all", 
-                remove_area = c("fr", "be"))
+createDistrict(
+  name = "mydistrict",
+  apply_filter = "add-all",
+  remove_area = c("fr", "be")
+)
 }
 }

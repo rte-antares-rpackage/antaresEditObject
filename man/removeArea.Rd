@@ -2,24 +2,29 @@
 % Please edit documentation in R/removeArea.R
 \name{removeArea}
 \alias{removeArea}
-\title{Remove An Area From inputs}
+\title{Remove an area from an Antares study}
 \usage{
 removeArea(name, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{name}{An area name}
+\item{name}{An area name.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Remove An Area From inputs
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Remove an area in an Antares study.
 }
 \examples{
 \dontrun{
 removeArea("fictive_area")
 }
+}
+\seealso{
+\code{\link[=createArea]{createArea()}}, \code{\link[=editArea]{editArea()}}
 }

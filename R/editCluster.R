@@ -1,22 +1,13 @@
-
 #' @title Edit an existing cluster
 #' 
-#' @description Edit parameters of an existing cluster, thermal or RES (renewable energy source).
+#' @description 
+#' `r antaresEditObject::badge_api_ok()` (thermal clusters only)
+#' 
+#' Edit parameters, pre-process data and time series of an existing cluster, thermal or RES (renewable energy source).
 #'
-#' @param area The area where the cluster is.
-#' @param cluster_name cluster name.
-#' @param ... Parameters to write in the Ini file.
-#' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
-#' @param prepro_data Pre-process data, a `data.frame` or `matrix`, 
-#'  default is a matrix with 365 rows and 6 columns.
-#' @param prepro_modulation Pre-process modulation, a `data.frame` or `matrix`, 
-#'  if specified, must have 8760 rows and 1 or 4 columns.
-#' @param add_prefix If \code{TRUE}, cluster_name will be prefixed by area name.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   [antaresRead::setSimulationPath()]
 #'
-#' @return An updated list containing various information about the simulation.
+#' @inheritParams create-cluster
+#' @template opts
 #' 
 #' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
 #' 
@@ -69,7 +60,7 @@ editClusterRES <- function(area,
                            time_series = NULL,
                            add_prefix = TRUE, 
                            opts = antaresRead::simOptions()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_RES(opts, check_dir = TRUE)
   .editCluster(
     area = area,
@@ -94,10 +85,13 @@ editClusterRES <- function(area,
                          opts = antaresRead::simOptions()) {
   # Input path
   inputPath <- opts$inputPath
-  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   cluster_type <- match.arg(cluster_type)
   
-  check_area_name(area, opts)
+  # Cluster's parameters
+  params_cluster <- hyphenize_names(list(...))
+  if (add_prefix)
+    cluster_name <- paste(area, cluster_name, sep = "_")
+  params_cluster$name <- cluster_name
   
   if (!NROW(time_series) %in% c(0, 8736, 8760)) {
     stop("Number of rows for time series must be 0 or 8760")
@@ -110,11 +104,77 @@ editClusterRES <- function(area,
     stop("Number of cols for modulation data must be 0 or 4")
   }
   
-  # Cluster's parameters
-  params_cluster <- hyphenize_names(list(...))
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
-  params_cluster$name <- cluster_name
+  if (is_api_study(opts)) {
+    
+    if (identical(cluster_type, "renewables"))
+      stop("RES clusters not implemented with the API yet.")
+    
+    # update parameters if something else than name
+    if (length(params_cluster) > 1) {
+      cmd <- api_command_generate(
+        action = "update_config",
+        target = sprintf("input/thermal/clusters/%s/list/%s", area, cluster_name),
+        data = params_cluster
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's properties: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    # update prepro_modulation
+    if (!is.null(prepro_modulation)) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/thermal/prepro/%s/%s/modulation", area, cluster_name),
+        matrix = prepro_modulation
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process modulation: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+    }
+    
+    # update prepro_data
+    if (!is.null(prepro_data)) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/thermal/prepro/%s/%s/data", area, cluster_name),
+        matrix = prepro_data
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process data: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+    }
+    
+    # update series
+    if (!is.null(time_series)) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/thermal/series/%s/%s/series", area, cluster_name),
+        matrix = time_series
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+    }
+    
+    return(invisible(opts))
+  }
+  
+  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
+  check_area_name(area, opts)
+  
   
   # path to ini file
   path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", tolower(area), "list.ini")

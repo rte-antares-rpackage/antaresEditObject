@@ -29,7 +29,7 @@
 #' 
 #' }
 activateRES <- function(opts = antaresRead::simOptions(), quietly = !interactive()) {
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
   updateOptimizationSettings(renewable.generation.modelling = "clusters")
   initialize_RES(opts)
   if (!isTRUE(quietly))
@@ -39,6 +39,9 @@ activateRES <- function(opts = antaresRead::simOptions(), quietly = !interactive
 
 
 initialize_RES <- function(opts) {
+  if (is_api_study(opts)) {
+    stop("Cannot initialize RES with API mode") # no RES with API currently
+  }
   inputPath <- opts$inputPath
   ren_dir <- file.path(inputPath, "renewables")
   dir.create(ren_dir, showWarnings = FALSE)
@@ -55,6 +58,9 @@ initialize_RES <- function(opts) {
 }
 
 is_active_RES <- function(opts) {
+  if (is_api_study(opts)) {
+    return(FALSE) # no RES with API currently
+  }
   generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
   generaldata <- readIniFile(file = generaldatapath)
   rgm <- generaldata$`other preferences`$`renewable-generation-modelling`

@@ -10,16 +10,21 @@ removeBindingConstraint(name, opts = antaresRead::simOptions())
 \item{name}{Name(s) of the binding constraint(s) to remove.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Remove a Binding Constraint
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Remove a binding constraint in an Antares study.
 }
 \examples{
 \dontrun{
 removeBindingConstraint("mybindingconstraint")
 }
+}
+\seealso{
+\code{\link[=createBindingConstraint]{createBindingConstraint()}} to create new binding constraints, \code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints.
 }

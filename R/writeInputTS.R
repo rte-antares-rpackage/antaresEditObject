@@ -1,16 +1,19 @@
-#' Write input time series
+#' @title Write input time series
 #'
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
 #' This function writes input time series in an Antares project.
 #'
 #' @param area The area where to write the input time series.
-#' @param type Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
-#'  \code{"wind"} or \code{"solar"}.
-#' @param data A 8760*N matrix of hourly time series, except when \code{type} is
-#'  \code{"hydroSTOR"}. In this latter case, \code{data} must either be 365*N
+#' @param type Serie to write: `"load"`, `"hydroROR"`, `"hydroSTOR"`,
+#'  `"wind"` or `"solar"`.
+#' @param data A 8760*N matrix of hourly time series, except when `type` is
+#'  `"hydroSTOR"`. In this latter case, `data` must either be 365*N
 #'  (Antares v7) or 12*N (v6 and earlier).
 #' @param overwrite Logical. Overwrite the values if a file already exists.
-#' @param opts List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}.
+#' 
+#' @template opts
 #'
 #' @export
 #'
@@ -24,12 +27,46 @@
 #' writeInputTS("fictive_area", type = "solar", data = matrix(rep(4, 8760*2), nrow = 8760))
 #'
 #' }
-writeInputTS <- function(area, type = c("load", "hydroROR", "hydroSTOR", "wind", "solar"),
-                         data, overwrite = TRUE, opts = antaresRead::simOptions()) {
+writeInputTS <- function(area, 
+                         type = c("load", "hydroROR", "hydroSTOR", "wind", "solar"),
+                         data, 
+                         overwrite = TRUE, 
+                         opts = antaresRead::simOptions()) {
   
   type <- match.arg(type)
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  if (is_api_study(opts)) {
+    
+    if (type %in% c("load", "wind", "solar")) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/%s/series/%s_%s", type, type, area),
+        matrix = data
+      )
+    } else if (type == "hydroROR") {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/hydro/series/%s/ror", area),
+        matrix = data
+      )
+    } else if (type == "hydroSTOR") {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/hydro/series/%s/mod", area),
+        matrix = data
+      )
+    }
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "Writing time-series: {msg_api}"),
+      cli_command_registered("replace_matrix")
+    )
+    
+    return(invisible(opts))
+  }
   
   check_area_name(area, opts)
   
@@ -38,11 +75,9 @@ writeInputTS <- function(area, type = c("load", "hydroROR", "hydroSTOR", "wind",
   
   if (type %in% c("load", "wind", "solar")) {
     values_file <- file.path(inputPath, type, "series", paste0(type, "_", tolower(area), ".txt"))
-  }
-  else if (type == "hydroROR") {
+  } else if (type == "hydroROR") {
     values_file <- file.path(inputPath, "hydro", "series", area, "ror.txt")
-  }
-  else {
+  } else if (type == "hydroSTOR") {
     values_file <- file.path(inputPath, "hydro", "series", area, "mod.txt")
   }
   
@@ -64,7 +99,17 @@ writeInputTS <- function(area, type = c("load", "hydroROR", "hydroSTOR", "wind",
   }
   
   fwrite(
-    x = as.data.table(data), row.names = FALSE, col.names = FALSE, sep = "\t",
+    x = as.data.table(data),
+    row.names = FALSE, 
+    col.names = FALSE, 
+    sep = "\t",
     file = values_file
   )
+  
+  # Maj simulation
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
+  
+  invisible(res)
 }

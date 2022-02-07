@@ -1,21 +1,25 @@
-#' Create a link between two areas
+#' @title Create a link between two areas
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Create a new link between two areas in an Antares study.
+#' 
 #'
-#' @param from The first area from which to create a link
-#' @param to The second one
+#' @param from,to The two areas linked together.
 #' @param propertiesLink a named list containing the link properties, e.g. hurdles-cost
-#' or transmission-capacities for example. See \code{\link{propertiesLinkOptions}}.
+#' or transmission-capacities for example. See [propertiesLinkOptions()].
 #' @param dataLink For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
 #' trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
 #' PST min, PST max.
-#' If \code{NULL} (default), a matrix whose rows are equal to \code{1, 1, 0, 0, 0, 0, 0, 0} is set. See Details
+#' If `NULL` (default), a matrix whose rows are equal to `1, 1, 0, 0, 0, 0, 0, 0` is set. See Details
 #' @param overwrite Logical, overwrite the previous between the two areas if exist
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#' 
+#'  
+#' @template opts
+#'  
 #' @note In Antares, areas are sorted in alphabetical order to establish links between.
 #' For example, link between "fr" and "be" will appear under "be". 
-#' So the areas are sorted before creating the link between them, and \code{dataLink} is
+#' So the areas are sorted before creating the link between them, and `dataLink` is
 #' rearranged to match the new order.
 #' 
 #' @details The eight times-series are:
@@ -29,11 +33,11 @@
 #' * **PST min** : lower bound of phase-shifting that can be reached by a PST installed on the link, if any.
 #' * **PST max** : upper bound of phase-shifting that can be reached by a PST installed on the link, if any.
 #' 
-#' NB: For Antares v7 the eight columns must conform to above order. For Antares v6, only five columns are 
+#' @note 
+#' For Antares v7 the eight columns must conform to above order. For Antares v6, only five columns are 
 #' expected, and they must follow this other order: NTC direct, NTC indirect, Impedances, Hurdle cost direct,
 #' Hurdle cost indirect.
 #'
-#' @return An updated list containing various information about the simulation.
 #' @export
 #' 
 #' @importFrom assertthat assert_that
@@ -59,7 +63,26 @@ createLink <- function(from,
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # API block
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate(
+      action = "create_link",
+      area1 = from,
+      area2 = to,
+      parameters = if (is_different(propertiesLink, propertiesLinkOptions())) propertiesLink else NULL,
+      series = dataLink
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_link}: {msg_api}"),
+      cli_command_registered("create_link")
+    )
+    
+    return(invisible(opts))
+  }
   
   v7 <- is_antares_v7(opts)
   
@@ -136,7 +159,10 @@ createLink <- function(from,
   }
   
   utils::write.table(
-    x = dataLink, row.names = FALSE, col.names = FALSE, sep = "\t",
+    x = dataLink, 
+    row.names = FALSE, 
+    col.names = FALSE,
+    sep = "\t",
     file = file.path(inputPath, "links", from, paste0(to, ".txt"))
   )
   
@@ -154,36 +180,34 @@ createLink <- function(from,
 #'
 #' @param hurdles_cost Logical, which is used to state whether (linear)
 #'  transmission fees should be taken into account or not in economy and adequacy simulations
-#' @param transmission_capacities Character, one of \code{enabled}, \code{ignore} or \code{infinite}, which is used to state whether 
+#' @param transmission_capacities Character, one of `enabled`, `ignore` or `infinite`, which is used to state whether 
 #' the capacities to consider are those indicated in 8760-hour arrays or 
 #' if zero or infinite values should be used instead (actual values / set to zero / set to infinite)
-#' @param asset_type Character, one of \code{ac}, \code{dc}, \code{gas}, \code{virt} or \code{other}. Used to
+#' @param asset_type Character, one of `ac`, `dc`, `gas`, `virt` or `other`. Used to
 #'   state whether the link is either an AC component (subject to Kirchhoff’s laws), a DC component, 
 #'   or another type of asset.
-#' @param display_comments Logical
-#' @param filter_synthesis Output synthesis
-#' @param filter_year_by_year Output year-by-year
+#' @param display_comments Logical, display comments or not.
+#' @param filter_synthesis Output synthesis.
+#' @param filter_year_by_year Output year-by-year.
 #'
-#' @return A named list
+#' @return A named list that can be used in [createLink()].
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' propertiesLinkOptions()
-#' }
+#' propertiesLinkOptions(hurdles_cost = TRUE)
 propertiesLinkOptions <- function(hurdles_cost = FALSE, 
-                           transmission_capacities = "enabled",
-                           asset_type = "ac",
-                           display_comments = TRUE,
-                           filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
-                           filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
+                                  transmission_capacities = "enabled",
+                                  asset_type = "ac",
+                                  display_comments = TRUE,
+                                  filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
+                                  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
   list(
     `hurdles-cost` = hurdles_cost,
     `transmission-capacities` = transmission_capacities,
     `asset-type` = asset_type,
     `display-comments` = display_comments,
-    `filter-synthesis` = filter_synthesis,
-    `filter-year-by-year` = filter_year_by_year
+    `filter-synthesis` = paste(filter_synthesis, collapse = ", "),
+    `filter-year-by-year` = paste(filter_year_by_year, collapse = ", ")
   )
 }
 

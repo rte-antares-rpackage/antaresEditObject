@@ -1,6 +1,20 @@
 
-dropNulls <- function (x) {
+dropNulls <- function(x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]
+}
+
+`%||%` <- function(x, y)  {
+  if (is.null(x)) { 
+    y
+  } else {
+    x
+  }
+}
+
+is_different <- function(x, y) {
+  if (is.null(x))
+    return(FALSE)
+  !identical(x, y)
 }
 
 #TODO to copy/paste to antaresRead in a next release. 
@@ -23,6 +37,12 @@ check_area_name <- function(area, opts = antaresRead::simOptions()) {
     stop("'", area, "' is not a valid area name, possible names are: ", paste(areaList, collapse = ", "), call. = FALSE)
 }
 
+validate_area_name <- function(name) {
+  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) {
+    stop("Area's name must not contain ponctuation except - and _")
+  }
+}
+
 
 
 hyphenize_names <- function(.list) {
@@ -32,5 +52,10 @@ hyphenize_names <- function(.list) {
 }
 
 
-
+badge_api_ok <- function() {
+  "\\ifelse{html}{\\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \\strong{OK}}"
+}
+badge_api_no <- function() {
+  "\\ifelse{html}{\\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \\strong{NO}}"
+}
 

@@ -7,18 +7,20 @@
 removeLink(from, to, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{from}{The first area from which to create a link}
+\item{from}{The two areas linked together.}
 
-\item{to}{The second one}
+\item{to}{The two areas linked together.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 An updated list containing various information about the simulation.
 }
 \description{
-Remove a link between two areas
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
+Remove a link between two areas in an Antares study.
 }
 \examples{
 \dontrun{

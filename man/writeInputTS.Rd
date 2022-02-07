@@ -25,9 +25,14 @@ writeInputTS(
 \item{overwrite}{Logical. Overwrite the values if a file already exists.}
 
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}.}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
+}
+\value{
+An updated list containing various information about the simulation.
 }
 \description{
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
 This function writes input time series in an Antares project.
 }
 \examples{

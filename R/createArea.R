@@ -1,16 +1,22 @@
-#' Create An Area In An Antares Study
+#' @title Create an area in an Antares study
+#' 
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Create a new area in an Antares study.
+#' 
 #'
 #' @param name Name of the area as a character, without punctuation except - and _.
 #' @param color Color of the node
 #' @param localization Localization on the map
-#' @param nodalOptimization Nodal optimization parameters, see \code{\link{nodalOptimizationOptions}}.
-#' @param filtering Filtering parameters, see \code{\link{filteringOptions}}.
+#' @param nodalOptimization Nodal optimization parameters, see [nodalOptimizationOptions()].
+#' @param filtering Filtering parameters, see [filteringOptions().
 #' @param overwrite Overwrite the area if already exist.
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' 
+#' @template opts
+#' 
+#' @seealso [editArea()], [removeArea()]
+#' 
 #' @export
 #' 
 #' @importFrom antaresRead simOptions setSimulationPath
@@ -30,19 +36,58 @@
 #' createArea("fictive_area")
 #' 
 #' }
-createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
+createArea <- function(name,
+                       color = grDevices::rgb(230, 108, 44, max = 255),
                        localization = c(0, 0),
                        nodalOptimization = nodalOptimizationOptions(),
                        filtering = filteringOptions(),
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
 
-  assertthat::assert_that(class(opts) == "simOptions")
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  validate_area_name(name)
+  
+  # API block
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate("create_area", area_name = name)
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_area}: {msg_api}"),
+      cli_command_registered("create_area")
+    )
+    
+    if (is_different(nodalOptimization, nodalOptimizationOptions())){
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization/nodal optimization", name),
+        data = nodalOptimization
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's nodal optimization option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    if (is_different(filtering, filteringOptions())){
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/areas/%s/optimization/filtering", name),
+        data = filtering
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's filtering: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    return(update_api_opts(opts))
+  }
   
   v7 <- is_antares_v7(opts)
-
-  if (grepl(pattern = "(?!_)(?!-)[[:punct:]]", x = name, perl = TRUE)) 
-    stop("Area's name must not ponctuation except - and _")
   
   # if (grepl(pattern = "[A-Z]", x = name)) 
   #   stop("Area's name must be lower case")
@@ -435,8 +480,8 @@ createArea <- function(name, color = grDevices::rgb(230, 108, 44, max = 255),
 filteringOptions <- function(filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
                              filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
   list(
-    `filter-synthesis` = filter_synthesis,
-    `filter-year-by-year` = filter_year_by_year
+    `filter-synthesis` = paste(filter_synthesis, collapse = ", "),
+    `filter-year-by-year` = paste(filter_year_by_year, collapse = ", ")
   )
 }
 
