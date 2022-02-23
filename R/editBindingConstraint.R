@@ -6,7 +6,7 @@
 #' Update an existing binding constraint in an Antares study.
 #' 
 #'
-#' @inheritParams createBindingConstraint
+#' @inheritParams create-binding-constraint
 #' @template opts
 #' 
 #' @seealso [createBindingConstraint()] to create new binding constraints, [removeBindingConstraint()] to remove binding constraints.

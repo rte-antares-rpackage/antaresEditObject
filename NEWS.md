@@ -1,5 +1,10 @@
 # antaresEditObject (unreleased)
 
+### New functions
+
+*`createBindingConstraintBulk()` allow to create multiple binding constraints at once.
+
+
 ### Variant management with API
 This release include some new features to interact with Antares Web.
 

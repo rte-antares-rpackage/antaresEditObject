@@ -4,6 +4,7 @@
 #' `r antaresEditObject::badge_api_ok()`
 #' 
 #' Create a new binding constraint in an Antares study.
+#' `createBindingConstraintBulk()` allow to create multiple constraints at once.
 #' 
 #'
 #' @param name The name for the binding constraint.
@@ -22,6 +23,8 @@
 #' 
 #' @export
 #' 
+#' @name create-binding-constraint
+#' 
 #' @importFrom antaresRead getLinks setSimulationPath
 #' @importFrom utils write.table
 #'
@@ -35,6 +38,29 @@
 #'   operator = "both",
 #'   coefficients = c("fr%myarea" = 1)
 #' )
+#' 
+#' # Create multiple constraints
+#' 
+#' # Prepare data for constraints 
+#' bindings_constraints <- lapply(
+#'   X = seq_len(100),
+#'   FUN = function(i) {
+#'     # use arguments of createBindingConstraint()
+#'     # all arguments must be provided !
+#'     list(
+#'       name = paste0("constraints", i), 
+#'       id = paste0("constraints", i), 
+#'       values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+#'       enabled = FALSE, 
+#'       timeStep = "hourly",
+#'       operator = "both",
+#'       coefficients = c("area1%area2" = 1),
+#'       overwrite = TRUE
+#'     )
+#'   }
+#' )
+#' # create all constraints
+#' createBindingConstraintBulk(bindings_constraints)
 #' }
 createBindingConstraint <- function(name, 
                                     id = tolower(name),
@@ -78,6 +104,43 @@ createBindingConstraint <- function(name,
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
+  bindingConstraints <- createBindingConstraint_(
+    bindingConstraints,
+    name,
+    id,
+    values,
+    enabled,
+    timeStep,
+    operator,
+    coefficients,
+    overwrite,
+    links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
+    opts = opts
+  )
+  
+  # Write Ini
+  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
+
+  # Maj simulation
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
+  
+  invisible(res)
+}
+
+
+createBindingConstraint_ <- function(bindingConstraints,
+                                     name,
+                                     id,
+                                     values,
+                                     enabled,
+                                     timeStep,
+                                     operator,
+                                     coefficients,
+                                     overwrite,
+                                     links,
+                                     opts) {
   
   # Get ids and check if not already exist
   previds <- lapply(bindingConstraints, `[[`, "id")
@@ -99,10 +162,8 @@ createBindingConstraint <- function(name,
     operator = operator
   )
   
-  
   # Check coefficients
   if (!is.null(coefficients)) {
-    links <- antaresRead::getLinks(opts = opts, namesOnly = TRUE)
     links <- as.character(links)
     links <- gsub(pattern = " - ", replacement = "%", x = links)
     
@@ -129,38 +190,24 @@ createBindingConstraint <- function(name,
     }
   }
   
-  
   indexBC <- as.character(length(bindingConstraints))
   if (indexBC %in% names(bindingConstraints)) {
     indexBC <- as.character(max(as.numeric(names(bindingConstraints))) + 1)
   }
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
-  
-  
-  
   ## Values
   values <- .valueCheck(values, timeStep)
   
-  # Write Ini
-  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
-  
   # Write values
   pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
-  write.table(x = values, file = pathValues, col.names = FALSE, row.names = FALSE, sep = "\t")
+  data.table::fwrite(x = data.table::as.data.table(values), file = pathValues, col.names = FALSE, row.names = FALSE, sep = "\t")
   
-  
-  
-  # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
-  
-  invisible(res)
+  return(bindingConstraints)
 }
 
 
-.valueCheck <- function(values, timeStep){
+.valueCheck <- function(values, timeStep) {
   
   if (!is.null(values)) {
     if (ncol(values) != 3 & is.null(colnames(values))) 
@@ -205,5 +252,49 @@ createBindingConstraint <- function(name,
   }
   values
 }
+
+
+
+#' @param constraints A `list` of several named `list` containing data to create binding constraints.
+#'  **Warning** all arguments for creating a binding constraints must be provided, see examples.
+#' @export
+#' 
+#' @rdname create-binding-constraint
+createBindingConstraintBulk <- function(constraints,
+                                        opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  ## Ini file
+  pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
+  bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
+  
+  for (i in seq_along(constraints)) {
+    bindingConstraints <- do.call("createBindingConstraint_", c(
+      constraints[[i]],
+      list(
+        opts = opts, 
+        bindingConstraints = bindingConstraints,
+        links = antaresRead::getLinks(opts = opts, namesOnly = TRUE)
+      )
+    ))
+  }
+  
+  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
+  
+  suppressWarnings({
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+  })
+  invisible(res)
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
