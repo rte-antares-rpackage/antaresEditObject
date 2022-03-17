@@ -14,6 +14,7 @@ editLink(
   filter_synthesis = NULL,
   filter_year_by_year = NULL,
   dataLink = NULL,
+  tsLink = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -44,6 +45,8 @@ trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impe
 PST min, PST max.
 If \code{NULL} (default), a matrix whose rows are equal to \verb{1, 1, 0, 0, 0, 0, 0, 0} is set (for version >= 820, two first columns are omitted).
 See Details.}
+
+\item{tsLink}{Transmission capacities time series. First N columns are direct TS, following N are indirect ones.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}

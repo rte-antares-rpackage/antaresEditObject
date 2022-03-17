@@ -38,6 +38,7 @@ editLink <- function(from,
                      filter_synthesis = NULL,
                      filter_year_by_year = NULL, 
                      dataLink = NULL,
+                     tsLink = NULL,
                      opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -93,12 +94,25 @@ editLink <- function(from,
   }
   
   v7 <- is_antares_v7(opts)
+  v820 <- is_antares_v820(opts)
   
   if (!is.null(dataLink)) {
-    if (v7) {
+    if (v820) {
+      assertthat::assert_that(ncol(dataLink) == 8 | ncol(dataLink) == 6)
+    } else if (v7) {
       assertthat::assert_that(ncol(dataLink) == 8)
     } else {
       assertthat::assert_that(ncol(dataLink) == 5)
+    }
+  }
+  
+  if (!is.null(tsLink)) {
+    if (v820) {
+      stopifnot(
+        "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
+      )
+    } else {
+      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
   
@@ -135,21 +149,59 @@ editLink <- function(from,
     overwrite = TRUE
   )
   
-  # edit data
   if (!is.null(dataLink)) {
-    if (!identical(areas, sort(areas))) {
-      dataLink[, 1:2] <- dataLink[, 2:1]
-      dataLink[, 4:5] <- dataLink[, 5:4]
+    if (v820) {
+      utils::write.table(
+        x = dataLink, 
+        row.names = FALSE, 
+        col.names = FALSE,
+        sep = "\t",
+        file = file.path(inputPath, "links", from, paste0(to, "_parameters.txt"))
+      )
+    } else {
+      if (!identical(areas, sort(areas))) {
+        dataLink[, 1:2] <- dataLink[, 2:1]
+        dataLink[, 4:5] <- dataLink[, 5:4]
+      }
+      
+      utils::write.table(
+        x = dataLink,
+        row.names = FALSE, 
+        col.names = FALSE, 
+        sep = "\t",
+        file = file.path(inputPath, "links", from, paste0(to, ".txt"))
+      )
     }
-    
-    utils::write.table(
-      x = dataLink,
-      row.names = FALSE, 
-      col.names = FALSE, 
-      sep = "\t",
-      file = file.path(inputPath, "links", from, paste0(to, ".txt"))
-    )
   }
+  
+  
+  if (!is.null(tsLink)) {
+    stopifnot(
+      "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
+    )
+    if (v820) {
+      dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
+      direct <- seq_len(NCOL(tsLink) / 2)
+      indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
+      utils::write.table(
+        x = tsLink[, direct], 
+        row.names = FALSE, 
+        col.names = FALSE,
+        sep = "\t",
+        file = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
+      )
+      utils::write.table(
+        x = tsLink[, indirect], 
+        row.names = FALSE, 
+        col.names = FALSE,
+        sep = "\t",
+        file = file.path(inputPath, "links", from, "capacities", paste0(to, "_indirect.txt"))
+      )
+    } else {
+      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
+    }
+  }
+  
   
   # Maj simulation
   suppressWarnings({
