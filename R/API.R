@@ -134,12 +134,18 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
   if (is_api_mocked(opts)) {
     stop("Cannot create a variant when using mockSimulationAPI()", call. = FALSE)
   }
+  config <- list(accept_json())
+  if (!is.null(opts$token) && opts$token != "") {
+    config <- c(config,
+      add_headers(Authorization = paste("Bearer ", opts$token))
+    )
+  }
   result <- POST(
-    url = sprintf(
+    sprintf(
       "%s/v1/studies/%s/variants",
       opts$host, opts$study_id
     ),
-    accept_json(),
+    config,
     query = list(name = name)
   )
   if (status_code(result) < 300) {

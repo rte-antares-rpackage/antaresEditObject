@@ -5,9 +5,9 @@ api_get <- function(opts, url, ...) {
     accept_json()
   )
   if (!is.null(opts$token) && opts$token != "") {
-    config <- c(config, list(
-      add_headers(Authorization = paste("Bearer", opts$token))
-    ))
+    config <- c(config,
+      add_headers(Authorization = paste("Bearer ", opts$token))
+    )
   }
   result <- GET(
     url = sprintf(
@@ -28,9 +28,9 @@ api_post <- function(opts, url, ..., default_endpoint = "v1/studies") {
     content_type_json()
   )
   if (!is.null(opts$token) && opts$token != "") {
-    config <- c(config, list(
-      add_headers(Authorization = paste("Bearer", opts$token))
-    ))
+    config <- c(config,
+      add_headers(Authorization = paste("Bearer ", opts$token))
+    )
   }
   result <- POST(
     url = sprintf(
@@ -47,7 +47,7 @@ api_post <- function(opts, url, ..., default_endpoint = "v1/studies") {
 #' @importFrom httr PUT accept_json stop_for_status content add_headers
 api_put <- function(opts, url, ...) {
   if (!is.null(opts$token) && opts$token != "") {
-    config <- add_headers(Authorization = paste("Bearer", opts$token), Accept = "application/json")
+    config <- add_headers(Authorization = paste("Bearer ", opts$token), Accept = "application/json")
   } else {
     config <- add_headers(Accept = "application/json")
   }
@@ -69,9 +69,9 @@ api_delete <- function(opts, url, ...) {
     accept_json()
   )
   if (!is.null(opts$token) && opts$token != "") {
-    config <- c(config, list(
-      add_headers(Authorization = paste("Bearer", opts$token))
-    ))
+    config <- c(config,
+      add_headers(Authorization = paste("Bearer ", opts$token))
+    )
   }
   result <- DELETE(
     url = sprintf(
