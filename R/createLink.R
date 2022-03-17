@@ -8,11 +8,13 @@
 #'
 #' @param from,to The two areas linked together.
 #' @param propertiesLink a named list containing the link properties, e.g. hurdles-cost
-#' or transmission-capacities for example. See [propertiesLinkOptions()].
+#'  or transmission-capacities for example. See [propertiesLinkOptions()].
 #' @param dataLink For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
-#' trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
-#' PST min, PST max.
-#' If `NULL` (default), a matrix whose rows are equal to `1, 1, 0, 0, 0, 0, 0, 0` is set. See Details
+#'  trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
+#'  PST min, PST max.
+#'  If `NULL` (default), a matrix whose rows are equal to `1, 1, 0, 0, 0, 0, 0, 0` is set (for version >= 820, two first columns are omitted).
+#'  See Details.
+#' @param tsLink Transmission capacities time series. First N columns are direct TS, following N are indirect ones.
 #' @param overwrite Logical, overwrite the previous between the two areas if exist
 #'  
 #' @template opts
@@ -60,6 +62,7 @@ createLink <- function(from,
                        to, 
                        propertiesLink = propertiesLinkOptions(), 
                        dataLink = NULL, 
+                       tsLink = NULL,
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
   
@@ -85,12 +88,25 @@ createLink <- function(from,
   }
   
   v7 <- is_antares_v7(opts)
+  v820 <- is_antares_v820(opts)
   
   if (!is.null(dataLink)) {
-    if (v7) {
+    if (v820) {
+      assertthat::assert_that(ncol(dataLink) == 8 | ncol(dataLink) == 6)
+    } else if (v7) {
       assertthat::assert_that(ncol(dataLink) == 8)
     } else {
       assertthat::assert_that(ncol(dataLink) == 5)
+    }
+  }
+  
+  if (!is.null(tsLink)) {
+    if (v820) {
+      stopifnot(
+        "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
+      )
+    } else {
+      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
   
@@ -132,39 +148,75 @@ createLink <- function(from,
   
   prev_links[[to]] <- propertiesLink
   
-  # Write INI file
+  # initialization data
+  if (is.null(dataLink)) {
+    if (v820) {
+      dataLink <- matrix(data = rep(0, 8760*6), ncol = 6)
+    } else if (v7) {
+      dataLink <- matrix(data = c(rep(1, 8760*2), rep(0, 8760*6)), ncol = 8)
+    } else {
+      dataLink <- matrix(data = c(rep(1, 8760*2), rep(0, 8760*3)), ncol = 5)
+    }
+  } else {
+    if (v820 & ncol(dataLink) == 8) {
+      tsLink <- dataLink[, 1:2]
+      dataLink <- dataLink[,-c( 1:2)]
+    }
+  }
+  
+  if (!v820) {
+    if (!identical(areas, sort(areas))) {
+      dataLink[, 1:2] <- dataLink[, 2:1]
+      
+      if (v7) {
+        dataLink[, 3:4] <- dataLink[, 4:3]
+      } else {
+        dataLink[, 4:5] <- dataLink[, 5:4]
+      }
+    }
+    
+  }
+  
   writeIni(
     listData = prev_links, # c(prev_links, stats::setNames(propLink, to)),
     pathIni = file.path(inputPath, "links", from, "properties.ini"),
     overwrite = TRUE
   )
   
-  # initialization data
-  if (is.null(dataLink)) {
-    if (v7) {
-      dataLink <- matrix(data = c(rep(1, 8760*2), rep(0, 8760*6)), ncol = 8)
-    } else {
-      dataLink <- matrix(data = c(rep(1, 8760*2), rep(0, 8760*3)), ncol = 5)
-    }
+  if (v820) {
+    utils::write.table(
+      x = dataLink, 
+      row.names = FALSE, 
+      col.names = FALSE,
+      sep = "\t",
+      file = file.path(inputPath, "links", from, paste0(to, "_parameters.txt"))
+    )
+    dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
+    direct <- seq_len(NCOL(tsLink) / 2)
+    indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
+    utils::write.table(
+      x = tsLink[, direct], 
+      row.names = FALSE, 
+      col.names = FALSE,
+      sep = "\t",
+      file = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
+    )
+    utils::write.table(
+      x = tsLink[, indirect], 
+      row.names = FALSE, 
+      col.names = FALSE,
+      sep = "\t",
+      file = file.path(inputPath, "links", from, "capacities", paste0(to, "_indirect.txt"))
+    )
+  } else {
+    utils::write.table(
+      x = dataLink, 
+      row.names = FALSE, 
+      col.names = FALSE,
+      sep = "\t",
+      file = file.path(inputPath, "links", from, paste0(to, ".txt"))
+    )
   }
-  
-  if (!identical(areas, sort(areas))) {
-    dataLink[, 1:2] <- dataLink[, 2:1]
-    
-    if (v7) {
-      dataLink[, 3:4] <- dataLink[, 4:3]
-    } else {
-      dataLink[, 4:5] <- dataLink[, 5:4]
-    }
-  }
-  
-  utils::write.table(
-    x = dataLink, 
-    row.names = FALSE, 
-    col.names = FALSE,
-    sep = "\t",
-    file = file.path(inputPath, "links", from, paste0(to, ".txt"))
-  )
   
   # Maj simulation
   suppressWarnings({

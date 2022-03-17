@@ -9,6 +9,7 @@ createLink(
   to,
   propertiesLink = propertiesLinkOptions(),
   dataLink = NULL,
+  tsLink = NULL,
   overwrite = FALSE,
   opts = antaresRead::simOptions()
 )
@@ -22,7 +23,10 @@ or transmission-capacities for example. See \code{\link[=propertiesLinkOptions]{
 \item{dataLink}{For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
 trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
 PST min, PST max.
-If \code{NULL} (default), a matrix whose rows are equal to \verb{1, 1, 0, 0, 0, 0, 0, 0} is set. See Details}
+If \code{NULL} (default), a matrix whose rows are equal to \verb{1, 1, 0, 0, 0, 0, 0, 0} is set (for version >= 820, two first columns are omitted).
+See Details.}
+
+\item{tsLink}{Transmission capacities time series. First N columns are direct TS, following N are indirect ones.}
 
 \item{overwrite}{Logical, overwrite the previous between the two areas if exist}
 
