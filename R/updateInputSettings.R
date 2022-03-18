@@ -27,6 +27,11 @@ updateInputSettings <- function(import, opts = antaresRead::simOptions()) {
     import <- setdiff(import, "renewables")
   }
   
+  if ("links" %in% import) {
+    warning("import parameter cannot be 'renewables', it will be discarded.")
+    import <- setdiff(import, "links")
+  }
+  
   # API block
   if (is_api_study(opts)) {
     
