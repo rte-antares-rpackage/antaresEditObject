@@ -181,14 +181,23 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
       } else {
         all_areas <- getAreas(opts = opts)
       }
-      years <- extract_el(x, 3)
+      if (type %in% c("ntc")) {
+        areas2 <- extract_el(x, 3)
+        areas <- paste(areas, areas2, sep = "%")
+        years <- extract_el(x, 4)
+      } else {
+        years <- extract_el(x, 3)
+      }
+      
       if (as_matrix) {
         SB <- data.table(
           areas = areas,
           years = as.numeric(years) + 1,
           values = unlist(x, use.names = FALSE)
         )
-        SB <- SB[CJ(areas = all_areas, years = seq_len(opts$parameters$general$nbyears)), on = c("areas", "years")]
+        if (!type %in% c("ntc")) {
+          SB <- SB[CJ(areas = all_areas, years = seq_len(opts$parameters$general$nbyears)), on = c("areas", "years")]
+        }
         SB <- dcast(data = SB, formula = areas ~ years, value.var = "values")
         mat <- as.matrix(SB, rownames = 1)
         colnames(mat) <- NULL
@@ -208,6 +217,9 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
 #'  Default is to read clusters description and update all couples area/cluster.
+#' @param links Links to use if series is `"ntc"`.
+#'  Either a simple vector with links described as `"area01%area02` or a `data.table` with two columns `from` and `to`.
+#'  Default is to read existing links and update them all.
 #'
 #' @export
 #' 
@@ -216,16 +228,19 @@ updateScenarioBuilder <- function(ldata,
                                   ruleset = "Default Ruleset", 
                                   series = NULL,
                                   clusters_areas = NULL,
+                                  links = NULL,
                                   opts = antaresRead::simOptions()) {
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
   if (!is.list(ldata)) {
     if (!is.null(series)) {
       series <- match.arg(
         arg = series,
-        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables"),
+        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc"),
         several.ok = TRUE
       )
+      ind_ntc <- which(series == "ntc")
       series <- substr(series, 1, 1)
+      series[ind_ntc] <- "ntc"
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
@@ -239,8 +254,8 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s", "t", "r"))) {
-      stop("'ldata' must be 'l', 'h', 'w', 's', 't' or 'r'", call. = FALSE)
+    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc"))) {
+      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r' or 'ntc'", call. = FALSE)
     }
     sbuild <- lapply(
       X = series,
@@ -320,13 +335,18 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' @param series Name of the series, among 'l', 'h', 'w', 's', 't' and 'r'.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to use for thermal or renewable series.
+#' @param links Either a simple vector with links described as `"area01%area02` or a `data.table` with two columns `from` and `to`.
 #' @param opts Simulation options.
 #'
 #' @importFrom data.table as.data.table melt := .SD
 #' @importFrom antaresRead readClusterDesc
 #' @importFrom utils packageVersion getFromNamespace
 #' @noRd
-listify_sb <- function(mat, series = "l", clusters_areas = NULL, opts = antaresRead::simOptions()) {
+listify_sb <- function(mat,
+                       series = "l", 
+                       clusters_areas = NULL, 
+                       links = NULL,
+                       opts = antaresRead::simOptions()) {
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
@@ -361,17 +381,41 @@ listify_sb <- function(mat, series = "l", clusters_areas = NULL, opts = antaresR
       allow.cartesian = TRUE
     )
   }
+  if (identical(series, "ntc")) {
+    if (is.null(links))
+      links <- getLinks(namesOnly = FALSE, opts = opts)
+    if (is.character(links))
+      links <- linksAsDT(links)
+    dtsb <- merge(
+      x = dtsb, 
+      y = links[, .SD, .SDcols = c("from", "to")],
+      by.x = "rn",
+      by.y = "from"
+    )
+  }
   
   dtsb <- dtsb[order(rn, variable)]
   
   lsb <- as.list(dtsb$value)
   if (series %in% c("r", "t")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
-  } else{
+  } else if (series %in% c("ntc")) {
+    names(lsb) <- paste(series, dtsb$rn, dtsb$to, dtsb$variable, sep = ",")
+  } else {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, sep = ",")
   }
   
   return(lsb)
 } 
 
+
+
+#' @importFrom data.table as.data.table transpose
+#' @importFrom stats setNames
+linksAsDT <- function(x) {
+  x <- strsplit(x = as.character(x), split = "[^[:alnum:]]+")
+  x <- transpose(x)
+  x <- setNames(x, c("from", "to"))
+  as.data.table(x)
+}
 

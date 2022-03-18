@@ -4,6 +4,7 @@
 
 * `createLink()` and `editLink()` have a new argument `tsLink` allowing to write transmission capacities time-series.
 
+
 ### New functions
 
 *`createBindingConstraintBulk()` allow to create multiple binding constraints at once.

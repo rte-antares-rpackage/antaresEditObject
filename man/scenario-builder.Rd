@@ -27,6 +27,7 @@ updateScenarioBuilder(
   ruleset = "Default Ruleset",
   series = NULL,
   clusters_areas = NULL,
+  links = NULL,
   opts = antaresRead::simOptions()
 )
 
@@ -60,6 +61,10 @@ or a named list of matrices obtained with \code{scenarioBuilder}, names must be
 \item{clusters_areas}{A \code{data.table} with two columns \code{area} and \code{cluster}
 to identify area/cluster couple to update for thermal or renewable series.
 Default is to read clusters description and update all couples area/cluster.}
+
+\item{links}{Links to use if series is \code{"ntc"}.
+Either a simple vector with links described as \verb{"area01\%area02} or a \code{data.table} with two columns \code{from} and \code{to}.
+Default is to read existing links and update them all.}
 }
 \value{
 \code{scenarioBuilder} : a \code{matrix}

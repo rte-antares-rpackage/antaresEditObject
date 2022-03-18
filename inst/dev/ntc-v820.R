@@ -19,6 +19,13 @@ createLink(
   dataLink = matrix(data = c(rep(9, 8760*2), rep(6, 8760*6)), ncol = 8)
 )
 
+
+createLink(
+  from = "area01", 
+  to = "area03", 
+  dataLink = matrix(data = c(rep(9, 8760*2), rep(6, 8760*6)), ncol = 8)
+)
+
 createLink(
   from = "area02", 
   to = "area03", 
@@ -46,5 +53,17 @@ writeInputTS(
   link = "area04%area05"
 )
 
+
+
+
+
+readScenarioBuilder()
+
+
+
+sb <- scenarioBuilder(12, n_mc = 10)
+updateScenarioBuilder(ldata = sb, series = "ntc")
+
+readScenarioBuilder()
 
 
