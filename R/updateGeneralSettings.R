@@ -185,9 +185,9 @@ check_param_modal <- function(x, opts) {
     return(NULL)
   name <- deparse(substitute(x))
   if (is_active_RES(opts)) {
-    possible_values <- c("load", "hydro", "thermal", "renewables")
+    possible_values <- c("load", "hydro", "thermal", "renewables", "ntc")
   } else {
-    possible_values <- c("load", "hydro", "wind", "thermal", "solar")
+    possible_values <- c("load", "hydro", "wind", "thermal", "solar", "ntc")
   }
   if (!all(x %in% possible_values)) {
     warning(
@@ -195,6 +195,22 @@ check_param_modal <- function(x, opts) {
       paste(possible_values, collapse = ", "), 
       call. = FALSE
     )
+  }
+  if (!is_antares_v820(opts)) {
+    if (isTRUE("ntc" %in% x)) {
+      warning(
+        "updateGeneralSettings: '", name, "' parameter cannot be set to 'ntc' with Antares < 820" ,
+        call. = FALSE
+      )
+      x <- setdiff(x, "ntc")
+    }
+  }
+  if (identical(name, "inter.modal") & isTRUE("ntc" %in% x)) {
+    warning(
+      "updateGeneralSettings: '", name, "' parameter cannot be set to 'ntc', it'll be ignored." ,
+      call. = FALSE
+    )
+    x <- setdiff(x, "ntc")
   }
   return(x)
 }
