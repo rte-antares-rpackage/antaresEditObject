@@ -1,8 +1,17 @@
 # antaresEditObject (unreleased)
 
+### Antares v820
+
+* `createLink()` and `editLink()` have a new argument `tsLink` allowing to write transmission capacities time-series.
+
 ### New functions
 
 *`createBindingConstraintBulk()` allow to create multiple binding constraints at once.
+
+
+### Breaking changes
+
+* Argument's order of `writeInputTS()` has changed.
 
 
 ### Variant management with API

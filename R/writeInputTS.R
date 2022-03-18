@@ -5,12 +5,14 @@
 #' 
 #' This function writes input time series in an Antares project.
 #'
-#' @param area The area where to write the input time series.
-#' @param type Serie to write: `"load"`, `"hydroROR"`, `"hydroSTOR"`,
-#'  `"wind"` or `"solar"`.
 #' @param data A 8760*N matrix of hourly time series, except when `type` is
 #'  `"hydroSTOR"`. In this latter case, `data` must either be 365*N
 #'  (Antares v7) or 12*N (v6 and earlier).
+#' @param type Serie to write: `"load"`, `"hydroROR"`, `"hydroSTOR"`,
+#'  `"wind"` or `"solar"`.
+#' @param area The area where to write the input time series.
+#' @param link Link for which writing transmission capacities time series, 
+#'  must like `"area01%area02"` or `c("area01", "area02")`.
 #' @param overwrite Logical. Overwrite the values if a file already exists.
 #' 
 #' @template opts
@@ -24,12 +26,18 @@
 #' @examples
 #' \dontrun{
 #'
-#' writeInputTS("fictive_area", type = "solar", data = matrix(rep(4, 8760*2), nrow = 8760))
+#' # Write solar time series
+#' writeInputTS(
+#'   area = "fictive_area",
+#'   type = "solar",
+#'   data = matrix(rep(4, 8760*2), nrow = 8760)
+#' )
 #'
 #' }
-writeInputTS <- function(area, 
-                         type = c("load", "hydroROR", "hydroSTOR", "wind", "solar"),
-                         data, 
+writeInputTS <- function(data, 
+                         type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink"),
+                         area = NULL, 
+                         link = NULL,
                          overwrite = TRUE, 
                          opts = antaresRead::simOptions()) {
   
@@ -67,6 +75,25 @@ writeInputTS <- function(area,
     
     return(invisible(opts))
   }
+  
+  # Edit link time-series
+  if (!is.null(link)) {
+    stopifnot(
+      "link must be a character, like 'area01%area02' or c('area01', 'area02')" = is.character(link)
+    )
+    if (length(link) == 1)
+      link <- strsplit(x = link, split = "%")[[1]]
+    
+    stopifnot(
+      "Invalid link specification, must be 'area01%area02' or c('area01', 'area02')" = length(link) == 2
+    )
+    
+    editLink(from = link[1], to = link[2], tsLink = data)
+    return(invisible(opts))
+  }
+  
+  if (identical(type, "tsLink"))
+    stop("type = \"tsLink\" can only be used if link argument is provided")
   
   check_area_name(area, opts)
   

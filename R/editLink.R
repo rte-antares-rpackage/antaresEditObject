@@ -109,7 +109,7 @@ editLink <- function(from,
   if (!is.null(tsLink)) {
     if (v820) {
       stopifnot(
-        "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
+        "tsLink must have an even number of columns: 2N" = identical(ncol(tsLink) %% 2, 0)
       )
     } else {
       warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)

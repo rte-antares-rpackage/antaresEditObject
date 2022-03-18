@@ -40,7 +40,11 @@ createLink(
 )
 
 
-
+writeInputTS(
+  matrix(data = c(rep(99, 8760*10), rep(66, 8760*10)), ncol = 20),
+  type = "tsLink",
+  link = "area04%area05"
+)
 
 
 

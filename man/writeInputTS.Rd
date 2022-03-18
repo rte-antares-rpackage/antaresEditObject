@@ -5,22 +5,26 @@
 \title{Write input time series}
 \usage{
 writeInputTS(
-  area,
-  type = c("load", "hydroROR", "hydroSTOR", "wind", "solar"),
   data,
+  type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink"),
+  area = NULL,
+  link = NULL,
   overwrite = TRUE,
   opts = antaresRead::simOptions()
 )
 }
 \arguments{
-\item{area}{The area where to write the input time series.}
+\item{data}{A 8760\emph{N matrix of hourly time series, except when \code{type} is
+\code{"hydroSTOR"}. In this latter case, \code{data} must either be 365}N
+(Antares v7) or 12*N (v6 and earlier).}
 
 \item{type}{Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
 \code{"wind"} or \code{"solar"}.}
 
-\item{data}{A 8760\emph{N matrix of hourly time series, except when \code{type} is
-\code{"hydroSTOR"}. In this latter case, \code{data} must either be 365}N
-(Antares v7) or 12*N (v6 and earlier).}
+\item{area}{The area where to write the input time series.}
+
+\item{link}{Link for which writing transmission capacities time series,
+must like \code{"area01\%area02"} or \code{c("area01", "area02")}.}
 
 \item{overwrite}{Logical. Overwrite the values if a file already exists.}
 
@@ -38,7 +42,12 @@ This function writes input time series in an Antares project.
 \examples{
 \dontrun{
 
-writeInputTS("fictive_area", type = "solar", data = matrix(rep(4, 8760*2), nrow = 8760))
+# Write solar time series
+writeInputTS(
+  area = "fictive_area",
+  type = "solar",
+  data = matrix(rep(4, 8760*2), nrow = 8760)
+)
 
 }
 }
