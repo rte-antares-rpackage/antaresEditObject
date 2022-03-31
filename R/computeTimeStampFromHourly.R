@@ -50,7 +50,7 @@ computeTimeStampFromHourly <- function(opts,
   dayArea <- unique(
     antaresRead::readAntares(
       areas = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "daily",
       opts = opts,
       showProgress = FALSE
@@ -59,7 +59,7 @@ computeTimeStampFromHourly <- function(opts,
   weArea <- unique(
     antaresRead::readAntares(
       areas = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "weekly",
       opts = opts,
       showProgress = FALSE
@@ -68,7 +68,7 @@ computeTimeStampFromHourly <- function(opts,
   moArea <- unique(
     antaresRead::readAntares(
       areas = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "monthly",
       opts = opts,
       showProgress = FALSE
@@ -77,7 +77,7 @@ computeTimeStampFromHourly <- function(opts,
   annualArea <- unique(
     antaresRead::readAntares(
       areas = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "annual",
       opts = opts,
       showProgress = FALSE
@@ -89,7 +89,7 @@ computeTimeStampFromHourly <- function(opts,
   dayLink <- unique(
     antaresRead::readAntares(
       links = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "daily",
       opts = opts,
       showProgress = FALSE
@@ -98,7 +98,7 @@ computeTimeStampFromHourly <- function(opts,
   weLink <- unique(
     antaresRead::readAntares(
       links = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "weekly",
       opts = opts,
       showProgress = FALSE
@@ -107,7 +107,7 @@ computeTimeStampFromHourly <- function(opts,
   moLink <- unique(
     antaresRead::readAntares(
       links = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "monthly",
       opts = opts,
       showProgress = FALSE
@@ -116,7 +116,7 @@ computeTimeStampFromHourly <- function(opts,
   annualLink <- unique(
     antaresRead::readAntares(
       links = "all",
-      mcYears = 1,
+      mcYears = mcYears[1],
       timeStep = "annual",
       opts = opts,
       showProgress = FALSE
