@@ -47,6 +47,10 @@ editArea <- function(name,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   validate_area_name(name)
+  # name of the area can contain upper case in areas/list.txt (and use in graphics)
+  # (and use in graphics) but not in the folder name (and use in all other case)
+  list_name <- name
+  name <- tolower(name)
   
   # API block
   if (is_api_study(opts)) {
@@ -84,10 +88,6 @@ editArea <- function(name,
   
   v7 <- is_antares_v7(opts)
   
-  # name of the area can contain upper case in areas/list.txt (and use in graphics)
-  # (and use in graphics) but not in the folder name (and use in all other case)
-  list_name <- name
-  name <- tolower(name)
   check_area_name(name, opts)
   
   if (opts$mode != "Input") 

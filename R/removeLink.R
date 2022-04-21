@@ -21,6 +21,11 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  # control areas name
+  # can be with some upper case (list.txt)
+  from <- tolower(from)
+  to <- tolower(to)
+  
   # API block
   if (is_api_study(opts)) {
     cmd <- api_command_generate(
@@ -41,11 +46,6 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
-  
-  # control areas name
-  # can be with some upper case (list.txt)
-  from <- tolower(from)
-  to <- tolower(to)
   
   # areas' order
   areas <- c(from, to)

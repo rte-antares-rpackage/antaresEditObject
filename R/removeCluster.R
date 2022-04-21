@@ -67,6 +67,8 @@ removeClusterRES <- function(area,
   
   cluster_type <- match.arg(cluster_type)
   
+  area <- tolower(area)
+  
   # Input path
   inputPath <- opts$inputPath
   

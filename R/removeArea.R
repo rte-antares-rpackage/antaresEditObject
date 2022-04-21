@@ -21,6 +21,11 @@
 #' }
 removeArea <- function(name, opts = antaresRead::simOptions()) {
   
+  # name of the area can contain upper case in areas/list.txt (and use in graphics)
+  # (and use in graphics) but not in the folder name (and use in all other case)
+  list_name <- name
+  name <- tolower(name)
+  
   # API block
   if (is_api_study(opts)) {
     cmd <- api_command_generate("remove_area", id = name)
@@ -33,11 +38,6 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
     
     return(invisible(opts))
   }
-
-  # name of the area can contain upper case in areas/list.txt (and use in graphics)
-  # (and use in graphics) but not in the folder name (and use in all other case)
-  list_name <- name
-  name <- tolower(name)
   
   check_area_name(name, opts)
 

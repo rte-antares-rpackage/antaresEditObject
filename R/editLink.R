@@ -52,6 +52,11 @@ editLink <- function(from,
     `filter-year-by-year` = filter_year_by_year
   ))
   
+  # control areas name
+  # can be with some upper case (list.txt)
+  from <- tolower(from)
+  to <- tolower(to)
+  
   # API block
   if (is_api_study(opts)) {
     
@@ -115,11 +120,6 @@ editLink <- function(from,
       warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
-  
-  # control areas name
-  # can be with some upper case (list.txt)
-  from <- tolower(from)
-  to <- tolower(to)
   
   # areas' order
   areas <- c(from, to)

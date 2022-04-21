@@ -87,6 +87,8 @@ editClusterRES <- function(area,
   inputPath <- opts$inputPath
   cluster_type <- match.arg(cluster_type)
   
+  area <- tolower(area)
+  
   # Cluster's parameters
   params_cluster <- hyphenize_names(list(...))
   if (add_prefix)

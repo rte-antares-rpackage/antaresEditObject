@@ -250,6 +250,8 @@ createClusterRES <- function(area,
     stop("Number of cols for modulation data must be 0 or 4")
   }
   
+  area <- tolower(area)
+  
   # Cluster's parameters
   params_cluster <- hyphenize_names(list(...))
   if (add_prefix)
@@ -326,8 +328,8 @@ createClusterRES <- function(area,
   
   
   # initialize series
-  dir.create(path = file.path(
-    inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)),
+  dir.create(
+    path = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)),
     recursive = TRUE, showWarnings = FALSE
   )
   

@@ -68,6 +68,11 @@ createLink <- function(from,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  # control areas name
+  # can be with some upper case (list.txt)
+  from <- tolower(from)
+  to <- tolower(to)
+  
   # API block
   if (is_api_study(opts)) {
     cmd <- api_command_generate(
@@ -109,12 +114,7 @@ createLink <- function(from,
       warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
-  
-  # control areas name
-  # can be with some upper case (list.txt)
-  from <- tolower(from)
-  to <- tolower(to)
-  
+
   # areas' order
   areas <- c(from, to)
   if (!identical(areas, sort(areas))) {
