@@ -45,6 +45,10 @@ writeInputTS <- function(data,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  if (!is.null(area) & !is.null(link)) {
+    stop("Cannot use area and link simultaneously.")
+  }
+  
   if (is_api_study(opts)) {
     
     if (type %in% c("load", "wind", "solar")) {
@@ -88,7 +92,22 @@ writeInputTS <- function(data,
       "Invalid link specification, must be 'area01%area02' or c('area01', 'area02')" = length(link) == 2
     )
     
-    editLink(from = link[1], to = link[2], tsLink = data)
+    from <- tolower(as.character(link[1]))
+    to <- tolower(as.character(link[2]))
+    
+    inputPath <- opts$inputPath
+    check_area_name(from, opts)
+    check_area_name(to, opts)
+    
+    tsLink_file <- file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
+    if (file.exists(tsLink_file) & !overwrite) {
+      stop(
+        "NTC files already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
+        call. = FALSE
+      )
+    }
+    
+    editLink(from = from, to = to, tsLink = data)
     return(invisible(opts))
   }
   
@@ -109,8 +128,10 @@ writeInputTS <- function(data,
   }
   
   if (isTRUE(file.size(values_file) > 0) && !overwrite)
-    stop("Time series already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
-         call. = FALSE)
+    stop(
+      "Time series already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
+      call. = FALSE
+    )
   
   if (type %in% c("load", "hydroROR", "wind", "solar")) {
     if (NROW(data) != 8760)

@@ -121,7 +121,7 @@ editLink <- function(from,
     }
   }
   
-  if (v820 & (!is.null(tsLink) && ncol(dataLink) == 8)) {
+  if (v820 & (!is.null(tsLink) & !is.null(dataLink) && ncol(dataLink) == 8)) {
     if (!is.null(tsLink)) {
       warning(
         "editLink: `tsLink` will be ignored since `dataLink` is provided with 8 columns."
@@ -149,6 +149,9 @@ editLink <- function(from,
   prev_links <- readIniFile(
     file = file.path(inputPath, "links", from, "properties.ini")
   )
+  
+  if (!to %in% names(prev_links))
+    stop(paste("Link to", to, "doesn't exist"))
   
   prev_links[[to]] <- modifyList(x = prev_links[[to]], val = propertiesLink)
   
