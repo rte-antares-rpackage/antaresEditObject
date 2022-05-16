@@ -121,6 +121,16 @@ editLink <- function(from,
     }
   }
   
+  if (v820 & (!is.null(tsLink) && ncol(dataLink) == 8)) {
+    if (!is.null(tsLink)) {
+      warning(
+        "editLink: `tsLink` will be ignored since `dataLink` is provided with 8 columns."
+      )
+    }
+    tsLink <- dataLink[, 1:2]
+    dataLink <- dataLink[, -c( 1:2)]
+  }
+  
   # areas' order
   areas <- c(from, to)
   if (!identical(areas, sort(areas))) {

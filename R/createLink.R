@@ -159,8 +159,13 @@ createLink <- function(from,
     }
   } else {
     if (v820 & ncol(dataLink) == 8) {
+      if (!is.null(tsLink)) {
+        warning(
+          "createLink: `tsLink` will be ignored since `dataLink` is provided with 8 columns."
+        )
+      }
       tsLink <- dataLink[, 1:2]
-      dataLink <- dataLink[,-c( 1:2)]
+      dataLink <- dataLink[, -c( 1:2)]
     }
   }
   
