@@ -121,7 +121,7 @@ editLink <- function(from,
     }
   }
   
-  if (v820 & (!is.null(tsLink) & !is.null(dataLink) && ncol(dataLink) == 8)) {
+  if (v820 & (!is.null(dataLink) && ncol(dataLink) == 8)) {
     if (!is.null(tsLink)) {
       warning(
         "editLink: `tsLink` will be ignored since `dataLink` is provided with 8 columns."
@@ -164,11 +164,12 @@ editLink <- function(from,
   
   if (!is.null(dataLink)) {
     if (v820) {
-      utils::write.table(
-        x = dataLink, 
+      data.table::fwrite(
+        x = data.table::as.data.table(dataLink), 
         row.names = FALSE, 
         col.names = FALSE,
         sep = "\t",
+        scipen = 12,
         file = file.path(inputPath, "links", from, paste0(to, "_parameters.txt"))
       )
     } else {
@@ -177,11 +178,12 @@ editLink <- function(from,
         dataLink[, 4:5] <- dataLink[, 5:4]
       }
       
-      utils::write.table(
-        x = dataLink,
+      data.table::fwrite(
+        x = data.table::as.data.table(dataLink),
         row.names = FALSE, 
         col.names = FALSE, 
         sep = "\t",
+        scipen = 12,
         file = file.path(inputPath, "links", from, paste0(to, ".txt"))
       )
     }
@@ -196,18 +198,21 @@ editLink <- function(from,
       dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
       direct <- seq_len(NCOL(tsLink) / 2)
       indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
-      utils::write.table(
-        x = tsLink[, direct], 
+      tsLink <- data.table::as.data.table(tsLink)
+      data.table::fwrite(
+        x = tsLink[, .SD, .SDcols = direct], 
         row.names = FALSE, 
         col.names = FALSE,
         sep = "\t",
+        scipen = 12,
         file = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
       )
-      utils::write.table(
-        x = tsLink[, indirect], 
+      data.table::fwrite(
+        x = tsLink[, .SD, .SDcols = indirect], 
         row.names = FALSE, 
         col.names = FALSE,
         sep = "\t",
+        scipen = 12,
         file = file.path(inputPath, "links", from, "capacities", paste0(to, "_indirect.txt"))
       )
     } else {

@@ -189,36 +189,41 @@ createLink <- function(from,
   )
   
   if (v820) {
-    utils::write.table(
-      x = dataLink, 
+    data.table::fwrite(
+      x = data.table::as.data.table(dataLink), 
       row.names = FALSE, 
       col.names = FALSE,
       sep = "\t",
+      scipen = 12,
       file = file.path(inputPath, "links", from, paste0(to, "_parameters.txt"))
     )
     dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
     direct <- seq_len(NCOL(tsLink) / 2)
     indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
-    utils::write.table(
-      x = tsLink[, direct], 
+    tsLink <- data.table::as.data.table(tsLink)
+    data.table::fwrite(
+      x = tsLink[, .SD, .SDcols = direct], 
       row.names = FALSE, 
       col.names = FALSE,
       sep = "\t",
+      scipen = 12,
       file = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
     )
-    utils::write.table(
-      x = tsLink[, indirect], 
+    data.table::fwrite(
+      x = tsLink[, .SD, .SDcols = indirect], 
       row.names = FALSE, 
       col.names = FALSE,
       sep = "\t",
+      scipen = 12,
       file = file.path(inputPath, "links", from, "capacities", paste0(to, "_indirect.txt"))
     )
   } else {
-    utils::write.table(
+    data.table::fwrite(
       x = dataLink, 
       row.names = FALSE, 
       col.names = FALSE,
       sep = "\t",
+      scipen = 12,
       file = file.path(inputPath, "links", from, paste0(to, ".txt"))
     )
   }

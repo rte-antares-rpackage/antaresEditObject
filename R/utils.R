@@ -18,13 +18,13 @@ is_different <- function(x, y) {
 }
 
 #TODO to copy/paste to antaresRead in a next release. 
-.getLinkName<-function(areaX=NULL, areaY=NULL){
-  if(areaX<areaY){
-    c1<-areaX
-    c2<-areaY
+.getLinkName <- function(areaX=NULL, areaY=NULL){
+  if(areaX<areaY) {
+    c1 <- areaX
+    c2 <- areaY
   }else{
-    c1<-areaY
-    c2<-areaX
+    c1 <- areaY
+    c2 <- areaX
   }
   return(tolower(paste0(c1, " - ", c2)))
 }
