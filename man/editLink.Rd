@@ -19,9 +19,7 @@ editLink(
 )
 }
 \arguments{
-\item{from}{The two areas linked together.}
-
-\item{to}{The two areas linked together.}
+\item{from, to}{The two areas linked together.}
 
 \item{hurdles_cost}{Logical, which is used to state whether (linear)
 transmission fees should be taken into account or not in economy and adequacy simulations}

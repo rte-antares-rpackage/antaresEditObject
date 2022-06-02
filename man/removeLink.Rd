@@ -7,9 +7,7 @@
 removeLink(from, to, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{from}{The two areas linked together.}
-
-\item{to}{The two areas linked together.}
+\item{from, to}{The two areas linked together.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
