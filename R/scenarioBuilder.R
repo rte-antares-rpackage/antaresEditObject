@@ -127,6 +127,7 @@ scenarioBuilder <- function(n_scenario,
 readScenarioBuilder <- function(ruleset = "Default Ruleset",
                                 as_matrix = TRUE,
                                 opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
   if (is_api_study(opts)) {
     if (is_api_mocked(opts)) {
       sb <- list("Default Ruleset" = NULL)
@@ -212,7 +213,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -220,6 +221,10 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' @param links Links to use if series is `"ntc"`.
 #'  Either a simple vector with links described as `"area01%area02` or a `data.table` with two columns `from` and `to`.
 #'  Default is to read existing links and update them all.
+#'  
+#'  
+#' @note
+#' `series = "ntc"` is only available with Antares >= 8.2.0.
 #'
 #' @export
 #' 
@@ -230,6 +235,7 @@ updateScenarioBuilder <- function(ldata,
                                   clusters_areas = NULL,
                                   links = NULL,
                                   opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
   if (!is.list(ldata)) {
     if (!is.null(series)) {
@@ -238,6 +244,8 @@ updateScenarioBuilder <- function(ldata,
         choices = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc"),
         several.ok = TRUE
       )
+      if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
+        stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
       ind_ntc <- which(series == "ntc")
       series <- substr(series, 1, 1)
       series[ind_ntc] <- "ntc"
@@ -257,6 +265,8 @@ updateScenarioBuilder <- function(ldata,
     if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc"))) {
       stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r' or 'ntc'", call. = FALSE)
     }
+    if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
+      stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
     sbuild <- lapply(
       X = series,
       FUN = function(x) {

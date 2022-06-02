@@ -54,7 +54,7 @@ clearScenarioBuilder(
 
 \item{ldata}{A \code{matrix} obtained with \code{scenarioBuilder},
 or a named list of matrices obtained with \code{scenarioBuilder}, names must be
-'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.}
+'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.}
 
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
 
@@ -75,6 +75,9 @@ Default is to read existing links and update them all.}
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Read, create & update scenario builder.
+}
+\note{
+\code{series = "ntc"} is only available with Antares >= 8.2.0.
 }
 \examples{
 \dontrun{
