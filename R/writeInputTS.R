@@ -81,7 +81,7 @@ writeInputTS <- function(data,
       cli_command_registered("replace_matrix")
     )
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
   # Edit link time-series
