@@ -40,11 +40,7 @@ or another type of asset.}
 
 \item{filter_year_by_year}{Output year-by-year.}
 
-\item{dataLink}{For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
-trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
-PST min, PST max.
-If \code{NULL} (default), a matrix whose rows are equal to \verb{1, 1, 0, 0, 0, 0, 0, 0} is set (for version >= 820, two first columns are omitted).
-See Details.}
+\item{dataLink}{See Details section below.}
 
 \item{tsLink}{Transmission capacities time series. First N columns are direct TS, following N are indirect ones.}
 

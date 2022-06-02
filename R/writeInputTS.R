@@ -18,6 +18,10 @@
 #' @template opts
 #'
 #' @export
+#' 
+#' @section Warning:
+#'
+#' You cannot use `area` and `link` arguments at the same time.
 #'
 #' @importFrom antaresRead simOptions
 #' @importFrom assertthat assert_that

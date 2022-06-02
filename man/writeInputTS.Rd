@@ -39,6 +39,12 @@ An updated list containing various information about the simulation.
 
 This function writes input time series in an Antares project.
 }
+\section{Warning}{
+
+
+You cannot use \code{area} and \code{link} arguments at the same time.
+}
+
 \examples{
 \dontrun{
 
