@@ -266,35 +266,11 @@ createPSP <- function(areasAndCapacities = NULL,
 
 .addRowBalance <- function(namePumping = NULL, nameTurbining = NULL, opts = NULL) {
   
-  # Input path
-  inputPath <- opts$inputPath
+  miscDataPump <- matrix(data = c(rep(0, 8760 * 7), rep(-100000, 8760)), ncol = 8)
+  writeMiscGen(data = miscDataPump, area = namePumping, opts = opts)
   
-  ## Misc-gen ----
-  #pump
-  ## path
-  writePathPump <- file.path(inputPath, "misc-gen", paste0("miscgen-", namePumping, ".txt"))
-  ## data
-  miscDataPump <- matrix(data = c( rep(0, 8760 * 7), rep(-100000, 8760)), ncol = 8)
-  utils::write.table(
-    x = miscDataPump,
-    file = writePathPump,
-    row.names = FALSE,
-    col.names = FALSE,
-    sep = "\t"
-  )
-  
-  #turb
-  ## path
-  writePathTurb <- file.path(inputPath, "misc-gen", paste0("miscgen-", nameTurbining, ".txt"))
-  ## data
-  miscDataTurb <- matrix(data = c( rep(0, 8760 * 7), rep(100000, 8760)), ncol = 8)
-  utils::write.table(
-    x = miscDataTurb,
-    file = writePathTurb,
-    row.names = FALSE,
-    col.names = FALSE,
-    sep = "\t"
-  )
+  miscDataTurb <- matrix(data = c(rep(0, 8760 * 7), rep(100000, 8760)), ncol = 8)
+  writeMiscGen(data = miscDataTurb, area = nameTurbining, opts = opts)
   
 }
 
