@@ -196,4 +196,50 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
 
 
 
+#' Retrieve API jobs
+#'
+#' @template opts-arg 
+#'
+#' @return A `data.table` with information about jobs.
+#' @export
+#' 
+#' @importFrom data.table rbindlist
+#'
+#' @examples
+#' \dontrun{
+#' 
+#' getJobs()
+#' 
+#' }
+getJobs <- function(opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  if (!is_api_study(opts))
+    stop("getJobs can only be used with Antares API.", call. = FALSE)
+  jobs <- api_get(opts = opts, "launcher/jobs", default_endpoint = "v1")
+  suppressWarnings(data.table::rbindlist(jobs, fill = TRUE))
+}
+
+
+#' Retrieve job log from API
+#'
+#' @param job_id The job identifier.
+#' @template opts-arg 
+#'
+#' @return Logs as character string.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' 
+#' getJobLogs("37afff54-3a8b-40fa-8841-e1dae8854f5f")
+#' 
+#' }
+getJobLogs <- function(job_id, opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  if (!is_api_study(opts))
+    stop("getJobLogs can only be used with Antares API.", call. = FALSE)
+  logs <- api_get(opts = opts, paste0("launcher/jobs/", job_id, "/logs"), default_endpoint = "v1")
+  class(logs) <- c(class(logs), "antares.api.logs")
+  return(logs)
+}
 

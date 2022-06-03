@@ -1,6 +1,6 @@
 
 #' @importFrom httr GET accept_json stop_for_status content add_headers
-api_get <- function(opts, url, ...) {
+api_get <- function(opts, url, ..., default_endpoint = "v1/studies") {
   config <- list(
     accept_json()
   )
@@ -11,8 +11,8 @@ api_get <- function(opts, url, ...) {
   }
   result <- GET(
     url = sprintf(
-      "%s/v1/studies/%s",
-      opts$host, url
+      "%s/%s/%s",
+      opts$host, default_endpoint, url
     ),
     config = config,
     ...

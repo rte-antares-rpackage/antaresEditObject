@@ -100,7 +100,10 @@ print.antares.api.commands <- function(x, ...) {
 print.antares.api.command <- function(x, ...) {
   print(jsonlite::toJSON(list(as.list(x)), pretty = TRUE, auto_unbox = TRUE))
 }
-
+#' @export
+print.antares.api.logs <- function(x, ...) {
+  cat(x)
+}
 
 
 # API commands ------------------------------------------------------------
