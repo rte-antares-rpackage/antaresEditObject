@@ -109,7 +109,9 @@ editClusterRES <- function(area,
   if (is_api_study(opts)) {
     
     if (identical(cluster_type, "renewables"))
-      stop("RES clusters not implemented with the API yet.")
+      stop("RES clusters not implemented with the API yet.") # TODO
+    
+    cluster_name <- tolower(cluster_name)
     
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
