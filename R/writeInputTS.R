@@ -55,6 +55,7 @@ writeInputTS <- function(data,
   
   if (is_api_study(opts)) {
     
+    data <- as.matrix(data)
     if (type %in% c("load", "wind", "solar")) {
       cmd <- api_command_generate(
         action = "replace_matrix",
