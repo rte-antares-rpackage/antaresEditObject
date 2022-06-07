@@ -1,7 +1,7 @@
 #' @title Create a Pumped Storage Power plant (PSP)
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_no()`
+#' `r antaresEditObject::badge_api_ok()`
 #' 
 #' Create a Pumped Storage Power plant (PSP)
 #'
@@ -50,8 +50,7 @@ createPSP <- function(areasAndCapacities = NULL,
                       opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
-  api_not_implemented(opts)
-  
+
   oldOps <- opts
   areasAndCapacities <- .checkDataForAddPSP(
     areasAndCapacities,
@@ -120,9 +119,7 @@ createPSP <- function(areasAndCapacities = NULL,
   )
   
   # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_opts(opts)
   
   invisible(res)
 }
@@ -256,9 +253,7 @@ createPSP <- function(areasAndCapacities = NULL,
   }))
   
   # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_opts(opts)
   
   invisible(res)
   
@@ -340,9 +335,7 @@ createPSP <- function(areasAndCapacities = NULL,
   }))
   
   # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_opts(opts)
   
   invisible(res)
 }
@@ -358,7 +351,7 @@ createPSP <- function(areasAndCapacities = NULL,
   if (!(casefold(nameVirtualArea, upper = FALSE)  %in% antaresRead::getAreas()) | overwrite) {
     
     #overwrite if the virtual is in getAreas 
-    if (overwrite & (casefold(nameVirtualArea, upper = FALSE) %in% antaresRead::getAreas())) {
+    if (overwrite & (casefold(nameVirtualArea, upper = FALSE) %in% antaresRead::getAreas(opts = opts))) {
       opts <- removeArea(name = nameVirtualArea)
     }
     
@@ -401,9 +394,7 @@ createPSP <- function(areasAndCapacities = NULL,
   }
   
   # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_opts(opts)
   
   invisible(res)
 }
@@ -538,9 +529,7 @@ editPSP <- function(area = NULL,
   )
   
   # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_opts(opts)
   
   invisible(res)
 }

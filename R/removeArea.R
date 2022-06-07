@@ -36,7 +36,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
       cli_command_registered("remove_area")
     )
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
   check_area_name(name, opts)

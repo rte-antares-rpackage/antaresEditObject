@@ -59,3 +59,18 @@ badge_api_no <- function() {
   "\\ifelse{html}{\\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \\strong{NO}}"
 }
 
+
+
+
+update_opts <- function(opts) {
+  if (is_api_study(opts)) {
+    update_api_opts(opts)
+  } else {
+    suppressWarnings({
+      antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+    })
+  }
+}
+
+
+

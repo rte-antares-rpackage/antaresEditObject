@@ -63,7 +63,7 @@ An updated list containing various information about the simulation.
 \code{getCapacityPSP()} returns PSP capacity of the area
 }
 \description{
-\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Create a Pumped Storage Power plant (PSP)
 }
