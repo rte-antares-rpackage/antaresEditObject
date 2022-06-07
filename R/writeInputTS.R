@@ -58,19 +58,19 @@ writeInputTS <- function(data,
     if (type %in% c("load", "wind", "solar")) {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/%s/series/%s_%s", type, type, area),
+        target = sprintf("input/%s/series/%s_%s", type, type, tolower(area)),
         matrix = data
       )
     } else if (type == "hydroROR") {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/ror", area),
+        target = sprintf("input/hydro/series/%s/ror", tolower(area)),
         matrix = data
       )
     } else if (type == "hydroSTOR") {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/mod", area),
+        target = sprintf("input/hydro/series/%s/mod", tolower(area)),
         matrix = data
       )
     }
