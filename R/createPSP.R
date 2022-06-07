@@ -326,6 +326,7 @@ createPSP <- function(areasAndCapacities = NULL,
         to = nameVirtualArea,
         dataLink = dataLinkVirtual, 
         propertiesLink = dataLinkProperties, 
+        overwrite = overwrite,
         opts = opts
       )
     } else {
