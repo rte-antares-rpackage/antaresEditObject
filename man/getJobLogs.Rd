@@ -21,7 +21,14 @@ Retrieve job log from API
 \examples{
 \dontrun{
 
-getJobLogs("37afff54-3a8b-40fa-8841-e1dae8854f5f")
+antaresRead::setSimulationPathAPI(
+  host = "http://localhost:8080",
+  study_id = "39c604fc-687f-46c4-9fa6-59b57ff9c8d1",
+  token = NULL,
+  simulation = "input"
+)
+job <- runSimulation()
+getJobLogs(job)
 
 }
 }

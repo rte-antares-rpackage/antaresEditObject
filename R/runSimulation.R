@@ -1,6 +1,10 @@
 #' @title Run an Antares Simulation
 #' 
-#' @description Run an ANTARES study
+#' @description 
+#' `r antaresEditObject::badge_api_ok()`
+#' 
+#' Run an ANTARES study
+#' 
 #' 
 #' @param name
 #'   Name of the simulation.
@@ -23,8 +27,10 @@
 #'   [antaresRead::setSimulationPath()]
 #' 
 #' @return 
-#' The function does not return anything. It is  used to launch an 
-#' ANTARES simulation
+#' In API mode it return a `list` with either the job id in case of success of
+#'  the command or details about the error produce.
+#' In non-API mode the function does not return anything, it is  used to launch an 
+#' ANTARES simulation.
 #' 
 #' @importFrom assertthat assert_that
 #' @importFrom antaresRead simOptions
@@ -38,6 +44,15 @@ runSimulation <- function(name,
                           show_output_on_console = FALSE, 
                           parallel = TRUE, 
                           opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  if (is_api_study(opts)) {
+    
+    run <- api_post(opts = opts, url = paste0("launcher/run/", opts$study_id), default_endpoint = "v1")
+    return(run)
+    
+  }
+  
   if (is.null(path_solver)) {
     path_solver <- setSolverPath()
   }

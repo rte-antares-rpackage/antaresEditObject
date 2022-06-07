@@ -10,14 +10,14 @@ library(antaresEditObject)
 # Path to our study
 opts <- antaresRead::setSimulationPathAPI(
   host = "http://localhost:8080",
-  study_id = "0b26b7e9-57d3-47cb-82c6-d118427eaf7d",
+  study_id = "39c604fc-687f-46c4-9fa6-59b57ff9c8d1",
   token = NULL,
   simulation = "input"
 )
 # temp (implemented in dev version of antaresRead)
-opts$host <- "http://localhost:8080"
-opts$study_id <- "0b26b7e9-57d3-47cb-82c6-d118427eaf7d"
-options(antares = opts)
+# opts$host <- "http://localhost:8080"
+# opts$study_id <- "0b26b7e9-57d3-47cb-82c6-d118427eaf7d"
+# options(antares = opts)
 
 
 

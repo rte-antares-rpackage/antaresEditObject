@@ -35,9 +35,13 @@ is the one set in advanced_settings/simulation_cores (see ANTARES interface).}
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
-The function does not return anything. It is  used to launch an
-ANTARES simulation
+In API mode it return a \code{list} with either the job id in case of success of
+the command or details about the error produce.
+In non-API mode the function does not return anything, it is  used to launch an
+ANTARES simulation.
 }
 \description{
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
 Run an ANTARES study
 }

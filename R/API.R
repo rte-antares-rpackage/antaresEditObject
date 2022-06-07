@@ -231,13 +231,22 @@ getJobs <- function(opts = antaresRead::simOptions()) {
 #' @examples
 #' \dontrun{
 #' 
-#' getJobLogs("37afff54-3a8b-40fa-8841-e1dae8854f5f")
+#' antaresRead::setSimulationPathAPI(
+#'   host = "http://localhost:8080",
+#'   study_id = "39c604fc-687f-46c4-9fa6-59b57ff9c8d1",
+#'   token = NULL,
+#'   simulation = "input"
+#' )
+#' job <- runSimulation()
+#' getJobLogs(job)
 #' 
 #' }
 getJobLogs <- function(job_id, opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   if (!is_api_study(opts))
     stop("getJobLogs can only be used with Antares API.", call. = FALSE)
+  if (is.list(job_id) && !is.null(job_id$job_id))
+    job_id <- job_id$job_id
   logs <- api_get(opts = opts, paste0("launcher/jobs/", job_id, "/logs"), default_endpoint = "v1")
   class(logs) <- c(class(logs), "antares.api.logs")
   return(logs)
