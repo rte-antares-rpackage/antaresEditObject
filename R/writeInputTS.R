@@ -9,7 +9,7 @@
 #'  `"hydroSTOR"`. In this latter case, `data` must either be 365*N
 #'  (Antares v7) or 12*N (v6 and earlier).
 #' @param type Serie to write: `"load"`, `"hydroROR"`, `"hydroSTOR"`,
-#'  `"wind"` or `"solar"`.
+#'  `"wind"`, `"solar"`, or `"tsLink"`.
 #' @param area The area where to write the input time series.
 #' @param link Link for which writing transmission capacities time series, 
 #'  must like `"area01%area02"` or `c("area01", "area02")`.

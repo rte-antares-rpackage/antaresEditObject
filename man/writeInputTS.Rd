@@ -19,7 +19,7 @@ writeInputTS(
 (Antares v7) or 12*N (v6 and earlier).}
 
 \item{type}{Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
-\code{"wind"} or \code{"solar"}.}
+\code{"wind"}, \code{"solar"}, or \code{"tsLink"}.}
 
 \item{area}{The area where to write the input time series.}
 
