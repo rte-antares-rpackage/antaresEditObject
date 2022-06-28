@@ -19,7 +19,7 @@
 #' createStudy("path/to/simulation")
 #' 
 #' }
-createStudy <- function(path, study_name = "my_study", antares_version = "8.1.0") {
+createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0") {
   antares_version <- as.numeric_version(antares_version)
   if (!dir.exists(path)) {
     dir.create(path = path, recursive = TRUE)
