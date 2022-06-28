@@ -176,6 +176,10 @@ createLink <- function(from,
     }
   }
   
+  if (is.null(tsLink)) {
+    tsLink <- matrix(data = rep(0, 8760*2), ncol = 2)
+  }
+  
   if (!v820) {
     if (!identical(areas, sort(areas))) {
       dataLink[, 1:2] <- dataLink[, 2:1]
