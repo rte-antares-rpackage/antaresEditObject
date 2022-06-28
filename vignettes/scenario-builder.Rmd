@@ -40,6 +40,15 @@ createArea("moon")
 createCluster(area = "moon", cluster_name = "tranquility", add_prefix = FALSE)
 createCluster(area = "moon", cluster_name = "serenety", add_prefix = FALSE)
 
+# More areas
+createArea("titan")
+createArea("ceres")
+
+# Some links
+createLink("earth", "moon")
+createLink("moon", "titan")
+createLink("moon", "ceres")
+
 # Check what we have created
 getAreas()
 readClusterDesc()
@@ -138,6 +147,30 @@ updateScenarioBuilder(
 )
 readScenarioBuilder()$t
 ```
+
+
+For NTC serie (Antares >= 8.2.0), it writes the scenario for all links :
+
+```{r}
+updateScenarioBuilder(
+  ldata = my_scenario, 
+  series = "ntc"
+)
+readScenarioBuilder()$ntc
+```
+
+For writing scenario for a specific link you can do:
+
+```{r}
+updateScenarioBuilder(
+  ldata = my_scenario, 
+  series = "ntc",
+  links = "moon%ceres"
+)
+readScenarioBuilder()$ntc
+```
+
+
 
 
 Finally, you can remove all scenarios from a ruleset with:

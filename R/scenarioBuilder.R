@@ -103,11 +103,7 @@ scenarioBuilder <- function(n_scenario,
     nrow = length(areas),
     dimnames = list(areas, NULL)
   )
-  sb[areas %in% areas_rand, ] <- apply(
-    X = sb[areas %in% areas_rand, , drop = FALSE],
-    MARGIN = 1,
-    FUN = function(x) "rand"
-  )
+  sb[areas %in% areas_rand, ] <- "rand"
   return(sb)
 }
 
@@ -256,7 +252,8 @@ updateScenarioBuilder <- function(ldata,
       X = series,
       FUN = listify_sb,
       mat = ldata,
-      clusters_areas = clusters_areas,
+      clusters_areas = clusters_areas, 
+      links = links,
       opts = opts
     )
     prevSB[series] <- NULL
@@ -270,7 +267,13 @@ updateScenarioBuilder <- function(ldata,
     sbuild <- lapply(
       X = series,
       FUN = function(x) {
-        listify_sb(ldata[[x]], x, opts = opts, clusters_areas = clusters_areas)
+        listify_sb(
+          mat = ldata[[x]], 
+          series = x,
+          opts = opts, 
+          clusters_areas = clusters_areas, 
+          links = links
+        )
       }
     )
     prevSB[series] <- NULL
@@ -423,7 +426,8 @@ listify_sb <- function(mat,
 #' @importFrom data.table as.data.table transpose
 #' @importFrom stats setNames
 linksAsDT <- function(x) {
-  x <- strsplit(x = as.character(x), split = "[^[:alnum:]]+")
+  x <- strsplit(x = as.character(x), split = " - |%")
+  x <- lapply(x, sort)
   x <- transpose(x)
   x <- setNames(x, c("from", "to"))
   as.data.table(x)

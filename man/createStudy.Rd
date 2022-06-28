@@ -4,7 +4,7 @@
 \alias{createStudy}
 \title{Create an empty Antares study}
 \usage{
-createStudy(path, study_name = "my_study", antares_version = "8.1.0")
+createStudy(path, study_name = "my_study", antares_version = "8.2.0")
 }
 \arguments{
 \item{path}{Path where to create study, it should be an empty directory,
