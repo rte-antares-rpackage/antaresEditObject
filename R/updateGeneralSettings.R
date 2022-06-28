@@ -94,8 +94,13 @@ updateGeneralSettings <- function(mode = NULL,
   
   intra.modal <- check_param_modal(intra.modal, opts)
   inter.modal <- check_param_modal(inter.modal, opts)
+  
   generate <- check_param_RES(generate, opts)
   refreshtimeseries <- check_param_RES(refreshtimeseries, opts)
+  
+  generate <- check_param_links(generate, opts)
+  refreshtimeseries <- check_param_links(refreshtimeseries, opts)
+  readonly <- check_param_links(readonly, opts)
   
   new_params <- list(
     mode = mode,
@@ -228,6 +233,18 @@ check_param_RES <- function(x, opts) {
   return(x)
 }
 
+check_param_links <- function(x, opts) {
+  if (is.null(x))
+    return(NULL)
+  name <- deparse(substitute(x))
+  if (isTRUE("links" %in% x)) {
+    warning(
+      "updateGeneralSettings: '", name, "' parameter should not contain 'links'", 
+      call. = FALSE
+    )
+  }
+  return(x)
+}
 
 #' Correspondence between arguments of \code{updateGeneralSettings} and actual Antares parameters.
 #' 
