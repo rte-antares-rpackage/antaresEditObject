@@ -12,15 +12,17 @@
 
 ### Breaking changes
 
-* Argument's order of `writeInputTS()` has changed.
+* Argument's order of `writeInputTS()` has changed, `data` is now in first place.
 
 
 ### Variant management with API
 This release include some new features to interact with Antares Web.
 
-* Main functions are now compatible to interact with a variant through the API: `createArea()`, `editArea()`, `removeArea()`, `createLink()`, `editLink()`, `removeLink()`, `createCluster()`, `editCluster()`, `removeCluster()`, `createBindingConstraint()`, `editBindingConstraint()`, `removeBindingConstraint()`, `createDistrict()`, `updateGeneralSettings()`, `updateInputSettings()`, `updateOptimizationSettings()`, `updateOutputSettings()`, `writeInputTS()`, `readScenarioBuilder()`, `updateScenarioBuilder()`, `clearScenarioBuilder()`, `writeWaterValues()`.
+* Main functions are now compatible to interact with a variant through the API: `createArea()`, `editArea()`, `removeArea()`, `createLink()`, `editLink()`, `removeLink()`, `createCluster()`, `editCluster()`, `removeCluster()`, `createBindingConstraint()`, `editBindingConstraint()`, `removeBindingConstraint()`, `createDistrict()`, `updateGeneralSettings()`, `updateInputSettings()`, `updateOptimizationSettings()`, `updateOutputSettings()`, `writeInputTS()`, `readScenarioBuilder()`, `updateScenarioBuilder()`, `clearScenarioBuilder()`, `writeWaterValues()`, `createDSR()`, `createPSP()`.
 * New functions to use or create variants: `useVariant()`, `createVariant()`.
-* API calls can be synchronous or asynchronous.
+* New function to create studies on AntaREST server: `createStudyAPI()`.
+* New function to search studies on AntaREST server: `searchStudy()`.
+* API calls can be synchronous or asynchronous, see `setAPImode()`.
 
 
 
