@@ -1,7 +1,7 @@
 #' @title Copy of the output files of an Antares study
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_no()`
+#' `r antaresEditObject:::badge_api_no()`
 #' 
 #' Copy of the output files of an Antares study.
 #' 

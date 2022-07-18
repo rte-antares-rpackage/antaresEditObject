@@ -1,7 +1,7 @@
 #' @title Run an Antares Simulation
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Run an ANTARES study
 #' 

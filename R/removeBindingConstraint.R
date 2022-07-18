@@ -1,7 +1,7 @@
 #' @title Remove a Binding Constraint
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Remove a binding constraint in an Antares study.
 #' 

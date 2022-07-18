@@ -1,7 +1,7 @@
 #' @title Create a Pumped Storage Power plant (PSP)
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Create a Pumped Storage Power plant (PSP)
 #'

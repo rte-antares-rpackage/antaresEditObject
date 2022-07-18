@@ -1,7 +1,7 @@
 #' @title Update optimization parameters of an Antares study
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Update optimization parameters and other preferences of an Antares study
 #'

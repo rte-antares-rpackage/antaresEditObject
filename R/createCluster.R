@@ -1,7 +1,7 @@
 #' @title Create a cluster
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()` (thermal clusters only)
+#' `r antaresEditObject:::badge_api_ok()` (thermal clusters only)
 #' 
 #' Create a new thermal or RES (renewable energy source) cluster.
 #'

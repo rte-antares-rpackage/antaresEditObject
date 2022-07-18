@@ -1,7 +1,7 @@
 #' @title Write output value for Antares
 #'
 #' @description
-#' `r antaresEditObject::badge_api_no()`
+#' `r antaresEditObject:::badge_api_no()`
 #'
 #' This function write all output values for an Antares study.
 #'

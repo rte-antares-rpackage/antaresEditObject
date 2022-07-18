@@ -1,7 +1,7 @@
 #' @title Read, create & update scenario builder
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Read, create & update scenario builder.
 #'

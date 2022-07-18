@@ -1,7 +1,7 @@
 #' @title Write prepro data
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_no()`
+#' `r antaresEditObject:::badge_api_no()`
 #'
 #' This function allows to write load, wind and solar prepro data. Using
 #' `character(0)` allows to erase data (cf Examples).

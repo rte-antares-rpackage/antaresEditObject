@@ -1,7 +1,7 @@
 #' @title Remove a link between two areas
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Remove a link between two areas in an Antares study.
 #' 

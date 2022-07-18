@@ -34,7 +34,7 @@ removeClusterRES(
 An updated list containing various information about the simulation.
 }
 \description{
-\verb{r antaresEditObject::badge_api_ok()} (thermal clusters only)
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}} (thermal clusters only)
 
 Remove a cluster, thermal or RES (renewable energy source), and all its data.
 }

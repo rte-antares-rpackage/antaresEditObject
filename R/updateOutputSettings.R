@@ -1,7 +1,7 @@
 #' @title Update output parameters of an Antares study
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Update output parameters of an Antares study
 #' 

@@ -1,7 +1,7 @@
 #' @title Write input time series
 #'
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' This function writes input time series in an Antares project.
 #'

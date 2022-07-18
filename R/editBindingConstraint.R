@@ -1,7 +1,7 @@
 #' @title Update an existing binding constraint
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Update an existing binding constraint in an Antares study.
 #' 

@@ -1,7 +1,7 @@
 #' @title Write Economic Options
 #' 
 #' @description
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' This function allows to create or edit economic options. Areas/options present
 #' in the input dataframe are edited, while all other values are left unchanged.

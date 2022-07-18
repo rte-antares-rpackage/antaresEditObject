@@ -2,7 +2,7 @@
 #' @title Write Misc Gen data
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #'
 #' @param data Data to write.
 #' @param area Name of the area for which to write data.

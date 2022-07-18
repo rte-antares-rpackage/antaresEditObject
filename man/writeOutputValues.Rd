@@ -13,7 +13,7 @@ writeOutputValues(data, opts = NULL)
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \description{
-\verb{r antaresEditObject::badge_api_no()}
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
 
 This function write all output values for an Antares study.
 }

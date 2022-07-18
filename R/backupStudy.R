@@ -1,7 +1,7 @@
 #' @title Create a backup with an Antares Study
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_no()`
+#' `r antaresEditObject:::badge_api_no()`
 #' 
 #' Save an Antares Study or only inputs in a \code{.tar.gz} file
 #'

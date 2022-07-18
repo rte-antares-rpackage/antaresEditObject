@@ -1,7 +1,7 @@
 #' @title Remove a cluster
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()` (thermal clusters only)
+#' `r antaresEditObject:::badge_api_ok()` (thermal clusters only)
 #' 
 #' Remove a cluster, thermal or RES (renewable energy source), and all its data.
 #' 

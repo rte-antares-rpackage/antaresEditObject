@@ -16,7 +16,7 @@ removeArea(name, opts = antaresRead::simOptions())
 An updated list containing various information about the simulation.
 }
 \description{
-\verb{r antaresEditObject::badge_api_ok()}
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Remove an area in an Antares study.
 }

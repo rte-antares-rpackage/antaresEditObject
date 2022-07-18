@@ -1,7 +1,7 @@
 #' @title Write water values
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Write water values for a given area.
 #'

@@ -24,7 +24,7 @@ computeTimeStampFromHourly(
 \item{type}{type of file to compute.}
 }
 \description{
-\verb{r antaresEditObject::badge_api_no()}
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
 
 Compute daily, weekly, monthly and annual mc-ind from hourly data.
 }

@@ -1,7 +1,7 @@
 #' @title Create a link between two areas
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Create a new link between two areas in an Antares study.
 #' 

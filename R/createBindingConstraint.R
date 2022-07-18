@@ -1,7 +1,7 @@
 #' @title Create a binding constraint
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Create a new binding constraint in an Antares study.
 #' `createBindingConstraintBulk()` allow to create multiple constraints at once.

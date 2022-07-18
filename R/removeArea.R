@@ -1,7 +1,7 @@
 #' @title Remove an area from an Antares study
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Remove an area in an Antares study.
 #'

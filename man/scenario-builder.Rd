@@ -72,7 +72,7 @@ Default is to read existing links and update them all.}
 \code{readScenarioBuilder} : a \code{list} of \code{matrix} or \code{list} according to \code{as_matrix} parameters.
 }
 \description{
-\verb{r antaresEditObject::badge_api_ok()}
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Read, create & update scenario builder.
 }

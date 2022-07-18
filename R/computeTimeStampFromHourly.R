@@ -1,7 +1,7 @@
 #' @title Compute daily, weekly, monthly and annual mc-ind from hourly data.
 #' 
 #' @description 
-#' `r antaresEditObject::badge_api_no()`
+#' `r antaresEditObject:::badge_api_no()`
 #' 
 #' Compute daily, weekly, monthly and annual mc-ind from hourly data.
 #'
