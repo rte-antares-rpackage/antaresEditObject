@@ -70,7 +70,7 @@ updateOptimizationSettings(
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\verb{r antaresEditObject::badge_api_ok()}
 
 Update optimization parameters and other preferences of an Antares study
 }

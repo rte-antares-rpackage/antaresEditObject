@@ -26,7 +26,7 @@ ascending day, ascending level.}
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\verb{r antaresEditObject::badge_api_ok()}
 
 Write water values for a given area.
 }

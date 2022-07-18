@@ -51,7 +51,7 @@ An updated list containing various information about the simulation.
 \code{getCapacityDSR()} returns DSR capacity (unit * nominalCapacity of virtual cluster) of the area
 }
 \description{
-\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+\verb{r antaresEditObject::badge_api_no()}
 
 Create a Demand Side Response (DSR)
 }

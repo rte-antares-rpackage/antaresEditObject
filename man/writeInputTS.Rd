@@ -35,7 +35,7 @@ must like \code{"area01\%area02"} or \code{c("area01", "area02")}.}
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\verb{r antaresEditObject::badge_api_ok()}
 
 This function writes input time series in an Antares project.
 }

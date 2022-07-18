@@ -19,7 +19,7 @@ necessarily all) areas of the study. Can contain up to 7 other columns among:
 \code{antaresRead::setSimulationPath}}
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\verb{r antaresEditObject::badge_api_ok()}
 
 This function allows to create or edit economic options. Areas/options present
 in the input dataframe are edited, while all other values are left unchanged.

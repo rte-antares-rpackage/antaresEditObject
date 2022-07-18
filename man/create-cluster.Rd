@@ -64,7 +64,7 @@ if specified, must have 8760 rows and 1 or 4 columns.}
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}} (thermal clusters only)
+\verb{r antaresEditObject::badge_api_ok()} (thermal clusters only)
 
 Create a new thermal or RES (renewable energy source) cluster.
 }

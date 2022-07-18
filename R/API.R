@@ -252,3 +252,56 @@ getJobLogs <- function(job_id, opts = antaresRead::simOptions()) {
   return(logs)
 }
 
+
+
+
+#' Search study in AntaREST
+#'
+#' @param workspace Workspace for the study.
+#' @param name Name for the study.
+#' @param ... Other query parameters.
+#' @param host Host of AntaREST server API.
+#'
+#' @return a `data.table` with informations about studies on the server.
+#' @export
+#' 
+#' @importFrom data.table rbindlist
+#'
+#' @examples
+#' \dontrun{
+#' 
+#' searchStudies(host = "http://localhost:8080")
+#' 
+#' }
+searchStudy <- function(workspace = NULL, name = NULL, ..., host = NULL) {
+  if (is.null(host)) {
+    opts <- try(simOptions(), silent = TRUE)
+    if (inherits(opts, "try-error"))
+      stop("searchStudies: You must provide AntaREST host!", call. = FALSE)
+    host <- opts$host
+  }
+  studies <- api_get(
+    opts = list(host = host),
+    url = "",
+    query = dropNulls(list(
+      workspace = workspace,
+      name = name
+    ))
+  )
+  suppressWarnings(data.table::rbindlist(lapply(
+    X = studies,
+    FUN = function(x) {
+      lapply(
+        X = x,
+        FUN = function(x) {
+          if (length(x) > 1)
+            return(list(x))
+          x
+        }
+      )
+    }
+  ), fill = TRUE))
+}
+
+
+

@@ -40,7 +40,7 @@ General Reference Guide.}
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
 }
 \description{
-\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+\verb{r antaresEditObject::badge_api_no()}
 
 This function allows to write load, wind and solar prepro data. Using
 \code{character(0)} allows to erase data (cf Examples).

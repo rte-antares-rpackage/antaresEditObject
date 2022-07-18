@@ -41,7 +41,7 @@ In non-API mode the function does not return anything, it is  used to launch an
 ANTARES simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\verb{r antaresEditObject::badge_api_ok()}
 
 Run an ANTARES study
 }
