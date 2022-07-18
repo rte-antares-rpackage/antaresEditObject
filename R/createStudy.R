@@ -1,13 +1,17 @@
 
-#' Create an empty Antares study
+#' @title Create an empty Antares study
+#' 
+#' @description Create study on disk or with AntaREST server through the API.
 #'
 #' @param path Path where to create study, it should be an empty directory,
 #'  if it doesn't exist, it'll be created.
 #' @param study_name Name of the study.
 #' @param antares_version Antares number version.
 #'
-#' @return Result of [antaresRead::setSimulationPath()].
+#' @return Result of [antaresRead::setSimulationPath()] or [setSimulationPathAPI()] accordingly.
 #' @export
+#' 
+#' @name create-study
 #' 
 #' @importFrom whisker whisker.render
 #' @importFrom utils unzip
@@ -73,9 +77,32 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
 }
 
 
-
-
-
+#' @param host Host of AntaREST server API.
+#' @param token API personnal access token.
+#' @param ... Other query parameters passed to POST request.
+#' 
+#' @importFrom antaresRead setSimulationPathAPI
+#' 
+#' @export
+#' 
+#' @rdname create-study
+createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_version = "8.2.0", ...) {
+  studyId <- api_post(
+    opts = list(host = host, token = token),
+    url = "",
+    query = dropNulls(list(
+      name = study_name,
+      version = paste(unlist(as.numeric_version(antares_version)), collapse = ""),
+      ...
+    ))
+  )
+  setSimulationPathAPI(
+    host = host,
+    study_id = studyId, 
+    token = token, 
+    simulation = "input"
+  )
+}
 
 
 
