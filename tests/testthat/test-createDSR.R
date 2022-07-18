@@ -57,8 +57,8 @@ sapply(studies, function(study) {
     expect_error(suppressWarnings(createDSR(dsrData)), "The link a - a_dsr_3h already exist, use overwrite.")
     
     createDSR(dsrData, overwrite = TRUE)
-    linkADsr<-"a - a_dsr_3h"
-    linkBDsr<-"b - b_dsr_7h"
+    linkADsr <- "a - a_dsr_3h"
+    linkBDsr <- "b - b_dsr_7h"
     expect_true(linkADsr %in% getLinks())
     expect_true(linkBDsr %in% getLinks())
     capaLink<-antaresRead::readInputTS(linkCapacity = c("a - a_dsr_3h", "b - b_dsr_7h"), showProgress = FALSE)

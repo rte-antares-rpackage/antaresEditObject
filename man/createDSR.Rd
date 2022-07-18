@@ -51,7 +51,7 @@ An updated list containing various information about the simulation.
 \code{getCapacityDSR()} returns DSR capacity (unit * nominalCapacity of virtual cluster) of the area
 }
 \description{
-\verb{r antaresEditObject::badge_api_no()}
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Create a Demand Side Response (DSR)
 }
@@ -59,10 +59,11 @@ Create a Demand Side Response (DSR)
 \dontrun{
 
 library(antaresEditObject)
-path<-pathToYourStudy
-opts<-setSimulationPath(path, simulation = "input")
-area, unit, nominalCapacity and marginalCost
-dsrData<-data.frame(area = c("a", "b"), unit = c(10,20), 
+path <- pathToYourStudy
+opts <- setSimulationPath(path, simulation = "input")
+
+# area, unit, nominalCapacity and marginalCost
+dsrData <- data.frame(area = c("a", "b"), unit = c(10,20), 
                     nominalCapacity = c(100, 120), marginalCost = c(52, 65), hour = c(3, 7))
 
 createDSR(dsrData)
