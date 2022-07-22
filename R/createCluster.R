@@ -261,17 +261,24 @@ createClusterRES <- function(area,
   # API block
   if (is_api_study(opts)) {
     
-    if (identical(cluster_type, "renewables"))
-      stop("RES clusters not implemented with the API yet.")
+    if (cluster_type == "thermal") {
+      cmd <- api_command_generate(
+        action = "create_cluster",
+        area_id = area,
+        cluster_name = cluster_name,
+        prepro = prepro_data,
+        modulation = prepro_modulation,
+        parameters = params_cluster
+      )
+    } else {
+      cmd <- api_command_generate(
+        action = "create_renewables_cluster",
+        area_id = area,
+        cluster_name = cluster_name,
+        parameters = params_cluster
+      )
+    }
     
-    cmd <- api_command_generate(
-      action = "create_cluster",
-      area_id = area,
-      cluster_name = cluster_name,
-      prepro = prepro_data,
-      modulation = prepro_modulation,
-      parameters = params_cluster
-    )
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
