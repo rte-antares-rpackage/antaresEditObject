@@ -198,6 +198,7 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
 
 #' Retrieve API jobs
 #'
+#' @param job_id The job identifier, if `NULL` (default), retrieve all jobs.
 #' @template opts-arg 
 #'
 #' @return A `data.table` with information about jobs.
@@ -211,12 +212,17 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
 #' getJobs()
 #' 
 #' }
-getJobs <- function(opts = antaresRead::simOptions()) {
+getJobs <- function(job_id = NULL, opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   if (!is_api_study(opts))
     stop("getJobs can only be used with Antares API.", call. = FALSE)
-  jobs <- api_get(opts = opts, "launcher/jobs", default_endpoint = "v1")
-  suppressWarnings(data.table::rbindlist(jobs, fill = TRUE))
+  if (is.null(job_id)) {
+    jobs <- api_get(opts = opts, "launcher/jobs", default_endpoint = "v1")
+    suppressWarnings(data.table::rbindlist(jobs, fill = TRUE))
+  } else {
+    jobs <- api_get(opts = opts, paste0("launcher/jobs/", job_id), default_endpoint = "v1")
+    data.table::as.data.table(jobs)
+  }
 }
 
 

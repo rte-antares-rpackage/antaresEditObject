@@ -24,7 +24,7 @@ it on the R console.}
 \code{antaresRead::setSimulationPath}.}
 }
 \description{
-Run Time-Series Generator
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
 }
 \examples{
 \dontrun{

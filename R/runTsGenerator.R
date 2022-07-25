@@ -1,5 +1,8 @@
 
 #' Run Time-Series Generator
+#' 
+#' @description 
+#' `r antaresEditObject:::badge_api_no()`
 #'
 #' @param path_solver Character containing the Antares Solver path.
 #' @param wait Logical, indicating whether the R interpreter should wait for the 
@@ -29,7 +32,7 @@ runTsGenerator <- function(path_solver = getOption("antares.solver"),
                            wait = TRUE, 
                            show_output_on_console = FALSE, 
                            opts = antaresRead::simOptions()) {
-  
+  api_not_implemented(opts)
   if (is.null(path_solver)) {
     path_solver <- setSolverPath()
   }

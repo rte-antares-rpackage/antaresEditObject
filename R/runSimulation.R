@@ -47,43 +47,63 @@ runSimulation <- function(name,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   if (is_api_study(opts)) {
-    
+    updateGeneralSettings(mode = mode, opts = opts)
     run <- api_post(opts = opts, url = paste0("launcher/run/", opts$study_id), default_endpoint = "v1")
-    return(run)
-    
-  }
-  
-  if (is.null(path_solver)) {
-    path_solver <- setSolverPath()
-  }
-  # a few checks
-  name <- tolower(name)
-  assertthat::assert_that(file.exists(path_solver))
-  assertthat::assert_that(mode %in% c("economy", "adequacy", "draft", "expansion"))
-  
-  
-  ##Test version of antares solver
-  solver <- unlist(gsub("-solver.exe", "", path_solver))
-  solver <- strsplit(solver, "antares-")[[1]]
-  solver <- solver[[length(solver)]]
-  version_solver <- substr(solver, 1, 1)
-  version_study <- substr(opts$antaresVersion,1,1)
-  
-  if (version_solver != version_study) {
-    stop(paste0(
-      "Imcompatibility between antares solver version (", version_solver, ") and study version (", version_study, ")"
-    ), call. = FALSE)
-  }
-  
-  
-  #Launch simulation
-  if (version_solver >= 6 & parallel) {
-    cmd <- '"%s" "%s" -n "%s" --%s --parallel'
-    cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
+    if (is.null(run$job_id)) {
+      cli::cli_alert_danger("No job id returned by API, something went wrong.")
+      return(run)
+    } else {
+      cli::cli_alert_success(paste("Job launched with ID:", run$job_id))
+    }
+    if (!isTRUE(wait)) {
+      return(run)
+    } else {
+      status <- getJobs(run$job_id, opts = opts)
+      while (is.null(status$completion_date) || is.na(status$completion_date)) {
+        Sys.sleep(1)
+        status <- getJobs(run$job_id, opts = opts)
+      }
+      if (isTRUE(show_output_on_console)) {
+        # getJobLogs(job_id = run$job_id, opts = opts)
+        cli::cli_alert_info(paste0(
+          "Retrieve job logs with: {.code getJobLogs(\"", run$job_id, "\")}"
+        ))
+      }
+      return(status)
+     }
   } else {
-    cmd <- '"%s" "%s" -n "%s" --%s'
-    cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
+    if (is.null(path_solver)) {
+      path_solver <- setSolverPath()
+    }
+    # a few checks
+    name <- tolower(name)
+    assertthat::assert_that(file.exists(path_solver))
+    assertthat::assert_that(mode %in% c("economy", "adequacy", "draft", "expansion"))
+    
+    
+    ##Test version of antares solver
+    solver <- unlist(gsub("-solver.exe", "", path_solver))
+    solver <- strsplit(solver, "antares-")[[1]]
+    solver <- solver[[length(solver)]]
+    version_solver <- substr(solver, 1, 1)
+    version_study <- substr(opts$antaresVersion,1,1)
+    
+    if (version_solver != version_study) {
+      stop(paste0(
+        "Imcompatibility between antares solver version (", version_solver, ") and study version (", version_study, ")"
+      ), call. = FALSE)
+    }
+    
+    
+    #Launch simulation
+    if (version_solver >= 6 & parallel) {
+      cmd <- '"%s" "%s" -n "%s" --%s --parallel'
+      cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
+    } else {
+      cmd <- '"%s" "%s" -n "%s" --%s'
+      cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
+    }
+    
+    system(cmd, ignore.stdout = TRUE, wait = wait, show.output.on.console = show_output_on_console)
   }
-  
-  system(cmd, ignore.stdout = TRUE, wait = wait, show.output.on.console = show_output_on_console)
 }

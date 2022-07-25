@@ -4,9 +4,11 @@
 \alias{getJobs}
 \title{Retrieve API jobs}
 \usage{
-getJobs(opts = antaresRead::simOptions())
+getJobs(job_id = NULL, opts = antaresRead::simOptions())
 }
 \arguments{
+\item{job_id}{The job identifier, if \code{NULL} (default), retrieve all jobs.}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
