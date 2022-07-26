@@ -26,7 +26,7 @@ writeIni <- function(listData, pathIni, opts = antaresRead::simOptions(), ..., d
       pathIni <- sub(sprintf("\\%s$", default_ext), "", x = pathIni)
     writeIniAPI(
       listData = listData,
-      pathIni = file.path(opts$studyPath, pathIni),
+      pathIni = pathIni,
       opts = opts
     )
   } else {
@@ -78,7 +78,7 @@ writeIniAPI <- function(listData, pathIni, opts) {
       values <- .formatedIni(listData[[i]])
       values <- paste(values, collapse = ", ")
       list(
-        target = paste0(pathIni, names(listData)[i]),
+        target = paste(pathIni, names(listData)[i], sep = "/"),
         data = values
       )
     }

@@ -144,42 +144,18 @@ updateOptimizationSettings <- function(simplex.range = NULL,
   if (is_api_study(opts)) {
     
     if (length(new_params_optimization) > 0) {
-      actions <- lapply(
-        X = seq_along(new_params_optimization),
-        FUN = function(i) {
-          list(
-            target = paste0("settings/generaldata/optimization/", names(new_params_optimization)[i]),
-            data = new_params_optimization[[i]]
-          )
-        }
-      )
-      actions <- setNames(actions, rep("update_config", length(actions)))
-      cmd <- do.call(api_commands_generate, actions)
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Updating optimization settings: {msg_api}"),
-        cli_command_registered("update_config")
+      writeIni(
+        listData = new_params_optimization,
+        pathIni = "settings/generaldata/optimization",
+        opts = opts
       )
     }
     
     if (length(new_params_others) > 0) {
-      actions <- lapply(
-        X = seq_along(new_params_others),
-        FUN = function(i) {
-          list(
-            target = paste0("settings/generaldata/other preferences/", names(new_params_others)[i]),
-            data = new_params_others[[i]]
-          )
-        }
-      )
-      actions <- setNames(actions, rep("update_config", length(actions)))
-      cmd <- do.call(api_commands_generate, actions)
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Updating other preferences settings: {msg_api}"),
-        cli_command_registered("update_config")
+      writeIni(
+        listData = new_params_others,
+        pathIni = "settings/generaldata/other preferences",
+        opts = opts
       )
     }
     

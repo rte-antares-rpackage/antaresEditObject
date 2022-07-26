@@ -143,23 +143,7 @@ updateGeneralSettings <- function(mode = NULL,
   # API block
   if (is_api_study(opts)) {
 
-    actions <- lapply(
-      X = seq_along(new_params),
-      FUN = function(i) {
-        list(
-          target = paste0("settings/generaldata/general/", names(new_params)[i]),
-          data = new_params[[i]]
-        )
-      }
-    )
-    actions <- setNames(actions, rep("update_config", length(actions)))
-    cmd <- do.call(api_commands_generate, actions)
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "Updating general settings: {msg_api}"),
-      cli_command_registered("update_config")
-    )
+    writeIni(listData = new_params, pathIni = "settings/generaldata/general", opts = opts)
     
     return(update_api_opts(opts))
   }

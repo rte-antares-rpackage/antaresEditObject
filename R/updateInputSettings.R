@@ -35,16 +35,10 @@ updateInputSettings <- function(import, opts = antaresRead::simOptions()) {
   # API block
   if (is_api_study(opts)) {
     
-    cmd <- api_command_generate(
-      action = "update_config",
-      target = "settings/generaldata/input",
-      data = list(import = paste(import, collapse = ", "))
-    )
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "Updating input settings: {msg_api}"),
-      cli_command_registered("update_config")
+    writeIni(
+      listData = list(import = paste(import, collapse = ", ")),
+      pathIni = "settings/generaldata/input",
+      opts = opts
     )
     
     return(update_api_opts(opts))

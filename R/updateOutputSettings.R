@@ -39,20 +39,14 @@ updateOutputSettings <- function(synthesis = NULL,
   # API block
   if (is_api_study(opts)) {
     
-    cmd <- api_command_generate(
-      action = "update_config",
-      target = "settings/generaldata/output",
-      data = list(
+    writeIni(
+      listData = list(
         synthesis = synthesis,
         storenewset = storenewset,
         archives = paste(archives, collapse = ", ")
-      )
-    )
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "Updating output settings: {msg_api}"),
-      cli_command_registered("update_config")
+      ),
+      pathIni = "settings/generaldata/output",
+      opts = opts
     )
     
     return(update_api_opts(opts))
