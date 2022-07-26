@@ -267,6 +267,7 @@ getJobLogs <- function(job_id, opts = antaresRead::simOptions()) {
 #' @param name Name for the study.
 #' @param ... Other query parameters.
 #' @param host Host of AntaREST server API.
+#' @param token API personnal access token.
 #'
 #' @return a `data.table` with informations about studies on the server.
 #' @export
@@ -279,7 +280,7 @@ getJobLogs <- function(job_id, opts = antaresRead::simOptions()) {
 #' searchStudies(host = "http://localhost:8080")
 #' 
 #' }
-searchStudy <- function(workspace = NULL, name = NULL, ..., host = NULL) {
+searchStudy <- function(workspace = NULL, name = NULL, ..., host = NULL, token = NULL) {
   if (is.null(host)) {
     opts <- try(simOptions(), silent = TRUE)
     if (inherits(opts, "try-error"))
@@ -287,7 +288,7 @@ searchStudy <- function(workspace = NULL, name = NULL, ..., host = NULL) {
     host <- opts$host
   }
   studies <- api_get(
-    opts = list(host = host),
+    opts = list(host = host, token = token),
     url = "",
     query = dropNulls(list(
       workspace = workspace,

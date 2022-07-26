@@ -4,7 +4,7 @@
 \alias{searchStudy}
 \title{Search study in AntaREST}
 \usage{
-searchStudy(workspace = NULL, name = NULL, ..., host = NULL)
+searchStudy(workspace = NULL, name = NULL, ..., host = NULL, token = NULL)
 }
 \arguments{
 \item{workspace}{Workspace for the study.}
@@ -14,6 +14,8 @@ searchStudy(workspace = NULL, name = NULL, ..., host = NULL)
 \item{...}{Other query parameters.}
 
 \item{host}{Host of AntaREST server API.}
+
+\item{token}{API personnal access token.}
 }
 \value{
 a \code{data.table} with informations about studies on the server.
