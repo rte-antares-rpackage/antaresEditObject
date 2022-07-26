@@ -1,8 +1,9 @@
 
 #' Read configuration options from file or API
 #'
-#' @param path Path to config/ini file to read..
+#' @param pathIni Path to config/ini file to read.
 #' @template opts-arg
+#' @param default_ext Default extension used for config files.
 #' 
 #'
 #' @return A list with an element for each section of the .ini file.
@@ -30,21 +31,22 @@
 #' readIni("settings/generaldata")
 #' 
 #' }
-readIni <- function(path, opts = antaresRead::simOptions()) {
+readIni <- function(pathIni, opts = antaresRead::simOptions(), default_ext = ".ini") {
+  assertthat::assert_that(inherits(opts, "simOptions"))
   if (is_api_study(opts)) {
-    if (endsWith(path, "\\.ini"))
-      path <- sub("\\.ini$", "", x = path)
+    if (endsWith(pathIni, default_ext))
+      pathIni <- sub(sprintf("\\%s$", default_ext), "", x = pathIni)
     readIniAPI(
       study_id = opts$study_id,
-      path = path, 
+      path = pathIni, 
       host = opts$host, 
       token = opts$token
     )
   } else {
-    if (!endsWith(path, "\\.ini"))
-      path <- paste0(path, ".ini")
+    if (!endsWith(pathIni, default_ext))
+      pathIni <- paste0(pathIni, default_ext)
     readIniFile(
-      file = file.path(opts$studyPath, path),
+      file = file.path(opts$studyPath, pathIni),
       stringsAsFactors = FALSE
     )
   }
@@ -89,7 +91,7 @@ readIniFile <- function(file, stringsAsFactors = FALSE) {
 }
 
 #' @param study_id Study's identifier.
-#' @param path Path of INI file to read.
+#' @param path Path of configuration object to read.
 #' @param host Host of AntaREST server API.
 #' @param token API personnal access token.
 #' @export

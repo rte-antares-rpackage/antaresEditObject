@@ -7,23 +7,27 @@
 \alias{readIniAPI}
 \title{Read configuration options from file or API}
 \usage{
-readIni(path, opts = antaresRead::simOptions())
+readIni(pathIni, opts = antaresRead::simOptions(), default_ext = ".ini")
 
 readIniFile(file, stringsAsFactors = FALSE)
 
 readIniAPI(study_id, path, host, token = NULL)
 }
 \arguments{
-\item{path}{Path of INI file to read.}
+\item{pathIni}{Path to config/ini file to read.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
+
+\item{default_ext}{Default extension used for config files.}
 
 \item{file}{File path.}
 
 \item{stringsAsFactors}{logical: should character vectors be converted to factors?}
 
 \item{study_id}{Study's identifier.}
+
+\item{path}{Path of configuration object to read.}
 
 \item{host}{Host of AntaREST server API.}
 
