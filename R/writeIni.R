@@ -1,12 +1,14 @@
 
-# From antaresFlowbased
-
-
-#' Write ini file from list obtain by antaresRead:::readIniFile and modify by user
+#' Write configuration options in file or API
 #'
-#' @param listData \code{list}, modified list obtained by antaresRead:::readIniFile.
-#' @param pathIni \code{Character}, Path to ini file.
-#' @param overwrite logical, should file be overwritten if already exist?
+#' @param listData A `list` of configuration.
+#' @param pathIni Path to config/ini file to read.
+#' @template opts-arg
+#' @param ... Additional arguments.
+#' @param default_ext Default extension used for config files.
+#'
+#' @export
+#' @name write-ini
 #'
 #' @examples
 #'
@@ -16,11 +18,36 @@
 #' generalSetting$output$synthesis <- FALSE
 #' writeIni(generalSetting, pathIni)
 #' }
-#'
-#'
+writeIni <- function(listData, pathIni, opts = antaresRead::simOptions(), ..., default_ext = ".ini") {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  args <- list(...)
+  if (is_api_study(opts)) {
+    if (endsWith(pathIni, default_ext))
+      pathIni <- sub(sprintf("\\%s$", default_ext), "", x = pathIni)
+    writeIniAPI(
+      listData = listData,
+      pathIni = file.path(opts$studyPath, pathIni),
+      opts = opts
+    )
+  } else {
+    if (!endsWith(pathIni, default_ext))
+      pathIni <- paste0(pathIni, default_ext)
+    if (!is_study_path(pathIni, opts))
+      pathIni <- file.path(opts$studyPath, pathIni)
+    writeIniFile(
+      listData = listData,
+      pathIni = pathIni,
+      overwrite = isTRUE(args$overwrite)
+    )
+  }
+}
+
+#' @param listData \code{list}, modified list obtained by antaresRead:::readIniFile.
+#' @param pathIni \code{Character}, Path to ini file.
+#' @param overwrite logical, should file be overwritten if already exist?
 #' @export
-#'
-writeIni <- function(listData, pathIni, overwrite = FALSE) {
+#' @rdname write-ini
+writeIniFile <- function(listData, pathIni, overwrite = FALSE) {
   if (file.exists(pathIni)) {
     if (overwrite) {
       file.remove(pathIni)
@@ -40,6 +67,34 @@ writeIni <- function(listData, pathIni, overwrite = FALSE) {
     )
   )
 }
+
+#' @export
+#' @rdname write-ini
+writeIniAPI <- function(listData, pathIni, opts) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  actions <- lapply(
+    X = seq_along(listData),
+    FUN = function(i) {
+      values <- .formatedIni(listData[[i]])
+      values <- paste(values, collapse = ", ")
+      list(
+        target = paste0(pathIni, names(listData)[i]),
+        data = values
+      )
+    }
+  )
+  actions <- setNames(actions, rep("update_config", length(actions)))
+  cmd <- do.call(api_commands_generate, actions)
+  api_command_register(cmd, opts = opts)
+  `if`(
+    should_command_be_executed(opts), 
+    api_command_execute(cmd, opts = opts, text_alert = sprintf("Updating %s: {msg_api}", pathIni)),
+    cli_command_registered("update_config")
+  )
+}
+
+
+
 
 #' Change R format to ini format
 #' @param val value to format
@@ -87,4 +142,11 @@ writeIni <- function(listData, pathIni, overwrite = FALSE) {
       writeChar( paste0("[", namesdtaToTransform[x], "]\n"), con, eos = NULL)
     writeChar("\n\n", con, eos = NULL)
   }
+}
+
+
+is_study_path <- function(path, opts) {
+  path <- normalizePath(path, mustWork = FALSE)
+  studyPath <- normalizePath(opts$studyPath, mustWork = FALSE)
+  startsWith(x = path, prefix = studyPath)
 }

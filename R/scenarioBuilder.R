@@ -128,11 +128,10 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
     if (is_api_mocked(opts)) {
       sb <- list("Default Ruleset" = NULL)
     } else {
-      sb <- api_get_raw_data(opts$study_id, path = "settings/scenariobuilder", opts = opts)
+      sb <- readIni("settings/scenariobuilder", opts = opts, default_ext = ".dat")
     }
   } else {
-    pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
-    sb <- readIniFile(file = pathSB)
+    sb <- readIni("settings/scenariobuilder", opts = opts, default_ext = ".dat")
   }
   if (!ruleset %in% names(sb)) {
     warning(sprintf("Ruleset '%s' not found, possible values are: %s", ruleset, paste(names(sb), collapse = ", ")), call. = FALSE)
@@ -299,7 +298,7 @@ updateScenarioBuilder <- function(ldata,
     return(update_api_opts(opts))
   } else {
     pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
-    writeIni(listData = res, pathIni = pathSB, overwrite = TRUE)
+    writeIni(listData = res, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
     if (interactive())
       cat("\u2713", "Scenario Builder updated\n")
     return(invisible(res))
@@ -333,7 +332,7 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
       return(invisible(FALSE))
     }
     sb[[ruleset]] <- list()
-    writeIni(listData = sb, pathIni = pathSB, overwrite = TRUE)
+    writeIni(listData = sb, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
     if (interactive())
       cat("\u2713", "Scenario Builder cleared\n")
     return(invisible(TRUE))
