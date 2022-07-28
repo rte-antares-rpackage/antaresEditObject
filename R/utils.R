@@ -32,6 +32,8 @@ is_different <- function(x, y) {
  
 #' @importFrom antaresRead getAreas
 check_area_name <- function(area, opts = antaresRead::simOptions()) {
+  if (is_api_study(opts) && is_api_mocked(opts))
+    return(invisible(NULL))
   areaList <- antaresRead::getAreas(opts = opts)
   if (!tolower(area) %in% areaList)
     stop("'", area, "' is not a valid area name, possible names are: ", paste(areaList, collapse = ", "), call. = FALSE)

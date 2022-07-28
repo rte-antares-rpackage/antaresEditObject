@@ -79,29 +79,20 @@ createLink <- function(from,
   # can be with some upper case (list.txt)
   from <- tolower(from)
   to <- tolower(to)
-  
-  # API block
-  if (is_api_study(opts)) {
-    cmd <- api_command_generate(
-      action = "create_link",
-      area1 = from,
-      area2 = to,
-      parameters = if (is_different(propertiesLink, propertiesLinkOptions())) propertiesLink else NULL,
-      series = dataLink
-    )
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_link}: {msg_api}"),
-      cli_command_registered("create_link")
-    )
-    
-    return(invisible(opts))
+  "check_area_name"(from, opts)
+  check_area_name(to, opts)
+  # areas' order
+  areas <- c(from, to)
+  if (!identical(areas, sort(areas))) {
+    from <- areas[2]
+    to <- areas[1]
   }
   
+  # check version
   v7 <- is_antares_v7(opts)
   v820 <- is_antares_v820(opts)
   
+  # check number of columns in datalink according to antares version
   if (!is.null(dataLink)) {
     if (v820) {
       assertthat::assert_that(ncol(dataLink) == 8 | ncol(dataLink) == 6)
@@ -112,6 +103,7 @@ createLink <- function(from,
     }
   }
   
+  # tsLink should be provided with an even number of columns and only with antares >= 820
   if (!is.null(tsLink)) {
     if (v820) {
       stopifnot(
@@ -121,41 +113,9 @@ createLink <- function(from,
       warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
-
-  # areas' order
-  areas <- c(from, to)
-  if (!identical(areas, sort(areas))) {
-    from <- areas[2]
-    to <- areas[1]
-  }
   
-  # Input path
-  inputPath <- opts$inputPath
-  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  check_area_name(from, opts)
-  check_area_name(to, opts)
-  
-  # Previous links
-  prev_links <- readIniFile(
-    file = file.path(inputPath, "links", from, "properties.ini")
-  )
-  
-  if (to %in% names(prev_links) & !overwrite)
-    stop(paste("Link to", to, "already exist"))
-  
-  if (to %in% names(prev_links) & overwrite) {
-    opts <- removeLink(from = from, to = to, opts = opts)
-    prev_links <- readIniFile(
-      file = file.path(inputPath, "links", from, "properties.ini")
-    )
-  }
-  
-  # propLink <- list(propertiesLink)
-  
-  prev_links[[to]] <- propertiesLink
-  
-  # initialization data
+  # set initialization data if not provided
   if (is.null(dataLink)) {
     if (v820) {
       dataLink <- matrix(data = rep(0, 8760*6), ncol = 6)
@@ -176,22 +136,96 @@ createLink <- function(from,
     }
   }
   
+  # set transmission capacities time series if not provided
   if (is.null(tsLink)) {
     tsLink <- matrix(data = rep(0, 8760*2), ncol = 2)
   }
+  tsLink <- data.table::as.data.table(tsLink)
+  direct <- seq_len(NCOL(tsLink) / 2)
+  indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
   
+  # correct column order for antares < 820
   if (!v820) {
     if (!identical(areas, sort(areas))) {
       dataLink[, 1:2] <- dataLink[, 2:1]
-      
       if (v7) {
         dataLink[, 3:4] <- dataLink[, 4:3]
       } else {
         dataLink[, 4:5] <- dataLink[, 5:4]
       }
     }
-    
   }
+  
+  
+  # API block
+  if (is_api_study(opts)) {
+    cmd <- api_command_generate(
+      action = "create_link",
+      area1 = from,
+      area2 = to,
+      parameters = if (is_different(propertiesLink, propertiesLinkOptions())) propertiesLink else NULL,
+      series = dataLink
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_link}: {msg_api}"),
+      cli_command_registered("create_link")
+    )
+    
+    if (v820) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_direct")),
+        matrix = as.matrix(tsLink[, .SD, .SDcols = direct])
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Writing transmission capacities (direct): {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+      
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_indirect")),
+        matrix = as.matrix(tsLink[, .SD, .SDcols = indirect])
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Writing transmission capacities (indirect): {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+    }
+    
+    return(invisible(opts))
+  }
+  
+
+  # Input path
+  inputPath <- opts$inputPath
+  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
+  
+  # Previous links
+  prev_links <- readIniFile(
+    file = file.path(inputPath, "links", from, "properties.ini")
+  )
+  
+  if (to %in% names(prev_links) & !overwrite)
+    stop(paste("Link to", to, "already exist"))
+  
+  if (to %in% names(prev_links) & overwrite) {
+    opts <- removeLink(from = from, to = to, opts = opts)
+    prev_links <- readIniFile(
+      file = file.path(inputPath, "links", from, "properties.ini")
+    )
+  }
+  
+  # propLink <- list(propertiesLink)
+  
+  prev_links[[to]] <- propertiesLink
+ 
   
   writeIni(
     listData = prev_links, # c(prev_links, stats::setNames(propLink, to)),
@@ -209,9 +243,6 @@ createLink <- function(from,
       file = file.path(inputPath, "links", from, paste0(to, "_parameters.txt"))
     )
     dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
-    direct <- seq_len(NCOL(tsLink) / 2)
-    indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
-    tsLink <- data.table::as.data.table(tsLink)
     data.table::fwrite(
       x = tsLink[, .SD, .SDcols = direct], 
       row.names = FALSE, 
