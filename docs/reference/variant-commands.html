@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -72,19 +72,19 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">getVariantCommands</span><span class="op">(</span>
-  last <span class="op">=</span> <span class="cn">NULL</span>,
-  actions <span class="op">=</span> <span class="cn">NULL</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">writeVariantCommands</span><span class="op">(</span>
-  <span class="va">path</span>,
-  last <span class="op">=</span> <span class="cn">NULL</span>,
-  actions <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getVariantCommands</span><span class="op">(</span></span>
+<span>  last <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  actions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">writeVariantCommands</span><span class="op">(</span></span>
+<span>  <span class="va">path</span>,</span>
+<span>  last <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  actions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -92,19 +92,30 @@
     <dl><dt>last</dt>
 <dd><p>Return the last command generated if <code>TRUE</code>, or a <code>numeric</code>
 for returning a specified number of commands. Default is to return all commands.</p></dd>
+
+
 <dt>actions</dt>
 <dd><p>A <code>character</code> <code>vector</code> of actions to return.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
+
 <dt>path</dt>
 <dd><p>Path to the JSON file to write on disk.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments passed to <code><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html" class="external-link">jsonlite::write_json()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a list of commands to edit a variant</p>
+    
+
+<p>a list of commands to edit a variant</p>
     </div>
 
   </div>
@@ -119,7 +130,7 @@ for returning a specified number of commands. Default is to return all commands.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

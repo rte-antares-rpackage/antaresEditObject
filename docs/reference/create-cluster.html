@@ -30,7 +30,7 @@ Create a new thermal or RES (renewable energy source) cluster."><!-- mathjax -->
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,64 +74,85 @@ Create a new thermal or RES (renewable energy source) cluster."><!-- mathjax -->
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createCluster</span><span class="op">(</span>
-  <span class="va">area</span>,
-  <span class="va">cluster_name</span>,
-  group <span class="op">=</span> <span class="st">"Other"</span>,
-  <span class="va">...</span>,
-  time_series <span class="op">=</span> <span class="cn">NULL</span>,
-  prepro_data <span class="op">=</span> <span class="cn">NULL</span>,
-  prepro_modulation <span class="op">=</span> <span class="cn">NULL</span>,
-  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">createClusterRES</span><span class="op">(</span>
-  <span class="va">area</span>,
-  <span class="va">cluster_name</span>,
-  group <span class="op">=</span> <span class="st">"Other RES 1"</span>,
-  <span class="va">...</span>,
-  time_series <span class="op">=</span> <span class="cn">NULL</span>,
-  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createCluster</span><span class="op">(</span></span>
+<span>  <span class="va">area</span>,</span>
+<span>  <span class="va">cluster_name</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"Other"</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  time_series <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prepro_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prepro_modulation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">createClusterRES</span><span class="op">(</span></span>
+<span>  <span class="va">area</span>,</span>
+<span>  <span class="va">cluster_name</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"Other RES 1"</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  time_series <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>area</dt>
 <dd><p>The area where to create the cluster.</p></dd>
+
+
 <dt>cluster_name</dt>
 <dd><p>Name for the cluster, it will prefixed by area name, unless you set <code>add_prefix = FALSE</code>.</p></dd>
+
+
 <dt>group</dt>
 <dd><p>Group of the cluster, depends on cluster type:</p><ul><li><p>thermal cluster, one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2, Other 3, Other 4.</p></li>
 <li><p>renewable cluster, one of: Wind Onshore, Wind Offshore, Solar Thermal, Solar PV, Solar Rooftop, Other RES 1, Other RES 2, Other RES 3, Other RES 4.</p></li>
 </ul></dd>
+
+
 <dt>...</dt>
 <dd><p>Parameters to write in the Ini file. Careful!
 Some parameters must be set as <code>integers</code> to avoid warnings in Antares, for example,
 to set <code>unitcount</code>, you'll have to use <code>unitcount = 1L</code>.</p></dd>
+
+
 <dt>time_series</dt>
 <dd><p>the "ready-made" 8760-hour time-series available for simulation purposes.</p></dd>
+
+
 <dt>prepro_data</dt>
 <dd><p>Pre-process data, a <code>data.frame</code> or <code>matrix</code>,
 default is a matrix with 365 rows and 6 columns.</p></dd>
+
+
 <dt>prepro_modulation</dt>
 <dd><p>Pre-process modulation, a <code>data.frame</code> or <code>matrix</code>,
 if specified, must have 8760 rows and 1 or 4 columns.</p></dd>
+
+
 <dt>add_prefix</dt>
 <dd><p>If <code>TRUE</code> (the default), <code>cluster_name</code> will be prefixed by area name.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical, overwrite the cluster or not.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -154,7 +175,7 @@ if specified, must have 8760 rows and 1 or 4 columns.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

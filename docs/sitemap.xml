@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>/articles/antaresEditObject.html</loc>
   </url>
   <url>
@@ -25,9 +28,6 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
     <loc>/news/index.html</loc>
   </url>
   <url>
@@ -35,6 +35,9 @@
   </url>
   <url>
     <loc>/reference/backupStudy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check-version.html</loc>
   </url>
   <url>
     <loc>/reference/checkRemovedArea.html</loc>
@@ -46,7 +49,13 @@
     <loc>/reference/copyOutput.html</loc>
   </url>
   <url>
+    <loc>/reference/create-binding-constraint.html</loc>
+  </url>
+  <url>
     <loc>/reference/create-cluster.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create-study.html</loc>
   </url>
   <url>
     <loc>/reference/createArea.html</loc>
@@ -58,10 +67,10 @@
     <loc>/reference/createCluster.html</loc>
   </url>
   <url>
-    <loc>/reference/createDistrict.html</loc>
+    <loc>/reference/createDSR.html</loc>
   </url>
   <url>
-    <loc>/reference/createDSR.html</loc>
+    <loc>/reference/createDistrict.html</loc>
   </url>
   <url>
     <loc>/reference/createLink.html</loc>
@@ -97,6 +106,12 @@
     <loc>/reference/filteringOptions.html</loc>
   </url>
   <url>
+    <loc>/reference/getJobLogs.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getJobs.html</loc>
+  </url>
+  <url>
     <loc>/reference/getPlaylist.html</loc>
   </url>
   <url>
@@ -113,6 +128,9 @@
   </url>
   <url>
     <loc>/reference/propertiesLinkOptions.html</loc>
+  </url>
+  <url>
+    <loc>/reference/read-ini.html</loc>
   </url>
   <url>
     <loc>/reference/readIniFile.html</loc>
@@ -142,6 +160,9 @@
     <loc>/reference/scenario-builder.html</loc>
   </url>
   <url>
+    <loc>/reference/searchStudy.html</loc>
+  </url>
+  <url>
     <loc>/reference/setAPImode.html</loc>
   </url>
   <url>
@@ -169,6 +190,9 @@
     <loc>/reference/variant.html</loc>
   </url>
   <url>
+    <loc>/reference/write-ini.html</loc>
+  </url>
+  <url>
     <loc>/reference/writeEconomicOptions.html</loc>
   </url>
   <url>
@@ -176,6 +200,9 @@
   </url>
   <url>
     <loc>/reference/writeInputTS.html</loc>
+  </url>
+  <url>
+    <loc>/reference/writeMiscGen.html</loc>
   </url>
   <url>
     <loc>/reference/writeOutputValues.html</loc>

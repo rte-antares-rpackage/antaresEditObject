@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -72,56 +72,75 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createDistrict</span><span class="op">(</span>
-  <span class="va">name</span>,
-  caption <span class="op">=</span> <span class="cn">NULL</span>,
-  comments <span class="op">=</span> <span class="cn">NULL</span>,
-  apply_filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"add-all"</span>, <span class="st">"remove-all"</span><span class="op">)</span>,
-  add_area <span class="op">=</span> <span class="cn">NULL</span>,
-  remove_area <span class="op">=</span> <span class="cn">NULL</span>,
-  output <span class="op">=</span> <span class="cn">FALSE</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createDistrict</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  caption <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  comments <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  apply_filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"add-all"</span>, <span class="st">"remove-all"</span><span class="op">)</span>,</span>
+<span>  add_area <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  remove_area <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>name</dt>
 <dd><p>District's name.</p></dd>
+
+
 <dt>caption</dt>
 <dd><p>Caption for the district.</p></dd>
+
+
 <dt>comments</dt>
 <dd><p>Comments for the district.</p></dd>
+
+
 <dt>apply_filter</dt>
 <dd><p>Possible values are <code>add-all</code> to add all areas to the district,
 <code>remove-all</code> to clear the district, or <code>none</code> (default) to don't apply a filter.</p></dd>
+
+
 <dt>add_area</dt>
 <dd><p>Character vector of area(s) to add to the district.</p></dd>
+
+
 <dt>remove_area</dt>
 <dd><p>Character vector of area(s) to remove from the district.</p></dd>
+
+
 <dt>output</dt>
 <dd><p>Logical, compute the results for the district or not?</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical, should the district be overwritten if already exist?</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">createDistrict</span><span class="op">(</span></span>
-<span class="r-in">  name <span class="op">=</span> <span class="st">"mydistrict"</span>,</span>
-<span class="r-in">  apply_filter <span class="op">=</span> <span class="st">"add-all"</span>,</span>
-<span class="r-in">  remove_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr"</span>, <span class="st">"be"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">createDistrict</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"mydistrict"</span>,</span></span>
+<span class="r-in"><span>  apply_filter <span class="op">=</span> <span class="st">"add-all"</span>,</span></span>
+<span class="r-in"><span>  remove_area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr"</span>, <span class="st">"be"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -136,7 +155,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

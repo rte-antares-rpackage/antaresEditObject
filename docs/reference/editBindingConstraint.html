@@ -30,7 +30,7 @@ Update an existing binding constraint in an Antares study."><!-- mathjax --><scr
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,60 +74,77 @@ Update an existing binding constraint in an Antares study."><!-- mathjax --><scr
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">editBindingConstraint</span><span class="op">(</span>
-  <span class="va">name</span>,
-  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">tolower</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span>,
-  values <span class="op">=</span> <span class="cn">NULL</span>,
-  enabled <span class="op">=</span> <span class="cn">NULL</span>,
-  timeStep <span class="op">=</span> <span class="cn">NULL</span>,
-  operator <span class="op">=</span> <span class="cn">NULL</span>,
-  coefficients <span class="op">=</span> <span class="cn">NULL</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">editBindingConstraint</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">tolower</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span>,</span>
+<span>  values <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  enabled <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  timeStep <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  operator <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  coefficients <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>name</dt>
 <dd><p>The name for the binding constraint.</p></dd>
+
+
 <dt>id</dt>
 <dd><p>An id, default is to use the name.</p></dd>
+
+
 <dt>values</dt>
 <dd><p>Values used by the constraint.
 It contains one line per time step and three columns "less", "greater" and "equal".</p></dd>
+
+
 <dt>enabled</dt>
 <dd><p>Logical, is the constraint enabled ?</p></dd>
+
+
 <dt>timeStep</dt>
 <dd><p>Time step the constraint applies to : <code>hourly</code>, <code>daily</code> or <code>weekly</code>.</p></dd>
+
+
 <dt>operator</dt>
 <dd><p>Type of constraint: equality, inequality on one side or both sides.</p></dd>
+
+
 <dt>coefficients</dt>
 <dd><p>A named vector containing the coefficients used by the constraint.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="createBindingConstraint.html">createBindingConstraint()</a></code> to create new binding constraints, <code><a href="removeBindingConstraint.html">removeBindingConstraint()</a></code> to remove binding constraints.</p></div>
+    <div class="dont-index"><p><code><a href="create-binding-constraint.html">createBindingConstraint()</a></code> to create new binding constraints, <code><a href="removeBindingConstraint.html">removeBindingConstraint()</a></code> to remove binding constraints.</p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">editBindingConstraint</span><span class="op">(</span></span>
-<span class="r-in">  name <span class="op">=</span> <span class="st">"myconstraint"</span>, </span>
-<span class="r-in">  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">8760</span> <span class="op">*</span> <span class="fl">3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, </span>
-<span class="r-in">  enabled <span class="op">=</span> <span class="cn">FALSE</span>, </span>
-<span class="r-in">  timeStep <span class="op">=</span> <span class="st">"hourly"</span>,</span>
-<span class="r-in">  operator <span class="op">=</span> <span class="st">"both"</span>,</span>
-<span class="r-in">  coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr%de"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">editBindingConstraint</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"myconstraint"</span>, </span></span>
+<span class="r-in"><span>  values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">8760</span> <span class="op">*</span> <span class="fl">3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  enabled <span class="op">=</span> <span class="cn">FALSE</span>, </span></span>
+<span class="r-in"><span>  timeStep <span class="op">=</span> <span class="st">"hourly"</span>,</span></span>
+<span class="r-in"><span>  operator <span class="op">=</span> <span class="st">"both"</span>,</span></span>
+<span class="r-in"><span>  coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr%de"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -142,7 +159,7 @@ It contains one line per time step and three columns "less", "greater" and "equa
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -30,7 +30,7 @@ Remove a cluster, thermal or RES (renewable energy source), and all its data."><
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,36 +74,45 @@ Remove a cluster, thermal or RES (renewable energy source), and all its data."><
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">removeCluster</span><span class="op">(</span>
-  <span class="va">area</span>,
-  <span class="va">cluster_name</span>,
-  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">removeClusterRES</span><span class="op">(</span>
-  <span class="va">area</span>,
-  <span class="va">cluster_name</span>,
-  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">removeCluster</span><span class="op">(</span></span>
+<span>  <span class="va">area</span>,</span>
+<span>  <span class="va">cluster_name</span>,</span>
+<span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">removeClusterRES</span><span class="op">(</span></span>
+<span>  <span class="va">area</span>,</span>
+<span>  <span class="va">cluster_name</span>,</span>
+<span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>area</dt>
 <dd><p>The area where to create the cluster.</p></dd>
+
+
 <dt>cluster_name</dt>
 <dd><p>Name for the cluster, it will prefixed by area name, unless you set <code>add_prefix = FALSE</code>.</p></dd>
+
+
 <dt>add_prefix</dt>
 <dd><p>If <code>TRUE</code> (the default), <code>cluster_name</code> will be prefixed by area name.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -113,16 +122,16 @@ Remove a cluster, thermal or RES (renewable energy source), and all its data."><
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu"><a href="create-cluster.html">createCluster</a></span><span class="op">(</span></span>
-<span class="r-in">  area <span class="op">=</span> <span class="st">"fr"</span>, </span>
-<span class="r-in">  cluster_name <span class="op">=</span> <span class="st">"fr_gas"</span>,</span>
-<span class="r-in">  group <span class="op">=</span> <span class="st">"other"</span>, </span>
-<span class="r-in">  `marginal-cost` <span class="op">=</span> <span class="fl">50</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">removeCluster</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, cluster_name <span class="op">=</span> <span class="st">"fr_gas"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="create-cluster.html">createCluster</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  area <span class="op">=</span> <span class="st">"fr"</span>, </span></span>
+<span class="r-in"><span>  cluster_name <span class="op">=</span> <span class="st">"fr_gas"</span>,</span></span>
+<span class="r-in"><span>  group <span class="op">=</span> <span class="st">"other"</span>, </span></span>
+<span class="r-in"><span>  `marginal-cost` <span class="op">=</span> <span class="fl">50</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">removeCluster</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, cluster_name <span class="op">=</span> <span class="st">"fr_gas"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -137,7 +146,7 @@ Remove a cluster, thermal or RES (renewable energy source), and all its data."><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

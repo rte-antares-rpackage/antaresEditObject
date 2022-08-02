@@ -30,7 +30,7 @@ Edit a link between two areas in an Antares study."><!-- mathjax --><script src=
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,55 +74,74 @@ Edit a link between two areas in an Antares study."><!-- mathjax --><script src=
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">editLink</span><span class="op">(</span>
-  <span class="va">from</span>,
-  <span class="va">to</span>,
-  hurdles_cost <span class="op">=</span> <span class="cn">NULL</span>,
-  transmission_capacities <span class="op">=</span> <span class="cn">NULL</span>,
-  asset_type <span class="op">=</span> <span class="cn">NULL</span>,
-  display_comments <span class="op">=</span> <span class="cn">NULL</span>,
-  filter_synthesis <span class="op">=</span> <span class="cn">NULL</span>,
-  filter_year_by_year <span class="op">=</span> <span class="cn">NULL</span>,
-  dataLink <span class="op">=</span> <span class="cn">NULL</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">editLink</span><span class="op">(</span></span>
+<span>  <span class="va">from</span>,</span>
+<span>  <span class="va">to</span>,</span>
+<span>  hurdles_cost <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  transmission_capacities <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  asset_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  display_comments <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filter_synthesis <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filter_year_by_year <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataLink <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tsLink <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>from</dt>
+    <dl><dt>from, to</dt>
 <dd><p>The two areas linked together.</p></dd>
-<dt>to</dt>
-<dd><p>The two areas linked together.</p></dd>
+
+
 <dt>hurdles_cost</dt>
 <dd><p>Logical, which is used to state whether (linear)
 transmission fees should be taken into account or not in economy and adequacy simulations</p></dd>
+
+
 <dt>transmission_capacities</dt>
 <dd><p>Character, one of <code>enabled</code>, <code>ignore</code> or <code>infinite</code>, which is used to state whether
 the capacities to consider are those indicated in 8760-hour arrays or
 if zero or infinite values should be used instead (actual values / set to zero / set to infinite)</p></dd>
+
+
 <dt>asset_type</dt>
 <dd><p>Character, one of <code>ac</code>, <code>dc</code>, <code>gas</code>, <code>virt</code> or <code>other</code>. Used to
 state whether the link is either an AC component (subject to Kirchhoff’s laws), a DC component,
 or another type of asset.</p></dd>
+
+
 <dt>display_comments</dt>
 <dd><p>Logical, display comments or not.</p></dd>
+
+
 <dt>filter_synthesis</dt>
 <dd><p>Output synthesis.</p></dd>
+
+
 <dt>filter_year_by_year</dt>
 <dd><p>Output year-by-year.</p></dd>
+
+
 <dt>dataLink</dt>
-<dd><p>For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
-trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
-PST min, PST max.
-If <code>NULL</code> (default), a matrix whose rows are equal to <code>1, 1, 0, 0, 0, 0, 0, 0</code> is set. See Details</p></dd>
+<dd><p>See Details section below.</p></dd>
+
+
+<dt>tsLink</dt>
+<dd><p>Transmission capacities time series. First N columns are direct TS, following N are indirect ones.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -135,13 +154,13 @@ If <code>NULL</code> (default), a matrix whose rows are equal to <code>1, 1, 0, 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">editLink</span><span class="op">(</span></span>
-<span class="r-in">  from <span class="op">=</span> <span class="st">"area1"</span>,</span>
-<span class="r-in">  to <span class="op">=</span> <span class="st">"area2"</span>,</span>
-<span class="r-in">  transmission_capacities <span class="op">=</span> <span class="st">"infinite"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">editLink</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  from <span class="op">=</span> <span class="st">"area1"</span>,</span></span>
+<span class="r-in"><span>  to <span class="op">=</span> <span class="st">"area2"</span>,</span></span>
+<span class="r-in"><span>  transmission_capacities <span class="op">=</span> <span class="st">"infinite"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -156,7 +175,7 @@ If <code>NULL</code> (default), a matrix whose rows are equal to <code>1, 1, 0, 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

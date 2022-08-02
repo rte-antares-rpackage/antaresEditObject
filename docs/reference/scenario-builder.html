@@ -30,7 +30,7 @@ Read, create &amp;amp; update scenario builder."><!-- mathjax --><script src="ht
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,121 +74,157 @@ Read, create &amp;amp; update scenario builder."><!-- mathjax --><script src="ht
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">scenarioBuilder</span><span class="op">(</span>
-  <span class="va">n_scenario</span>,
-  n_mc <span class="op">=</span> <span class="cn">NULL</span>,
-  areas <span class="op">=</span> <span class="cn">NULL</span>,
-  areas_rand <span class="op">=</span> <span class="cn">NULL</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">readScenarioBuilder</span><span class="op">(</span>
-  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,
-  as_matrix <span class="op">=</span> <span class="cn">TRUE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">updateScenarioBuilder</span><span class="op">(</span>
-  <span class="va">ldata</span>,
-  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,
-  series <span class="op">=</span> <span class="cn">NULL</span>,
-  clusters_areas <span class="op">=</span> <span class="cn">NULL</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="fu">clearScenarioBuilder</span><span class="op">(</span>
-  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenarioBuilder</span><span class="op">(</span></span>
+<span>  <span class="va">n_scenario</span>,</span>
+<span>  n_mc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  areas <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  areas_rand <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">readScenarioBuilder</span><span class="op">(</span></span>
+<span>  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,</span>
+<span>  as_matrix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">updateScenarioBuilder</span><span class="op">(</span></span>
+<span>  <span class="va">ldata</span>,</span>
+<span>  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,</span>
+<span>  series <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  clusters_areas <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  links <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">clearScenarioBuilder</span><span class="op">(</span></span>
+<span>  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n_scenario</dt>
 <dd><p>Number of scenario.</p></dd>
+
+
 <dt>n_mc</dt>
 <dd><p>Number of Monte-Carlo years.</p></dd>
+
+
 <dt>areas</dt>
 <dd><p>Areas to use in scenario builder, if <code>NULL</code> (default) all areas in Antares study are used.</p></dd>
+
+
 <dt>areas_rand</dt>
 <dd><p>Areas for which to use <code>"rand"</code>.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
+
 <dt>ruleset</dt>
 <dd><p>Ruleset to read.</p></dd>
+
+
 <dt>as_matrix</dt>
 <dd><p>If <code>TRUE</code> (default) return a <code>matrix</code>, else a <code>list</code>.</p></dd>
+
+
 <dt>ldata</dt>
 <dd><p>A <code>matrix</code> obtained with <code>scenarioBuilder</code>,
 or a named list of matrices obtained with <code>scenarioBuilder</code>, names must be
-'l', 'h', 'w', 's', 't' or 'r', depending on the series to update.</p></dd>
+'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.</p></dd>
+
+
 <dt>series</dt>
 <dd><p>Name(s) of the serie(s) to update if <code>ldata</code> is a single <code>matrix</code>.</p></dd>
+
+
 <dt>clusters_areas</dt>
 <dd><p>A <code>data.table</code> with two columns <code>area</code> and <code>cluster</code>
 to identify area/cluster couple to update for thermal or renewable series.
 Default is to read clusters description and update all couples area/cluster.</p></dd>
+
+
+<dt>links</dt>
+<dd><p>Links to use if series is <code>"ntc"</code>.
+Either a simple vector with links described as <code>"area01%area02</code> or a <code>data.table</code> with two columns <code>from</code> and <code>to</code>.
+Default is to read existing links and update them all.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>scenarioBuilder</code> : a <code>matrix</code><code>readScenarioBuilder</code> : a <code>list</code> of <code>matrix</code> or <code>list</code> according to <code>as_matrix</code> parameters.</p>
+    
+
+<p><code>scenarioBuilder</code> : a <code>matrix</code></p>
+
+
+
+<p><code>readScenarioBuilder</code> : a <code>list</code> of <code>matrix</code> or <code>list</code> according to <code>as_matrix</code> parameters.</p>
+    </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p><code>series = "ntc"</code> is only available with Antares &gt;= 8.2.0.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># simulation path</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span></span>
-<span class="r-in">  path <span class="op">=</span> <span class="st">"pat/to/simulation"</span>,</span>
-<span class="r-in">  simulation <span class="op">=</span> <span class="st">"input"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a scenario builder matrix</span></span>
-<span class="r-in"><span class="va">sbuilder</span> <span class="op">&lt;-</span> <span class="fu">scenarioBuilder</span><span class="op">(</span></span>
-<span class="r-in">  n_scenario <span class="op">=</span> <span class="fl">51</span>,</span>
-<span class="r-in">  n_mc <span class="op">=</span> <span class="fl">2040</span>,</span>
-<span class="r-in">  areas_rand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr"</span>, <span class="st">"be"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">sbuilder</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sbuilder</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Read previous scenario builder</span></span>
-<span class="r-in"><span class="co"># in a matrix format</span></span>
-<span class="r-in"><span class="va">prev_sb</span> <span class="op">&lt;-</span> <span class="fu">readScenarioBuilder</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Update scenario builder</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># for load serie</span></span>
-<span class="r-in"><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"load"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># equivalent as</span></span>
-<span class="r-in"><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>l <span class="op">=</span> <span class="va">sbuilder</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># update several series</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># same input</span></span>
-<span class="r-in"><span class="va">sbuilder</span></span>
-<span class="r-in"><span class="fu">updateScenarioBuilder</span><span class="op">(</span></span>
-<span class="r-in">  ldata <span class="op">=</span> <span class="va">sbuilder</span>, </span>
-<span class="r-in">  series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"hydro"</span>, <span class="st">"solar"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># different input</span></span>
-<span class="r-in"><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">  l <span class="op">=</span> <span class="va">load_sb</span>,</span>
-<span class="r-in">  h <span class="op">=</span> <span class="va">hydro_sb</span>,</span>
-<span class="r-in">  s <span class="op">=</span> <span class="va">solar_sb</span></span>
-<span class="r-in"><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># simulation path</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  path <span class="op">=</span> <span class="st">"pat/to/simulation"</span>,</span></span>
+<span class="r-in"><span>  simulation <span class="op">=</span> <span class="st">"input"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a scenario builder matrix</span></span></span>
+<span class="r-in"><span><span class="va">sbuilder</span> <span class="op">&lt;-</span> <span class="fu">scenarioBuilder</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_scenario <span class="op">=</span> <span class="fl">51</span>,</span></span>
+<span class="r-in"><span>  n_mc <span class="op">=</span> <span class="fl">2040</span>,</span></span>
+<span class="r-in"><span>  areas_rand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr"</span>, <span class="st">"be"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sbuilder</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sbuilder</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Read previous scenario builder</span></span></span>
+<span class="r-in"><span><span class="co"># in a matrix format</span></span></span>
+<span class="r-in"><span><span class="va">prev_sb</span> <span class="op">&lt;-</span> <span class="fu">readScenarioBuilder</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Update scenario builder</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># for load serie</span></span></span>
+<span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"load"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># equivalent as</span></span></span>
+<span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>l <span class="op">=</span> <span class="va">sbuilder</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># update several series</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># same input</span></span></span>
+<span class="r-in"><span><span class="va">sbuilder</span></span></span>
+<span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  ldata <span class="op">=</span> <span class="va">sbuilder</span>, </span></span>
+<span class="r-in"><span>  series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"hydro"</span>, <span class="st">"solar"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># different input</span></span></span>
+<span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  l <span class="op">=</span> <span class="va">load_sb</span>,</span></span>
+<span class="r-in"><span>  h <span class="op">=</span> <span class="va">hydro_sb</span>,</span></span>
+<span class="r-in"><span>  s <span class="op">=</span> <span class="va">solar_sb</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -203,7 +239,7 @@ Default is to read clusters description and update all couples area/cluster.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

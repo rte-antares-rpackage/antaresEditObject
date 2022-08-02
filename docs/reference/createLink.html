@@ -30,7 +30,7 @@ Create a new link between two areas in an Antares study."><!-- mathjax --><scrip
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,48 +74,68 @@ Create a new link between two areas in an Antares study."><!-- mathjax --><scrip
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createLink</span><span class="op">(</span>
-  <span class="va">from</span>,
-  <span class="va">to</span>,
-  propertiesLink <span class="op">=</span> <span class="fu"><a href="propertiesLinkOptions.html">propertiesLinkOptions</a></span><span class="op">(</span><span class="op">)</span>,
-  dataLink <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createLink</span><span class="op">(</span></span>
+<span>  <span class="va">from</span>,</span>
+<span>  <span class="va">to</span>,</span>
+<span>  propertiesLink <span class="op">=</span> <span class="fu"><a href="propertiesLinkOptions.html">propertiesLinkOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  dataLink <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tsLink <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>from, to</dt>
 <dd><p>The two areas linked together.</p></dd>
+
+
 <dt>propertiesLink</dt>
 <dd><p>a named list containing the link properties, e.g. hurdles-cost
 or transmission-capacities for example. See <code><a href="propertiesLinkOptions.html">propertiesLinkOptions()</a></code>.</p></dd>
+
+
 <dt>dataLink</dt>
-<dd><p>For Antares v7, a matrix with eight column corresponding to : trans. capacity (direct)
-trans. capacity (indirect), hurdles cost (direct), hurdles cost (indirect), impedances, loop flow,
-PST min, PST max.
-If <code>NULL</code> (default), a matrix whose rows are equal to <code>1, 1, 0, 0, 0, 0, 0, 0</code> is set. See Details</p></dd>
+<dd><p>See Details section below.</p></dd>
+
+
+<dt>tsLink</dt>
+<dd><p>Transmission capacities time series. First N columns are direct TS, following N are indirect ones.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical, overwrite the previous between the two areas if exist</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>The eight times-series are:</p><ul><li><p><strong>NTC direct</strong> : the upstream-to-downstream capacity, in MW</p></li>
-<li><p><strong>NTC indirect</strong> : the downstream-to-upstream capacity, in MW</p></li>
-<li><p><strong>Hurdle cost direct</strong> : an upstream-to-downstream transmission fee, in euro/MWh</p></li>
-<li><p><strong>Hurdle cost indirect</strong> : a downstream-to-upstream transmission fee, in euro/MWh</p></li>
-<li><p><strong>Impedances</strong> : virtual impedances that are used in economy simulations to give a physical meaning to raw outputs, when no binding constraints have been defined to enforce Kirchhoff's laws.</p></li>
-<li><p><strong>Loop flow</strong> : amount of power flowing circularly though the grid when all "nodes" are perfectly balanced (no import and no export).</p></li>
-<li><p><strong>PST min</strong> : lower bound of phase-shifting that can be reached by a PST installed on the link, if any.</p></li>
-<li><p><strong>PST max</strong> : upper bound of phase-shifting that can be reached by a PST installed on the link, if any.</p></li>
+    <p>The eight potential times-series are:</p><ul><li><p><strong>NTC direct</strong> : the upstream-to-downstream capacity, in MW. Default to <code>1</code>.</p></li>
+<li><p><strong>NTC indirect</strong> : the downstream-to-upstream capacity, in MW. Default to <code>1</code>.</p></li>
+<li><p><strong>Hurdle cost direct</strong> : an upstream-to-downstream transmission fee, in euro/MWh. Default to <code>0</code>.</p></li>
+<li><p><strong>Hurdle cost indirect</strong> : a downstream-to-upstream transmission fee, in euro/MWh. Default to <code>0</code>.</p></li>
+<li><p><strong>Impedances</strong> : virtual impedances that are used in economy simulations to give a physical meaning to raw outputs,
+when no binding constraints have been defined to enforce Kirchhoff's laws. Default to <code>0</code>.</p></li>
+<li><p><strong>Loop flow</strong> : amount of power flowing circularly though the grid when all "nodes" are perfectly balanced (no import and no export). Default to <code>0</code>.</p></li>
+<li><p><strong>PST min</strong> : lower bound of phase-shifting that can be reached by a PST installed on the link, if any. Default to <code>0</code>.</p></li>
+<li><p><strong>PST max</strong> : upper bound of phase-shifting that can be reached by a PST installed on the link, if any. Default to <code>0</code>.</p></li>
+</ul><p>According to Antares version, usage may vary :</p>
+<p><strong>&lt; v7.0.0</strong> : 5 first columns are used in the following order: NTC direct, NTC indirect, Impedances, Hurdle cost direct,
+Hurdle cost indirect.</p>
+<p><strong>&gt;= v7.0.0</strong> : 8 columns in order above are expected.</p>
+<p><strong>&gt;= v8.2.0</strong> : there's 2 cases :</p><ul><li><p>8 columns are provided: 2 first are used in <code>tsLink</code>, other 6 are used for link data</p></li>
+<li><p>6 columns are provided: you must provide NTC data in <code>tsLink</code> argument.</p></li>
 </ul></div>
     <div id="note">
     <h2>Note</h2>
@@ -123,24 +143,25 @@ If <code>NULL</code> (default), a matrix whose rows are equal to <code>1, 1, 0, 
 For example, link between "fr" and "be" will appear under "be".
 So the areas are sorted before creating the link between them, and <code>dataLink</code> is
 rearranged to match the new order.</p>
-<p>For Antares v7 the eight columns must conform to above order. For Antares v6, only five columns are
-expected, and they must follow this other order: NTC direct, NTC indirect, Impedances, Hurdle cost direct,
-Hurdle cost indirect.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="editLink.html">editLink()</a></code>, <code><a href="removeLink.html">removeLink()</a></code></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Set simulation path</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"PATH/TO/SIMULATION"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a link between two areas</span></span>
-<span class="r-in"><span class="fu">createLink</span><span class="op">(</span>from <span class="op">=</span> <span class="st">"first_area"</span>, to  <span class="op">=</span> <span class="st">"second_area"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Set simulation path</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"PATH/TO/SIMULATION"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a link between two areas</span></span></span>
+<span class="r-in"><span><span class="fu">createLink</span><span class="op">(</span>from <span class="op">=</span> <span class="st">"first_area"</span>, to  <span class="op">=</span> <span class="st">"second_area"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -155,7 +176,7 @@ Hurdle cost indirect.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

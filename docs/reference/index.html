@@ -29,7 +29,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -78,6 +78,10 @@
         </td>
         <td><p>Create a backup with an Antares Study</p></td>
       </tr><tr><td>
+          <p><code><a href="check-version.html">is_antares_v7()</a></code> <code><a href="check-version.html">is_antares_v820()</a></code> </p>
+        </td>
+        <td><p>Is study an Antares v7 study ?</p></td>
+      </tr><tr><td>
           <p><code><a href="checkRemovedArea.html">checkRemovedArea()</a></code> </p>
         </td>
         <td><p>Seek for a removed area</p></td>
@@ -90,25 +94,29 @@
         </td>
         <td><p>Copy of the output files of an Antares study</p></td>
       </tr><tr><td>
+          <p><code><a href="create-binding-constraint.html">createBindingConstraint()</a></code> <code><a href="create-binding-constraint.html">createBindingConstraintBulk()</a></code> </p>
+        </td>
+        <td><p>Create a binding constraint</p></td>
+      </tr><tr><td>
           <p><code><a href="create-cluster.html">createCluster()</a></code> <code><a href="create-cluster.html">createClusterRES()</a></code> </p>
         </td>
         <td><p>Create a cluster</p></td>
+      </tr><tr><td>
+          <p><code><a href="create-study.html">createStudy()</a></code> <code><a href="create-study.html">createStudyAPI()</a></code> </p>
+        </td>
+        <td><p>Create an empty Antares study</p></td>
       </tr><tr><td>
           <p><code><a href="createArea.html">createArea()</a></code> </p>
         </td>
         <td><p>Create an area in an Antares study</p></td>
       </tr><tr><td>
-          <p><code><a href="createBindingConstraint.html">createBindingConstraint()</a></code> </p>
+          <p><code><a href="createDSR.html">createDSR()</a></code> <code><a href="createDSR.html">getCapacityDSR()</a></code> <code><a href="createDSR.html">editDSR()</a></code> </p>
         </td>
-        <td><p>Create a binding constraint</p></td>
+        <td><p>Create a Demand Side Response (DSR)</p></td>
       </tr><tr><td>
           <p><code><a href="createDistrict.html">createDistrict()</a></code> </p>
         </td>
         <td><p>Create a district</p></td>
-      </tr><tr><td>
-          <p><code><a href="createDSR.html">createDSR()</a></code> <code><a href="createDSR.html">getCapacityDSR()</a></code> <code><a href="createDSR.html">editDSR()</a></code> </p>
-        </td>
-        <td><p>Create a Demand Side Response (DSR)</p></td>
       </tr><tr><td>
           <p><code><a href="createLink.html">createLink()</a></code> </p>
         </td>
@@ -117,10 +125,6 @@
           <p><code><a href="createPSP.html">createPSP()</a></code> <code><a href="createPSP.html">getCapacityPSP()</a></code> <code><a href="createPSP.html">editPSP()</a></code> </p>
         </td>
         <td><p>Create a Pumped Storage Power plant (PSP)</p></td>
-      </tr><tr><td>
-          <p><code><a href="createStudy.html">createStudy()</a></code> </p>
-        </td>
-        <td><p>Create an empty Antares study</p></td>
       </tr><tr><td>
           <p><code><a href="dicoGeneralSettings.html">dicoGeneralSettings()</a></code> </p>
         </td>
@@ -150,13 +154,17 @@
         </td>
         <td><p>Output profile options for creating an area</p></td>
       </tr><tr><td>
+          <p><code><a href="getJobLogs.html">getJobLogs()</a></code> </p>
+        </td>
+        <td><p>Retrieve job log from API</p></td>
+      </tr><tr><td>
+          <p><code><a href="getJobs.html">getJobs()</a></code> </p>
+        </td>
+        <td><p>Retrieve API jobs</p></td>
+      </tr><tr><td>
           <p><code><a href="getPlaylist.html">getPlaylist()</a></code> </p>
         </td>
         <td><p>Get the playlist of an Antares study</p></td>
-      </tr><tr><td>
-          <p><code><a href="is_antares_v7.html">is_antares_v7()</a></code> </p>
-        </td>
-        <td><p>Is study an Antares v7 study ?</p></td>
       </tr><tr><td>
           <p><code><a href="mockSimulationAPI.html">mockSimulationAPI()</a></code> </p>
         </td>
@@ -170,9 +178,9 @@
         </td>
         <td><p>Properties for creating a link</p></td>
       </tr><tr><td>
-          <p><code><a href="readIniFile.html">readIniFile()</a></code> </p>
+          <p><code><a href="read-ini.html">readIni()</a></code> <code><a href="read-ini.html">readIniFile()</a></code> <code><a href="read-ini.html">readIniAPI()</a></code> </p>
         </td>
-        <td><p>Read a INI file</p></td>
+        <td><p>Read configuration options from file or API</p></td>
       </tr><tr><td>
           <p><code><a href="remove-cluster.html">removeCluster()</a></code> <code><a href="remove-cluster.html">removeClusterRES()</a></code> </p>
         </td>
@@ -201,6 +209,10 @@
           <p><code><a href="scenario-builder.html">scenarioBuilder()</a></code> <code><a href="scenario-builder.html">readScenarioBuilder()</a></code> <code><a href="scenario-builder.html">updateScenarioBuilder()</a></code> <code><a href="scenario-builder.html">clearScenarioBuilder()</a></code> </p>
         </td>
         <td><p>Read, create &amp; update scenario builder</p></td>
+      </tr><tr><td>
+          <p><code><a href="searchStudy.html">searchStudy()</a></code> </p>
+        </td>
+        <td><p>Search study in AntaREST</p></td>
       </tr><tr><td>
           <p><code><a href="setAPImode.html">setAPImode()</a></code> </p>
         </td>
@@ -238,17 +250,21 @@
         </td>
         <td><p>Create a study's variant</p></td>
       </tr><tr><td>
+          <p><code><a href="write-ini.html">writeIni()</a></code> <code><a href="write-ini.html">writeIniFile()</a></code> <code><a href="write-ini.html">writeIniAPI()</a></code> </p>
+        </td>
+        <td><p>Write configuration options in file or API</p></td>
+      </tr><tr><td>
           <p><code><a href="writeEconomicOptions.html">writeEconomicOptions()</a></code> </p>
         </td>
         <td><p>Write Economic Options</p></td>
       </tr><tr><td>
-          <p><code><a href="writeIni.html">writeIni()</a></code> </p>
-        </td>
-        <td><p>Write ini file from list obtain by antaresRead:::readIniFile and modify by user</p></td>
-      </tr><tr><td>
           <p><code><a href="writeInputTS.html">writeInputTS()</a></code> </p>
         </td>
         <td><p>Write input time series</p></td>
+      </tr><tr><td>
+          <p><code><a href="writeMiscGen.html">writeMiscGen()</a></code> </p>
+        </td>
+        <td><p>Write Misc Gen data</p></td>
       </tr><tr><td>
           <p><code><a href="writeOutputValues.html">writeOutputValues()</a></code> </p>
         </td>
@@ -274,7 +290,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

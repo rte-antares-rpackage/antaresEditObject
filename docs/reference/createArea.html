@@ -30,7 +30,7 @@ Create a new area in an Antares study."><!-- mathjax --><script src="https://cdn
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,38 +74,53 @@ Create a new area in an Antares study."><!-- mathjax --><script src="https://cdn
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createArea</span><span class="op">(</span>
-  <span class="va">name</span>,
-  color <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">230</span>, <span class="fl">108</span>, <span class="fl">44</span>, max <span class="op">=</span> <span class="fl">255</span><span class="op">)</span>,
-  localization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,
-  nodalOptimization <span class="op">=</span> <span class="fu"><a href="nodalOptimizationOptions.html">nodalOptimizationOptions</a></span><span class="op">(</span><span class="op">)</span>,
-  filtering <span class="op">=</span> <span class="fu"><a href="filteringOptions.html">filteringOptions</a></span><span class="op">(</span><span class="op">)</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createArea</span><span class="op">(</span></span>
+<span>  <span class="va">name</span>,</span>
+<span>  color <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">230</span>, <span class="fl">108</span>, <span class="fl">44</span>, max <span class="op">=</span> <span class="fl">255</span><span class="op">)</span>,</span>
+<span>  localization <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  nodalOptimization <span class="op">=</span> <span class="fu"><a href="nodalOptimizationOptions.html">nodalOptimizationOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  filtering <span class="op">=</span> <span class="fu"><a href="filteringOptions.html">filteringOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>name</dt>
 <dd><p>Name of the area as a character, without punctuation except - and _.</p></dd>
+
+
 <dt>color</dt>
 <dd><p>Color of the node</p></dd>
+
+
 <dt>localization</dt>
 <dd><p>Localization on the map</p></dd>
+
+
 <dt>nodalOptimization</dt>
 <dd><p>Nodal optimization parameters, see <code><a href="nodalOptimizationOptions.html">nodalOptimizationOptions()</a></code>.</p></dd>
+
+
 <dt>filtering</dt>
 <dd><p>Filtering parameters, see [filteringOptions().</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Overwrite the area if already exist.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -114,17 +129,17 @@ Create a new area in an Antares study."><!-- mathjax --><script src="https://cdn
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Set simulation path</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"PATH/TO/SIMULATION"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a new area</span></span>
-<span class="r-in"><span class="fu">createArea</span><span class="op">(</span><span class="st">"fictive_area"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Set simulation path</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"PATH/TO/SIMULATION"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a new area</span></span></span>
+<span class="r-in"><span><span class="fu">createArea</span><span class="op">(</span><span class="st">"fictive_area"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -139,7 +154,7 @@ Create a new area in an Antares study."><!-- mathjax --><script src="https://cdn
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

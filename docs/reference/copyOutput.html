@@ -30,7 +30,7 @@ Copy of the output files of an Antares study."><!-- mathjax --><script src="http
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,7 +74,7 @@ Copy of the output files of an Antares study."><!-- mathjax --><script src="http
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">copyOutput</span><span class="op">(</span><span class="va">opts</span>, <span class="va">extname</span>, mcYears <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">copyOutput</span><span class="op">(</span><span class="va">opts</span>, <span class="va">extname</span>, mcYears <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -82,26 +82,31 @@ Copy of the output files of an Antares study."><!-- mathjax --><script src="http
     <dl><dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath</a></code></p></dd>
+
+
 <dt>extname</dt>
 <dd><p>Extension to be added to the name of the study, to be used as a name for the newly created folder.</p></dd>
+
+
 <dt>mcYears</dt>
 <dd><p>mcYears to copy. Can be <code>"all"</code>.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Set simulation path</span></span>
-<span class="r-in"><span class="va">opts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"PATH/TO/SIMULATION"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a new area</span></span>
-<span class="r-in"><span class="fu">copyOutput</span><span class="op">(</span><span class="va">opts</span>, <span class="st">"_adq"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Set simulation path</span></span></span>
+<span class="r-in"><span><span class="va">opts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"PATH/TO/SIMULATION"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a new area</span></span></span>
+<span class="r-in"><span><span class="fu">copyOutput</span><span class="op">(</span><span class="va">opts</span>, <span class="st">"_adq"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -116,7 +121,7 @@ Copy of the output files of an Antares study."><!-- mathjax --><script src="http
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

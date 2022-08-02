@@ -30,7 +30,7 @@ Remove a link between two areas in an Antares study."><!-- mathjax --><script sr
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,30 +74,33 @@ Remove a link between two areas in an Antares study."><!-- mathjax --><script sr
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">removeLink</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">removeLink</span><span class="op">(</span><span class="va">from</span>, <span class="va">to</span>, opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>from</dt>
+    <dl><dt>from, to</dt>
 <dd><p>The two areas linked together.</p></dd>
-<dt>to</dt>
-<dd><p>The two areas linked together.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu"><a href="createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"myarea"</span>, to  <span class="op">=</span> <span class="st">"myarea2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">removeLink</span><span class="op">(</span>from <span class="op">=</span> <span class="st">"myarea"</span>, to  <span class="op">=</span> <span class="st">"myarea2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"myarea"</span>, to  <span class="op">=</span> <span class="st">"myarea2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">removeLink</span><span class="op">(</span>from <span class="op">=</span> <span class="st">"myarea"</span>, to  <span class="op">=</span> <span class="st">"myarea2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -112,7 +115,7 @@ Remove a link between two areas in an Antares study."><!-- mathjax --><script sr
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -46,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -98,78 +98,86 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></code></pre></div>
-<p>Antares v8.0.3 allow to work with renewable energy sources, implemented in Antares as a new functionnality: renewables clusters. Here’s a quick start guide to use those new features.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span></code></pre></div>
+<p>Antares v8.0.3 allow to work with renewable energy sources,
+implemented in Antares as a new functionnality: renewables clusters.
+Here’s a quick start guide to use those new features.</p>
 <p>As always, setup the study you want to use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/createStudy.html">createStudy</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">tmp</span>, study_name <span class="op">=</span> <span class="st">"res-study"</span><span class="op">)</span>
-<span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/create-study.html">createStudy</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">tmp</span>, study_name <span class="op">=</span> <span class="st">"res-study"</span><span class="op">)</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="activate-res">Activate RES<a class="anchor" aria-label="anchor" href="#activate-res"></a>
 </h2>
-<p>First you need to activate RES functionality, to do so you can use:</p>
+<p>First you need to activate RES functionality, to do so you can
+use:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/activateRES.html">activateRES</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>This will set <code>renewable-generation-modelling</code> parameters to <code>clusters</code> and create appropriate file structure to create RES clusters.</p>
-<p>You can also update <code>renewable-generation-modelling</code> parameters manually with:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/activateRES.html">activateRES</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>This will set <code>renewable-generation-modelling</code> parameters
+to <code>clusters</code> and create appropriate file structure to create
+RES clusters.</p>
+<p>You can also update <code>renewable-generation-modelling</code>
+parameters manually with:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings</a></span><span class="op">(</span>renewable.generation.modelling <span class="op">=</span> <span class="st">"clusters"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings</a></span><span class="op">(</span>renewable.generation.modelling <span class="op">=</span> <span class="st">"clusters"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="manipulate-clusters">Manipulate clusters<a class="anchor" aria-label="anchor" href="#manipulate-clusters"></a>
 </h2>
-<p>Like thermal clusters, there’s equivalent functions to create, edit and remove RES clusters:</p>
+<p>Like thermal clusters, there’s equivalent functions to create, edit
+and remove RES clusters:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># create an area to create a cluster in it</span>
-<span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area51"</span><span class="op">)</span>
-
-<span class="co"># Create a renewable cluster</span>
-<span class="fu"><a href="../reference/create-cluster.html">createClusterRES</a></span><span class="op">(</span>
-  area <span class="op">=</span> <span class="st">"area51"</span>, 
-  cluster_name <span class="op">=</span> <span class="st">"ren01"</span>, 
-  add_prefix <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="co"># Use an other group and some parameters</span>
-<span class="fu"><a href="../reference/create-cluster.html">createClusterRES</a></span><span class="op">(</span>
-  area <span class="op">=</span> <span class="st">"area51"</span>, 
-  cluster_name <span class="op">=</span> <span class="st">"ren02"</span>, 
-  group <span class="op">=</span> <span class="st">"Wind Offshore"</span>,
-  nominalcapacity <span class="op">=</span> <span class="fl">123</span>,
-  ts_interpretation <span class="op">=</span> <span class="st">"production-factor"</span>,
-  add_prefix <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># create an area to create a cluster in it</span></span>
+<span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area51"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a renewable cluster</span></span>
+<span><span class="fu"><a href="../reference/create-cluster.html">createClusterRES</a></span><span class="op">(</span></span>
+<span>  area <span class="op">=</span> <span class="st">"area51"</span>, </span>
+<span>  cluster_name <span class="op">=</span> <span class="st">"ren01"</span>, </span>
+<span>  add_prefix <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use an other group and some parameters</span></span>
+<span><span class="fu"><a href="../reference/create-cluster.html">createClusterRES</a></span><span class="op">(</span></span>
+<span>  area <span class="op">=</span> <span class="st">"area51"</span>, </span>
+<span>  cluster_name <span class="op">=</span> <span class="st">"ren02"</span>, </span>
+<span>  group <span class="op">=</span> <span class="st">"Wind Offshore"</span>,</span>
+<span>  nominalcapacity <span class="op">=</span> <span class="fl">123</span>,</span>
+<span>  ts_interpretation <span class="op">=</span> <span class="st">"production-factor"</span>,</span>
+<span>  add_prefix <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Edit an existing cluster with:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/edit-cluster.html">editClusterRES</a></span><span class="op">(</span>
-  area <span class="op">=</span> <span class="st">"area51"</span>, 
-  cluster_name <span class="op">=</span> <span class="st">"ren02"</span>, 
-  group <span class="op">=</span> <span class="st">"Solar Rooftop"</span>, <span class="co"># new group</span>
-  add_prefix <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/edit-cluster.html">editClusterRES</a></span><span class="op">(</span></span>
+<span>  area <span class="op">=</span> <span class="st">"area51"</span>, </span>
+<span>  cluster_name <span class="op">=</span> <span class="st">"ren02"</span>, </span>
+<span>  group <span class="op">=</span> <span class="st">"Solar Rooftop"</span>, <span class="co"># new group</span></span>
+<span>  add_prefix <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>And remove a cluster with:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/remove-cluster.html">removeClusterRES</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"area51"</span>, cluster_name <span class="op">=</span> <span class="st">"ren01"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/remove-cluster.html">removeClusterRES</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"area51"</span>, cluster_name <span class="op">=</span> <span class="st">"ren01"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="scenario-builder">Scenario builder<a class="anchor" aria-label="anchor" href="#scenario-builder"></a>
 </h2>
-<p>There’s a new type of serie allowed in scenario builder for renewable clusters called <code>r</code>:</p>
+<p>There’s a new type of serie allowed in scenario builder for renewable
+clusters called <code>r</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>r</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>      [,<span class="dv">1</span>] [,<span class="dv">2</span>] [,<span class="dv">3</span>]</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>area51   <span class="dv">1</span>    <span class="dv">2</span>    <span class="dv">3</span>  </span></code></pre></div>
 <p>To update the scenario builder, you can use:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># generate scenario</span>
-<span class="va">sbuilder</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scenario-builder.html">scenarioBuilder</a></span><span class="op">(</span>n_scenario <span class="op">=</span> <span class="fl">51</span><span class="op">)</span>
-
-<span class="co"># Update with:</span>
-<span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"renewables"</span><span class="op">)</span>
-<span class="co"># OR</span>
-<span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">sbuilder</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># generate scenario</span></span>
+<span><span class="va">sbuilder</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scenario-builder.html">scenarioBuilder</a></span><span class="op">(</span>n_scenario <span class="op">=</span> <span class="fl">51</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Update with:</span></span>
+<span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"renewables"</span><span class="op">)</span></span>
+<span><span class="co"># OR</span></span>
+<span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>r <span class="op">=</span> <span class="va">sbuilder</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
@@ -190,7 +198,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

@@ -30,7 +30,7 @@ Update optimization parameters and other preferences of an Antares study"><!-- m
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,86 +74,125 @@ Update optimization parameters and other preferences of an Antares study"><!-- m
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">updateOptimizationSettings</span><span class="op">(</span>
-  simplex.range <span class="op">=</span> <span class="cn">NULL</span>,
-  transmission.capacities <span class="op">=</span> <span class="cn">NULL</span>,
-  include.constraints <span class="op">=</span> <span class="cn">NULL</span>,
-  include.hurdlecosts <span class="op">=</span> <span class="cn">NULL</span>,
-  include.tc.min.stable.power <span class="op">=</span> <span class="cn">NULL</span>,
-  include.tc.min.up.down.time <span class="op">=</span> <span class="cn">NULL</span>,
-  include.dayahead <span class="op">=</span> <span class="cn">NULL</span>,
-  include.strategicreserve <span class="op">=</span> <span class="cn">NULL</span>,
-  include.spinningreserve <span class="op">=</span> <span class="cn">NULL</span>,
-  include.primaryreserve <span class="op">=</span> <span class="cn">NULL</span>,
-  include.exportmps <span class="op">=</span> <span class="cn">NULL</span>,
-  power.fluctuations <span class="op">=</span> <span class="cn">NULL</span>,
-  shedding.strategy <span class="op">=</span> <span class="cn">NULL</span>,
-  shedding.policy <span class="op">=</span> <span class="cn">NULL</span>,
-  unit.commitment.mode <span class="op">=</span> <span class="cn">NULL</span>,
-  number.of.cores.mode <span class="op">=</span> <span class="cn">NULL</span>,
-  renewable.generation.modelling <span class="op">=</span> <span class="cn">NULL</span>,
-  day.ahead.reserve.management <span class="op">=</span> <span class="cn">NULL</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">updateOptimizationSettings</span><span class="op">(</span></span>
+<span>  simplex.range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  transmission.capacities <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.constraints <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.hurdlecosts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.tc.min.stable.power <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.tc.min.up.down.time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.dayahead <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.strategicreserve <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.spinningreserve <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.primaryreserve <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.exportmps <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  power.fluctuations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shedding.strategy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shedding.policy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  unit.commitment.mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  number.of.cores.mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  renewable.generation.modelling <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  day.ahead.reserve.management <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>simplex.range</dt>
 <dd><p>week or day</p></dd>
+
+
 <dt>transmission.capacities</dt>
 <dd><p>true, false or infinite</p></dd>
+
+
 <dt>include.constraints</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.hurdlecosts</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.tc.min.stable.power</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.tc.min.up.down.time</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.dayahead</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.strategicreserve</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.spinningreserve</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.primaryreserve</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>include.exportmps</dt>
 <dd><p>true or false</p></dd>
+
+
 <dt>power.fluctuations</dt>
 <dd><p>free modulations, minimize excursions or minimize ramping</p></dd>
+
+
 <dt>shedding.strategy</dt>
 <dd><p>share margins</p></dd>
+
+
 <dt>shedding.policy</dt>
 <dd><p>shave peaks or minimize duration</p></dd>
+
+
 <dt>unit.commitment.mode</dt>
 <dd><p>fast or accurate</p></dd>
+
+
 <dt>number.of.cores.mode</dt>
 <dd><p>minimum, low, medium, high or maximum</p></dd>
+
+
 <dt>renewable.generation.modelling</dt>
 <dd><p>aggregated or clusters</p></dd>
+
+
 <dt>day.ahead.reserve.management</dt>
 <dd><p>global</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">updateOptimizationSettings</span><span class="op">(</span></span>
-<span class="r-in">  simplex.range <span class="op">=</span> <span class="st">"week"</span>, </span>
-<span class="r-in">  power.fluctuations <span class="op">=</span> <span class="st">"minimize ramping"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">updateOptimizationSettings</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  simplex.range <span class="op">=</span> <span class="st">"week"</span>, </span></span>
+<span class="r-in"><span>  power.fluctuations <span class="op">=</span> <span class="st">"minimize ramping"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -168,7 +207,7 @@ Update optimization parameters and other preferences of an Antares study"><!-- m
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -30,7 +30,7 @@ This function writes input time series in an Antares project."><!-- mathjax --><
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,44 +74,73 @@ This function writes input time series in an Antares project."><!-- mathjax --><
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">writeInputTS</span><span class="op">(</span>
-  <span class="va">area</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"hydroROR"</span>, <span class="st">"hydroSTOR"</span>, <span class="st">"wind"</span>, <span class="st">"solar"</span><span class="op">)</span>,
-  <span class="va">data</span>,
-  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeInputTS</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"hydroROR"</span>, <span class="st">"hydroSTOR"</span>, <span class="st">"wind"</span>, <span class="st">"solar"</span>, <span class="st">"tsLink"</span><span class="op">)</span>,</span>
+<span>  area <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  link <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>area</dt>
-<dd><p>The area where to write the input time series.</p></dd>
-<dt>type</dt>
-<dd><p>Serie to write: <code>"load"</code>, <code>"hydroROR"</code>, <code>"hydroSTOR"</code>,
-<code>"wind"</code> or <code>"solar"</code>.</p></dd>
-<dt>data</dt>
+    <dl><dt>data</dt>
 <dd><p>A 8760<em>N matrix of hourly time series, except when <code>type</code> is
 <code>"hydroSTOR"</code>. In this latter case, <code>data</code> must either be 365</em>N
 (Antares v7) or 12*N (v6 and earlier).</p></dd>
+
+
+<dt>type</dt>
+<dd><p>Serie to write: <code>"load"</code>, <code>"hydroROR"</code>, <code>"hydroSTOR"</code>,
+<code>"wind"</code>, <code>"solar"</code>, or <code>"tsLink"</code>.</p></dd>
+
+
+<dt>area</dt>
+<dd><p>The area where to write the input time series.</p></dd>
+
+
+<dt>link</dt>
+<dd><p>Link for which writing transmission capacities time series,
+must like <code>"area01%area02"</code> or <code>c("area01", "area02")</code>.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>Logical. Overwrite the values if a file already exists.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
+    </div>
+    <div id="warning">
+    <h2>Warning</h2>
+    
+
+
+<p>You cannot use <code>area</code> and <code>link</code> arguments at the same time.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">writeInputTS</span><span class="op">(</span><span class="st">"fictive_area"</span>, type <span class="op">=</span> <span class="st">"solar"</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">8760</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">8760</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Write solar time series</span></span></span>
+<span class="r-in"><span><span class="fu">writeInputTS</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  area <span class="op">=</span> <span class="st">"fictive_area"</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"solar"</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">8760</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">8760</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -126,7 +155,7 @@ This function writes input time series in an Antares project."><!-- mathjax --><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

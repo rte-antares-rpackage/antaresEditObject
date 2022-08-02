@@ -30,7 +30,7 @@ Update general parameters of an Antares study"><!-- mathjax --><script src="http
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -74,127 +74,190 @@ Update general parameters of an Antares study"><!-- mathjax --><script src="http
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">updateGeneralSettings</span><span class="op">(</span>
-  mode <span class="op">=</span> <span class="cn">NULL</span>,
-  horizon <span class="op">=</span> <span class="cn">NULL</span>,
-  nbyears <span class="op">=</span> <span class="cn">NULL</span>,
-  simulation.start <span class="op">=</span> <span class="cn">NULL</span>,
-  simulation.end <span class="op">=</span> <span class="cn">NULL</span>,
-  january.1st <span class="op">=</span> <span class="cn">NULL</span>,
-  first.month.in.year <span class="op">=</span> <span class="cn">NULL</span>,
-  first.weekday <span class="op">=</span> <span class="cn">NULL</span>,
-  leapyear <span class="op">=</span> <span class="cn">NULL</span>,
-  year.by.year <span class="op">=</span> <span class="cn">NULL</span>,
-  derated <span class="op">=</span> <span class="cn">NULL</span>,
-  custom.ts.numbers <span class="op">=</span> <span class="cn">NULL</span>,
-  user.playlist <span class="op">=</span> <span class="cn">NULL</span>,
-  filtering <span class="op">=</span> <span class="cn">NULL</span>,
-  active.rules.scenario <span class="op">=</span> <span class="cn">NULL</span>,
-  generate <span class="op">=</span> <span class="cn">NULL</span>,
-  nbtimeseriesload <span class="op">=</span> <span class="cn">NULL</span>,
-  nbtimeserieshydro <span class="op">=</span> <span class="cn">NULL</span>,
-  nbtimeserieswind <span class="op">=</span> <span class="cn">NULL</span>,
-  nbtimeseriesthermal <span class="op">=</span> <span class="cn">NULL</span>,
-  nbtimeseriessolar <span class="op">=</span> <span class="cn">NULL</span>,
-  refreshtimeseries <span class="op">=</span> <span class="cn">NULL</span>,
-  intra.modal <span class="op">=</span> <span class="cn">NULL</span>,
-  inter.modal <span class="op">=</span> <span class="cn">NULL</span>,
-  refreshintervalload <span class="op">=</span> <span class="cn">NULL</span>,
-  refreshintervalhydro <span class="op">=</span> <span class="cn">NULL</span>,
-  refreshintervalwind <span class="op">=</span> <span class="cn">NULL</span>,
-  refreshintervalthermal <span class="op">=</span> <span class="cn">NULL</span>,
-  refreshintervalsolar <span class="op">=</span> <span class="cn">NULL</span>,
-  readonly <span class="op">=</span> <span class="cn">NULL</span>,
-  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">updateGeneralSettings</span><span class="op">(</span></span>
+<span>  mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  horizon <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nbyears <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  simulation.start <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  simulation.end <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  january.1st <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  first.month.in.year <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  first.weekday <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  leapyear <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  year.by.year <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  derated <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  custom.ts.numbers <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  user.playlist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filtering <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  active.rules.scenario <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  generate <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nbtimeseriesload <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nbtimeserieshydro <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nbtimeserieswind <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nbtimeseriesthermal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  nbtimeseriessolar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refreshtimeseries <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  intra.modal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  inter.modal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refreshintervalload <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refreshintervalhydro <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refreshintervalwind <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refreshintervalthermal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  refreshintervalsolar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  readonly <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>mode</dt>
 <dd><p>Economy, Adequacy, Draft.</p></dd>
+
+
 <dt>horizon</dt>
 <dd><p>Reference year (static tag, not used in the calculations)</p></dd>
+
+
 <dt>nbyears</dt>
 <dd><p>Number of Monte-Carlo years that should be prepared for the simulation (not always the same as the Number of MC years actually simulated, see 'selection mode' below).</p></dd>
+
+
 <dt>simulation.start</dt>
 <dd><p>First day of the simulation (e.g. 8 for a simulation beginning on the second week of the first month of the year)</p></dd>
+
+
 <dt>simulation.end</dt>
 <dd><p>Last day of the simulation (e.g. 28 for a simulation ending on the fourth week of the first month of the year)</p></dd>
+
+
 <dt>january.1st</dt>
 <dd><p>First day of the year (Mon, Tue, etc.).</p></dd>
+
+
 <dt>first.month.in.year</dt>
 <dd><p>Actual month by which the Time-series begin (Jan to Dec, Oct to Sep, etc.)</p></dd>
+
+
 <dt>first.weekday</dt>
 <dd><p>In economy or adequacy simulations, indicates the frame (Mon- Sun, Sat-Fri, etc.) to use for the edition of weekly results.</p></dd>
+
+
 <dt>leapyear</dt>
 <dd><p>(TRUE/FALSE) indicates whether February has 28 or 29 days.</p></dd>
+
+
 <dt>year.by.year</dt>
 <dd><p>(False) No individual results will be printed out,
 (True) For each simulated year, detailed results will be
 printed out in an individual directory7 :
 Study_name/OUTPUT/simu_tag/Economy /mc-i-number</p></dd>
+
+
 <dt>derated</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>custom.ts.numbers</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>user.playlist</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>filtering</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>active.rules.scenario</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>generate</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>nbtimeseriesload</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>nbtimeserieshydro</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>nbtimeserieswind</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>nbtimeseriesthermal</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>nbtimeseriessolar</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>refreshtimeseries</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>intra.modal</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>inter.modal</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>refreshintervalload</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>refreshintervalhydro</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>refreshintervalwind</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>refreshintervalthermal</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>refreshintervalsolar</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>readonly</dt>
 <dd><p>See Antares General Reference Guide.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An updated list containing various information about the simulation.</p>
+    
+
+<p>An updated list containing various information about the simulation.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Update number of Monte-Carlo years</span></span>
-<span class="r-in"><span class="fu">updateGeneralSettings</span><span class="op">(</span>nbyears <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Use a vector to update a parameter that</span></span>
-<span class="r-in"><span class="co"># can take multiple values</span></span>
-<span class="r-in"><span class="fu">updateGeneralSettings</span><span class="op">(</span>generate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"thermal"</span>, <span class="st">"hydro"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Update number of Monte-Carlo years</span></span></span>
+<span class="r-in"><span><span class="fu">updateGeneralSettings</span><span class="op">(</span>nbyears <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use a vector to update a parameter that</span></span></span>
+<span class="r-in"><span><span class="co"># can take multiple values</span></span></span>
+<span class="r-in"><span><span class="fu">updateGeneralSettings</span><span class="op">(</span>generate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"thermal"</span>, <span class="st">"hydro"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -209,7 +272,7 @@ Study_name/OUTPUT/simu_tag/Economy /mc-i-number</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
