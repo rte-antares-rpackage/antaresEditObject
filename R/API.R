@@ -263,7 +263,8 @@ getJobLogs <- function(job_id, opts = antaresRead::simOptions()) {
 
 #' Search study in AntaREST
 #'
-#' @param workspace Workspace for the study.
+#' @param workspace Space in which to search for a study.
+#' @param folder Folder in which to search for a study.
 #' @param name Name for the study.
 #' @param ... Other query parameters.
 #' @param host Host of AntaREST server API.
@@ -280,19 +281,22 @@ getJobLogs <- function(job_id, opts = antaresRead::simOptions()) {
 #' searchStudies(host = "http://localhost:8080")
 #' 
 #' }
-searchStudy <- function(workspace = NULL, name = NULL, ..., host = NULL, token = NULL) {
+searchStudy <- function(workspace = NULL, folder = NULL, name = NULL, ..., host = NULL, token = NULL) {
   if (is.null(host)) {
     opts <- try(simOptions(), silent = TRUE)
     if (inherits(opts, "try-error"))
       stop("searchStudies: You must provide AntaREST host!", call. = FALSE)
     host <- opts$host
+    token <- opts$token
   }
   studies <- api_get(
     opts = list(host = host, token = token),
     url = "",
     query = dropNulls(list(
       workspace = workspace,
-      name = name
+      name = name,
+      folder = folder,
+      ...
     ))
   )
   suppressWarnings(data.table::rbindlist(lapply(

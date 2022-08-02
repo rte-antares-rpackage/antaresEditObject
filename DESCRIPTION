@@ -20,7 +20,7 @@ License: GPL (>= 2) | file LICENSE
 URL: https://github.com/rte-antares-rpackage/antaresEditObject
 BugReports: https://github.com/rte-antares-rpackage/antaresEditObject/issues
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 Depends: antaresRead (>= 2.2.7)
 Imports: 

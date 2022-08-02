@@ -4,10 +4,19 @@
 \alias{searchStudy}
 \title{Search study in AntaREST}
 \usage{
-searchStudy(workspace = NULL, name = NULL, ..., host = NULL, token = NULL)
+searchStudy(
+  workspace = NULL,
+  folder = NULL,
+  name = NULL,
+  ...,
+  host = NULL,
+  token = NULL
+)
 }
 \arguments{
-\item{workspace}{Workspace for the study.}
+\item{workspace}{Space in which to search for a study.}
+
+\item{folder}{Folder in which to search for a study.}
 
 \item{name}{Name for the study.}
 
