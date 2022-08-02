@@ -49,10 +49,64 @@ writeInputTS <- function(data,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  # Data validation
   if (!is.null(area) & !is.null(link)) {
     stop("Cannot use area and link simultaneously.")
   }
   
+  if (type %in% c("load", "hydroROR", "wind", "solar")) {
+    if (NROW(data) != 8760)
+      stop("'data' must be a 8760*N matrix.", call. = FALSE)
+  } else if(type %in% "hydroSTOR") {
+    if (is_antares_v7(opts)) {
+      if (NROW(data) != 365)
+        stop("'data' must be a 365*N matrix.", call. = FALSE)
+    } else {
+      if (NROW(data) != 12)
+        stop("'data' must be a 12*N matrix.", call. = FALSE)
+    }
+  }
+  
+  # tsLink block (file & API)
+  if (!is.null(link)) {
+    stopifnot(
+      "link must be a character, like 'area01%area02' or c('area01', 'area02')" = is.character(link)
+    )
+    if (length(link) == 1)
+      link <- strsplit(x = link, split = "%")[[1]]
+    
+    stopifnot(
+      "Invalid link specification, must be 'area01%area02' or c('area01', 'area02')" = length(link) == 2
+    )
+    
+    from <- tolower(as.character(link[1]))
+    to <- tolower(as.character(link[2]))
+    
+    check_area_name(from, opts)
+    check_area_name(to, opts)
+    
+    if (!is_api_study(opts)) {
+      inputPath <- opts$inputPath
+      tsLink_file <- file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
+      if (file.exists(tsLink_file) & !overwrite) {
+        stop(
+          "NTC files already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
+          call. = FALSE
+        )
+      }
+    }
+    
+    opts <- editLink(from = from, to = to, tsLink = data)
+    return(invisible(opts))
+  }
+  
+  if (identical(type, "tsLink"))
+    stop("type = \"tsLink\" can only be used if link argument is provided")
+  
+  check_area_name(area, opts)
+  
+  
+  # API block
   if (is_api_study(opts)) {
     
     data <- as.matrix(data)
@@ -84,79 +138,31 @@ writeInputTS <- function(data,
     
     return(update_api_opts(opts))
   }
-  
-  # Edit link time-series
-  if (!is.null(link)) {
-    stopifnot(
-      "link must be a character, like 'area01%area02' or c('area01', 'area02')" = is.character(link)
-    )
-    if (length(link) == 1)
-      link <- strsplit(x = link, split = "%")[[1]]
-    
-    stopifnot(
-      "Invalid link specification, must be 'area01%area02' or c('area01', 'area02')" = length(link) == 2
-    )
-    
-    from <- tolower(as.character(link[1]))
-    to <- tolower(as.character(link[2]))
-    
-    inputPath <- opts$inputPath
-    check_area_name(from, opts)
-    check_area_name(to, opts)
-    
-    tsLink_file <- file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
-    if (file.exists(tsLink_file) & !overwrite) {
-      stop(
-        "NTC files already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
-        call. = FALSE
-      )
-    }
-    
-    editLink(from = from, to = to, tsLink = data)
-    return(invisible(opts))
-  }
-  
-  if (identical(type, "tsLink"))
-    stop("type = \"tsLink\" can only be used if link argument is provided")
-  
-  check_area_name(area, opts)
-  
+
+  # File block
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
   if (type %in% c("load", "wind", "solar")) {
-    values_file <- file.path(inputPath, type, "series", paste0(type, "_", tolower(area), ".txt"))
+    path <- file.path(inputPath, type, "series", paste0(type, "_", tolower(area), ".txt"))
   } else if (type == "hydroROR") {
-    values_file <- file.path(inputPath, "hydro", "series", area, "ror.txt")
+    path <- file.path(inputPath, "hydro", "series", area, "ror.txt")
   } else if (type == "hydroSTOR") {
-    values_file <- file.path(inputPath, "hydro", "series", area, "mod.txt")
+    path <- file.path(inputPath, "hydro", "series", area, "mod.txt")
   }
   
-  if (isTRUE(file.size(values_file) > 0) && !overwrite)
+  if (isTRUE(file.size(path) > 0) && !overwrite)
     stop(
       "Time series already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
       call. = FALSE
     )
-  
-  if (type %in% c("load", "hydroROR", "wind", "solar")) {
-    if (NROW(data) != 8760)
-      stop("'data' must be a 8760*N matrix.", call. = FALSE)
-  } else {
-    if (is_antares_v7(opts)) {
-      if (NROW(data) != 365)
-        stop("'data' must be a 365*N matrix.", call. = FALSE)
-    } else {
-      if (NROW(data) != 12)
-        stop("'data' must be a 12*N matrix.", call. = FALSE)
-    }
-  }
   
   fwrite(
     x = as.data.table(data),
     row.names = FALSE, 
     col.names = FALSE, 
     sep = "\t",
-    file = values_file
+    file = path
   )
   
   # Maj simulation

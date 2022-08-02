@@ -4,11 +4,13 @@
 \alias{mockSimulationAPI}
 \title{Mock API usage}
 \usage{
-mockSimulationAPI(force = FALSE)
+mockSimulationAPI(force = FALSE, antares_version = "8.2.0")
 }
 \arguments{
 \item{force}{Logical, force mocking simulation even if
 \link[antaresRead:setSimulationPath]{antaresRead::setSimulationPathAPI} has already been called.}
+
+\item{antares_version}{Antares version number.}
 }
 \value{
 An updated list containing various information about the simulation.

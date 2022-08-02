@@ -57,47 +57,6 @@ editLink <- function(from,
   from <- tolower(from)
   to <- tolower(to)
   
-  # API block
-  if (is_api_study(opts)) {
-    
-    # Link properties
-    if (length(propertiesLink) > 0) {
-      actions <- lapply(
-        X = seq_along(propertiesLink),
-        FUN = function(i) {
-          list(
-            target = sprintf("input/links/%s/properties/%s/%s", from, to, names(propertiesLink)[i]),
-            data = propertiesLink[[i]]
-          )
-        }
-      )
-      actions <- setNames(actions, rep("update_config", length(actions)))
-      cmd <- do.call(api_commands_generate, actions)
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update link's properties: {msg_api}"),
-        cli_command_registered("update_config")
-      )
-    }
-    
-    if (!is.null(dataLink)) {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/links/%s/%s", from, to),
-        matrix = dataLink
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update link's series: {msg_api}"),
-        cli_command_registered("replace_matrix")
-      )
-    }
-    
-    return(invisible(opts))
-  }
-  
   v7 <- is_antares_v7(opts)
   v820 <- is_antares_v820(opts)
   
@@ -138,12 +97,95 @@ editLink <- function(from,
     to <- areas[1]
   }
   
+  check_area_name(from, opts)
+  check_area_name(to, opts)
+  
+  
+  if (!is.null(tsLink)) {
+    stopifnot(
+      "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
+    )
+    if (v820) {
+      direct <- seq_len(NCOL(tsLink) / 2)
+      indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
+      tsLink <- data.table::as.data.table(tsLink)
+    } else {
+      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
+    }
+  }
+  
+  
+  # API block
+  if (is_api_study(opts)) {
+    
+    # Link properties
+    if (length(propertiesLink) > 0) {
+      actions <- lapply(
+        X = seq_along(propertiesLink),
+        FUN = function(i) {
+          list(
+            target = sprintf("input/links/%s/properties/%s/%s", from, to, names(propertiesLink)[i]),
+            data = propertiesLink[[i]]
+          )
+        }
+      )
+      actions <- setNames(actions, rep("update_config", length(actions)))
+      cmd <- do.call(api_commands_generate, actions)
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update link's properties: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    if (!is.null(dataLink)) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/links/%s/%s", from, to),
+        matrix = dataLink
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update link's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+    }
+    
+    if (v820) {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_direct")),
+        matrix = as.matrix(tsLink[, .SD, .SDcols = direct])
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Writing transmission capacities (direct): {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+      
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_indirect")),
+        matrix = as.matrix(tsLink[, .SD, .SDcols = indirect])
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Writing transmission capacities (indirect): {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
+    }
+    
+    return(invisible(opts))
+  }
+  
+  
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
-  
-  check_area_name(from, opts)
-  check_area_name(to, opts)
   
   # Previous links
   prev_links <- readIniFile(
@@ -177,7 +219,6 @@ editLink <- function(from,
         dataLink[, 1:2] <- dataLink[, 2:1]
         dataLink[, 4:5] <- dataLink[, 5:4]
       }
-      
       data.table::fwrite(
         x = data.table::as.data.table(dataLink),
         row.names = FALSE, 
@@ -191,14 +232,8 @@ editLink <- function(from,
   
   
   if (!is.null(tsLink)) {
-    stopifnot(
-      "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
-    )
     if (v820) {
       dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
-      direct <- seq_len(NCOL(tsLink) / 2)
-      indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
-      tsLink <- data.table::as.data.table(tsLink)
       data.table::fwrite(
         x = tsLink[, .SD, .SDcols = direct], 
         row.names = FALSE, 
@@ -215,8 +250,6 @@ editLink <- function(from,
         scipen = 12,
         file = file.path(inputPath, "links", from, "capacities", paste0(to, "_indirect.txt"))
       )
-    } else {
-      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
   

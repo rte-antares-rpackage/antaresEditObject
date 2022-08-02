@@ -6,6 +6,7 @@
 #'  
 #' @param force Logical, force mocking simulation even if
 #'  [antaresRead::setSimulationPathAPI] has already been called.
+#' @param antares_version Antares version number.
 #'
 #' @template opts-value
 #' @export
@@ -19,14 +20,15 @@
 #' # Get commands
 #' getVariantCommands()
 #' }
-mockSimulationAPI <- function(force = FALSE) {
+mockSimulationAPI <- function(force = FALSE, antares_version = "8.2.0") {
   if (!is.null(getOption("antares")) & !isTRUE(force)) {
     stop("A study is already registered, use force = TRUE to overwrite.", call. = FALSE)
   }
   opts <- list(
     typeLoad = "api",
     modeAPI = "async",
-    mockAPI = TRUE
+    mockAPI = TRUE,
+    antaresVersion = paste(unlist(as.numeric_version(antares_version)), collapse = "")
   )
   class(opts) <- c("list", "simOptions")
   options(antares = opts)
