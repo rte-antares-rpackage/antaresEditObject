@@ -289,7 +289,7 @@ createClusterRES <- function(area,
     if (!is.null(time_series)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/thermal/series/%s/%s/series", area, cluster_name),
+        target = sprintf("input/thermal/series/%s/%s/series", area, tolower(cluster_name)),
         matrix = time_series
       )
       api_command_register(cmd, opts = opts)

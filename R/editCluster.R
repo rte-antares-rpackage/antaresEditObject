@@ -111,20 +111,12 @@ editClusterRES <- function(area,
     if (identical(cluster_type, "renewables"))
       stop("RES clusters not implemented with the API yet.") # TODO
     
-    cluster_name <- tolower(cluster_name)
-    
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
-      cmd <- api_command_generate(
-        action = "update_config",
-        target = sprintf("input/thermal/clusters/%s/list/%s", area, cluster_name),
-        data = params_cluster
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's properties: {msg_api}"),
-        cli_command_registered("update_config")
+      writeIni(
+        listData = params_cluster,
+        pathIni = sprintf("input/thermal/clusters/%s/list/%s", area, cluster_name),
+        opts = opts
       )
     }
     
@@ -132,7 +124,7 @@ editClusterRES <- function(area,
     if (!is.null(prepro_modulation)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/thermal/prepro/%s/%s/modulation", area, cluster_name),
+        target = sprintf("input/thermal/prepro/%s/%s/modulation", area, tolower(cluster_name)),
         matrix = prepro_modulation
       )
       api_command_register(cmd, opts = opts)
@@ -147,7 +139,7 @@ editClusterRES <- function(area,
     if (!is.null(prepro_data)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/thermal/prepro/%s/%s/data", area, cluster_name),
+        target = sprintf("input/thermal/prepro/%s/%s/data", area, tolower(cluster_name)),
         matrix = prepro_data
       )
       api_command_register(cmd, opts = opts)
@@ -162,7 +154,7 @@ editClusterRES <- function(area,
     if (!is.null(time_series)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/thermal/series/%s/%s/series", area, cluster_name),
+        target = sprintf("input/thermal/series/%s/%s/series", area, tolower(cluster_name)),
         matrix = time_series
       )
       api_command_register(cmd, opts = opts)
