@@ -23,9 +23,13 @@ should_command_be_executed <- function(opts) {
   isTRUE(opts$modeAPI == "sync")
 }
 
-check_variant <- function(opts) {
+is_variant <- function(opts) {
   infos <- api_get(opts, opts$study_id)
-  if (!identical(infos$type, "variantstudy")) {
+  identical(infos$type, "variantstudy")
+}
+
+check_variant <- function(opts) {
+  if (!is_variant(opts)) {
     stop(
       "Study isn't a variant, please create a variant from your study with createVariant() or use an existing one with useVariant()",
       call. = FALSE
@@ -181,29 +185,30 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
       "'command' must be a command generated with api_command_generate() or api_commands_generate()"
     )
   }
-  check_variant(opts)
   api_post(opts, paste0(opts$study_id, "/commands"), body = body, encode = "raw")
-  api_put(opts, paste0(opts$study_id, "/generate"))
-  result <- api_get(opts, paste0(opts$study_id, "/task"))
-  while(is.null(result$result)) {
+  if (is_variant(opts)) {
+    api_put(opts, paste0(opts$study_id, "/generate"))
     result <- api_get(opts, paste0(opts$study_id, "/task"))
+    while(is.null(result$result)) {
+      result <- api_get(opts, paste0(opts$study_id, "/task"))
+    }
+    result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
+    msg_api <- result_log$message
+    if (is.null(msg_api) | identical(msg_api, ""))
+      msg_api <- "<no feedback from API>"
+    if (identical(result_log$success, TRUE)) {
+      if (!is_quiet())
+        cli::cli_alert_success(text_alert)
+    }
+    if (identical(result_log$success, FALSE)) {
+      if (!is_quiet())
+        cli::cli_alert_danger(text_alert)
+      api_delete(opts, paste0(opts$study_id, "/commands/", result_log$id))
+      if (!is_quiet())
+        cli::cli_alert_warning("Command has been deleted")
+    }
+    return(invisible(result$result$success))
   }
-  result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
-  msg_api <- result_log$message
-  if (is.null(msg_api) | identical(msg_api, ""))
-    msg_api <- "<no feedback from API>"
-  if (identical(result_log$success, TRUE)) {
-    if (!is_quiet())
-      cli::cli_alert_success(text_alert)
-  }
-  if (identical(result_log$success, FALSE)) {
-    if (!is_quiet())
-      cli::cli_alert_danger(text_alert)
-    api_delete(opts, paste0(opts$study_id, "/commands/", result_log$id))
-    if (!is_quiet())
-      cli::cli_alert_warning("Command has been deleted")
-  }
-  return(invisible(result$result$success))
 }
 
 
