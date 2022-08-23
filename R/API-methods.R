@@ -9,11 +9,18 @@ api_get <- function(opts, url, ..., default_endpoint = "v1/studies") {
       add_headers(Authorization = paste("Bearer ", opts$token))
     )
   }
-  result <- GET(
-    url = sprintf(
+  full_url = sprintf(
+      "%s/%s",
+      opts$host, default_endpoint
+    )
+  if (!is.null(url)) {
+    full_url = sprintf(
       "%s/%s/%s",
       opts$host, default_endpoint, url
-    ),
+    )
+  }
+  result <- GET(
+    url = full_url,
     config = config,
     ...
   )
@@ -32,11 +39,19 @@ api_post <- function(opts, url, ..., default_endpoint = "v1/studies") {
       add_headers(Authorization = paste("Bearer ", opts$token))
     )
   }
-  result <- POST(
-    url = sprintf(
+  full_url = sprintf(
+      "%s/%s",
+      opts$host, default_endpoint
+    )
+  if (!is.null(url)) {
+    full_url = sprintf(
       "%s/%s/%s",
       opts$host, default_endpoint, url
-    ),
+    )
+  }
+
+  result <- POST(
+    url = full_url,
     config = config,
     ...
   )
@@ -45,17 +60,24 @@ api_post <- function(opts, url, ..., default_endpoint = "v1/studies") {
 }
 
 #' @importFrom httr PUT accept_json stop_for_status content add_headers
-api_put <- function(opts, url, ...) {
+api_put <- function(opts, url, ..., default_endpoint = "v1/studies") {
   if (!is.null(opts$token) && opts$token != "") {
     config <- add_headers(Authorization = paste("Bearer ", opts$token), Accept = "application/json")
   } else {
     config <- add_headers(Accept = "application/json")
   }
+  full_url = sprintf(
+      "%s/%s",
+      opts$host, default_endpoint
+    )
+  if (!is.null(url)) {
+    full_url = sprintf(
+      "%s/%s/%s",
+      opts$host, default_endpoint, url
+    )
+  }
   result <- PUT(
-    url = sprintf(
-      "%s/v1/studies/%s",
-      opts$host, url
-    ),
+    url = full_url,
     config,
     ...
   )
@@ -64,7 +86,7 @@ api_put <- function(opts, url, ...) {
 }
 
 #' @importFrom httr DELETE accept_json stop_for_status content 
-api_delete <- function(opts, url, ...) {
+api_delete <- function(opts, url, ..., default_endpoint = "v1/studies") {
   config <- list(
     accept_json()
   )
@@ -73,11 +95,18 @@ api_delete <- function(opts, url, ...) {
       add_headers(Authorization = paste("Bearer ", opts$token))
     )
   }
+  full_url = sprintf(
+      "%s/%s",
+      opts$host, default_endpoint
+    )
+  if (!is.null(url)) {
+    full_url = sprintf(
+      "%s/%s/%s",
+      opts$host, default_endpoint, url
+    )
+  }
   result <- DELETE(
-    url = sprintf(
-      "%s/v1/studies/%s",
-      opts$host, url
-    ),
+    url = full_url,
     config = config,
     ...
   )

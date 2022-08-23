@@ -293,7 +293,7 @@ searchStudy <- function(workspace = NULL, folder = NULL, name = NULL, ..., host 
   }
   studies <- api_get(
     opts = list(host = host, token = token),
-    url = "",
+    url = NULL,
     query = dropNulls(list(
       workspace = workspace,
       name = name,
