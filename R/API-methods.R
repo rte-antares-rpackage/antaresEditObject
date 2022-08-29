@@ -10,10 +10,7 @@ api_get <- function(opts, url, ..., default_endpoint = "v1/studies") {
     )
   }
   result <- GET(
-    url = sprintf(
-      "%s/%s/%s",
-      opts$host, default_endpoint, url
-    ),
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config = config,
     ...
   )
@@ -33,10 +30,7 @@ api_post <- function(opts, url, ..., default_endpoint = "v1/studies") {
     )
   }
   result <- POST(
-    url = sprintf(
-      "%s/%s/%s",
-      opts$host, default_endpoint, url
-    ),
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config = config,
     ...
   )
@@ -45,17 +39,14 @@ api_post <- function(opts, url, ..., default_endpoint = "v1/studies") {
 }
 
 #' @importFrom httr PUT accept_json stop_for_status content add_headers
-api_put <- function(opts, url, ...) {
+api_put <- function(opts, url, ..., default_endpoint = "v1/studies") {
   if (!is.null(opts$token) && opts$token != "") {
     config <- add_headers(Authorization = paste("Bearer ", opts$token), Accept = "application/json")
   } else {
     config <- add_headers(Accept = "application/json")
   }
   result <- PUT(
-    url = sprintf(
-      "%s/v1/studies/%s",
-      opts$host, url
-    ),
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config,
     ...
   )
@@ -64,7 +55,7 @@ api_put <- function(opts, url, ...) {
 }
 
 #' @importFrom httr DELETE accept_json stop_for_status content 
-api_delete <- function(opts, url, ...) {
+api_delete <- function(opts, url, ..., default_endpoint = "v1/studies") {
   config <- list(
     accept_json()
   )
@@ -74,10 +65,7 @@ api_delete <- function(opts, url, ...) {
     )
   }
   result <- DELETE(
-    url = sprintf(
-      "%s/v1/studies/%s",
-      opts$host, url
-    ),
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config = config,
     ...
   )
