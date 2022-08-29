@@ -9,18 +9,8 @@ api_get <- function(opts, url, ..., default_endpoint = "v1/studies") {
       add_headers(Authorization = paste("Bearer ", opts$token))
     )
   }
-  full_url = sprintf(
-      "%s/%s",
-      opts$host, default_endpoint
-    )
-  if (!is.null(url)) {
-    full_url = sprintf(
-      "%s/%s/%s",
-      opts$host, default_endpoint, url
-    )
-  }
   result <- GET(
-    url = full_url,
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config = config,
     ...
   )
@@ -39,19 +29,8 @@ api_post <- function(opts, url, ..., default_endpoint = "v1/studies") {
       add_headers(Authorization = paste("Bearer ", opts$token))
     )
   }
-  full_url = sprintf(
-      "%s/%s",
-      opts$host, default_endpoint
-    )
-  if (!is.null(url)) {
-    full_url = sprintf(
-      "%s/%s/%s",
-      opts$host, default_endpoint, url
-    )
-  }
-
   result <- POST(
-    url = full_url,
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config = config,
     ...
   )
@@ -66,18 +45,8 @@ api_put <- function(opts, url, ..., default_endpoint = "v1/studies") {
   } else {
     config <- add_headers(Accept = "application/json")
   }
-  full_url = sprintf(
-      "%s/%s",
-      opts$host, default_endpoint
-    )
-  if (!is.null(url)) {
-    full_url = sprintf(
-      "%s/%s/%s",
-      opts$host, default_endpoint, url
-    )
-  }
   result <- PUT(
-    url = full_url,
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config,
     ...
   )
@@ -95,18 +64,8 @@ api_delete <- function(opts, url, ..., default_endpoint = "v1/studies") {
       add_headers(Authorization = paste("Bearer ", opts$token))
     )
   }
-  full_url = sprintf(
-      "%s/%s",
-      opts$host, default_endpoint
-    )
-  if (!is.null(url)) {
-    full_url = sprintf(
-      "%s/%s/%s",
-      opts$host, default_endpoint, url
-    )
-  }
   result <- DELETE(
-    url = full_url,
+    url = paste(c(opts$host, default_endpoint, url), collapse = "/"),
     config = config,
     ...
   )
