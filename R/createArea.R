@@ -10,7 +10,8 @@
 #' @param color Color of the node
 #' @param localization Localization on the map
 #' @param nodalOptimization Nodal optimization parameters, see [nodalOptimizationOptions()].
-#' @param filtering Filtering parameters, see [filteringOptions().
+#' @param filtering Filtering parameters, see [filteringOptions()].
+#' @param adequacy Adequacy parameters, see [adequacyOptions()].
 #' @param overwrite Overwrite the area if already exist.
 #' 
 #' @template opts
