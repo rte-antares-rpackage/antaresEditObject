@@ -13,6 +13,8 @@ createBindingConstraint(
   enabled = TRUE,
   timeStep = c("hourly", "daily", "weekly"),
   operator = c("both", "equal", "greater", "less"),
+  filter_year_by_year = "hourly, daily, weekly, monthly, annual",
+  filter_synthesis = "hourly, daily, weekly, monthly, annual",
   coefficients = NULL,
   overwrite = FALSE,
   opts = antaresRead::simOptions()
@@ -33,6 +35,10 @@ It contains one line per time step and three columns "less", "greater" and "equa
 \item{timeStep}{Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}.}
 
 \item{operator}{Type of constraint: equality, inequality on one side or both sides.}
+
+\item{filter_year_by_year}{Marginal price granularity for year by year}
+
+\item{filter_synthesis}{Marginal price granularity for synthesis}
 
 \item{coefficients}{A named vector containing the coefficients used by the constraint.}
 

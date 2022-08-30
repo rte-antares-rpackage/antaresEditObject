@@ -10,6 +10,7 @@ createArea(
   localization = c(0, 0),
   nodalOptimization = nodalOptimizationOptions(),
   filtering = filteringOptions(),
+  adequacy = adequacyOptions(),
   overwrite = FALSE,
   opts = antaresRead::simOptions()
 )
@@ -23,7 +24,9 @@ createArea(
 
 \item{nodalOptimization}{Nodal optimization parameters, see \code{\link[=nodalOptimizationOptions]{nodalOptimizationOptions()}}.}
 
-\item{filtering}{Filtering parameters, see [filteringOptions().}
+\item{filtering}{Filtering parameters, see \code{\link[=filteringOptions]{filteringOptions()}}.}
+
+\item{adequacy}{Adequacy parameters, see \code{\link[=adequacyOptions]{adequacyOptions()}}.}
 
 \item{overwrite}{Overwrite the area if already exist.}
 
