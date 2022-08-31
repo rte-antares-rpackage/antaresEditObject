@@ -41,7 +41,7 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
       listData = list(
         `include-adq-patch` = include_adq_patch,
         `set-to-null-ntc-from-physical-out-to-physical-in-for-first-step` = set_to_null_ntc_from_physical_out_to_physical_in_for_first_step,
-        `set-to-null-ntc-between-physical-out-for-first_step` = set_to_null_ntc_between_physical_out_for_first_step
+        `set-to-null-ntc-between-physical-out-for-first-step` = set_to_null_ntc_between_physical_out_for_first_step
       ),
       pathIni = "settings/generaldata/adequacy patch",
       opts = opts
@@ -59,7 +59,7 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
   if (!is.null(set_to_null_ntc_from_physical_out_to_physical_in_for_first_step))
     adequacy$`set-to-null-ntc-from-physical-out-to-physical-in-for-first-step` <- set_to_null_ntc_from_physical_out_to_physical_in_for_first_step
   if (!is.null(set_to_null_ntc_between_physical_out_for_first_step))
-    adequacy$`set-to-null-ntc-between-physical-out-for-first_step` <- set_to_null_ntc_between_physical_out_for_first_step
+    adequacy$`set-to-null-ntc-between-physical-out-for-first-step` <- set_to_null_ntc_between_physical_out_for_first_step
   general$`adequacy patch` <- adequacy
   
   writeIni(listData = general, pathIni = pathIni, overwrite = TRUE)
