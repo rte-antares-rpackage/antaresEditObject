@@ -89,7 +89,7 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
 createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_version = "8.2.0", ...) {
   studyId <- api_post(
     opts = list(host = host, token = token),
-    url = "",
+    url = NULL,
     query = dropNulls(list(
       name = study_name,
       version = paste(unlist(as.numeric_version(antares_version)), collapse = ""),
