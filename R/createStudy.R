@@ -96,12 +96,14 @@ createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_
       ...
     ))
   )
-  setSimulationPathAPI(
+  opts <- setSimulationPathAPI(
     host = host,
     study_id = studyId, 
     token = token, 
     simulation = "input"
   )
+  setAPImode("sync")
+  invisible(opts)
 }
 
 

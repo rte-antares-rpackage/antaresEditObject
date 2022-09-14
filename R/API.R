@@ -56,7 +56,7 @@ mockSimulationAPI <- function(force = FALSE, antares_version = "8.2.0") {
 #' setAPImode("sync")
 #' 
 #' }
-setAPImode <- function(mode = c("async", "sync"), opts = antaresRead::simOptions()) {
+setAPImode <- function(mode = c("sync", "async"), opts = antaresRead::simOptions()) {
   mode <- match.arg(mode)
   if (is_api_mocked(opts)) {
     warning("Cannot set API mode on sync when using mockSimulationAPI()")
@@ -156,6 +156,7 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
     cli::cli_alert_danger("Failed to create variant")
   }
   opts$study_id <- content(result)
+  opts$modeAPI <- "sync"
   options("antaresEditObject.apiCommands" = list())
   options(antares = opts)
   return(invisible(opts))
