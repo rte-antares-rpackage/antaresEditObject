@@ -7,7 +7,7 @@
 #' 
 #' 
 #' @param name
-#'   Name of the simulation.
+#'   Name of the simulation. In API mode, `name` will be used as `output_suffix` argument.
 #' @param mode
 #'   Simulation mode, can take value "economy", "adequacy" or "draft".
 #' @param path_solver
@@ -48,7 +48,13 @@ runSimulation <- function(name,
   
   if (is_api_study(opts)) {
     updateGeneralSettings(mode = mode, opts = opts)
-    run <- api_post(opts = opts, url = paste0("launcher/run/", opts$study_id), default_endpoint = "v1")
+    run <- api_post(
+      opts = opts, 
+      url = paste0("launcher/run/", opts$study_id), 
+      default_endpoint = "v1",
+      body = jsonlite::toJSON(list(output_suffix = name), auto_unbox = TRUE),
+      encode = "raw"
+    )
     if (is.null(run$job_id)) {
       cli::cli_alert_danger("No job id returned by API, something went wrong.")
       return(run)

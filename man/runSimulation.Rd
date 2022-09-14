@@ -15,7 +15,7 @@ runSimulation(
 )
 }
 \arguments{
-\item{name}{Name of the simulation.}
+\item{name}{Name of the simulation. In API mode, \code{name} will be used as \code{output_suffix} argument.}
 
 \item{mode}{Simulation mode, can take value "economy", "adequacy" or "draft".}
 
