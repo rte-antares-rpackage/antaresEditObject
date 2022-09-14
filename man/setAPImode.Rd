@@ -4,7 +4,7 @@
 \alias{setAPImode}
 \title{Set API mode}
 \usage{
-setAPImode(mode = c("async", "sync"), opts = antaresRead::simOptions())
+setAPImode(mode = c("sync", "async"), opts = antaresRead::simOptions())
 }
 \arguments{
 \item{mode}{The mode you want to use.}
