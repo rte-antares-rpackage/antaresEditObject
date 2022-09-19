@@ -16,33 +16,25 @@
 #' @name playlist
 #'
 getPlaylist <- function(opts = antaresRead::simOptions()) {
-  # reload opts
-  if (is.null(opts$simPath)) {
-    suppressWarnings({
-      opts2 <-
-        antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-    })
-  } else {
-    suppressWarnings({
-      opts2 <- antaresRead::setSimulationPath(path = opts$simPath)
-    })
-  }
-  version_study <- substr(opts2$antaresVersion, 1, 1)
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # read general parameters
+  parameters <- readIni("settings/generaldata", opts = opts)
+  
+  version_study <- substr(opts$antaresVersion, 1, 1)
   version_study <- as.numeric(version_study)
   
-  
   # get all MC years
-  mc_years <- 1:opts2$parameters$general$nbyears
+  mc_years <- seq_len(parameters$general$nbyears)
   
   # if no playlist is used, return all mc years
-  if (opts2$parameters$general$`user-playlist` == FALSE) {
+  if (parameters$general$`user-playlist` == FALSE) {
     return(mc_years)
   }
   
-  
   # otherwise, update the vector of mc_years by removing disabled years
-  playlist_update_type <- names(opts2$parameters$playlist)
-  playlist_update_value <- opts2$parameters$playlist
+  playlist_update_type <- names(parameters$playlist)
+  playlist_update_value <- parameters$playlist
   
   # untouched playlist - no modification have been made
   if (length(playlist_update_type) == 0) {
@@ -60,7 +52,7 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
   ))
   activated <- rep(TRUE, length(mc_years))
   
-  for (i in 1:length(playlist_update_type)) {
+  for (i in seq_along(playlist_update_type)) {
     # playlist_reset means that we start from a playlist where every MC year is disactivated
     if (playlist_update_type[i] == "playlist_reset") {
       activated <- rep(FALSE, length(mc_years))
