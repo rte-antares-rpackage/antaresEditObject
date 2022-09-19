@@ -1,4 +1,6 @@
+
 #' @title Get the playlist of an Antares study
+#'  `r antaresEditObject:::badge_api_ok()`
 #'
 #' @description \code{getPlaylist} gives the identifier of the MC years which
 #' will be simulated in the Antares study, taking into account the potential use of a
@@ -7,14 +9,35 @@
 #' @template opts-arg
 #'
 #' @return
-#'  * `getPlaylist` returns a vector of the identifier of the simulated MC year
+#'  * `getPlaylist` returns a vector of the identifier of the simulated MC year.
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom antaresRead simOptions
 #' @export
 #'
 #' @name playlist
-#'
+#' 
+#' @examples 
+#' \dontrun{
+#' setSimulationPath("PATH/TO/STUDY/")
+#' # or 
+#' setSimulationPathAPI(
+#'   host = "http://localhost:8080",
+#'   study_id = "6f98a393-155d-450f-a581-8668dc355235",
+#'   token = NULL,
+#'   simulation = "input"
+#' )
+#' 
+#' # augment number of MC years
+#' updateGeneralSettings(nbyears = 10)
+#' 
+#' # Get the actual playlist
+#' getPlaylist()
+#' # [1] 2 4 6
+#' 
+#' # set a new playlist
+#' setPlaylist(c(3, 5, 7))
+#' }
 getPlaylist <- function(opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   
@@ -141,16 +164,14 @@ setPlaylist <- function(playlist,
   # read general data parameters
   generaldata <- readIni("settings/generaldata", opts = opts)
   
-  
-  
   # if all mc_years must be simulated, desactive playlist
   if (length(playlist) == length(mc_years)) {
     # update line to disable the playlist
     generaldata$general$`user-playlist` <- FALSE
     # write updated file
     writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
-  } else { # otherwise, set the playlist
     
+  } else { # otherwise, set the playlist
     # update line to enable the playlist
     generaldata$general$`user-playlist` <- TRUE
     
