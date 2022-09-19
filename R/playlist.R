@@ -114,6 +114,7 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
 setPlaylist <- function(playlist,
                         weights = NULL,
                         opts = antaresRead::simOptions()) {
+  
   version_study <- substr(opts$antaresVersion, 1, 1)
   version_study <- as.numeric(version_study)
   
@@ -121,86 +122,68 @@ setPlaylist <- function(playlist,
     stop("weights can be use only for antares > V8, please convert your studie before")
   }
   
-  
-  
   ##For portability (V7, V8)
   if (is.list(playlist)) {
-    if ('activate_mc' %in% names(playlist)) {
+    if ("activate_mc" %in% names(playlist)) {
       playlist <- playlist$activate_mc
     } else {
-      stop("List provide must contain activate_mc columns")
+      stop("List provided must contain activate_mc columns")
     }
   }
   
   # get all MC years
-  mc_years <- 1:opts$parameters$general$nbyears
+  mc_years <- seq_len(opts$parameters$general$nbyears)
   assertthat::assert_that(all(playlist %in% mc_years))
   playlist <- sort(playlist)
   playlist <- unique(playlist)
   
-  # load setting file and check if it exists
-  general_parameters_file_name <-
-    paste(opts$studyPath, "/settings/generaldata.ini", sep = "")
-  assertthat::assert_that(file.exists(general_parameters_file_name))
-  assertthat::assert_that(file.info(general_parameters_file_name)$size !=
-                            0)
   
-  # read file
-  param_data <-
-    scan(
-      general_parameters_file_name,
-      what = character(),
-      sep = "/",
-      quiet = TRUE
-    )
+  # read general data parameters
+  generaldata <- readIni("settings/generaldata", opts = opts)
   
-  # find line describing if the playlist is used
-  index_p <- grep("user-playlist =", param_data,  fixed = TRUE)
-  assertthat::assert_that(length(index_p) == 1)
   
   
   # if all mc_years must be simulated, desactive playlist
   if (length(playlist) == length(mc_years)) {
     # update line to disable the playlist
-    param_data[index_p] <- paste0("user-playlist = false")
+    generaldata$general$`user-playlist` <- FALSE
     # write updated file
-    write(param_data, general_parameters_file_name, sep = "/")
+    writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
   } else { # otherwise, set the playlist
     
     # update line to enable the playlist
-    param_data[index_p] = paste0("user-playlist = true")
+    generaldata$general$`user-playlist` <- TRUE
     
     # delete lines with current playlist
-    index_d <- grep("playlist", param_data,  fixed = TRUE)
-    index_d <- index_d[index_d != index_p]
-    if (length(index_d) >= 1) {
-      param_data <- param_data[-index_d]
-    }
+    generaldata$playlist <- NULL
     
     # create new plalist
-    new_playlist <- c("[playlist]",
-                      "playlist_reset = false",
-                      sapply(
-                        playlist,
-                        FUN = function(x) {
-                          paste0("playlist_year + = ", x - 1)
-                        }
-                      ))
+    new_playlist <- c(
+      list(playlist_reset = FALSE),
+      setNames(as.list(playlist - 1), rep("playlist_year +", length(playlist)))
+    )
     
     if (!is.null(weights)) {
-      new_playlist <- c(new_playlist, apply(weights, 1, function(X) {
-        paste0("playlist_year_weight = " ,
-               X[1] - 1,
-               ",",
-               format(round(X[2], 6), nsmall = 6))
-      }))
+      new_playlist <- c(
+        new_playlist, 
+        setNames(apply(
+          X = weights, 
+          MARGIN = 1,
+          FUN = function(X) {
+            paste0(
+              X[1] - 1,
+              ",",
+              format(round(X[2], 6), nsmall = 6)
+            )
+          }
+        ), rep("playlist_year_weight", length(weights)))
+      )
     }
     
     # add new playlist to the parameters description
-    param_data <- c(param_data, new_playlist)
+    generaldata$playlist <- new_playlist
     
     # write updated file
-    write(param_data, general_parameters_file_name, sep = "/")
-    
+    writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
   }
 }
