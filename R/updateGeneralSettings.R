@@ -159,7 +159,7 @@ updateGeneralSettings <- function(mode = NULL,
   generaldata$general <- l_general
   
   # write
-  writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE)
+  writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
   
   # Maj simulation
   suppressWarnings({
