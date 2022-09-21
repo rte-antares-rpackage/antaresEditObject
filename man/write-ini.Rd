@@ -40,7 +40,7 @@ Write configuration options in file or API
 
 \dontrun{
 pathIni <- "D:/exemple_test/settings/generaldata.ini"
-generalSetting <- antaresRead:::readIniFile(pathIni)
+generalSetting <- readIniFile(pathIni)
 generalSetting$output$synthesis <- FALSE
 writeIni(generalSetting, pathIni)
 }

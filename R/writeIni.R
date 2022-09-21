@@ -14,7 +14,7 @@
 #'
 #' \dontrun{
 #' pathIni <- "D:/exemple_test/settings/generaldata.ini"
-#' generalSetting <- antaresRead:::readIniFile(pathIni)
+#' generalSetting <- readIniFile(pathIni)
 #' generalSetting$output$synthesis <- FALSE
 #' writeIni(generalSetting, pathIni)
 #' }
@@ -75,7 +75,12 @@ writeIniAPI <- function(listData, pathIni, opts) {
   actions <- lapply(
     X = seq_along(listData),
     FUN = function(i) {
-      values <- .formatedIni(listData[[i]])
+      data_ <- listData[[i]]
+      if (is.list(data_) && is_named(data_)) {
+        writeIniAPI(data_, pathIni = paste0(pathIni, "/", names(listData)[i]), opts = opts)
+        return(NULL)
+      }
+      values <- .formatedIni(data_)
       values <- paste(values, collapse = ", ")
       list(
         target = paste(pathIni, names(listData)[i], sep = "/"),
@@ -83,6 +88,9 @@ writeIniAPI <- function(listData, pathIni, opts) {
       )
     }
   )
+  actions <- dropNulls(actions)
+  if (length(actions) < 1)
+    return(invisible(NULL))
   actions <- setNames(actions, rep("update_config", length(actions)))
   cmd <- do.call(api_commands_generate, actions)
   api_command_register(cmd, opts = opts)
@@ -92,8 +100,6 @@ writeIniAPI <- function(listData, pathIni, opts) {
     cli_command_registered("update_config")
   )
 }
-
-
 
 
 #' Change R format to ini format

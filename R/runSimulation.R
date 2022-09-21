@@ -22,6 +22,8 @@
 #'   Logical. If `TRUE` the ANTARES simulation will be run in parallel mode (Work
 #'   only with ANTARES v6.0.0 or more). In that case, the number of cores used by the simulation
 #'   is the one set in advanced_settings/simulation_cores (see ANTARES interface).
+#' @param ... Additional arguments (API only), such as `nb_cpu`, `time_limit`, ...
+#'  See API documentation for all available options.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()]
@@ -43,6 +45,7 @@ runSimulation <- function(name,
                           wait = TRUE, 
                           show_output_on_console = FALSE, 
                           parallel = TRUE, 
+                          ...,
                           opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   
@@ -52,7 +55,7 @@ runSimulation <- function(name,
       opts = opts, 
       url = paste0("launcher/run/", opts$study_id), 
       default_endpoint = "v1",
-      body = jsonlite::toJSON(list(output_suffix = name), auto_unbox = TRUE),
+      body = jsonlite::toJSON(list(output_suffix = name, ...), auto_unbox = TRUE),
       encode = "raw"
     )
     if (is.null(run$job_id)) {

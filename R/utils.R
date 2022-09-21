@@ -17,6 +17,18 @@ is_different <- function(x, y) {
   !identical(x, y)
 }
 
+
+is_named <- function(x) {
+  nms <- names(x)
+  if (is.null(nms))
+    return(FALSE)
+  if (any(!nzchar(nms)))
+    return(FALSE)
+  TRUE
+}
+
+
+
 #TODO to copy/paste to antaresRead in a next release. 
 .getLinkName <- function(areaX=NULL, areaY=NULL){
   if(areaX<areaY) {
