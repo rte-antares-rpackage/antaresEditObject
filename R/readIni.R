@@ -77,8 +77,8 @@ readIniFile <- function(file, stringsAsFactors = FALSE) {
     value <- lapply(pairs, `[`, 2)
     value <- as.list(trimws(unlist(value)))
     value <- lapply(value, function(x) {
-      if (x %in% c("true", "false")) {
-        ifelse(x == "true", TRUE, FALSE)
+      if (tolower(x) %in% c("true", "false")) {
+        tolower(x) == "true"
       } else {
         utils::type.convert(x, as.is = TRUE)
       }
