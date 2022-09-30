@@ -23,8 +23,9 @@ should_command_be_executed <- function(opts) {
   isTRUE(opts$modeAPI == "sync")
 }
 
+#' @importFrom antaresRead api_get
 is_variant <- function(opts) {
-  infos <- api_get(opts, opts$study_id)
+  infos <- api_get(opts = opts, endpoint = opts$study_id)
   identical(infos$type, "variantstudy")
 }
 
@@ -175,6 +176,7 @@ api_command_register <- function(command, opts) {
 
 #' @importFrom httr POST accept_json content_type_json stop_for_status content
 #' @importFrom jsonlite toJSON
+#' @importFrom antaresRead api_get api_put api_delete api_post
 api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
   if (inherits(command, "antares.api.command")) {
     body <- jsonlite::toJSON(list(command), auto_unbox = TRUE)
@@ -216,10 +218,11 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
 
 # utils -------------------------------------------------------------------
 
+#' @importFrom antaresRead api_get
 api_get_raw_data <- function(id, path, opts) {
   api_get(
     opts, 
-    url = paste0(id, "/raw"), 
+    endpoint = paste0(id, "/raw"), 
     query = list(
       path = path, 
       formatted = TRUE
@@ -227,10 +230,11 @@ api_get_raw_data <- function(id, path, opts) {
   )
 }
 
+#' @importFrom antaresRead api_get
 api_get_variants <- function(id, opts) {
   variants <- api_get(
     opts, 
-    url = paste0(id, "/variants")
+    endpoint = paste0(id, "/variants")
   )
   lapply(
     X = variants$children,

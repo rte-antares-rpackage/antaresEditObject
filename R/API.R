@@ -80,7 +80,7 @@ setAPImode <- function(mode = c("sync", "async"), opts = antaresRead::simOptions
 #' @name variant-commands
 #' 
 #' @importFrom utils tail
-#'
+#' @importFrom antaresRead api_get
 getVariantCommands <- function(last = NULL, actions = NULL, opts = antaresRead::simOptions()) {
   if (should_command_be_executed(opts)) {
     check_variant(opts)
@@ -124,7 +124,7 @@ writeVariantCommands <- function(path, last = NULL, actions = NULL, ..., opts = 
 #' @export
 #' @name variant
 #' 
-#' @importFrom httr POST accept_json status_code content
+#' @importFrom httr POST accept_json status_code content add_headers
 #'
 #' @examples
 #' \dontrun{
@@ -208,7 +208,8 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
 #' @export
 #' 
 #' @importFrom data.table rbindlist
-#'
+#' @importFrom antaresRead api_get
+#' 
 #' @examples
 #' \dontrun{
 #' 
@@ -236,6 +237,8 @@ getJobs <- function(job_id = NULL, opts = antaresRead::simOptions()) {
 #'
 #' @return Logs as character string.
 #' @export
+#'
+#' @importFrom antaresRead api_get
 #'
 #' @examples
 #' \dontrun{
@@ -294,7 +297,7 @@ searchStudy <- function(workspace = NULL, folder = NULL, name = NULL, ..., host 
   }
   studies <- api_get(
     opts = list(host = host, token = token),
-    url = NULL,
+    endpoint = NULL,
     query = dropNulls(list(
       workspace = workspace,
       name = name,

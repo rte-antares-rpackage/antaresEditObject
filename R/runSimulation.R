@@ -35,7 +35,7 @@
 #' ANTARES simulation.
 #' 
 #' @importFrom assertthat assert_that
-#' @importFrom antaresRead simOptions
+#' @importFrom antaresRead simOptions api_post
 #' @export
 #' 
 ### Taken from antaresXpansion_0.5.2 ###
@@ -53,7 +53,7 @@ runSimulation <- function(name,
     updateGeneralSettings(mode = mode, opts = opts)
     run <- api_post(
       opts = opts, 
-      url = paste0("launcher/run/", opts$study_id), 
+      endpoint = paste0("launcher/run/", opts$study_id), 
       default_endpoint = "v1",
       body = jsonlite::toJSON(list(output_suffix = name, ...), auto_unbox = TRUE),
       encode = "raw"
