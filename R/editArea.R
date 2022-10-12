@@ -43,6 +43,7 @@ editArea <- function(name,
                      localization = NULL,
                      nodalOptimization = NULL,
                      filtering = NULL,
+                     adequacy = NULL,
                      opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -81,6 +82,22 @@ editArea <- function(name,
         api_command_execute(cmd, opts = opts, text_alert = "Update area's filtering option: {msg_api}"),
         cli_command_registered("update_config")
       )
+    }
+    
+    if (opts$antaresVersion >= 830){
+      if (!is.null(adequacy)) {
+        cmd <- api_command_generate(
+          action = "update_config", 
+          target = sprintf("input/areas/%s/adequacy_patch/adequacy-patch", name),
+          data = adequacy
+        )
+        api_command_register(cmd, opts = opts)
+        `if`(
+          should_command_be_executed(opts), 
+          api_command_execute(cmd, opts = opts, text_alert = "Update area's adequacy patch mode: {msg_api}"),
+          cli_command_registered("update_config")
+        )
+      }
     }
     
     return(invisible(opts))
@@ -166,6 +183,24 @@ editArea <- function(name,
     
   }
   
+  # adequacy patch ini file
+  if (opts$antaresVersion >= 830){
+    adequacyIni <- readIniFile(file.path(inputPath, "areas", name, "adequacy_patch.ini"))
+    
+    if (!is.null(adequacy)) {
+      for (i in names(adequacy)) {
+        adequacyIni$`adequacy-patch-mode`[[i]] <- adequacy[[i]]
+      }
+    }
+    
+    writeIni(
+      listData = adequacyIni ,
+      pathIni = file.path(inputPath, "areas", name, "adequacy_patch.ini"),
+      overwrite = TRUE
+    )
+  }
+
+ 
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")

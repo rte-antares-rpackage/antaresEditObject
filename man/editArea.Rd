@@ -10,6 +10,7 @@ editArea(
   localization = NULL,
   nodalOptimization = NULL,
   filtering = NULL,
+  adequacy = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -22,7 +23,9 @@ editArea(
 
 \item{nodalOptimization}{Nodal optimization parameters, see \code{\link[=nodalOptimizationOptions]{nodalOptimizationOptions()}}.}
 
-\item{filtering}{Filtering parameters, see [filteringOptions().}
+\item{filtering}{Filtering parameters, see \code{\link[=filteringOptions]{filteringOptions()}}.}
+
+\item{adequacy}{Adequacy parameters, see \code{\link[=adequacyOptions]{adequacyOptions()}}.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}

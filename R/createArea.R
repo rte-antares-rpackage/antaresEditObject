@@ -10,7 +10,8 @@
 #' @param color Color of the node
 #' @param localization Localization on the map
 #' @param nodalOptimization Nodal optimization parameters, see [nodalOptimizationOptions()].
-#' @param filtering Filtering parameters, see [filteringOptions().
+#' @param filtering Filtering parameters, see [filteringOptions()].
+#' @param adequacy Adequacy parameters, see [adequacyOptions()].
 #' @param overwrite Overwrite the area if already exist.
 #' 
 #' @template opts
@@ -41,6 +42,7 @@ createArea <- function(name,
                        localization = c(0, 0),
                        nodalOptimization = nodalOptimizationOptions(),
                        filtering = filteringOptions(),
+                       adequacy = adequacyOptions(),
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
 
@@ -86,6 +88,21 @@ createArea <- function(name,
         api_command_execute(cmd, opts = opts, text_alert = "Create area's filtering: {msg_api}"),
         cli_command_registered("update_config")
       )
+    }
+    if (opts$antaresVersion >= 830){
+      if (is_different(adequacy, adequacyOptions())){
+        cmd <- api_command_generate(
+          action = "update_config", 
+          target = sprintf("input/areas/%s/adequacy_patch/adequacy-patch", name),
+          data = adequacy
+        )
+        api_command_register(cmd, opts = opts)
+        `if`(
+          should_command_be_executed(opts), 
+          api_command_execute(cmd, opts = opts, text_alert = "Create area's adequacy patch mode: {msg_api}"),
+          cli_command_registered("update_config")
+        )
+      }
     }
     
     return(update_api_opts(opts))
@@ -152,7 +169,16 @@ createArea <- function(name,
     pathIni = file.path(inputPath, "areas", name, "ui.ini"),
     overwrite = overwrite
   )
-
+  # adequacy patch ini file
+  if (opts$antaresVersion >= 830){
+    writeIni(
+      listData = c(
+        list(`adequacy-patch` = adequacy[c("adequacy-patch-mode")])
+      ),
+      pathIni = file.path(inputPath, "areas", name, "adequacy_patch.ini"),
+      overwrite = overwrite
+    )
+  }
 
 
   ## Hydro ----
@@ -515,3 +541,17 @@ nodalOptimizationOptions <- function(non_dispatchable_power = TRUE,
   )
 }
 
+#' Adequacy patch parameters for creating an area
+#'
+#' @param adequacy_patch_mode character, default to "outside"
+#'
+#' @return a named list
+#' @export
+#'
+#' @examples
+#' adequacyOptions()
+adequacyOptions <- function(adequacy_patch_mode = "outside"){
+  list(
+    `adequacy-patch-mode` = adequacy_patch_mode
+  )
+}

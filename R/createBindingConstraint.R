@@ -14,6 +14,8 @@
 #' @param enabled Logical, is the constraint enabled ?
 #' @param timeStep Time step the constraint applies to : `hourly`, `daily` or `weekly`.
 #' @param operator Type of constraint: equality, inequality on one side or both sides.
+#' @param filter_year_by_year Marginal price granularity for year by year
+#' @param filter_synthesis Marginal price granularity for synthesis
 #' @param coefficients A named vector containing the coefficients used by the constraint.
 #' @param overwrite If the constraint already exist, overwrite the previous value.
 #' 
@@ -68,6 +70,8 @@ createBindingConstraint <- function(name,
                                     enabled = TRUE,
                                     timeStep = c("hourly", "daily", "weekly"),
                                     operator = c("both", "equal", "greater", "less"),
+                                    filter_year_by_year = "hourly, daily, weekly, monthly, annual",
+                                    filter_synthesis = "hourly, daily, weekly, monthly, annual",
                                     coefficients = NULL,
                                     overwrite = FALSE,
                                     opts = antaresRead::simOptions()) {
@@ -112,6 +116,8 @@ createBindingConstraint <- function(name,
     enabled,
     timeStep,
     operator,
+    filter_year_by_year,
+    filter_synthesis,
     coefficients,
     overwrite,
     links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
@@ -137,6 +143,8 @@ createBindingConstraint_ <- function(bindingConstraints,
                                      enabled,
                                      timeStep,
                                      operator,
+                                     filter_year_by_year,
+                                     filter_synthesis,
                                      coefficients,
                                      overwrite,
                                      links,
@@ -161,6 +169,12 @@ createBindingConstraint_ <- function(bindingConstraints,
     type = timeStep,
     operator = operator
   )
+  
+  # Marginal price granularity (v8.4)
+  if (opts$antaresVersion >= 840){
+    iniParams$`filter-year-by-year` <- filter_year_by_year
+    iniParams$`filter-synthesis` <- filter_synthesis
+  }
   
   # Check coefficients
   if (!is.null(coefficients)) {

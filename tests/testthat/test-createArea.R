@@ -61,8 +61,11 @@ sapply(studies, function(study) {
     thermal_areas <- readIniFile(file.path(opts$inputPath, "thermal", "areas.ini"))
     expect_equal(thermal_areas$spilledenergycost$testarea, 1000)
     expect_equal(thermal_areas$unserverdenergycost$testarea, 239)
+
+    
   })
   
+
   
   
   test_that("Remove an area", {
@@ -84,3 +87,25 @@ sapply(studies, function(study) {
   
 })
 
+
+test_that("adequacy patch options are properly written", {
+  
+  tmp <- tempfile()
+  suppressWarnings({
+    createStudy(path = tmp, antares_version = "8.3.0")
+    opts <- antaresRead::setSimulationPath(tmp)
+  })
+  
+  activateRES(quietly = TRUE)
+  createArea(
+    name = "testarea_adq",
+    adequacy = adequacyOptions(
+      adequacy_patch_mode = "inside"
+    )
+  )
+  
+  adq_testarea <- readIniFile(file.path(opts$inputPath, "areas", "testarea_adq", "adequacy_patch.ini"))
+  expect_equal(adq_testarea$`adequacy-patch`$`adequacy-patch-mode`, "inside")
+  
+  unlink(tmp, recursive = TRUE)
+})
