@@ -33,6 +33,8 @@ editBindingConstraint <- function(name,
                                   enabled = NULL,
                                   timeStep = NULL,
                                   operator = NULL,
+                                  filter_year_by_year = NULL,
+                                  filter_synthesis = NULL,
                                   coefficients = NULL,
                                   opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -93,6 +95,12 @@ editBindingConstraint <- function(name,
   if(!is.null(enabled)) iniParams$enabled <- enabled
   if(!is.null(timeStep)) iniParams$type <- timeStep
   if(!is.null(operator)) iniParams$operator <- operator
+  if(!is.null(filter_year_by_year)){
+    if(opts$antaresVersion >= 832) iniParams$`filter-year-by-year` <- filter_year_by_year
+  }
+  if(!is.null(filter_synthesis)){
+    if(opts$antaresVersion >= 832) iniParams$`filter-synthesis` <- filter_synthesis
+  }
   
   bindingConstraints[[bc_update_pos]]$name <- iniParams$name
   bindingConstraints[[bc_update_pos]]$id <- iniParams$id

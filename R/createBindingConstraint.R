@@ -143,8 +143,8 @@ createBindingConstraint_ <- function(bindingConstraints,
                                      enabled,
                                      timeStep,
                                      operator,
-                                     filter_year_by_year,
-                                     filter_synthesis,
+                                     filter_year_by_year = "hourly, daily, weekly, monthly, annual",
+                                     filter_synthesis = "hourly, daily, weekly, monthly, annual",
                                      coefficients,
                                      overwrite,
                                      links,
@@ -170,8 +170,8 @@ createBindingConstraint_ <- function(bindingConstraints,
     operator = operator
   )
   
-  # Marginal price granularity (v8.4)
-  if (opts$antaresVersion >= 840){
+  # Marginal price granularity (v8.3.2)
+  if (opts$antaresVersion >= 832){
     iniParams$`filter-year-by-year` <- filter_year_by_year
     iniParams$`filter-synthesis` <- filter_synthesis
   }
