@@ -178,11 +178,9 @@ setPlaylist <- function(playlist,
     # delete lines with current playlist
     generaldata$playlist <- NULL
     
-    # create new plalist
-    new_playlist <- c(
-      list(playlist_reset = FALSE),
-      setNames(as.list(playlist - 1), rep("playlist_year +", length(playlist)))
-    )
+    # create new playlist (+ patch double to integer)
+    new_playlist <- setNames(as.list(as.integer(playlist - 1)), rep("playlist_year +", length(playlist)))
+    new_playlist <- c(list(playlist_reset = FALSE), new_playlist)
     
     if (!is.null(weights)) {
       new_playlist <- c(
