@@ -11,6 +11,8 @@ editBindingConstraint(
   enabled = NULL,
   timeStep = NULL,
   operator = NULL,
+  filter_year_by_year = NULL,
+  filter_synthesis = NULL,
   coefficients = NULL,
   opts = antaresRead::simOptions()
 )
@@ -28,6 +30,10 @@ It contains one line per time step and three columns "less", "greater" and "equa
 \item{timeStep}{Time step the constraint applies to : \code{hourly}, \code{daily} or \code{weekly}.}
 
 \item{operator}{Type of constraint: equality, inequality on one side or both sides.}
+
+\item{filter_year_by_year}{Marginal price granularity for year by year}
+
+\item{filter_synthesis}{Marginal price granularity for synthesis}
 
 \item{coefficients}{A named vector containing the coefficients used by the constraint.}
 

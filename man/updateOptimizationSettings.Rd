@@ -47,7 +47,7 @@ updateOptimizationSettings(
 
 \item{include.primaryreserve}{true or false}
 
-\item{include.exportmps}{true or false}
+\item{include.exportmps}{true or false (since v8.3.2 can take also : none, optim-1, optim-2, both-optims)}
 
 \item{power.fluctuations}{free modulations, minimize excursions or minimize ramping}
 

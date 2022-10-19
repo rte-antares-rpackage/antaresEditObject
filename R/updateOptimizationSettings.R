@@ -15,7 +15,7 @@
 #' @param include.strategicreserve true or false
 #' @param include.spinningreserve true or false
 #' @param include.primaryreserve true or false
-#' @param include.exportmps true or false
+#' @param include.exportmps true or false (since v8.3.2 can take also : none, optim-1, optim-2, both-optims)
 #' @param power.fluctuations free modulations, minimize excursions or minimize ramping
 #' @param shedding.strategy share margins
 #' @param shedding.policy shave peaks or minimize duration
@@ -83,8 +83,17 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     assertthat::assert_that(include.spinningreserve %in% c("true", "false"))
   if (!is.null(include.primaryreserve))
     assertthat::assert_that(include.primaryreserve %in% c("true", "false"))
-  if (!is.null(include.exportmps))
-    assertthat::assert_that(include.exportmps %in% c("true", "false"))
+  if (!is.null(include.exportmps)){
+    if (opts$antaresVersion >= 832){
+      assertthat::assert_that(include.exportmps %in% c("true", "false",
+                                                       "none", "optim-1", "optim-2", "both-optims"))
+      if (include.exportmps == "true") include.exportmps <- "both-optims"
+      if (include.exportmps == "false") include.exportmps <- "none"
+    } else {
+      assertthat::assert_that(include.exportmps %in% c("true", "false"))
+    }
+  }
+
   
   if (!is.null(power.fluctuations))
     assertthat::assert_that(
