@@ -6,7 +6,8 @@
 #' Update optimization parameters and other preferences of an Antares study
 #'
 #' @param simplex.range week or day
-#' @param transmission.capacities true, false or infinite
+#' @param transmission.capacities true, false or infinite (since v8.4 can also take : local-values, 
+#' null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-for-physical-links)
 #' @param include.constraints true or false
 #' @param include.hurdlecosts true or false
 #' @param include.tc.min.stable.power true or false
@@ -66,7 +67,17 @@ updateOptimizationSettings <- function(simplex.range = NULL,
   if (!is.null(simplex.range))
     assertthat::assert_that(simplex.range %in% c("week", "day"))
   if (!is.null(transmission.capacities))
-    assertthat::assert_that(transmission.capacities %in% c("true", "false", "infinite"))
+    if (opts$antaresVersion >= 840){
+      assertthat::assert_that(transmission.capacities %in% c("true", "false", "infinite",
+                                                             "local-values", "null-for-all-links", "infinite-for-all-links",
+                                                             "null-for-physical-links", "infinite-for-physical-links"))
+      if (transmission.capacities == "true") transmission.capacities <- "local-values"
+      else if (transmission.capacities == "false") transmission.capacities <- "null-for-all-links"
+      else if (transmission.capacities == "infinite") transmission.capacities <- "infinite-for-all-links"
+    } else {
+      assertthat::assert_that(transmission.capacities %in% c("true", "false", "infinite"))
+      
+    }
   if (!is.null(include.constraints))
     assertthat::assert_that(include.constraints %in% c("true", "false"))
   if (!is.null(include.hurdlecosts))
@@ -88,7 +99,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
       assertthat::assert_that(include.exportmps %in% c("true", "false",
                                                        "none", "optim-1", "optim-2", "both-optims"))
       if (include.exportmps == "true") include.exportmps <- "both-optims"
-      if (include.exportmps == "false") include.exportmps <- "none"
+      else if (include.exportmps == "false") include.exportmps <- "none"
     } else {
       assertthat::assert_that(include.exportmps %in% c("true", "false"))
     }

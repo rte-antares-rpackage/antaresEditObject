@@ -11,6 +11,7 @@
 #'   synthesis will be printed out.
 #' @param storenewset Logical. See Antares General Reference Guide.
 #' @param archives Character vector. Series to archive.
+#' @param result.format Character. Output format (txt-files or zip).
 #' 
 #' @template opts
 #' 
@@ -25,6 +26,7 @@
 #'   synthesis = TRUE,
 #'   storenewset = FALSE,
 #'   archives = c("load", "wind")
+#'   result.format = "zip"
 #' )
 #' 
 #' }
@@ -32,6 +34,7 @@
 updateOutputSettings <- function(synthesis = NULL,
                                  storenewset = NULL,
                                  archives = NULL,
+                                 result.format = NULL,
                                  opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -43,7 +46,8 @@ updateOutputSettings <- function(synthesis = NULL,
       listData = list(
         synthesis = synthesis,
         storenewset = storenewset,
-        archives = paste(archives, collapse = ", ")
+        archives = paste(archives, collapse = ", "),
+        `result-format` = result.format
       ),
       pathIni = "settings/generaldata/output",
       opts = opts
@@ -62,6 +66,8 @@ updateOutputSettings <- function(synthesis = NULL,
     outputs$storenewset <- storenewset
   if (!is.null(archives))
     outputs$archives <- paste(archives, collapse = ", ")
+  if (!is.null(result.format))
+    outputs$`result-format` <- result.format
   general$output <- outputs
   
   writeIni(listData = general, pathIni = pathIni, overwrite = TRUE)
