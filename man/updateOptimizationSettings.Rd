@@ -29,7 +29,8 @@ updateOptimizationSettings(
 \arguments{
 \item{simplex.range}{week or day}
 
-\item{transmission.capacities}{true, false or infinite}
+\item{transmission.capacities}{true, false or infinite (since v8.4 can also take : local-values,
+null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-for-physical-links)}
 
 \item{include.constraints}{true or false}
 
