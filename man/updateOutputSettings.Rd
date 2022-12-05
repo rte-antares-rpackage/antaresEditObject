@@ -8,6 +8,7 @@ updateOutputSettings(
   synthesis = NULL,
   storenewset = NULL,
   archives = NULL,
+  result.format = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -19,6 +20,8 @@ synthesis will be printed out.}
 \item{storenewset}{Logical. See Antares General Reference Guide.}
 
 \item{archives}{Character vector. Series to archive.}
+
+\item{result.format}{Character. Output format (txt-files or zip).}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -38,6 +41,7 @@ updateOutputSettings(
   synthesis = TRUE,
   storenewset = FALSE,
   archives = c("load", "wind")
+  result.format = "zip"
 )
 
 }

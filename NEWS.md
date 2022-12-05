@@ -1,24 +1,23 @@
-# antaresEditObject (unreleased)
-
-### Antares v820
-
-* `createLink()` and `editLink()` have a new argument `tsLink` allowing to write transmission capacities time-series.
-
+# antaresEditObject 0.4.0
 
 ### New functions
 
-*`createBindingConstraintBulk()` allow to create multiple binding constraints at once.
+* Antares v840 : new parameter `result-format` to choose output format (txt/zip) + new values for `transmission-capacities` parameter.
+* Antares v832 : added filtering options to bindingConstraints.
+* Antares v830 : `updateAdequacySettings()` function to activate Adequacy Patch and set parameters.
+* Antares v820 : `createLink()` and `editLink()` have a new argument `tsLink` allowing to write transmission capacities time-series.
+
+* `createBindingConstraintBulk()` allow to create multiple binding constraints at once.
 
 
 ### Breaking changes
 
 * Argument's order of `writeInputTS()` has changed, `data` is now in first place.
 
-
 ### Variant management with API
 This release include some new features to interact with Antares Web.
 
-* Main functions are now compatible to interact with a variant through the API: `createArea()`, `editArea()`, `removeArea()`, `createLink()`, `editLink()`, `removeLink()`, `createCluster()`, `editCluster()`, `removeCluster()`, `createBindingConstraint()`, `editBindingConstraint()`, `removeBindingConstraint()`, `createDistrict()`, `updateGeneralSettings()`, `updateInputSettings()`, `updateOptimizationSettings()`, `updateOutputSettings()`, `writeInputTS()`, `readScenarioBuilder()`, `updateScenarioBuilder()`, `clearScenarioBuilder()`, `writeWaterValues()`, `createDSR()`, `createPSP()`.
+* Main functions are now compatible to interact with a variant through the API: `createArea()`, `editArea()`, `removeArea()`, `createLink()`, `editLink()`, `removeLink()`, `createCluster()`, `editCluster()`, `removeCluster()`, `createBindingConstraint()`, `editBindingConstraint()`, `removeBindingConstraint()`, `createDistrict()`, `updateGeneralSettings()`, `updateInputSettings()`, `updateOptimizationSettings()`, `updateOutputSettings()`, `updateAdequacySettings()`, `writeInputTS()`, `readScenarioBuilder()`, `updateScenarioBuilder()`, `clearScenarioBuilder()`, `writeWaterValues()`, `createDSR()`, `createPSP()`.
 * New functions to use or create variants: `useVariant()`, `createVariant()`.
 * New function to create studies on AntaREST server: `createStudyAPI()`.
 * New function to search studies on AntaREST server: `searchStudy()`.
