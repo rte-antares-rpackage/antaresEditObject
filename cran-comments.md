@@ -7,5 +7,5 @@
 
 0 errors | 0 warnings | 0 note
 
-New realease, no revdep, all OK (https://cran.r-project.org/web/checks/check_results_antaresEditObject.html)
+New release, no revdep, all OK (https://cran.r-project.org/web/checks/check_results_antaresEditObject.html)
 Thanks!
