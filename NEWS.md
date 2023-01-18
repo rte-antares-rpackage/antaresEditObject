@@ -1,3 +1,11 @@
+# antaresEditObject 0.4.1
+
+BUGFIXES :
+
+* Fix case sensitivity for `editCluster()` in API mode
+
+
+
 # antaresEditObject 0.4.0
 
 ### New functions
