@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.3.0.9000
+Version: 0.4.0
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
@@ -20,9 +20,9 @@ License: GPL (>= 2) | file LICENSE
 URL: https://github.com/rte-antares-rpackage/antaresEditObject
 BugReports: https://github.com/rte-antares-rpackage/antaresEditObject/issues
 Encoding: UTF-8
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
-Depends: antaresRead (>= 2.3.0)
+Depends: antaresRead (>= 2.2.95)
 Imports: 
     assertthat,
     cli,
