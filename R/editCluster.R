@@ -93,6 +93,25 @@ editClusterRES <- function(area,
   params_cluster <- hyphenize_names(list(...))
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
+  
+  # Handle case sensitivity in name of clusters API 
+  clusters <- names(readIni(file.path("input", cluster_type, "clusters", area, "list")))
+  
+  if (!cluster_name %in% clusters){
+    if (tolower(cluster_name) %in% tolower(clusters)){
+      cluster_idx <- which(tolower(clusters) %in% tolower(cluster_name))
+      cluster_name <- clusters[cluster_idx]
+      if (length(cluster_name) > 1) 
+        warning("detected multiple clusters : ", do.call(paste, as.list(cluster_name)), ", only the first one will be edited.")
+      cluster_name <- cluster_name[1]
+    } else {
+      stop(
+        "'", cluster_name, "' doesn't exist, it can't be edited. You can create cluster with createCluster().",
+        call. = FALSE
+      )
+    }
+  }
+  
   params_cluster$name <- cluster_name
   
   if (!NROW(time_series) %in% c(0, 8736, 8760)) {
