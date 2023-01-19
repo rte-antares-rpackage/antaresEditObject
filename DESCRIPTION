@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
@@ -12,6 +12,7 @@ Authors@R: c(
     person("Jalal-Edine", "Zawam", role = "ctb"),
     person("Etienne", "Sanchez", role = "ctb"),
     person("Janus", "De Bondt", role = "ctb"),
+    person("Assil", "Mansouri", role = "ctb"),
     person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.

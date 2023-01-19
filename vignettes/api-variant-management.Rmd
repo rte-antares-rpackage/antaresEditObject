@@ -215,7 +215,7 @@ getVariantCommands(last = 2)
 
 Edit a cluster with:
 
-```{r edit_cluster}
+```{r edit_cluster, eval = FALSE}
 createCluster(
   area = "area02", 
   cluster_name = "clus02"
