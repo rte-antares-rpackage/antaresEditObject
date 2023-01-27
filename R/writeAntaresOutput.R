@@ -42,17 +42,20 @@ writeOutputValues <- function(data, opts = NULL) {
     if (typeS == c("clusters")) {
       file = "details-"
     }
+    if (typeS == c("clustersRes")) {
+      file = "details-res-"
+    }
     
     type <- substr(typeS, 1, nchar(typeS) - 1)
     
-    if (type == "cluster") {
+    if (type %in% c("cluster", "clustersRe")) {
       type2 = "area"
     } else{
       type2 = type
     }
     
     
-    if (type == "cluster") {
+    if (type %in% c("cluster", "clustersRe")) {
       typeS2 = "areas"
     } else{
       typeS2 = typeS
@@ -70,18 +73,23 @@ writeOutputValues <- function(data, opts = NULL) {
         
         sinthesys <- attributes(datatp)$synthesis
         
-        if (type == "cluster") {
-          ts <- attributes(datatp)$timeStep
-          
+        if (type %in% c("cluster", "clustersRe")) {
           id <- antaresRead::getIdCols(datatp)
           id <- id[id != "cluster"]
+          colValues <- setdiff(colnames(datatp), c("cluster",id))
+          ts <- attributes(datatp)$timeStep
+          if (ts == "weekly"){
+            weekOrder <- unique(datatp[, id, with = F]$week)
+            datatp[, year := as.integer(factor(cumsum(week == unique(week)[1]))), by = c("area", "cluster", "mcYear")] #handle double week (first and last)
+            id <- c(id, "year")
+          } 
           tmp_formula <-
             as.formula(paste0(paste0(id, collapse = "+"), "~cluster"))
           datatp <-
             dcast(datatp,
                   tmp_formula,
-                  value.var = c("production", "NP Cost", "NODU"))
-          
+                  value.var = colValues)
+          if (ts == "weekly") datatp <- datatp[order(year, factor(week, levels = weekOrder))][, year := NULL]
           class(datatp) <- c(class(datatp), "antaresDataTable")
           attributes(datatp)$synthesis <- sinthesys
           attributes(datatp)$timeStep <- ts
