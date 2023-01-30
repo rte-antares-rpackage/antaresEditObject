@@ -153,6 +153,7 @@
 #' 
 #' @param mcYear vector of years to compute
 #' @param type type of data (areas, links, clusters, clustersRes)
+#' @param areas vector of areas
 #' @param opts study opts
 #' @param timeStep timestep of aggregation (daily, monthly and annual, NO weekly)
 #' @param writeOutput boolean to write data in mc-ind folder
@@ -160,13 +161,17 @@
 #' @keywords internal
 computeOtherFromHourlyYear <- function(mcYear,
                                        type,
+                                       areas = "all",
                                        opts = simOptions(),
                                        timeStep = c("daily", "monthly", "annual", "weekly"), 
                                        writeOutput = F){
   
   res <- list()
-  formula <- sprintf('readAntares(%s = "all", timeStep = "hourly",
-                            mcYears = mcYear, showProgress = F, opts = opts)',type) #read any type data
+  formula <- sprintf('readAntares(%s = %s, timeStep = "hourly",
+                            mcYears = mcYear, showProgress = F, opts = opts)', type, 
+                     ifelse(type == "links" && areas != "all", 
+                            getLinks(areas = areas, internalOnly = T),
+                            areas))  #read any type data
   hourlydata <- eval(parse(text = formula))
   if (type == "clustersRes" && length(hourlydata) > 1) hourlydata <- hourlydata$clustersRes
 
@@ -212,6 +217,7 @@ computeOtherFromHourlyYear <- function(mcYear,
 #' @title Compute daily, weekly, monthly and annual mc-ind from hourly data multiyear. (new)
 #' 
 #' @param opts study opts
+#' @param areas vector of areas
 #' @param timeStep timestep of aggregation (daily, monthly and annual, NO weekly)
 #' @param mcYears vector of years to compute
 #' @param writeOutput boolean to write data in mc-ind folder
@@ -225,6 +231,7 @@ computeOtherFromHourlyYear <- function(mcYear,
 #' 
 #' @export
 computeOtherFromHourlyMulti <- function(opts = simOptions(),
+                                        areas = "all",
                                         timeStep = c("daily", "monthly", "annual", "weekly"), 
                                         mcYears = simOptions()$mcYears,
                                         writeOutput = F,
@@ -248,26 +255,26 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
   
   cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
   resAreas <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-               type = "areas", .parallel = parallel, .progress = "progressr",
+               type = "areas", areas = areas, .parallel = parallel, .progress = "progressr",
                .paropts = list(.options.snow = paropts))
   cat(c("Areas : OK\n"))
 
   cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
   resLinks <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                    type = "links", .parallel = parallel, .progress = "progressr",
+                    type = "links", areas = areas, .parallel = parallel, .progress = "progressr",
                     .paropts = list(.options.snow = paropts))
   cat(c("Links : OK\n"))
 
   cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
   resClusters <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                    type = "clusters", .parallel = parallel, .progress = "progressr",
+                    type = "clusters", areas = areas, .parallel = parallel, .progress = "progressr",
                     .paropts = list(.options.snow = paropts))
   cat(c("Clusters : OK\n"))
   
   if (opts$antaresVersion >= 810 && opts$parameters$`other preferences`$`renewable-generation-modelling` == "clusters"){
     cat(c("\nComputing :", timeStep, "mc-ind (clusters Res) from hourly...\n"))
     resClustersRes <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                         type = "clustersRes", .parallel = parallel, .progress = "progressr",
+                         type = "clustersRes", areas = areas, .parallel = parallel, .progress = "progressr",
                          .paropts = list(.options.snow = paropts))
     cat(c("Clusters Res : OK\n"))
     res <- list(resAreas, resLinks, resClusters, resClustersRes)
