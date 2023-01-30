@@ -6,6 +6,7 @@
 \usage{
 computeOtherFromHourlyMulti(
   opts = simOptions(),
+  areas = "all",
   timeStep = c("daily", "monthly", "annual", "weekly"),
   mcYears = simOptions()$mcYears,
   writeOutput = F,
@@ -14,6 +15,8 @@ computeOtherFromHourlyMulti(
 }
 \arguments{
 \item{opts}{study opts}
+
+\item{areas}{vector of areas}
 
 \item{timeStep}{timestep of aggregation (daily, monthly and annual, NO weekly)}
 

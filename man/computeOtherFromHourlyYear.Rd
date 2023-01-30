@@ -7,6 +7,7 @@
 computeOtherFromHourlyYear(
   mcYear,
   type,
+  areas = "all",
   opts = simOptions(),
   timeStep = c("daily", "monthly", "annual", "weekly"),
   writeOutput = F
@@ -16,6 +17,8 @@ computeOtherFromHourlyYear(
 \item{mcYear}{vector of years to compute}
 
 \item{type}{type of data (areas, links, clusters, clustersRes)}
+
+\item{areas}{vector of areas}
 
 \item{opts}{study opts}
 

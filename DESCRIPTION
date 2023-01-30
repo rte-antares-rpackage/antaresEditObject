@@ -35,7 +35,7 @@ Imports:
     doParallel,
     doFuture,
     memuse,
-    progressr
+    progressr,
     pbapply,
     parallel
 Suggests: 
