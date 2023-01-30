@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.4.1
+Version: 0.5.0
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
@@ -23,7 +23,7 @@ BugReports: https://github.com/rte-antares-rpackage/antaresEditObject/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
-Depends: antaresRead (>= 2.2.95)
+Depends: antaresRead (>= 2.4.0)
 Imports: 
     assertthat,
     cli,
@@ -33,6 +33,9 @@ Imports:
     jsonlite,
     whisker,
     doParallel,
+    doFuture,
+    memuse,
+    progressr
     pbapply,
     parallel
 Suggests: 
