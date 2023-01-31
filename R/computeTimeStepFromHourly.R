@@ -1,8 +1,10 @@
-#' Computation function for rebuild mc-ind daily, monthly and annual from hourly data.
+#' @title Computation function for rebuild mc-ind daily, monthly and annual from hourly data.
 #'
 #' @param hourlydata antaresData for hourly timestep
 #' @param timeStep timestep of aggregation (daily, monthly and annual, NO weekly)
 #' @param type type of data (areas, links, clusters, clustersRes)
+#' 
+#' @import data.table
 #'
 #' @keywords internal
 .hourlyToOther <- function(hourlydata, timeStep, type){
@@ -57,7 +59,7 @@
   setcolorder(res, intersect(colorder, colnames(res)))
 }
 
-#' Computation function for rebuild mc-ind weekly from daily data.
+#' @title Computation function for rebuild mc-ind weekly from daily data.
 #'
 #' @param dailydata antaresData for daily timestep
 #' @param opts study opts
@@ -153,7 +155,7 @@
 #' 
 #' @param mcYear vector of years to compute
 #' @param type type of data (areas, links, clusters, clustersRes)
-#' @param areas vector of areas
+#' @param areas vector of areas. links type will use getLinks() to get data.
 #' @param opts study opts
 #' @param timeStep timestep of aggregation (daily, monthly and annual, NO weekly)
 #' @param writeOutput boolean to write data in mc-ind folder
@@ -167,14 +169,16 @@ computeOtherFromHourlyYear <- function(mcYear,
                                        writeOutput = F){
   
   res <- list()
+  if (areas == "all") selected <- "areas" #for the eval(parse(text))
+  else if (type != "links") selected <- paste(list(areas), sep = ",")
+  else selected <- paste(list(getLinks(areas, internalOnly = T, opts = opts)),
+                         sep = ",")
   formula <- sprintf('readAntares(%s = %s, timeStep = "hourly",
-                            mcYears = mcYear, showProgress = F, opts = opts)', type, 
-                     ifelse(type == "links" && areas != "all", 
-                            getLinks(areas = areas, internalOnly = T),
-                            areas))  #read any type data
+                            mcYears = mcYear, showProgress = F, opts = opts)', 
+                     type, selected)  #read any type data
   hourlydata <- eval(parse(text = formula))
   if (type == "clustersRes" && length(hourlydata) > 1) hourlydata <- hourlydata$clustersRes
-
+  
   if ("daily" %in% timeStep) res$dailydata <- .hourlyToOther(hourlydata, timeStep = "daily", type = type)
   if ("monthly" %in% timeStep) res$monthlydata <- .hourlyToOther(hourlydata, timeStep = "monthly", type = type)
   if ("annual" %in% timeStep) res$annualdata <- .hourlyToOther(hourlydata, timeStep = "annual", type = type)

@@ -18,7 +18,7 @@ computeOtherFromHourlyYear(
 
 \item{type}{type of data (areas, links, clusters, clustersRes)}
 
-\item{areas}{vector of areas}
+\item{areas}{vector of areas. links type will use getLinks() to get data.}
 
 \item{opts}{study opts}
 
