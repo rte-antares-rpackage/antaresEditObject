@@ -23,7 +23,7 @@ BugReports: https://github.com/rte-antares-rpackage/antaresEditObject/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
-Depends: antaresRead (>= 2.4.0)
+Depends: antaresRead (>= 2.3.0)
 Imports: 
     assertthat,
     cli,
@@ -37,7 +37,9 @@ Imports:
     memuse,
     progressr,
     pbapply,
-    parallel
+    parallel,
+    future,
+    plyr
 Suggests: 
     testthat,
     covr,
