@@ -1,5 +1,7 @@
 context("Function computeTimeStampFromHourly")
 
+skip("Deprecated")
+
 sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
