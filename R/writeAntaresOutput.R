@@ -121,7 +121,7 @@ writeOutputValues <- function(data, opts = NULL) {
         file_name_new <- file.path(file_path, file_name_new)
         file_name <- file.path(file_path, file_name)
         
-        .writeAntaresOutput(file_name, file_name_new, datatp)
+        if (file.exists(file_name)) .writeAntaresOutput(file_name, file_name_new, datatp)
         
       })
     })
