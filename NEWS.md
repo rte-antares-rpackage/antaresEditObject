@@ -3,6 +3,7 @@
 BUGFIXES :
 
 * Fix case sensitivity for `editCluster()` in API mode
+* Fix opts returned (proper new study_id) when using `createVariant()`
 
 
 
