@@ -232,6 +232,7 @@ computeOtherFromHourlyYear <- function(mcYear,
 #' 
 #' @param opts study opts
 #' @param areas vector of areas
+#' @param type type of aggregation
 #' @param timeStep timestep of aggregation (daily, monthly and annual, NO weekly)
 #' @param mcYears vector of years to compute
 #' @param writeOutput boolean to write data in mc-ind folder
@@ -246,6 +247,7 @@ computeOtherFromHourlyYear <- function(mcYear,
 #' @export
 computeOtherFromHourlyMulti <- function(opts = simOptions(),
                                         areas = "all",
+                                        type = c("areas", "links", "clusters"),
                                         timeStep = c("daily", "monthly", "annual", "weekly"), 
                                         mcYears = simOptions()$mcYears,
                                         writeOutput = F,
@@ -267,32 +269,38 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
     clusterEvalQ(cl, library("antaresRead"))
   }
   
-  gc()
-  exec_time <- Sys.time()
-  cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
-  resAreas <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-               type = "areas", areas = areas, .parallel = parallel, .progress = "progressr",
-               .paropts = list(.options.snow = paropts))
-  cat(c("Areas : OK\n"))
-  print(Sys.time() - exec_time)
+  if ("areas" %in% type){
+    gc()
+    exec_time <- Sys.time()
+    cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
+    resAreas <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+                      type = "areas", areas = areas, .parallel = parallel, .progress = "progressr",
+                      .paropts = list(.options.snow = paropts))
+    cat(c("Areas : OK\n"))
+    print(Sys.time() - exec_time)
+  }
 
-  gc()
-  exec_time <- Sys.time()
-  cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
-  resLinks <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                    type = "links", areas = areas, .parallel = parallel, .progress = "progressr",
-                    .paropts = list(.options.snow = paropts))
-  cat(c("Links : OK\n"))
-  print(Sys.time() - exec_time)
+  if ("links" %in% type){
+    gc()
+    exec_time <- Sys.time()
+    cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
+    resLinks <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+                      type = "links", areas = areas, .parallel = parallel, .progress = "progressr",
+                      .paropts = list(.options.snow = paropts))
+    cat(c("Links : OK\n"))
+    print(Sys.time() - exec_time)
+  }
 
-  gc()
-  exec_time <- Sys.time()
-  cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
-  resClusters <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                    type = "clusters", areas = areas, .parallel = parallel, .progress = "progressr",
-                    .paropts = list(.options.snow = paropts))
-  cat(c("Clusters : OK\n"))
-  print(Sys.time() - exec_time)
+  if ("clusters" %in% type){
+    gc()
+    exec_time <- Sys.time()
+    cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
+    resClusters <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+                         type = "clusters", areas = areas, .parallel = parallel, .progress = "progressr",
+                         .paropts = list(.options.snow = paropts))
+    cat(c("Clusters : OK\n"))
+    print(Sys.time() - exec_time)
+  }
 
   # gc()
   # if (opts$antaresVersion >= 810 && opts$parameters$`other preferences`$`renewable-generation-modelling` == "clusters"){
@@ -306,6 +314,6 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
   # closeAllConnections()
   
   print("Success.")
-  if (writeOutput) return (0) else return (list(resAreas, resLinks, resClusters))
+  return (0)
   
 }
