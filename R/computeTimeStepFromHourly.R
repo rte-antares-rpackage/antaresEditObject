@@ -8,7 +8,6 @@
 #'
 #' @keywords internal
 .hourlyToOther <- function(hourlydata, timeStep, type){
-  
   # Get proper time from timeStep
   char_timeStep = switch(timeStep, 
                          "daily" = 10, #XXXX-XX-XX
@@ -30,7 +29,7 @@
   
   colForMean = switch(type,
                       "areas" = c("MRG. PRICE", "H. LEV", "LOLP"),
-                      "links" = c("MARG. COST",	"CONG. PROB +",	"CONG. PROB -"),
+                      "links" = c("CONG. PROB +",	"CONG. PROB -"),
                       "clusters" = character(0),
                       "clustersRes" = character(0))
   
@@ -44,9 +43,8 @@
                             by = agg_columns]
   
   if (length(colForMean) > 0){
-    resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}), 
-                   .SDcols = colForMean,
-                   by = agg_columns]
+    if (type == "links") resMean <- res[, lapply(.SD, max), .SDcols = colForMean,by = agg_columns]
+    else resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}), .SDcols = colForMean, by = agg_columns]
     
     res <- merge(resSum, resMean, by = agg_columns)
   } else res <- resSum
@@ -69,10 +67,9 @@
 .dailyToWeekly <- function(dailydata, opts = simOptions(), type){
   
   colorder <- gsub("time", "timeId", colnames(dailydata))
-  
   colForMean = switch(type,
                       "areas" = c("MRG. PRICE", "H. LEV", "LOLP"),
-                      "links" = c("MARG. COST",	"CONG. PROB +",	"CONG. PROB -"),
+                      "links" = c("CONG. PROB +",	"CONG. PROB -"),
                       "clusters" = character(0),
                       "clustersRes" = character(0))
   
@@ -139,7 +136,11 @@
   cols <- setdiff(colnames(res),c(getIdCols(dailydata),"week","year"))
   resSum <- res[, lapply(.SD, sum), by= c(agg_columns, "mcYear", "year", "week"), .SDcols = setdiff(cols,colForMean)]
   if (length(colForMean) > 0){
-    resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}), by= c(agg_columns, "mcYear", "year", "week"), .SDcols = colForMean]
+    if (type == "links") resMean <- res[, lapply(.SD, max), 
+                                        .SDcols = colForMean, by= c(agg_columns, "mcYear", "year", "week")]
+    else resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}), 
+                        .SDcols = colForMean, by= c(agg_columns, "mcYear", "year", "week")]
+    
     res <- merge(resSum, resMean, by = c(agg_columns, "mcYear", "year", "week"), sort = F)
   } else res <- resSum
 
@@ -167,21 +168,29 @@ computeOtherFromHourlyYear <- function(mcYear,
                                        opts = simOptions(),
                                        timeStep = c("daily", "monthly", "annual", "weekly"), 
                                        writeOutput = F){
-  
   res <- list()
   if (areas == "all") selected <- "areas" #for the eval(parse(text))
   else if (type != "links") selected <- paste(list(areas), sep = ",")
   else selected <- paste(list(getLinks(areas, internalOnly = T, opts = opts)),
                          sep = ",")
+  
   formula <- sprintf('readAntares(%s = %s, timeStep = "hourly",
                             mcYears = mcYear, showProgress = F, opts = opts)', 
                      type, selected)  #read any type data
   hourlydata <- eval(parse(text = formula))
   if (type == "clustersRes" && length(hourlydata) > 1) hourlydata <- hourlydata$clustersRes
+
+  # Multi timestep at once
+  # steps <- as.list(intersect(c("daily", "monthly", "annual"), timeStep))
+  # res <- llply(steps, .hourlyToOther, hourlydata = hourlydata, type = type,
+  #              .parallel = T, .paropts = list(preschedule=TRUE))
+  # names(res) <- paste0(steps,"data")
   
+  # Separate timesteps
   if ("daily" %in% timeStep) res$dailydata <- .hourlyToOther(hourlydata, timeStep = "daily", type = type)
   if ("monthly" %in% timeStep) res$monthlydata <- .hourlyToOther(hourlydata, timeStep = "monthly", type = type)
   if ("annual" %in% timeStep) res$annualdata <- .hourlyToOther(hourlydata, timeStep = "annual", type = type)
+
   if ("weekly" %in% timeStep){
     if (!"daily" %in% timeStep){
       warning("Daily mc-ind needed to compute weekly. Computing daily mc-ind...")
@@ -196,7 +205,7 @@ computeOtherFromHourlyYear <- function(mcYear,
     setattr(res[[nm]], "synthesis", FALSE)
     setattr(res[[nm]], "timeStep", gsub("data", "", nm))
   }
-  
+
   if (writeOutput){
     if (!is.null(res$dailydata)){
       if (type == "links") res$dailydata <- res$dailydata[, timeId := rep(1:nrow(unique(.SD[, c("day", "month")])), length(unique(link)))]
@@ -209,8 +218,9 @@ computeOtherFromHourlyYear <- function(mcYear,
       else if (type == "areas") res$monthlydata <- res$monthlydata[, timeId := rep(1:12, length(unique(area)))]
       else res$monthlydata <- res$monthlydata[, timeId := rep(1:12, nrow(unique(.SD[, c("area", "cluster")])))]
     }
-    
+
     lapply(res, writeOutputValues, opts = opts)
+    # llply(res, writeOutputValues, opts = opts, .parallel = T, .paropts = list(preschedule=TRUE))
   }
   
   res
@@ -257,34 +267,45 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
     clusterEvalQ(cl, library("antaresRead"))
   }
   
+  gc()
+  exec_time <- Sys.time()
   cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
   resAreas <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
                type = "areas", areas = areas, .parallel = parallel, .progress = "progressr",
                .paropts = list(.options.snow = paropts))
   cat(c("Areas : OK\n"))
+  print(Sys.time() - exec_time)
 
+  gc()
+  exec_time <- Sys.time()
   cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
   resLinks <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
                     type = "links", areas = areas, .parallel = parallel, .progress = "progressr",
                     .paropts = list(.options.snow = paropts))
   cat(c("Links : OK\n"))
+  print(Sys.time() - exec_time)
 
+  gc()
+  exec_time <- Sys.time()
   cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
   resClusters <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
                     type = "clusters", areas = areas, .parallel = parallel, .progress = "progressr",
                     .paropts = list(.options.snow = paropts))
   cat(c("Clusters : OK\n"))
+  print(Sys.time() - exec_time)
+
+  # gc()
+  # if (opts$antaresVersion >= 810 && opts$parameters$`other preferences`$`renewable-generation-modelling` == "clusters"){
+  #   cat(c("\nComputing :", timeStep, "mc-ind (clusters Res) from hourly...\n"))
+  #   resClustersRes <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+  #                        type = "clustersRes", areas = areas, .parallel = parallel, .progress = "progressr",
+  #                        .paropts = list(.options.snow = paropts))
+  #   cat(c("Clusters Res : OK\n"))
+  #   res <- list(resAreas, resLinks, resClusters, resClustersRes)
+  # } else res <- list(resAreas, resLinks, resClusters)
+  # closeAllConnections()
   
-  if (opts$antaresVersion >= 810 && opts$parameters$`other preferences`$`renewable-generation-modelling` == "clusters"){
-    cat(c("\nComputing :", timeStep, "mc-ind (clusters Res) from hourly...\n"))
-    resClustersRes <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                         type = "clustersRes", areas = areas, .parallel = parallel, .progress = "progressr",
-                         .paropts = list(.options.snow = paropts))
-    cat(c("Clusters Res : OK\n"))
-    res <- list(resAreas, resLinks, resClusters, resClustersRes)
-  } else res <- list(resAreas, resLinks, resClusters)
-  
-  closeAllConnections()
   print("Success.")
-  res
+  if (writeOutput) return (0) else return (list(resAreas, resLinks, resClusters))
+  
 }
