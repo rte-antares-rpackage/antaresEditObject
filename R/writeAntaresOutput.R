@@ -72,6 +72,7 @@ writeOutputValues <- function(data, opts = NULL) {
           )))]
         
         sinthesys <- attributes(datatp)$synthesis
+        ori_type <- attributes(datatp)$type
         
         if (type %in% c("cluster", "clustersRe")) {
           id <- antaresRead::getIdCols(datatp)
@@ -93,6 +94,7 @@ writeOutputValues <- function(data, opts = NULL) {
           class(datatp) <- c(class(datatp), "antaresDataTable")
           attributes(datatp)$synthesis <- sinthesys
           attributes(datatp)$timeStep <- ts
+          attributes(datatp)$type <- ori_type
         }
         
         
@@ -121,7 +123,8 @@ writeOutputValues <- function(data, opts = NULL) {
         file_name_new <- file.path(file_path, file_name_new)
         file_name <- file.path(file_path, file_name)
         
-        if (file.exists(file_name)) .writeAntaresOutput(file_name, file_name_new, datatp)
+        if (ori_type %in% c("areas", "links") || file.exists(file_name))
+          .writeAntaresOutput(file_name, file_name_new, datatp)
         
       })
     })
