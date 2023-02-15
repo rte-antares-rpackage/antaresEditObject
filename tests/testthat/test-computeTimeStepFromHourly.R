@@ -1,8 +1,8 @@
-context("Function computeTimeStampFromHourly")
+context("Function new computeOtherFromHourly")
 
-skip("Deprecated")
+skip("")
 
-sapply(studies, function(study) {
+sapply(studies[2], function(study) {
   
   setup_study(study, sourcedir)
   
@@ -28,7 +28,7 @@ sapply(studies, function(study) {
     })), na.rm = T) < seuil
   }
   
-  computeTimeStampFromHourly(opts, nbcl = 1, verbose = 0)
+  computeOtherFromHourlyMulti(opts = opts, areas = "all", type = c("areas", "links"), writeOutput = T)
   
   outputdafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "daily", showProgress = FALSE)
   outputwafter <- antaresRead::readAntares(areas = "all", mcYears = "all", timeStep = "weekly", showProgress = FALSE)

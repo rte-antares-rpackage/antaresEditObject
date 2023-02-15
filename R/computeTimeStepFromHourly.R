@@ -92,6 +92,7 @@
   firstDayWeek <- opts$firstWeekday
   firstDayYear <- opts$parameters$general$january.1st
   year <- as.integer(substr(opts$parameters$general$horizon,6,10))
+  if (is.na(year)) year <- as.integer(opts$parameters$general$horizon) + 1
   
   # Set up general week
   firstidx <- which(weekdays %in% firstDayWeek)[1]
@@ -251,9 +252,15 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
                                         timeStep = c("daily", "monthly", "annual", "weekly"), 
                                         mcYears = simOptions()$mcYears,
                                         writeOutput = F,
-                                        nbcl = 8){
-  handlers(global = T)
-  handlers("progress")
+                                        nbcl = 8,
+                                        verbose = F){
+  
+  if (verbose){
+    handlers(global = T)
+    handlers("progress")
+  }
+  
+  res <- list()
   
   parallel <- (nbcl > 1)
   #Parallel config####
@@ -272,34 +279,43 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
   if ("areas" %in% type){
     gc()
     exec_time <- Sys.time()
-    cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
+    if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
     resAreas <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
                       type = "areas", areas = areas, .parallel = parallel, .progress = "progressr",
                       .paropts = list(.options.snow = paropts))
-    cat(c("Areas : OK\n"))
-    print(Sys.time() - exec_time)
+    res$areas <- resAreas
+    if (verbose){
+      cat(c("Areas : OK\n"))
+      print(Sys.time() - exec_time)
+    } 
   }
 
   if ("links" %in% type){
     gc()
     exec_time <- Sys.time()
-    cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
+    if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
     resLinks <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
                       type = "links", areas = areas, .parallel = parallel, .progress = "progressr",
                       .paropts = list(.options.snow = paropts))
-    cat(c("Links : OK\n"))
-    print(Sys.time() - exec_time)
+    res$links <- resLinks
+    if (verbose){
+      cat(c("Links : OK\n"))
+      print(Sys.time() - exec_time)
+    } 
   }
 
   if ("clusters" %in% type){
     gc()
     exec_time <- Sys.time()
-    cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
+    if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
     resClusters <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
                          type = "clusters", areas = areas, .parallel = parallel, .progress = "progressr",
                          .paropts = list(.options.snow = paropts))
-    cat(c("Clusters : OK\n"))
-    print(Sys.time() - exec_time)
+    res$clusters <- resClusters
+    if (verbose){
+      cat(c("Clusters : OK\n"))
+      print(Sys.time() - exec_time)
+    }
   }
 
   # gc()
@@ -314,6 +330,6 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
   # closeAllConnections()
   
   print("Success.")
-  return (0)
+  return (res)
   
 }
