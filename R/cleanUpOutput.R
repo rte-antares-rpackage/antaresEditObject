@@ -6,8 +6,6 @@
 #' @export
 cleanUpOutput <- function(areas = NULL, opts = simOptions()){
   if (!is.null(areas) && areas == "all") areas <- opts$areaList
-  res <- list()
-  
   filteringData <- getGeographicTrimming(areas)
   areasFiltering <- as.data.table(ldply(names(filteringData$areas), function(x){
     data.table(area = x, 

@@ -11,7 +11,8 @@ computeOtherFromHourlyMulti(
   timeStep = c("daily", "monthly", "annual", "weekly"),
   mcYears = simOptions()$mcYears,
   writeOutput = F,
-  nbcl = 8
+  nbcl = 8,
+  verbose = F
 )
 }
 \arguments{
