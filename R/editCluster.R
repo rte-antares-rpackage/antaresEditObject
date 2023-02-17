@@ -127,20 +127,18 @@ editClusterRES <- function(area,
   
   if (is_api_study(opts)) {
     
-    if (identical(cluster_type, "renewables"))
-      stop("RES clusters not implemented with the API yet.") # TODO
-    
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
+      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/clusters/%s/list/%s", "input/thermal/clusters/%s/list/%s")
       writeIni(
         listData = params_cluster,
-        pathIni = sprintf("input/thermal/clusters/%s/list/%s", area, cluster_name),
+        pathIni = sprintf(currPath, area, cluster_name),
         opts = opts
       )
     }
     
     # update prepro_modulation
-    if (!is.null(prepro_modulation)) {
+    if (!identical(cluster_type, "renewables") && !is.null(prepro_modulation)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
         target = sprintf("input/thermal/prepro/%s/%s/modulation", area, tolower(cluster_name)),
@@ -155,7 +153,7 @@ editClusterRES <- function(area,
     }
     
     # update prepro_data
-    if (!is.null(prepro_data)) {
+    if (!identical(cluster_type, "renewables") && !is.null(prepro_data)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
         target = sprintf("input/thermal/prepro/%s/%s/data", area, tolower(cluster_name)),
@@ -171,9 +169,10 @@ editClusterRES <- function(area,
     
     # update series
     if (!is.null(time_series)) {
+      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/thermal/series/%s/%s/series", area, tolower(cluster_name)),
+        target = sprintf(currPath, area, tolower(cluster_name)),
         matrix = time_series
       )
       api_command_register(cmd, opts = opts)
