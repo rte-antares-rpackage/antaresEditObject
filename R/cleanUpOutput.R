@@ -5,20 +5,15 @@
 #'
 #' @export
 cleanUpOutput <- function(areas = NULL, opts = simOptions()){
-  if (!is.null(areas) && areas == "all") areas <- opts$areaList
+  if (!is.null(areas) && length(areas) == 1 && areas == "all") areas <- opts$areaList
   filteringData <- getGeographicTrimming(areas)
-  areasFiltering <- as.data.table(ldply(names(filteringData$areas), function(x){
-    data.table(area = x, 
-               synthesis = filteringData$areas[[x]][[1]], 
-               year_by_year = filteringData$areas[[x]][[2]])}))
-  linksFiltering <- as.data.table(ldply(names(filteringData$links), function(x){
-    data.table(link = x, 
-               synthesis = filteringData$links[[x]][[1]], 
-               year_by_year = filteringData$links[[x]][[2]])}))
+  areasFiltering <- rbindlist(filteringData$areas, idcol = T)
+  linksFiltering <- rbindlist(filteringData$links, idcol = T)
 
   lapply(areasFiltering$area, .cleanUpOutputSingle, data = areasFiltering, type = "areas", opts = opts)
   lapply(linksFiltering$link, .cleanUpOutputSingle, data = linksFiltering, type = "links", opts = opts)
-
+  
+  print("Output clean up success.")
 }
 
 
@@ -42,6 +37,4 @@ cleanUpOutput <- function(areas = NULL, opts = simOptions()){
     filesCurrent[grep(y, gsub(opts$simDataPath, "", filesCurrent))]
   }))
   unlink(setdiff(filesCurrent, filesToKeep))
-  
-  filesToKeep
 }
