@@ -124,7 +124,7 @@ writeOutputValues <- function(data, opts = NULL) {
         file_name <- file.path(file_path, file_name)
         
         if (ori_type %in% c("areas", "links") || file.exists(file_name))
-          .writeAntaresOutput(file_name, file_name_new, datatp)
+          .writeAntaresOutput(file_name, file_name_new, datatp, opts = opts)
         
       })
     })

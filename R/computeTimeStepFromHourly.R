@@ -170,7 +170,7 @@ computeOtherFromHourlyYear <- function(mcYear,
                                        timeStep = c("daily", "monthly", "annual", "weekly"), 
                                        writeOutput = F){
   res <- list()
-  if (areas == "all") selected <- "areas" #for the eval(parse(text))
+  if (length(areas) == 1 && areas == "all") selected <- "areas" #for the eval(parse(text))
   else if (type != "links") selected <- paste(list(areas), sep = ",")
   else selected <- paste(list(getLinks(areas, internalOnly = T, opts = opts)),
                          sep = ",")

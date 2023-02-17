@@ -1,7 +1,7 @@
 
 .writeAntaresOutput <- function(file_name, file_name_new, datatp, nrowkeep = 7, opts = simOptions()){
   
-  name_write <- names(datatp)[!names(datatp)%in%c(antaresRead::getIdCols(datatp), "annual")]
+  name_write <- names(datatp)[!names(datatp)%in%antaresRead::getIdCols(datatp)]
   name_write_echap <- paste0(name_write, collapse = "\t")
   
   if (file.exists(file_name)){
@@ -83,18 +83,25 @@
 
 # Write 7 first lines for values files (areas/links)
 .createColumns <- function(datatp, name_write, name_write_echap, opts = simOptions()){
+  
+  timestep <- attributes(datatp)$timeStep
+  if (timestep == "annual"){
+    name_write <- name_write[!name_write %in% "annual"]
+    name_write_echap <- gsub("annual\t", "", name_write_echap)
+  }
+
   val <- switch(attributes(datatp)$type,
                 "areas" = "va",
                 "links" = "va",
                 "clusters" = "de",
                 "clustersRes" = "res")
-  timecols <- switch(attributes(datatp)$timeStep,
+  timecols <- switch(timestep,
                      "daily" = c("day", "month"),
                      "weekly" = character(0),
                      'monthly' = "month",
                      "annual" = character(0))
   
-  idx_col <- switch(attributes(datatp)$timeStep,
+  idx_col <- switch(timestep,
                     "daily" = "index",
                     "weekly" = "week",
                     "monthly" = "index",
@@ -126,7 +133,7 @@
   
   line6 <- paste0(c("", rep("",length(timecols) + 1), units_echap), collapse = "\t")
   
-  line7 <- paste0(c("", idx_col, timecols), collapse = "\t")
+  line7 <- paste0(c("", idx_col, timecols, rep("",length(name_write))), collapse = "\t")
   
   c(line1,line2,line3,line4,line5,line6,line7)
 }
