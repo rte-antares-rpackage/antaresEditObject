@@ -56,8 +56,11 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
   }
   
   # otherwise, update the vector of mc_years by removing disabled years
-  playlist_update_type <- names(parameters$playlist)
   playlist_update_value <- parameters$playlist
+  for (type in names(playlist_update_value)){
+    if (class(playlist_update_value[[type]]) %in% "list") playlist_update_value[[type]] <- unlist(playlist_update_value[[type]], recursive = F)
+  }
+  playlist_update_type <- names(playlist_update_value)
   
   # untouched playlist - no modification have been made
   if (length(playlist_update_type) == 0) {
@@ -179,7 +182,11 @@ setPlaylist <- function(playlist,
     generaldata$playlist <- NULL
     
     # create new playlist (+ patch double to integer)
-    new_playlist <- setNames(as.list(as.integer(playlist - 1)), rep("playlist_year +", length(playlist)))
+    new_playlist <- setNames(as.list(sort(as.integer(playlist - 1))), rep("playlist_year +", length(playlist)))
+    if (opts$typeLoad == "api"){
+      new_playlist$sep <- ", "
+      new_playlist <- list("playlist_year +" = paste0("[", do.call(paste, new_playlist), "]"))
+    }
     new_playlist <- c(list(playlist_reset = FALSE), new_playlist)
     
     if (!is.null(weights)) {
