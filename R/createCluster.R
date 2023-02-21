@@ -287,9 +287,10 @@ createClusterRES <- function(area,
     )
     
     if (!is.null(time_series)) {
+      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/thermal/series/%s/%s/series", area, tolower(cluster_name)),
+        target = sprintf(currPath, area, tolower(cluster_name)),
         matrix = time_series
       )
       api_command_register(cmd, opts = opts)

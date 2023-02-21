@@ -3,6 +3,9 @@
 BUGFIXES :
 
 * Fix case sensitivity for `editCluster()` in API mode
+* Added support of API mode for `editClusterRES()`
+* Fixed ts write in API mode for `createClusterRES()`
+* Fixed `getPlaylist()` and `setPlaylist()` in API mode
 
 
 
