@@ -28,10 +28,16 @@
                        "clustersRes" = c("area", "cluster", agg_columns))
   
   colForMean = switch(type,
-                      "areas" = c("MRG. PRICE", "H. LEV", "LOLP"),
-                      "links" = c("CONG. PROB +",	"CONG. PROB -"),
+                      "areas" = c("MRG. PRICE", "H. LEV"),
+                      "links" = character(0),
                       "clusters" = character(0),
                       "clustersRes" = character(0))
+  
+  colForMax = switch(type,
+                     "areas" = "LOLP",
+                     "links" = c("CONG. PROB +",	"CONG. PROB -"),
+                     "clusters" = character(0),
+                     "clustersRes" = character(0))
   
   colorder <- colnames(hourlydata)
   idcols <- getIdCols(hourlydata)
@@ -39,22 +45,26 @@
   res <- copy(hourlydata)[, time := substr(as.character(time),1,char_timeStep)][, hour := NULL]
   if (timeStep == "annual") res[, time := "Annual"] #to groupby both years of horizon in one
   resSum <- res[, lapply(.SD, sum), 
-                            .SDcols = colorder[!(colorder %in% idcols) & !(colorder %in% colForMean)],
+                            .SDcols = colorder[!(colorder %in% idcols) & 
+                                                 !(colorder %in% colForMean) & !(colorder %in% colForMax)],
                             by = agg_columns]
   
   if (length(colForMean) > 0){
-    if (type == "links") resMean <- res[, lapply(.SD, max), .SDcols = colForMean,by = agg_columns]
-    else resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}), .SDcols = colForMean, by = agg_columns]
-    
-    res <- merge(resSum, resMean, by = agg_columns)
-  } else res <- resSum
+    resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}), .SDcols = colForMean, by = agg_columns]
+    resFinal <- merge(resSum, resMean, by = agg_columns)
+  } else resFinal <- resSum
+  
+  if (length(colForMax) > 0){
+    resMax <- res[, lapply(.SD, max), .SDcols = colForMax, by = agg_columns]
+    resFinal <- merge(resFinal, resMax, by = agg_columns)
+  }
 
   if (timeStep == "annual") {
-    setnames(res, "time", "annual")
+    setnames(resFinal, "time", "annual")
     colorder <- gsub("time", "annual", colorder)
   }
   
-  setcolorder(res, intersect(colorder, colnames(res)))
+  setcolorder(resFinal, intersect(colorder, colnames(resFinal)))
 }
 
 #' @title Computation function for rebuild mc-ind weekly from daily data.
@@ -68,17 +78,23 @@
   
   colorder <- gsub("time", "timeId", colnames(dailydata))
   colForMean = switch(type,
-                      "areas" = c("MRG. PRICE", "H. LEV", "LOLP"),
-                      "links" = c("CONG. PROB +",	"CONG. PROB -"),
+                      "areas" = c("MRG. PRICE", "H. LEV"),
+                      "links" = character(0),
                       "clusters" = character(0),
                       "clustersRes" = character(0))
   
+  colForMax = switch(type,
+                     "areas" = "LOLP",
+                     "links" = c("CONG. PROB +",	"CONG. PROB -"),
+                     "clusters" = character(0),
+                     "clustersRes" = character(0))
+  
   # Columns for aggregate based on type
   agg_columns = switch(type,
-                       "areas" = "area",
-                       "links" = "link",
-                       "clusters" = c("area", "cluster"),
-                       "clustersRes" = c("area", "cluster"))
+                       "areas" = c("area", "mcYear", "year", "week"),
+                       "links" = c("link", "mcYear", "year", "week"),
+                       "clusters" = c("area", "cluster", "mcYear", "year", "week"),
+                       "clustersRes" = c("area", "cluster", "mcYear", "year", "week"))
   
   weekdays <- c("Monday",
                 "Tuesday",
@@ -135,19 +151,22 @@
   res <- res[week == 1, year := 0]
   
   cols <- setdiff(colnames(res),c(getIdCols(dailydata),"week","year"))
-  resSum <- res[, lapply(.SD, sum), by= c(agg_columns, "mcYear", "year", "week"), .SDcols = setdiff(cols,colForMean)]
-  if (length(colForMean) > 0){
-    if (type == "links") resMean <- res[, lapply(.SD, max), 
-                                        .SDcols = colForMean, by= c(agg_columns, "mcYear", "year", "week")]
-    else resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}), 
-                        .SDcols = colForMean, by= c(agg_columns, "mcYear", "year", "week")]
-    
-    res <- merge(resSum, resMean, by = c(agg_columns, "mcYear", "year", "week"), sort = F)
-  } else res <- resSum
-
-  res[, timeId := week]
+  resSum <- res[, lapply(.SD, sum), by= agg_columns, 
+                .SDcols = cols[!(cols %in% colForMean | cols %in% colForMax)]]
   
-  setcolorder(res, intersect(colorder, colnames(res)))[, year := NULL]
+  if (length(colForMean) > 0){
+    resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}),.SDcols = colForMean, by= agg_columns]
+    resFinal <- merge(resSum, resMean, by = agg_columns, sort = F)
+  } else resFinal <- resSum
+  
+  if (length(colForMax) > 0){
+    resMean <- res[, lapply(.SD, max),.SDcols = colForMax, by= agg_columns]
+    resFinal <- merge(resFinal, resMean, by = agg_columns, sort = F)
+  }
+
+  resFinal[, timeId := week]
+  
+  setcolorder(resFinal, intersect(colorder, colnames(resFinal)))[, year := NULL]
 }
 
 
@@ -330,6 +349,5 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
   # closeAllConnections()
   
   print("Success.")
-  return (res)
-  
+  if (!writeOutput) return (res)
 }

@@ -10,8 +10,8 @@ cleanUpOutput <- function(areas = NULL, opts = simOptions()){
   areasFiltering <- rbindlist(filteringData$areas, idcol = T)
   linksFiltering <- rbindlist(filteringData$links, idcol = T)
 
-  lapply(areasFiltering$area, .cleanUpOutputSingle, data = areasFiltering, type = "areas", opts = opts)
-  lapply(linksFiltering$link, .cleanUpOutputSingle, data = linksFiltering, type = "links", opts = opts)
+  lapply(areasFiltering$.id, .cleanUpOutputSingle, data = areasFiltering, type = "areas", opts = opts)
+  lapply(linksFiltering$.id, .cleanUpOutputSingle, data = linksFiltering, type = "links", opts = opts)
   
   print("Output clean up success.")
 }
@@ -19,8 +19,8 @@ cleanUpOutput <- function(areas = NULL, opts = simOptions()){
 
 .cleanUpOutputSingle <- function(x, data, type, opts){
   
-  synthesis <- unlist(strsplit(data[data[[1]] == x]$synthesis, ", "))
-  year_by_year <- unlist(strsplit(data[data[[1]] == x]$year_by_year, ", "))
+  synthesis <- unlist(strsplit(data[data[[1]] == x]$`filter-synthesis`, ", "))
+  year_by_year <- unlist(strsplit(data[data[[1]] == x]$`filter-year-by-year`, ", "))
   
   #mc-all
   curr_path <- file.path(opts$simDataPath, "mc-all", type, x)
