@@ -1,11 +1,20 @@
+# antaresEditObject 0.4.2
+
+BUGFIXES :
+
+* Added support of API mode for `editClusterRES()`
+* Fixed ts write in API mode for `createClusterRES()`
+* Fixed `getPlaylist()` and `setPlaylist()` in API mode
+
+
+
 # antaresEditObject 0.4.1
 
 BUGFIXES :
 
 * Fix case sensitivity for `editCluster()` in API mode
-* Added support of API mode for `editClusterRES()`
-* Fixed ts write in API mode for `createClusterRES()`
-* Fixed `getPlaylist()` and `setPlaylist()` in API mode
+* Fix opts returned (proper new study_id) when using `createVariant()`
+* Fix case sensitivity for groups in `createCluster()` and `createClusterRES()`
 
 
 

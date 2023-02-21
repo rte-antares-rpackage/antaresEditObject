@@ -155,10 +155,8 @@ createVariant <- function(name, opts = antaresRead::simOptions()) {
   } else {
     cli::cli_alert_danger("Failed to create variant")
   }
-  opts$study_id <- content(result)
-  opts$modeAPI <- "sync"
+  opts <- setSimulationPathAPI(host=opts$host, token=opts$token, study_id=content(result), simulation="input")
   options("antaresEditObject.apiCommands" = list())
-  options(antares = opts)
   return(invisible(opts))
 }
 

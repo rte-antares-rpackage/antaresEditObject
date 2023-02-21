@@ -160,7 +160,7 @@ createCluster <- function(area,
                      "Other 2",
                      "Other 3",
                      "Other 4")
-  if (!is.null(group) && !group %in% thermal_group) 
+  if (!is.null(group) && !group %in% tolower(thermal_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(thermal_group, collapse = ", ")
@@ -202,7 +202,7 @@ createClusterRES <- function(area,
                         "Other RES 2",
                         "Other RES 3",
                         "Other RES 4")
-  if (!is.null(group) && !group %in% renewables_group) 
+  if (!is.null(group) && !group %in% tolower(renewables_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(renewables_group, collapse = ", ")
