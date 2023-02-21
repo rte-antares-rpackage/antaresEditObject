@@ -1,3 +1,13 @@
+# antaresEditObject 0.4.2
+
+BUGFIXES :
+
+* Added support of API mode for `editClusterRES()`
+* Fixed ts write in API mode for `createClusterRES()`
+* Fixed `getPlaylist()` and `setPlaylist()` in API mode
+
+
+
 # antaresEditObject 0.4.1
 
 BUGFIXES :
