@@ -29,6 +29,8 @@ computeOtherFromHourlyMulti(
 \item{writeOutput}{boolean to write data in mc-ind folder}
 
 \item{nbcl}{number of cpu cores for parallelization}
+
+\item{verbose}{logical for printing output}
 }
 \description{
 Compute daily, weekly, monthly and annual mc-ind from hourly data multiyear. (new)

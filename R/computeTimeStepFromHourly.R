@@ -260,10 +260,12 @@ computeOtherFromHourlyYear <- function(mcYear,
 #' @param mcYears vector of years to compute
 #' @param writeOutput boolean to write data in mc-ind folder
 #' @param nbcl number of cpu cores for parallelization
+#' @param verbose logical for printing output
 #'
 #' @importFrom plyr llply ldply 
 #' @importFrom future plan
 #' @importFrom doFuture registerDoFuture
+#' @importFrom memuse Sys.meminfo
 #' 
 #' @import progressr
 #' 
@@ -301,58 +303,72 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
     clusterEvalQ(cl, library("antaresRead"))
   }
   
-  if ("areas" %in% type){
-    gc()
-    exec_time <- Sys.time()
-    if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
-    resAreas <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                      type = "areas", areas = areas, .parallel = parallel, .progress = "progressr",
-                      .paropts = list(.options.snow = paropts))
-    res$areas <- resAreas
-    if (verbose){
-      cat(c("Areas : OK\n"))
-      print(Sys.time() - exec_time)
-    } 
-  }
-
-  if ("links" %in% type){
-    gc()
-    exec_time <- Sys.time()
-    if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
-    resLinks <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                      type = "links", areas = areas, .parallel = parallel, .progress = "progressr",
-                      .paropts = list(.options.snow = paropts))
-    res$links <- resLinks
-    if (verbose){
-      cat(c("Links : OK\n"))
-      print(Sys.time() - exec_time)
-    } 
-  }
-
-  if ("clusters" %in% type){
-    gc()
-    exec_time <- Sys.time()
-    if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
-    resClusters <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-                         type = "clusters", areas = areas, .parallel = parallel, .progress = "progressr",
-                         .paropts = list(.options.snow = paropts))
-    res$clusters <- resClusters
-    if (verbose){
-      cat(c("Clusters : OK\n"))
-      print(Sys.time() - exec_time)
+  #Dynamic batch value####
+  batch = floor(((as.numeric(Sys.meminfo()[[2]])/(1024*1024*1024)) * 0.7)/2)
+  if (batch > 1 & length(mcYears)%%batch == 1) batch <- batch + 1
+  if (verbose) cat("\nBatch :",batch,"\n")
+  
+  for (j in 1:ceiling(length(mcYears)/batch)){
+    lst_idx = 0 
+    left = (j-1)*batch + 1
+    right = min(length(mcYears), j*batch)
+    curr_years = setdiff(mcYears[left:right],NA)
+  
+    if ("areas" %in% type){
+      gc()
+      exec_time <- Sys.time()
+      if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (areas) from hourly...\n"))
+      resAreas <- llply(curr_years, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+                        type = "areas", areas = areas, .parallel = parallel, .progress = "progressr",
+                        .paropts = list(.options.snow = paropts))
+      res$areas <- resAreas
+      if (verbose){
+        cat(c("Areas : OK\n"))
+        print(Sys.time() - exec_time)
+      } 
     }
+    
+    if ("links" %in% type){
+      gc()
+      exec_time <- Sys.time()
+      if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (links) from hourly...\n"))
+      resLinks <- llply(curr_years, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+                        type = "links", areas = areas, .parallel = parallel, .progress = "progressr",
+                        .paropts = list(.options.snow = paropts))
+      res$links <- resLinks
+      if (verbose){
+        cat(c("Links : OK\n"))
+        print(Sys.time() - exec_time)
+      } 
+    }
+    
+    if ("clusters" %in% type){
+      gc()
+      exec_time <- Sys.time()
+      if (verbose) cat(c("\nComputing :", timeStep, "mc-ind (clusters) from hourly...\n"))
+      resClusters <- llply(curr_years, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+                           type = "clusters", areas = areas, .parallel = parallel, .progress = "progressr",
+                           .paropts = list(.options.snow = paropts))
+      res$clusters <- resClusters
+      if (verbose){
+        cat(c("Clusters : OK\n"))
+        print(Sys.time() - exec_time)
+      }
+    }
+    
+    # Compute cluster RES disabled for now (TODO)
+    # gc()
+    # if (opts$antaresVersion >= 810 && opts$parameters$`other preferences`$`renewable-generation-modelling` == "clusters"){
+    #   cat(c("\nComputing :", timeStep, "mc-ind (clusters Res) from hourly...\n"))
+    #   resClustersRes <- llply(curr_years, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
+    #                        type = "clustersRes", areas = areas, .parallel = parallel, .progress = "progressr",
+    #                        .paropts = list(.options.snow = paropts))
+    #   cat(c("Clusters Res : OK\n"))
+    #   res <- list(resAreas, resLinks, resClusters, resClustersRes)
+    # } else res <- list(resAreas, resLinks, resClusters)
+    
   }
-
-  # gc()
-  # if (opts$antaresVersion >= 810 && opts$parameters$`other preferences`$`renewable-generation-modelling` == "clusters"){
-  #   cat(c("\nComputing :", timeStep, "mc-ind (clusters Res) from hourly...\n"))
-  #   resClustersRes <- llply(mcYears, computeOtherFromHourlyYear, opts = opts, writeOutput = writeOutput,
-  #                        type = "clustersRes", areas = areas, .parallel = parallel, .progress = "progressr",
-  #                        .paropts = list(.options.snow = paropts))
-  #   cat(c("Clusters Res : OK\n"))
-  #   res <- list(resAreas, resLinks, resClusters, resClustersRes)
-  # } else res <- list(resAreas, resLinks, resClusters)
-  # closeAllConnections()
+  closeAllConnections()
   
   print("Success.")
   if (!writeOutput) return (res)
