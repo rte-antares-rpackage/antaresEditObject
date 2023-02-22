@@ -181,7 +181,10 @@
 #' @param timeStep timestep of aggregation (daily, monthly and annual, NO weekly)
 #' @param writeOutput boolean to write data in mc-ind folder
 #' 
-#' @keywords internal
+#' @seealso
+#' \code{\link{computeOtherFromHourlyMulti}}
+#' 
+#' @export
 computeOtherFromHourlyYear <- function(mcYear,
                                        type,
                                        areas = "all",
@@ -263,6 +266,9 @@ computeOtherFromHourlyYear <- function(mcYear,
 #' @importFrom doFuture registerDoFuture
 #' 
 #' @import progressr
+#' 
+#' @seealso
+#' \code{\link{computeOtherFromHourlyYear}}
 #' 
 #' @export
 computeOtherFromHourlyMulti <- function(opts = simOptions(),

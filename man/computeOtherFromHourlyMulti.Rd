@@ -33,3 +33,6 @@ computeOtherFromHourlyMulti(
 \description{
 Compute daily, weekly, monthly and annual mc-ind from hourly data multiyear. (new)
 }
+\seealso{
+\code{\link{computeOtherFromHourlyYear}}
+}

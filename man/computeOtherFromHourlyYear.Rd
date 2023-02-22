@@ -29,4 +29,6 @@ computeOtherFromHourlyYear(
 \description{
 Compute daily, weekly, monthly and annual mc-ind from hourly data for one year. (new)
 }
-\keyword{internal}
+\seealso{
+\code{\link{computeOtherFromHourlyMulti}}
+}

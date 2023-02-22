@@ -1,9 +1,37 @@
+# antaresEditObject 0.5.0
+
+NEW FEATURES :
+
+* New functions `computeOtherFromHourlyMulti` and `computeOtherFromHourlyYear` for mc-ind aggregation. `computeTimeStampFromHourly` is now deprecated.
+* New internal function `.createColumns` to create headers of output data when missing.
+* New function `cleanUpOutput` to delete any extra output files not selected in simulation.
+
+
+BUGFIXES :
+
+* Major corrections to `writeOutput` and `writeAntaresOutput` (support V8)
+* Fixed ts write in API mode for `createClusterRES()`
+* Fixed `getPlaylist()` and `setPlaylist()` in API mode
+
+
+
+# antaresEditObject 0.4.2
+
+BUGFIXES :
+
+* Added support of API mode for `editClusterRES()`
+* Fixed ts write in API mode for `createClusterRES()`
+* Fixed `getPlaylist()` and `setPlaylist()` in API mode
+
+
+
 # antaresEditObject 0.4.1
 
 BUGFIXES :
 
 * Fix case sensitivity for `editCluster()` in API mode
 * Fix opts returned (proper new study_id) when using `createVariant()`
+* Fix case sensitivity for groups in `createCluster()` and `createClusterRES()`
 
 
 

@@ -160,7 +160,7 @@ createCluster <- function(area,
                      "Other 2",
                      "Other 3",
                      "Other 4")
-  if (!is.null(group) && !group %in% thermal_group) 
+  if (!is.null(group) && !group %in% tolower(thermal_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(thermal_group, collapse = ", ")
@@ -202,7 +202,7 @@ createClusterRES <- function(area,
                         "Other RES 2",
                         "Other RES 3",
                         "Other RES 4")
-  if (!is.null(group) && !group %in% renewables_group) 
+  if (!is.null(group) && !group %in% tolower(renewables_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(renewables_group, collapse = ", ")
@@ -287,9 +287,10 @@ createClusterRES <- function(area,
     )
     
     if (!is.null(time_series)) {
+      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/thermal/series/%s/%s/series", area, tolower(cluster_name)),
+        target = sprintf(currPath, area, tolower(cluster_name)),
         matrix = time_series
       )
       api_command_register(cmd, opts = opts)
