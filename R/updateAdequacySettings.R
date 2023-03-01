@@ -120,6 +120,7 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
 #' @param opts List. study options.
 #' @param path Character. path to config.yml. Default points to "/user/adequacypatch/" in study
 #' 
+#' @importFrom yaml read_yaml
 #' @export
 #'
 #' @seealso
