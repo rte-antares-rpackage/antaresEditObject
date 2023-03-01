@@ -107,3 +107,39 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
   
   invisible(res)
 }
+
+
+
+
+#' @title Read adequacy patch config.yml into Antares (v8.5+)
+#' 
+#' @description 
+#' Use this function to load config.yml used in older Antares versions for adequacy patch.
+#' Areas in config will be updated to be included in adequacy patch perimeter.
+#' 
+#' @param opts List. study options.
+#' @param path Character. path to config.yml. Default points to "/user/adequacypatch/" in study
+#' 
+#' @export
+#'
+#' @seealso
+#' \code{\link{updateAdequacySettings}}
+#' 
+convertConfigToAdq <- function(opts = simOptions(), path = "default"){
+  configAdq <- ifelse(path == "default",
+                      file.path(opts$studyPath, "user", "adequacypatch", "config.yml"),
+                      path)
+  if (!file.exists(configAdq)) stop("Config.yml not found in selected path.")
+  
+  config <- read_yaml(configAdq, fileEncoding = "UTF-8", text)
+  
+  pathOut <- character(0)
+  #temporarily switch to mode "input" if necessary
+  if (opts$mode != "input"){
+    pathOut <- opts$simPath
+    setSimulationPath(opts$studyPath, "input")
+  }
+  lapply(setdiff(config$areas, config$excluded_areas),
+         editArea, adequacy = adequacyOptions(adequacy_patch_mode = "inside"))
+  if (length(pathOut) > 0) setSimulationPath(pathOut)
+}
