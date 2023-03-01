@@ -34,7 +34,8 @@ Imports:
     whisker,
     doParallel,
     pbapply,
-    parallel
+    parallel,
+    yaml
 Suggests: 
     testthat,
     covr,

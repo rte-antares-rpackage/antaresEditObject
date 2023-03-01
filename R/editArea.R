@@ -189,7 +189,7 @@ editArea <- function(name,
     
     if (!is.null(adequacy)) {
       for (i in names(adequacy)) {
-        adequacyIni$`adequacy-patch-mode`[[i]] <- adequacy[[i]]
+        adequacyIni$`adequacy-patch`[[i]] <- adequacy[[i]]
       }
     }
     
