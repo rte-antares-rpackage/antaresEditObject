@@ -28,6 +28,9 @@ computeTimeStampFromHourly(
 
 Compute daily, weekly, monthly and annual mc-ind from hourly data.
 }
+\note{
+Deprecated on studies v8 or higher.
+}
 \examples{
 \dontrun{
 

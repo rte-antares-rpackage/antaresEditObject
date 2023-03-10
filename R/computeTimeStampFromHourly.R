@@ -1,5 +1,7 @@
 #' @title Compute daily, weekly, monthly and annual mc-ind from hourly data.
 #' 
+#' @note Deprecated on studies v8 or higher.
+#' 
 #' @description 
 #' `r antaresEditObject:::badge_api_no()`
 #' 
