@@ -39,7 +39,8 @@ Imports:
     pbapply,
     parallel,
     future,
-    plyr
+    plyr,
+    yaml
 Suggests: 
     testthat,
     covr,
