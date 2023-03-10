@@ -2,23 +2,17 @@
 
 NEW FEATURES :
 
-* New functions `computeOtherFromHourlyMulti` and `computeOtherFromHourlyYear` for mc-ind aggregation. `computeTimeStampFromHourly` is now deprecated.
-* New internal function `.createColumns` to create headers of output data when missing.
-* New function `cleanUpOutput` to delete any extra output files not selected in simulation.
+* Full support of studies up to v8.5
+* New function `convertConfigToAdq()` for migration of older adequacy patch studies into v8.5  
+* Existing function `updateAdequacySettings()` has new arguments (cf. Antares v8.5 changelog)
+* New internal function `.createColumns()` to create headers of output data when missing.
+* New function `cleanUpOutput()` to delete any extra output files not selected in simulation.
+* New functions `computeOtherFromHourlyMulti()` and `computeOtherFromHourlyYear()` for mc-ind aggregation. `computeTimeStampFromHourly()` is now deprecated.
 
 
 BUGFIXES :
 
-* Major corrections to `writeOutput` and `writeAntaresOutput` (support V8)
-* Fixed ts write in API mode for `createClusterRES()`
-* Fixed `getPlaylist()` and `setPlaylist()` in API mode
-
-
-
-# antaresEditObject 0.4.2
-
-BUGFIXES :
-
+* Major corrections to `writeOutput()` and `writeAntaresOutput()` (support V8)
 * Added support of API mode for `editClusterRES()`
 * Fixed ts write in API mode for `createClusterRES()`
 * Fixed `getPlaylist()` and `setPlaylist()` in API mode

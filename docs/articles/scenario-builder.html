@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -99,7 +99,12 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: antaresRead</span></span></code></pre></div>
+<span><span class="co">#&gt; Loading required package: antaresRead</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'antaresEditObject'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:antaresRead':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     readIni, readIniFile</span></span></code></pre></div>
 <p>First let’s create a new study with some areas and clusters:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -113,13 +118,33 @@
 <span><span class="co"># First area</span></span>
 <span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span><span class="st">"earth"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/create-cluster.html">createCluster</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"earth"</span>, cluster_name <span class="op">=</span> <span class="st">"america"</span>, add_prefix <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in createCluster(area = "earth", cluster_name = "america", add_prefix =</span></span>
+<span><span class="co">#&gt; FALSE): Group: 'Other' is not a valid name recognized by Antares, you should be</span></span>
+<span><span class="co">#&gt; using one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2,</span></span>
+<span><span class="co">#&gt; Other 3, Other 4</span></span>
 <span><span class="fu"><a href="../reference/create-cluster.html">createCluster</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"earth"</span>, cluster_name <span class="op">=</span> <span class="st">"africa"</span>, add_prefix <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in createCluster(area = "earth", cluster_name = "africa", add_prefix =</span></span>
+<span><span class="co">#&gt; FALSE): Group: 'Other' is not a valid name recognized by Antares, you should be</span></span>
+<span><span class="co">#&gt; using one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2,</span></span>
+<span><span class="co">#&gt; Other 3, Other 4</span></span>
 <span><span class="fu"><a href="../reference/create-cluster.html">createCluster</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"earth"</span>, cluster_name <span class="op">=</span> <span class="st">"europe"</span>, add_prefix <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in createCluster(area = "earth", cluster_name = "europe", add_prefix =</span></span>
+<span><span class="co">#&gt; FALSE): Group: 'Other' is not a valid name recognized by Antares, you should be</span></span>
+<span><span class="co">#&gt; using one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2,</span></span>
+<span><span class="co">#&gt; Other 3, Other 4</span></span>
 <span></span>
 <span><span class="co"># Second one</span></span>
 <span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span><span class="st">"moon"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/create-cluster.html">createCluster</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"moon"</span>, cluster_name <span class="op">=</span> <span class="st">"tranquility"</span>, add_prefix <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in createCluster(area = "moon", cluster_name = "tranquility", add_prefix</span></span>
+<span><span class="co">#&gt; = FALSE): Group: 'Other' is not a valid name recognized by Antares, you should</span></span>
+<span><span class="co">#&gt; be using one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other</span></span>
+<span><span class="co">#&gt; 2, Other 3, Other 4</span></span>
 <span><span class="fu"><a href="../reference/create-cluster.html">createCluster</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"moon"</span>, cluster_name <span class="op">=</span> <span class="st">"serenety"</span>, add_prefix <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in createCluster(area = "moon", cluster_name = "serenety", add_prefix =</span></span>
+<span><span class="co">#&gt; FALSE): Group: 'Other' is not a valid name recognized by Antares, you should be</span></span>
+<span><span class="co">#&gt; using one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2,</span></span>
+<span><span class="co">#&gt; Other 3, Other 4</span></span>
 <span></span>
 <span><span class="co"># More areas</span></span>
 <span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span><span class="st">"titan"</span><span class="op">)</span></span>
@@ -144,8 +169,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; list()</span></span></code></pre></div>
-<p>Currently it’s empty. We need to create rules before updating
-data:</p>
+<p>Currently it’s empty. We need to create rules before updating data:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># All areas</span></span>
 <span><span class="fu"><a href="../reference/scenario-builder.html">scenarioBuilder</a></span><span class="op">(</span>n_scenario <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -180,8 +204,7 @@ data:</p>
 <span></span>
 <span><span class="co"># equivalent as</span></span>
 <span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>l <span class="op">=</span> <span class="va">my_scenario</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Here we update data for serie <code>load</code> only. To update
-several series at once you can do:</p>
+<p>Here we update data for serie <code>load</code> only. To update several series at once you can do:</p>
 <ul>
 <li>with same scenario data:</li>
 </ul>
@@ -221,8 +244,7 @@ several series at once you can do:</p>
 <span><span class="co">#&gt; earth    2    3    1    2    3    1    2    3    1     2</span></span>
 <span><span class="co">#&gt; moon     3    1    2    3    1    2    3    1    2     3</span></span>
 <span><span class="co">#&gt; titan    1    2    3    1    2    3    1    2    3     1</span></span></code></pre></div>
-<p>For thermal and renewables series, default behavior is to set rules
-to each clusters in the area :</p>
+<p>For thermal and renewables series, default behavior is to set rules to each clusters in the area :</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scenario-builder.html">scenarioBuilder</a></span><span class="op">(</span>n_scenario <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
@@ -243,7 +265,7 @@ to each clusters in the area :</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span></span>
 <span>  ldata <span class="op">=</span> <span class="va">my_scenario</span>, </span>
 <span>  series <span class="op">=</span> <span class="st">"thermal"</span>,</span>
-<span>  clusters_areas <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
+<span>  clusters_areas <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
 <span>    area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"earth"</span>, <span class="st">"earth"</span><span class="op">)</span>,</span>
 <span>    cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"africa"</span>, <span class="st">"europe"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -255,8 +277,7 @@ to each clusters in the area :</p>
 <span><span class="co">#&gt; earth_europe        2    3    1    2    3    1    2    3    1     2</span></span>
 <span><span class="co">#&gt; moon_serenety      NA   NA   NA   NA   NA   NA   NA   NA   NA    NA</span></span>
 <span><span class="co">#&gt; moon_tranquility   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA</span></span></code></pre></div>
-<p>For NTC serie (Antares &gt;= 8.2.0), it writes the scenario for all
-links :</p>
+<p>For NTC serie (Antares &gt;= 8.2.0), it writes the scenario for all links :</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span></span>
 <span>  ldata <span class="op">=</span> <span class="va">my_scenario</span>, </span>
@@ -297,7 +318,7 @@ links :</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

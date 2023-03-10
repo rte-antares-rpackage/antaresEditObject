@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -67,12 +67,60 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.0" id="antareseditobject-030">antaresEditObject 0.3.0<small>2021-11-08</small><a class="anchor" aria-label="anchor" href="#antareseditobject-030"></a></h2>
+<h2 class="page-header" data-toc-text="0.5.0" id="antareseditobject-050">antaresEditObject 0.5.0<a class="anchor" aria-label="anchor" href="#antareseditobject-050"></a></h2>
+<p>NEW FEATURES :</p>
+<ul><li>Full support of studies up to v8.5</li>
+<li>New function <code><a href="../reference/convertConfigToAdq.html">convertConfigToAdq()</a></code> for migration of older adequacy patch studies into v8.5<br></li>
+<li>Existing function <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> has new arguments (cf. Antares v8.5 changelog)</li>
+<li>New internal function <code>.createColumns()</code> to create headers of output data when missing.</li>
+<li>New function <code><a href="../reference/cleanUpOutput.html">cleanUpOutput()</a></code> to delete any extra output files not selected in simulation.</li>
+<li>New functions <code><a href="../reference/computeOtherFromHourlyMulti.html">computeOtherFromHourlyMulti()</a></code> and <code><a href="../reference/computeOtherFromHourlyYear.html">computeOtherFromHourlyYear()</a></code> for mc-ind aggregation. <code><a href="../reference/computeTimeStampFromHourly.html">computeTimeStampFromHourly()</a></code> is now deprecated.</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>Major corrections to <code>writeOutput()</code> and <code>writeAntaresOutput()</code> (support V8)</li>
+<li>Added support of API mode for <code><a href="../reference/edit-cluster.html">editClusterRES()</a></code>
+</li>
+<li>Fixed ts write in API mode for <code><a href="../reference/create-cluster.html">createClusterRES()</a></code>
+</li>
+<li>Fixed <code><a href="../reference/playlist.html">getPlaylist()</a></code> and <code><a href="../reference/playlist.html">setPlaylist()</a></code> in API mode</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.4.1" id="antareseditobject-041">antaresEditObject 0.4.1<a class="anchor" aria-label="anchor" href="#antareseditobject-041"></a></h2>
+<p>BUGFIXES :</p>
+<ul><li>Fix case sensitivity for <code><a href="../reference/edit-cluster.html">editCluster()</a></code> in API mode</li>
+<li>Fix opts returned (proper new study_id) when using <code><a href="../reference/variant.html">createVariant()</a></code>
+</li>
+<li>Fix case sensitivity for groups in <code><a href="../reference/create-cluster.html">createCluster()</a></code> and <code><a href="../reference/create-cluster.html">createClusterRES()</a></code>
+</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.4.0" id="antareseditobject-040">antaresEditObject 0.4.0<a class="anchor" aria-label="anchor" href="#antareseditobject-040"></a></h2>
+<div class="section level4">
+<h4 id="new-functions-0-4-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-4-0"></a></h4>
+<ul><li><p>Antares v840 : new parameter <code>result-format</code> to choose output format (txt/zip) + new values for <code>transmission-capacities</code> parameter.</p></li>
+<li><p>Antares v832 : added filtering options to bindingConstraints.</p></li>
+<li><p>Antares v830 : <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> function to activate Adequacy Patch and set parameters.</p></li>
+<li><p>Antares v820 : <code><a href="../reference/createLink.html">createLink()</a></code> and <code><a href="../reference/editLink.html">editLink()</a></code> have a new argument <code>tsLink</code> allowing to write transmission capacities time-series.</p></li>
+<li><p><code><a href="../reference/create-binding-constraint.html">createBindingConstraintBulk()</a></code> allow to create multiple binding constraints at once.</p></li>
+</ul></div>
+<div class="section level4">
+<h4 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h4>
+<ul><li>Argument’s order of <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code> has changed, <code>data</code> is now in first place.</li></ul></div>
+<div class="section level4">
+<h4 id="variant-management-with-api-0-4-0">Variant management with API<a class="anchor" aria-label="anchor" href="#variant-management-with-api-0-4-0"></a></h4>
+<p>This release include some new features to interact with Antares Web.</p>
+<ul><li>Main functions are now compatible to interact with a variant through the API: <code><a href="../reference/createArea.html">createArea()</a></code>, <code><a href="../reference/editArea.html">editArea()</a></code>, <code><a href="../reference/removeArea.html">removeArea()</a></code>, <code><a href="../reference/createLink.html">createLink()</a></code>, <code><a href="../reference/editLink.html">editLink()</a></code>, <code><a href="../reference/removeLink.html">removeLink()</a></code>, <code><a href="../reference/create-cluster.html">createCluster()</a></code>, <code><a href="../reference/edit-cluster.html">editCluster()</a></code>, <code><a href="../reference/remove-cluster.html">removeCluster()</a></code>, <code><a href="../reference/create-binding-constraint.html">createBindingConstraint()</a></code>, <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code>, <code><a href="../reference/removeBindingConstraint.html">removeBindingConstraint()</a></code>, <code><a href="../reference/createDistrict.html">createDistrict()</a></code>, <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>, <code><a href="../reference/updateInputSettings.html">updateInputSettings()</a></code>, <code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code>, <code><a href="../reference/updateOutputSettings.html">updateOutputSettings()</a></code>, <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code>, <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code>, <code><a href="../reference/scenario-builder.html">readScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">clearScenarioBuilder()</a></code>, <code><a href="../reference/writeWaterValues.html">writeWaterValues()</a></code>, <code><a href="../reference/createDSR.html">createDSR()</a></code>, <code><a href="../reference/createPSP.html">createPSP()</a></code>.</li>
+<li>New functions to use or create variants: <code><a href="../reference/variant.html">useVariant()</a></code>, <code><a href="../reference/variant.html">createVariant()</a></code>.</li>
+<li>New function to create studies on AntaREST server: <code><a href="../reference/create-study.html">createStudyAPI()</a></code>.</li>
+<li>New function to search studies on AntaREST server: <code><a href="../reference/searchStudy.html">searchStudy()</a></code>.</li>
+<li>API calls can be synchronous or asynchronous, see <code><a href="../reference/setAPImode.html">setAPImode()</a></code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.0" id="antareseditobject-030">antaresEditObject 0.3.0<a class="anchor" aria-label="anchor" href="#antareseditobject-030"></a></h2>
 <div class="section level4">
 <h4 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h4>
 <ul><li>
-<code><a href="../reference/create-study.html">createStudy()</a></code> no longer return <code>TRUE</code> / <code>FALSE</code>, but simulation options list returned by <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</li>
-</ul></div>
+<code><a href="../reference/create-study.html">createStudy()</a></code> no longer return <code>TRUE</code> / <code>FALSE</code>, but simulation options list returned by <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</li></ul></div>
 <div class="section level4">
 <h4 id="renewable-energy-sources-0-3-0">Renewable Energy Sources<a class="anchor" aria-label="anchor" href="#renewable-energy-sources-0-3-0"></a></h4>
 <p>This release include some new features to interact with renewable energy sources (new in Antares v8.0.3):</p>
@@ -86,8 +134,7 @@
 <code><a href="../reference/scenario-builder.html">readScenarioBuilder()</a></code>: there can be a new field <code>r</code> if a scenario is completed for renewables</li>
 <li>
 <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>: allow to update scenario builder for renewables if RES activated.</li>
-<li>In <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>: check value for <code>inter.modal</code> and <code>inter.modal</code> parameters:
-<ul><li>RES activated: use load, hydro, thermal, renewables</li>
+<li>In <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>: check value for <code>inter.modal</code> and <code>inter.modal</code> parameters:<ul><li>RES activated: use load, hydro, thermal, renewables</li>
 <li>RES not activated: use load, hydro, wind, thermal, solar</li>
 </ul></li>
 <li>In <code><a href="../reference/updateInputSettings.html">updateInputSettings()</a></code>: prevent use of <code>renewables</code> for <code>import</code> parameter.</li>
@@ -100,7 +147,7 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.2" id="antareseditobject-022">antaresEditObject 0.2.2<small>2021-06-21</small><a class="anchor" aria-label="anchor" href="#antareseditobject-022"></a></h2>
+<h2 class="page-header" data-toc-text="0.2.2" id="antareseditobject-022">antaresEditObject 0.2.2<a class="anchor" aria-label="anchor" href="#antareseditobject-022"></a></h2>
 <ul><li>New usage <code>getPlaylist</code> : V8 antares ponderation.</li>
 <li>New usage <code>setPlaylist</code> : V8 antares ponderation.</li>
 </ul></div>
@@ -115,10 +162,9 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="antareseditobject-020">antaresEditObject 0.2.0<a class="anchor" aria-label="anchor" href="#antareseditobject-020"></a></h2>
-<ul><li>New template in <code><a href="../reference/create-study.html">createStudy()</a></code> for Antares version &gt;= 7.1.0</li>
-</ul></div>
+<ul><li>New template in <code><a href="../reference/create-study.html">createStudy()</a></code> for Antares version &gt;= 7.1.0</li></ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.9" id="antareseditobject-019">antaresEditObject 0.1.9<small>2020-02-20</small><a class="anchor" aria-label="anchor" href="#antareseditobject-019"></a></h2>
+<h2 class="page-header" data-toc-text="0.1.9" id="antareseditobject-019">antaresEditObject 0.1.9<a class="anchor" aria-label="anchor" href="#antareseditobject-019"></a></h2>
 <ul><li>New function <code><a href="../reference/writeSeriesPrepro.html">writeSeriesPrepro()</a></code>: to write load, wind and solar prepro data.</li>
 <li>New function <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code>: writes input time series.</li>
 <li>
@@ -129,21 +175,17 @@
 </ul><div class="section level4">
 <h4 id="bugfixes-0-1-9">Bugfixes<a class="anchor" aria-label="anchor" href="#bugfixes-0-1-9"></a></h4>
 <ul><li>
-<code><a href="../reference/scenario-builder.html">scenarioBuilder()</a></code> now work when areas_rand has length 1</li>
-</ul></div>
+<code><a href="../reference/scenario-builder.html">scenarioBuilder()</a></code> now work when areas_rand has length 1</li></ul></div>
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.8" id="antareseditobject-018">antaresEditObject 0.1.8<a class="anchor" aria-label="anchor" href="#antareseditobject-018"></a></h2>
-<ul><li>Internal release.</li>
-</ul></div>
+<ul><li>Internal release.</li></ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.7" id="antareseditobject-017">antaresEditObject 0.1.7<small>2019-07-18</small><a class="anchor" aria-label="anchor" href="#antareseditobject-017"></a></h2>
-<ul><li>Fix <code>createPSP</code> to work with Antares v7</li>
-</ul></div>
+<h2 class="page-header" data-toc-text="0.1.7" id="antareseditobject-017">antaresEditObject 0.1.7<a class="anchor" aria-label="anchor" href="#antareseditobject-017"></a></h2>
+<ul><li>Fix <code>createPSP</code> to work with Antares v7</li></ul></div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.6" id="antareseditobject-016">antaresEditObject 0.1.6<small>2019-05-13</small><a class="anchor" aria-label="anchor" href="#antareseditobject-016"></a></h2>
-<ul><li>Compatibility with Antares version 7</li>
-</ul></div>
+<h2 class="page-header" data-toc-text="0.1.6" id="antareseditobject-016">antaresEditObject 0.1.6<a class="anchor" aria-label="anchor" href="#antareseditobject-016"></a></h2>
+<ul><li>Compatibility with Antares version 7</li></ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.4" id="antareseditobject-014">antaresEditObject 0.1.4<a class="anchor" aria-label="anchor" href="#antareseditobject-014"></a></h2>
 <ul><li>Initial release.</li>
@@ -163,7 +205,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

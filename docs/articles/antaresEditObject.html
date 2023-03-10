@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -116,8 +116,7 @@
 <p>Before modifying your study, you can save it in an archive:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/backupStudy.html">backupStudy</a></span><span class="op">(</span>what <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
-<p>This will create a <code>.tar.gz</code> file in your study
-folder.</p>
+<p>This will create a <code>.tar.gz</code> file in your study folder.</p>
 </div>
 <div class="section level2">
 <h2 id="create-a-new-area">Create a new area<a class="anchor" aria-label="anchor" href="#create-a-new-area"></a>
@@ -128,17 +127,14 @@ folder.</p>
 <span></span>
 <span><span class="co"># The new area should appear here:</span></span>
 <span><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>You can specify the localization of the area on the map, and also its
-color.</p>
+<p>You can specify the localization of the area on the map, and also its color.</p>
 <p>There are two helper functions for area parameters:</p>
 <ul>
 <li>
-<code><a href="../reference/filteringOptions.html">filteringOptions()</a></code> for filtering options, like
-<code>filter-year-by-year</code>
+<code><a href="../reference/filteringOptions.html">filteringOptions()</a></code> for filtering options, like <code>filter-year-by-year</code>
 </li>
 <li>
-<code><a href="../reference/nodalOptimizationOptions.html">nodalOptimizationOptions()</a></code> for nodal optimizations
-options.</li>
+<code><a href="../reference/nodalOptimizationOptions.html">nodalOptimizationOptions()</a></code> for nodal optimizations options.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -229,24 +225,21 @@ options.</li>
 <div class="section level2">
 <h2 id="update-general-settings">Update general settings<a class="anchor" aria-label="anchor" href="#update-general-settings"></a>
 </h2>
-<p>For example, set the output of simulation year by year, and limit the
-number of Monte-Carlo years to 10:</p>
+<p>For example, set the output of simulation year by year, and limit the number of Monte-Carlo years to 10:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/updateGeneralSettings.html">updateGeneralSettings</a></span><span class="op">(</span>year.by.year <span class="op">=</span> <span class="cn">TRUE</span>, nbyears <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="remove-methods">Remove methods<a class="anchor" aria-label="anchor" href="#remove-methods"></a>
 </h2>
-<p>You can remove areas, links, clusters and binding constraints from
-input folder with <code>remove*</code> functions, e.g.:</p>
+<p>You can remove areas, links, clusters and binding constraints from input folder with <code>remove*</code> functions, e.g.:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/removeArea.html">removeArea</a></span><span class="op">(</span><span class="st">"myarea"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="run-time-series-generator">Run Time-Series Generator<a class="anchor" aria-label="anchor" href="#run-time-series-generator"></a>
 </h2>
-<p>First, update general settings to activate time series to
-generate:</p>
+<p>First, update general settings to activate time series to generate:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/updateGeneralSettings.html">updateGeneralSettings</a></span><span class="op">(</span>generate <span class="op">=</span> <span class="st">"thermal"</span><span class="op">)</span></span></code></pre></div>
 <p>Then run TS-generator:</p>
@@ -287,7 +280,7 @@ generate:</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -74,6 +74,10 @@
         </td>
         <td><p>Activate RES in an Antares study</p></td>
       </tr><tr><td>
+          <p><code><a href="adequacyOptions.html">adequacyOptions()</a></code> </p>
+        </td>
+        <td><p>Adequacy patch parameters for creating an area</p></td>
+      </tr><tr><td>
           <p><code><a href="backupStudy.html">backupStudy()</a></code> </p>
         </td>
         <td><p>Create a backup with an Antares Study</p></td>
@@ -86,9 +90,25 @@
         </td>
         <td><p>Seek for a removed area</p></td>
       </tr><tr><td>
+          <p><code><a href="cleanUpOutput.html">cleanUpOutput()</a></code> </p>
+        </td>
+        <td><p>Clean up output based on geographic trimming</p></td>
+      </tr><tr><td>
+          <p><code><a href="computeOtherFromHourlyMulti.html">computeOtherFromHourlyMulti()</a></code> </p>
+        </td>
+        <td><p>Compute daily, weekly, monthly and annual mc-ind from hourly data multiyear. (new)</p></td>
+      </tr><tr><td>
+          <p><code><a href="computeOtherFromHourlyYear.html">computeOtherFromHourlyYear()</a></code> </p>
+        </td>
+        <td><p>Compute daily, weekly, monthly and annual mc-ind from hourly data for one year. (new)</p></td>
+      </tr><tr><td>
           <p><code><a href="computeTimeStampFromHourly.html">computeTimeStampFromHourly()</a></code> </p>
         </td>
         <td><p>Compute daily, weekly, monthly and annual mc-ind from hourly data.</p></td>
+      </tr><tr><td>
+          <p><code><a href="convertConfigToAdq.html">convertConfigToAdq()</a></code> </p>
+        </td>
+        <td><p>Read adequacy patch config.yml into Antares (v8.5+)</p></td>
       </tr><tr><td>
           <p><code><a href="copyOutput.html">copyOutput()</a></code> </p>
         </td>
@@ -110,13 +130,13 @@
         </td>
         <td><p>Create an area in an Antares study</p></td>
       </tr><tr><td>
-          <p><code><a href="createDSR.html">createDSR()</a></code> <code><a href="createDSR.html">getCapacityDSR()</a></code> <code><a href="createDSR.html">editDSR()</a></code> </p>
-        </td>
-        <td><p>Create a Demand Side Response (DSR)</p></td>
-      </tr><tr><td>
           <p><code><a href="createDistrict.html">createDistrict()</a></code> </p>
         </td>
         <td><p>Create a district</p></td>
+      </tr><tr><td>
+          <p><code><a href="createDSR.html">createDSR()</a></code> <code><a href="createDSR.html">getCapacityDSR()</a></code> <code><a href="createDSR.html">editDSR()</a></code> </p>
+        </td>
+        <td><p>Create a Demand Side Response (DSR)</p></td>
       </tr><tr><td>
           <p><code><a href="createLink.html">createLink()</a></code> </p>
         </td>
@@ -162,10 +182,6 @@
         </td>
         <td><p>Retrieve API jobs</p></td>
       </tr><tr><td>
-          <p><code><a href="getPlaylist.html">getPlaylist()</a></code> </p>
-        </td>
-        <td><p>Get the playlist of an Antares study</p></td>
-      </tr><tr><td>
           <p><code><a href="mockSimulationAPI.html">mockSimulationAPI()</a></code> </p>
         </td>
         <td><p>Mock API usage</p></td>
@@ -174,13 +190,14 @@
         </td>
         <td><p>Nodal optimization parameters for creating an area</p></td>
       </tr><tr><td>
+          <p><code><a href="playlist.html">getPlaylist()</a></code> <code><a href="playlist.html">setPlaylist()</a></code> </p>
+        </td>
+        <td><p>Get the playlist of an Antares study
+<img src="figures/badge_api_ok.svg" alt="Antares API OK"></p></td>
+      </tr><tr><td>
           <p><code><a href="propertiesLinkOptions.html">propertiesLinkOptions()</a></code> </p>
         </td>
         <td><p>Properties for creating a link</p></td>
-      </tr><tr><td>
-          <p><code><a href="read-ini.html">readIni()</a></code> <code><a href="read-ini.html">readIniFile()</a></code> <code><a href="read-ini.html">readIniAPI()</a></code> </p>
-        </td>
-        <td><p>Read configuration options from file or API</p></td>
       </tr><tr><td>
           <p><code><a href="remove-cluster.html">removeCluster()</a></code> <code><a href="remove-cluster.html">removeClusterRES()</a></code> </p>
         </td>
@@ -218,13 +235,13 @@
         </td>
         <td><p>Set API mode</p></td>
       </tr><tr><td>
-          <p><code><a href="setPlaylist.html">setPlaylist()</a></code> </p>
-        </td>
-        <td><p>Set the playlist of an Antares Study</p></td>
-      </tr><tr><td>
           <p><code><a href="setSolverPath.html">setSolverPath()</a></code> </p>
         </td>
         <td><p>Set path to Antares Solver</p></td>
+      </tr><tr><td>
+          <p><code><a href="updateAdequacySettings.html">updateAdequacySettings()</a></code> </p>
+        </td>
+        <td><p>Update adequacy parameters of an Antares study</p></td>
       </tr><tr><td>
           <p><code><a href="updateGeneralSettings.html">updateGeneralSettings()</a></code> </p>
         </td>
@@ -290,7 +307,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

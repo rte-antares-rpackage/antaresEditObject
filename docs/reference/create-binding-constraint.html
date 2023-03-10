@@ -19,7 +19,7 @@ createBindingConstraintBulk() allow to create multiple constraints at once."><!-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -83,6 +83,8 @@ createBindingConstraintBulk() allow to create multiple constraints at once."><!-
 <span>  enabled <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  timeStep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>, <span class="st">"daily"</span>, <span class="st">"weekly"</span><span class="op">)</span>,</span>
 <span>  operator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"both"</span>, <span class="st">"equal"</span>, <span class="st">"greater"</span>, <span class="st">"less"</span><span class="op">)</span>,</span>
+<span>  filter_year_by_year <span class="op">=</span> <span class="st">"hourly, daily, weekly, monthly, annual"</span>,</span>
+<span>  filter_synthesis <span class="op">=</span> <span class="st">"hourly, daily, weekly, monthly, annual"</span>,</span>
 <span>  coefficients <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -116,6 +118,14 @@ It contains one line per time step and three columns "less", "greater" and "equa
 
 <dt>operator</dt>
 <dd><p>Type of constraint: equality, inequality on one side or both sides.</p></dd>
+
+
+<dt>filter_year_by_year</dt>
+<dd><p>Marginal price granularity for year by year</p></dd>
+
+
+<dt>filter_synthesis</dt>
+<dd><p>Marginal price granularity for synthesis</p></dd>
 
 
 <dt>coefficients</dt>
@@ -196,7 +206,7 @@ It contains one line per time step and three columns "less", "greater" and "equa
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

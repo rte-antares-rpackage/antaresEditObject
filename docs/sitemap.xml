@@ -4,9 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
     <loc>/articles/antaresEditObject.html</loc>
   </url>
   <url>
@@ -28,10 +25,19 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>/news/index.html</loc>
   </url>
   <url>
     <loc>/reference/activateRES.html</loc>
+  </url>
+  <url>
+    <loc>/reference/adequacyOptions.html</loc>
+  </url>
+  <url>
+    <loc>/reference/antaresRead-reexports.html</loc>
   </url>
   <url>
     <loc>/reference/backupStudy.html</loc>
@@ -43,7 +49,19 @@
     <loc>/reference/checkRemovedArea.html</loc>
   </url>
   <url>
+    <loc>/reference/cleanUpOutput.html</loc>
+  </url>
+  <url>
+    <loc>/reference/computeOtherFromHourlyMulti.html</loc>
+  </url>
+  <url>
+    <loc>/reference/computeOtherFromHourlyYear.html</loc>
+  </url>
+  <url>
     <loc>/reference/computeTimeStampFromHourly.html</loc>
+  </url>
+  <url>
+    <loc>/reference/convertConfigToAdq.html</loc>
   </url>
   <url>
     <loc>/reference/copyOutput.html</loc>
@@ -67,10 +85,10 @@
     <loc>/reference/createCluster.html</loc>
   </url>
   <url>
-    <loc>/reference/createDSR.html</loc>
+    <loc>/reference/createDistrict.html</loc>
   </url>
   <url>
-    <loc>/reference/createDistrict.html</loc>
+    <loc>/reference/createDSR.html</loc>
   </url>
   <url>
     <loc>/reference/createLink.html</loc>
@@ -86,6 +104,12 @@
   </url>
   <url>
     <loc>/reference/dicoOptimizationSettings.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-dailyToWeekly.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-hourlyToOther.html</loc>
   </url>
   <url>
     <loc>/reference/edit-cluster.html</loc>
@@ -125,6 +149,9 @@
   </url>
   <url>
     <loc>/reference/nodalOptimizationOptions.html</loc>
+  </url>
+  <url>
+    <loc>/reference/playlist.html</loc>
   </url>
   <url>
     <loc>/reference/propertiesLinkOptions.html</loc>
@@ -170,6 +197,9 @@
   </url>
   <url>
     <loc>/reference/setSolverPath.html</loc>
+  </url>
+  <url>
+    <loc>/reference/updateAdequacySettings.html</loc>
   </url>
   <url>
     <loc>/reference/updateGeneralSettings.html</loc>

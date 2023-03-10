@@ -18,7 +18,7 @@ Update output parameters of an Antares study"><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
       </span>
     </div>
 
@@ -78,6 +78,7 @@ Update output parameters of an Antares study"><!-- mathjax --><script src="https
 <span>  synthesis <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  storenewset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  archives <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  result.format <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -98,6 +99,10 @@ synthesis will be printed out.</p></dd>
 <dd><p>Character vector. Series to archive.</p></dd>
 
 
+<dt>result.format</dt>
+<dd><p>Character. Output format (txt-files or zip).</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
@@ -112,17 +117,7 @@ synthesis will be printed out.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">updateOutputSettings</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  synthesis <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>  storenewset <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>  archives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"wind"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -136,7 +131,7 @@ synthesis will be printed out.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
