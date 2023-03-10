@@ -1,6 +1,6 @@
 context("Function new computeOtherFromHourly")
 
-skip("")
+skip("Function requires study that spans on 2 years (TODO)")
 
 sapply(studies[2], function(study) {
   

@@ -174,6 +174,8 @@
 
 #' @title Compute daily, weekly, monthly and annual mc-ind from hourly data for one year. (new)
 #' 
+#' @note Recommended only with studies spanning on two years.
+#' 
 #' @param mcYear vector of years to compute
 #' @param type type of data (areas, links, clusters, clustersRes)
 #' @param areas vector of areas. links type will use getLinks() to get data.
@@ -253,6 +255,8 @@ computeOtherFromHourlyYear <- function(mcYear,
 
 
 #' @title Compute daily, weekly, monthly and annual mc-ind from hourly data multiyear. (new)
+#'
+#' @note Recommended only with studies spanning on two years.
 #' 
 #' @param opts study opts
 #' @param areas vector of areas

@@ -29,6 +29,9 @@ computeOtherFromHourlyYear(
 \description{
 Compute daily, weekly, monthly and annual mc-ind from hourly data for one year. (new)
 }
+\note{
+Recommended only with studies spanning on two years.
+}
 \seealso{
 \code{\link{computeOtherFromHourlyMulti}}
 }
