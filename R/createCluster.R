@@ -143,7 +143,7 @@
 createCluster <- function(area, 
                           cluster_name, 
                           group = "Other",
-                          ...,
+                          propertiesCluster = NULL,
                           time_series = NULL,
                           prepro_data = NULL,
                           prepro_modulation = NULL,
@@ -169,7 +169,7 @@ createCluster <- function(area,
     area = area, 
     cluster_name = cluster_name, 
     group = group,
-    ...,
+    propertiesCluster = propertiesCluster,
     time_series = time_series,
     prepro_data = prepro_data,
     prepro_modulation = prepro_modulation,
@@ -186,7 +186,7 @@ createCluster <- function(area,
 createClusterRES <- function(area, 
                              cluster_name, 
                              group = "Other RES 1",
-                             ...,
+                             propertiesCluster = NULL,
                              time_series = NULL,
                              add_prefix = TRUE, 
                              overwrite = FALSE,
@@ -212,7 +212,7 @@ createClusterRES <- function(area,
     area = area, 
     cluster_name = cluster_name,
     group = group,
-    ...,
+    propertiesCluster = propertiesCluster,
     time_series = time_series,
     prepro_data = NULL,
     prepro_modulation = NULL,
@@ -226,7 +226,7 @@ createClusterRES <- function(area,
 
 .createCluster <- function(area, 
                            cluster_name, 
-                           ...,
+                           propertiesCluster = NULL,
                            time_series = NULL,
                            prepro_data = NULL,
                            prepro_modulation = NULL,
@@ -253,7 +253,8 @@ createClusterRES <- function(area,
   area <- tolower(area)
   
   # Cluster's parameters
-  params_cluster <- hyphenize_names(list(...))
+  # params_cluster <- hyphenize_names(list(...))
+  params_cluster <- propertiesCluster
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
