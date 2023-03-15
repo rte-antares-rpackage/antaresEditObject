@@ -1,3 +1,11 @@
+# antaresEditObject 0.5.1
+
+NEW FEATURES :
+
+* New function `deleteStudy()` (API compatible)  
+
+
+
 # antaresEditObject 0.5.0
 
 NEW FEATURES :
