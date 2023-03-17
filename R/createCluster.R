@@ -160,7 +160,7 @@ createCluster <- function(area,
                      "Other 2",
                      "Other 3",
                      "Other 4")
-  if (!is.null(group) && !group %in% tolower(thermal_group))
+  if (!is.null(group) && !tolower(group) %in% tolower(thermal_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(thermal_group, collapse = ", ")
@@ -202,7 +202,7 @@ createClusterRES <- function(area,
                         "Other RES 2",
                         "Other RES 3",
                         "Other RES 4")
-  if (!is.null(group) && !group %in% tolower(renewables_group))
+  if (!is.null(group) && !tolower(group) %in% tolower(renewables_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(renewables_group, collapse = ", ")
@@ -225,7 +225,8 @@ createClusterRES <- function(area,
 
 
 .createCluster <- function(area, 
-                           cluster_name, 
+                           cluster_name,
+                           group,
                            propertiesCluster = NULL,
                            time_series = NULL,
                            prepro_data = NULL,
@@ -255,6 +256,8 @@ createClusterRES <- function(area,
   # Cluster's parameters
   # params_cluster <- hyphenize_names(list(...))
   params_cluster <- propertiesCluster
+  if (!"group" %in% names(params_cluster)) 
+    params_cluster <- c(list(group = group), params_cluster)
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
