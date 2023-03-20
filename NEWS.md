@@ -3,6 +3,7 @@
 NEW FEATURES :
 
 * New function `deleteStudy()` (API compatible)  
+* Added support of ".zip" compression to existing function `backupStudy()`
 
 
 

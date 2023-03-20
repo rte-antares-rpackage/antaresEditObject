@@ -24,7 +24,7 @@
 #' \dontrun{
 #' backupStudy()
 #' }
-backupStudy <- function(backupfile, what = c("input", "study"), 
+backupStudy <- function(backupfile, what = "study", 
                         opts = antaresRead::simOptions(), extension = ".zip") {
   
   what <- match.arg(arg = what)
