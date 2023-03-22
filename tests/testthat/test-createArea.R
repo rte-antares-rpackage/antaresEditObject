@@ -22,8 +22,10 @@ sapply(studies, function(study) {
   
   
   test_that("Backup study/input", {
-    expect_length(backupStudy(what = "study"), 1)
-    expect_length(backupStudy(what = "input"), 1)
+    backupStudy(what = "study", extension = ".zip")
+    backupStudy(what = "input", extension = ".tar.gz")
+    expect_true(file.exists(paste0(opts$studyPath, ".zip")))
+    expect_true(file.exists(paste0(opts$inputPath, ".tar.gz")))
   })
   
   

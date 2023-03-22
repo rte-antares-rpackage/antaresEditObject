@@ -6,8 +6,9 @@
 \usage{
 backupStudy(
   backupfile,
-  what = c("input", "study"),
-  opts = antaresRead::simOptions()
+  what = "study",
+  opts = antaresRead::simOptions(),
+  extension = ".zip"
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ or \code{study} for the whole study.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}
+
+\item{extension}{Defaut is {.zip}.}
 }
 \value{
 The path of the backup
@@ -26,7 +29,7 @@ The path of the backup
 \description{
 \ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
 
-Save an Antares Study or only inputs in a \code{.tar.gz} file
+Save an Antares Study or only inputs in a \code{.tar.gz} or \code{.zip} file
 }
 \examples{
 \dontrun{
