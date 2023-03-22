@@ -5,8 +5,6 @@
 \title{Import physical study to Antares Web (managed study)}
 \usage{
 copyStudyWeb(
-  study_id,
-  studyPath,
   opts = antaresRead::simOptions(),
   host,
   token,
@@ -16,13 +14,8 @@ copyStudyWeb(
 )
 }
 \arguments{
-\item{study_id}{Id of study if available.
-If not, \code{antaresRead::searchStudy} will be used to find it.}
-
-\item{studyPath}{Path of the study to search for.}
-
 \item{opts}{List of simulation parameters returned by the function \code{antaresRead::setSimulationPath}.
-Only used when both id and path is missing.}
+If id is not available, \code{antaresRead::searchStudy} will be used to find study.}
 
 \item{host}{Host of AntaREST server API.}
 

@@ -3,11 +3,8 @@
 #' @description Copy study from an existing workspace into a managed study.
 #' NOTE : The study must be present in a workspace (DRD, PPSE..) not just locally. 
 #' 
-#' @param study_id Id of study if available. 
-#' If not, \code{antaresRead::searchStudy} will be used to find it.
-#' @param studyPath Path of the study to search for.
 #' @param opts List of simulation parameters returned by the function \code{antaresRead::setSimulationPath}. 
-#' Only used when both id and path is missing. 
+#' If id is not available, \code{antaresRead::searchStudy} will be used to find study.
 #' @param host Host of AntaREST server API.
 #' @param token API personnal access token.
 #' @param outputs Logical. Determine if outputs are copied too.
@@ -18,16 +15,14 @@
 #' @return New managed study ID
 #' 
 #' @export
-copyStudyWeb <- function(study_id, studyPath, opts = antaresRead::simOptions(), 
-                         host, token, outputs = T, groups = NULL, suffix = "managedCopy") {
+copyStudyWeb <- function(opts = antaresRead::simOptions(), host, token, 
+                         outputs = T, groups = NULL, suffix = "managedCopy") {
   
   if (missing(host)) stop("Please specify an url to antares API host.")
   if (missing(token)) stop("Please specify your access token.")
-  if (missing(study_id)){
-    if (missing(studyPath)) studyPath <- opts$studyPath
-    if (!file.exists(studyPath)) stop("Study not found.")
+  if (is.null(opts$study_id)){
     #Extract web path from study path
-    folder <- strsplit(studyPath, ":/")[[1]]
+    folder <- strsplit(opts$studyPath, ":/")[[1]]
     if (is.na(folder[2])) folder <- folder[1] else folder <- folder[2]
     if (startsWith(folder, "//") | startsWith(folder, "\\"))
       folder <- do.call(file.path, as.list(strsplit(folder, "/")[[1]][-c(1,2)]))
@@ -37,7 +32,7 @@ copyStudyWeb <- function(study_id, studyPath, opts = antaresRead::simOptions(),
     print(studies)
     prompt_answer <- menu(studies$folder, title="Select the study to import :")
     study_id <- studies$id[prompt_answer]
-  }
+  } else study_id <- opts$study_id
 
   new_study_id <- api_post(
     opts = list(host = host, token = token),
