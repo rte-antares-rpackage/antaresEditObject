@@ -48,6 +48,7 @@ backupStudy <- function(backupfile, what = "study",
   }
   setwd(zip_dir)
   
+  if (file.exists(paste0(backupfile, extension))) stop("Backup already exists in this folder.")
   tryCatch(
     if (extension == ".tar.gz")
       utils::tar(tarfile = paste0(backupfile, ".tar.gz"), files = zip_files, compression = "gzip")
