@@ -3,7 +3,13 @@
 NEW FEATURES :
 
 * New function `deleteStudy()` (API compatible)  
+* New function `copyStudyWeb()` to import physical study into a managed study (API).
 * Added support of ".zip" compression to existing function `backupStudy()`
+
+BUGFIXES :
+
+* Fixed error when using `removeArea()`
+
 
 
 
@@ -17,7 +23,6 @@ NEW FEATURES :
 * New internal function `.createColumns()` to create headers of output data when missing.
 * New function `cleanUpOutput()` to delete any extra output files not selected in simulation.
 * New functions `computeOtherFromHourlyMulti()` and `computeOtherFromHourlyYear()` for mc-ind aggregation. `computeTimeStampFromHourly()` is now deprecated.
-
 
 BUGFIXES :
 

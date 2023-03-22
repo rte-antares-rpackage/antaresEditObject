@@ -27,8 +27,7 @@
 backupStudy <- function(backupfile, what = "study", 
                         opts = antaresRead::simOptions(), extension = ".zip") {
   
-  what <- match.arg(arg = what)
-  
+  assertthat::assert_that(what %in% c("study", "input"))  
   assertthat::assert_that(inherits(opts, "simOptions"))
   assertthat::assert_that(extension %in% c(".tar.gz", ".zip"))
   api_not_implemented(opts)
@@ -60,7 +59,7 @@ backupStudy <- function(backupfile, what = "study",
       setwd(curr_wd)
   })
   
-  return (paste0(backupfile), extension)
+  return (paste0(backupfile, extension))
   
 }
 # backupSimulation <- function(backupfile, opts = antaresRead::simOptions()) {
