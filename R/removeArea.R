@@ -43,6 +43,20 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
   # Input path
   inputPath <- opts$inputPath
+  
+  # Links
+  links_area <- as.character(getLinks(areas = name))
+  if (length(links_area) > 0) {
+    links_area <- strsplit(x = links_area, split = " - ")
+    for (i in seq_along(links_area)) {
+      area1 <- links_area[[i]][1]
+      area2 <- links_area[[i]][2]
+      opts <- removeLink(from = area1, to = area2, opts = opts)
+    }
+  }
+  unlink(x = file.path(inputPath, "links", name), recursive = TRUE)
+  alllinks <- list.files(path = file.path(inputPath, "links"), pattern = name, full.names = TRUE, recursive = TRUE)
+  lapply(alllinks, unlink, recursive = TRUE)
 
   # Update area list
   areas <- readLines(file.path(inputPath, "areas/list.txt"))
@@ -95,19 +109,6 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   unlink(x = file.path(inputPath, "hydro", "series", name), recursive = TRUE)
 
 
-  # Links
-  links_area <- as.character(getLinks(areas = name))
-  if (length(links_area) > 0) {
-    links_area <- strsplit(x = links_area, split = " - ")
-    for (i in seq_along(links_area)) {
-      area1 <- links_area[[i]][1]
-      area2 <- links_area[[i]][2]
-      opts <- removeLink(from = area1, to = area2, opts = opts)
-    }
-  }
-  unlink(x = file.path(inputPath, "links", name), recursive = TRUE)
-  alllinks <- list.files(path = file.path(inputPath, "links"), pattern = name, full.names = TRUE, recursive = TRUE)
-  lapply(alllinks, unlink, recursive = TRUE)
 
 
   # Load
