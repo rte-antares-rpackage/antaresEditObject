@@ -60,13 +60,8 @@ backupStudy <- function(backupfile, what = "study",
       setwd(curr_wd)
   })
   
-  res <- file.path(zip_dir, paste0(backupfile, extension))
+  return (paste0(backupfile), extension)
   
-  if( !file.exists(res) ){
-    stop("Failed to create backup", call. = FALSE)
-  }
-  
-  res
 }
 # backupSimulation <- function(backupfile, opts = antaresRead::simOptions()) {
 #   
