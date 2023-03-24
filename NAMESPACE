@@ -3,7 +3,6 @@
 S3method(print,antares.api.command)
 S3method(print,antares.api.commands)
 S3method(print,antares.api.logs)
-export(.createClusterBulk)
 export(activateRES)
 export(adequacyOptions)
 export(backupStudy)

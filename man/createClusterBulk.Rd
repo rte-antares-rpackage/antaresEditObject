@@ -12,7 +12,7 @@ createClusterBulk(
 )
 }
 \arguments{
-\item{cluster_object}{\code{list} native components of cluster}
+\item{cluster_object}{\code{list} mutiple list containing the parameters for writing each cluster}
 
 \item{add_prefix}{\code{logical} prefix cluster name with area name}
 
@@ -28,6 +28,10 @@ An updated list containing various information about the simulation.
 }
 \description{
 For each area, the thermal cluster data are generated
+}
+\details{
+see the example to write a cluster object,
+see the original function \code{\link[=createCluster]{createCluster()}}
 }
 \examples{
 \dontrun{

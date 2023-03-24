@@ -1,11 +1,14 @@
 
 #' @title Create serial thermal cluster
 #' @description For each area, the thermal cluster data are generated
-#' @param cluster_object \code{list} native components of cluster
+#' @param cluster_object \code{list} mutiple list containing the parameters for writing each cluster 
 #' @param add_prefix \code{logical} prefix cluster name with area name
 #' @param area_zone \code{character} name of area to create cluster
 #' 
 #' @template opts
+#' 
+#' @details see the example to write a cluster object, 
+#' see the original function [createCluster()]
 #' 
 #' @return \code{list} containing meta information about the simulation
 #' @export
@@ -67,39 +70,31 @@ createClusterBulk <- function(cluster_object,
                               area_zone= "fr",
                               opts = antaresRead::simOptions()){
   
-  # check class parametre
+  # checks parameters
   assertthat::assert_that(inherits(opts, "simOptions"))
+  assertthat::assert_that(inherits(cluster_object, "list"))
+  assertthat::assert_that(!is.null(opts$inputPath) && 
+                            file.exists(opts$inputPath))
+  check_area_name(area_zone, opts)
   
-  # pour chaque "objet" cluster
-    # ecriture des fichiers thermal
- 
-   # for (i in seq_along(cluster_object)) {
-  #   # multi ecriture
-  #   multi_cluster <- do.call(".createClusterBulk", c(
-  #     cluster_object[[i]],
-  #       list(
-  #         area_zone= area_zone,
-  #         add_prefix= add_prefix,
-  #         opts_study = opts)))
-  # }
-  
+  # for each cluster "object"
+    # writing thermal files
   lapply(cluster_object, .createClusterBulk,
          area_zone= area_zone, add_prefix= add_prefix, opts_study = opts)
   
-  ## Ini file
+  # Ini file path
   pathIni <- file.path(opts$inputPath, "thermal", "clusters", area_zone, "list.ini")
   
-  # selection depuis la structure des parametres pour ecriture fichier .ini
+  # extract only the pamateres
   ini_params <- lapply(cluster_object, '[[', "parameter")
   
-  # ecriture "list.ini" en bloc
-    # renommage des parametres (uniquement separateur "-" )
+  # check names
   ini_params <- lapply(ini_params, hyphenize_names)
   
-  # ecriture pour une zone (area)
+  # writing 
   writeIni(listData = ini_params, pathIni = pathIni, overwrite = TRUE)
   
-  # return
+  # Update simulation options object
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   })
@@ -107,21 +102,17 @@ createClusterBulk <- function(cluster_object,
 }
 
 
-#' @param ... \code{list} of several named `list` thermal data to ini parameters.
-#'  **Warning** all arguments for creating thermal cluster must be provided, see examples.
-#' @export
-
+#' @param ... \code{list} named `list` of cluster parameter
+#' @importFrom data.table fwrite
 .createClusterBulk <- function(...,
                                area_zone,
                                add_prefix,
                                opts = antaresRead::simOptions()){
   
-  ##
-  # tests TS
-  ##
-  
+  # re-adjustment of list parameters
   list_params = list(...)[[1]]
   
+  # check time series values
   if (!NROW(list_params$time_series) %in% c(0, 8736, 8760)) {
     stop("Number of rows for time series must be 0 or 8760")
   }
@@ -134,47 +125,43 @@ createClusterBulk <- function(cluster_object,
   }
   
   
-  # save nom cluster
-  cluster_name <- list_params$parameter$name
-  
-  # maj des parametres si prefix
+  # add prefix
   if (add_prefix)
-    list_params$parameter$name <- paste(area_zone, 
-                                                list_params$parameter$name, 
-                                                sep = "_")
+    cluster_name <- paste(area_zone, 
+                          list_params$parameter$name, 
+                          sep = "_")
   
-  # check ou stop de l'etude
-  assertthat::assert_that(!is.null(opts$inputPath) && file.exists(opts$inputPath))
-  check_area_name(area_zone, opts)
+  # Writing files
   
-  ##
-  # ECRITURES fichiers
-  ##
-  
-  # initialize series [TS]
+  # initialize series
   dir.create(
-    path = file.path(opts$inputPath, "thermal", "series", tolower(area_zone), tolower(cluster_name)),
+    path = file.path(opts$inputPath, "thermal", "series", 
+                     tolower(area_zone), tolower(cluster_name)),
     recursive = TRUE, showWarnings = FALSE
   )
   
+  # default case
   if (is.null(list_params$time_series))
-    time_series <- character(0)
+    time_series <- list(character(0))
   
   if (NROW(list_params$time_series) == 8736) {
-    fill_mat <- matrix(
+    fill_mat <- as.data.table(
+      matrix(
       data = rep(0, times = 24 * ncol(list_params$time_series)), 
       ncol = ncol(list_params$time_series),
       dimnames = list(NULL, colnames(list_params$time_series))
     )
+    )
     time_series <- rbind(list_params$time_series, fill_mat)
-  }
+  }else
+    time_series <-as.data.table(list_params$time_series)
   
-  utils::write.table(
+  # writing series
+  fwrite(
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "series", 
                      tolower(area_zone), tolower(cluster_name), "series.txt")
   )
-  
   
   # prepro [DATA + MODULATION]
   dir.create(
@@ -183,26 +170,32 @@ createClusterBulk <- function(cluster_object,
     recursive = TRUE, showWarnings = FALSE
   )
   
-  # default is null
+  # default case
   if (is.null(list_params$prepro_data))
-    prepro_data <- matrix(data = c(rep(1, times = 365 * 2), 
+    list_params$prepro_data <- as.data.table(
+      matrix(data = c(rep(1, times = 365 * 2), 
                                    rep(0, times = 365 * 4)), 
                           ncol = 6)
+    )
   
-  # ecriture prepro data
-  utils::write.table(
+  # writing data
+  list_params$prepro_data <- as.data.table(list_params$prepro_data)
+  fwrite(
     x = list_params$prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "prepro", 
                      tolower(area_zone), tolower(cluster_name), "data.txt")
   )
   
-  # default is null
+  # default case
   if (is.null(list_params$prepro_modulation))
-    prepro_modulation <- matrix(data = c(rep(1, times = 365 * 24 * 3), 
+    list_params$prepro_modulation <- as.data.table(
+      matrix(data = c(rep(1, times = 365 * 24 * 3), 
                                          rep(0, times = 365 * 24 * 1)), 
                                 ncol = 4)
-  
-  utils::write.table(
+    )
+  # writing modulation
+  list_params$prepro_modulation <- as.data.table(list_params$prepro_modulation)
+  fwrite(
     x = list_params$prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "prepro", 
                      tolower(area_zone), tolower(cluster_name), "modulation.txt")
