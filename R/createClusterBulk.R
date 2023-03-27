@@ -176,10 +176,10 @@ createClusterBulk <- function(cluster_object,
       matrix(data = c(rep(1, times = 365 * 2), 
                                    rep(0, times = 365 * 4)), 
                           ncol = 6)
-    )
+    )else
+      list_params$prepro_data <- as.data.table(list_params$prepro_data)
   
   # writing data
-  list_params$prepro_data <- as.data.table(list_params$prepro_data)
   fwrite(
     x = list_params$prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "prepro", 
@@ -192,9 +192,10 @@ createClusterBulk <- function(cluster_object,
       matrix(data = c(rep(1, times = 365 * 24 * 3), 
                                          rep(0, times = 365 * 24 * 1)), 
                                 ncol = 4)
-    )
+    )else
+      list_params$prepro_modulation <- as.data.table(list_params$prepro_modulation)
+      
   # writing modulation
-  list_params$prepro_modulation <- as.data.table(list_params$prepro_modulation)
   fwrite(
     x = list_params$prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "prepro", 
