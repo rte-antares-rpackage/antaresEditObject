@@ -67,7 +67,7 @@
 #' 
 createClusterBulk <- function(cluster_object,
                               add_prefix= TRUE,
-                              area_zone= "fr",
+                              area_zone,
                               opts = antaresRead::simOptions()){
   
   # checks parameters
