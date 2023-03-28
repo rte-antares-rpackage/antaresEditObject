@@ -140,11 +140,19 @@ editLink <- function(from,
     }
     
     if (!is.null(dataLink)) {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/links/%s/%s", from, to),
-        matrix = dataLink
-      )
+      if (v820){
+        cmd <- api_command_generate(
+          action = "replace_matrix",
+          target = sprintf("input/links/%s/%s_parameters", from, to),
+          matrix = dataLink
+        )
+      } else {
+        cmd <- api_command_generate(
+          action = "replace_matrix",
+          target = sprintf("input/links/%s/%s", from, to),
+          matrix = dataLink
+        )
+      }
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
@@ -153,7 +161,7 @@ editLink <- function(from,
       )
     }
     
-    if (v820) {
+    if (v820 && !is.null(tsLink)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
         target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_direct")),
