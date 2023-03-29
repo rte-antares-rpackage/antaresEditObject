@@ -14,6 +14,7 @@
 #'   0% to 100%). OR a 3-column matrix with 365x101 rows. In this latter case the 3 columns must
 #'   be 'date', 'level' and 'value' (in this order), and the rows must be sorted by:
 #'   ascending day, ascending level.
+#'   
 #'   For reservoir, a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.
 #'   For maxpower, a 365x4 numeric matrix.
 #'   For inflowPattern, a 365x1 numeric matrix.
