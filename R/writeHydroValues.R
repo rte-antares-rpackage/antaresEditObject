@@ -5,20 +5,21 @@
 #' 
 #' Write water, reservoirLevels, maxpower, inflowPattern and creditModulations values for a given area.
 #'
-#' @param area The area where to add the values.
+#' @param area The area where to add the values :
 #' @param type Type of hydro file, it can be "waterValues", "reservoir", "maxpower", "inflowPattern" or "creditmodulations".
-#' @param data The data must have specific dimension depending on the type of file. 
-#'   For waterValues, a 365x101 numeric matrix:
+#' @param data The data must have specific dimension depending on the type of file.
+#' \itemize{
+#'   \item{waterValues}{: a 365x101 numeric matrix:
 #'   marginal values for the stored energy based on date (365 days)
 #'   and on the reservoir level (101 round percentage values ranging from
 #'   0% to 100%). OR a 3-column matrix with 365x101 rows. In this latter case the 3 columns must
 #'   be 'date', 'level' and 'value' (in this order), and the rows must be sorted by:
-#'   ascending day, ascending level.
-#'   
-#'   For reservoir, a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.
-#'   For maxpower, a 365x4 numeric matrix.
-#'   For inflowPattern, a 365x1 numeric matrix.
-#'   For creditmodulations, a 2x101 numeric matrix.
+#'   ascending day, ascending level.}
+#'   \item{reservoir}{: a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.}
+#'   \item{maxpower}{: a 365x4 numeric matrix.}
+#'   \item{inflowPattern}{: a 365x1 numeric matrix.}
+#'   \item{creditmodulations}{: a 2x101 numeric matrix.}
+#'   }
 #'   
 #'
 #' @param overwrite Logical. Overwrite the values if a file already exists.
