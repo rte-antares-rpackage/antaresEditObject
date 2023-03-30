@@ -5,9 +5,9 @@
 #' 
 #' Write water, reservoirLevels, maxpower, inflowPattern and creditModulations values for a given area.
 #'
-#' @param area The area where to add the values :
+#' @param area The area where to add the values.
 #' @param type Type of hydro file, it can be "waterValues", "reservoir", "maxpower", "inflowPattern" or "creditmodulations".
-#' @param data The data must have specific dimension depending on the type of file.
+#' @param data The data must have specific dimension depending on the type of file :
 #' \itemize{
 #'   \item{waterValues}{: a 365x101 numeric matrix:
 #'   marginal values for the stored energy based on date (365 days)
@@ -69,7 +69,7 @@ writeHydroValues <- function(area,
     if (type!="WaterValues")
       if (!(identical(dim(data), dims)))
         stop(type, " 'data' must be a ", 
-             do.call(paste, as.list(c(dims, sep = " x "))), " matrix.", call. = FALSE)
+             do.call(paste, as.list(c(dims, sep = "*"))), " matrix.", call. = FALSE)
   }
   
   check_area_name(area, opts)
