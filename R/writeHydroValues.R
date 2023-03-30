@@ -3,7 +3,7 @@
 #' @description 
 #' `r antaresEditObject:::badge_api_ok()`
 #' 
-#' Write water, reservoirLevels, maxpower, inflowPattern and creditModulations values for a given area.
+#' Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulations data for a given area.
 #'
 #' @param area The area where to add the values.
 #' @param type Type of hydro file, it can be "waterValues", "reservoir", "maxpower", "inflowPattern" or "creditmodulations".
@@ -21,7 +21,6 @@
 #'   \item{creditmodulations}{: a 2x101 numeric matrix.}
 #'   }
 #'   
-#'
 #' @param overwrite Logical. Overwrite the values if a file already exists.
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
@@ -35,7 +34,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' writeValues("fictive_area", data = matrix(rep(0, 365*101), nrow = 365))
+#' writeHydroValues("fictive_area", type = "inflowPattern", data = matrix(rep(0, 365*1), nrow = 365))
 #'
 #' }
 writeHydroValues <- function(area,
