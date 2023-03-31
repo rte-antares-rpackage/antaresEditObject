@@ -17,7 +17,7 @@ writeHydroValues(
 
 \item{type}{Type of hydro file, it can be "waterValues", "reservoir", "maxpower", "inflowPattern" or "creditmodulations".}
 
-\item{data}{The data must have specific dimension depending on the type of file.
+\item{data}{The data must have specific dimension depending on the type of file :
 \itemize{
 \item{waterValues}{: a 365x101 numeric matrix:
 marginal values for the stored energy based on date (365 days)
@@ -39,12 +39,12 @@ ascending day, ascending level.}
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
-Write water, reservoirLevels, maxpower, inflowPattern and creditModulations values for a given area.
+Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulations data for a given area.
 }
 \examples{
 \dontrun{
 
-writeValues("fictive_area", data = matrix(rep(0, 365*101), nrow = 365))
+writeHydroValues("fictive_area", type = "inflowPattern", data = matrix(rep(0, 365*1), nrow = 365))
 
 }
 }
