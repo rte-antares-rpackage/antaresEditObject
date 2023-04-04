@@ -104,11 +104,11 @@ writeEconomicOptions <- function(x,
       }
     )
     
-    if (!is.null(x$spread_unsupplied_energy_cost)) {
+    if (!is.null(x$average_unsupplied_energy_cost)) {
       cmd <- api_command_generate(
         action = "update_config", 
         target = "input/thermal/areas/unserverdenergycost",
-        data = setNames(as.list(x$spread_unsupplied_energy_cost), x$area)
+        data = setNames(as.list(x$average_unsupplied_energy_cost), x$area)
       )
       api_command_register(cmd, opts = opts)
       `if`(
