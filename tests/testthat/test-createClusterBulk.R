@@ -31,7 +31,8 @@ df_pm <- matrix(data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 *
                 ncol = 4)
 
 
-# Cluster object with each parameters and data
+# Cluster object 
+
 zone_test_1 <- list(
   `CCGT old 1`= list(parameter= list(
     name= "CCGT old 1",
@@ -42,13 +43,16 @@ zone_test_1 <- list(
     `min-stable-power`= 80L,
     `min-up-time`= 20L,
     `min-down_time`= 30L),
+    overwrite= TRUE,
     time_series = ts_8760,
     prepro_data = df_pd,
     prepro_modulation = df_pm),
   
-  `CCGT old 2`= list(parameter= list(
-    name= "CCGT old 2",
+  # overwrite existing cluster
+  `PEAK`= list(parameter= list(
+    name= "PEAK",
     group = "Other"),
+    overwrite= TRUE,
     time_series = ts,
     prepro_data = df_pd,
     prepro_modulation = df_pm)
@@ -58,16 +62,32 @@ zone_test_2 <- list(
   `CCGT CCS`= list(parameter= list(
     name= "CCGT CCS",
     group = "Other"),
+    overwrite= TRUE,
     time_series = ts,
     prepro_data = df_pd,
     prepro_modulation = df_pm),
   `CCGT present 1`= list(parameter= list(
     name= "CCGT present 1",
     group = "Other"),
+    overwrite= TRUE,
     time_series = NULL,
     prepro_data = NULL,
     prepro_modulation = NULL)
 )
+
+# cluster to make error (no overwrite on existing cluster name)
+zone_test_error <- list(
+  `BASE`= list(parameter= list(
+    name= "BASE",
+    group = "not_important"
+  ),
+  overwrite= FALSE,
+  time_series = NULL,
+  prepro_data = NULL,
+  prepro_modulation = NULL)
+)
+
+
 
 # bulk ----
 test_that("Create cluster bulk v8, time performance", {
@@ -99,6 +119,10 @@ test_that("Create cluster bulk v8, time performance", {
   len_last <- length(maj_opts[[5]]$areasWithClusters)
   
   testthat::expect_true(len_old<len_last)
+  
+  # test error 
+  testthat::expect_error(createClusterBulk(cluster_object = zone_test_error, area_zone = list_areas[1]))
+  
 })
 
 
