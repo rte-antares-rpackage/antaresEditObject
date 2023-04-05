@@ -88,9 +88,12 @@
 #' }
 #' 
 createClusterBulk <- function(cluster_object,
-                              add_prefix= TRUE,
                               area_zone,
+                              add_prefix= TRUE,
                               opts = antaresRead::simOptions()){
+  
+  if( assertthat::assert_that(inherits(area_zone, "character")))
+    area_zone <- tolower(area_zone)
   
   # checks parameters
   assertthat::assert_that(inherits(opts, "simOptions"))

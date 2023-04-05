@@ -131,7 +131,7 @@ test_that("Create cluster bulk v8, time performance", {
   
   ## SAME tests with new areas and prefix (to be not confusing with template v8)
   # with prefix
-  new_areas <- c("fr", "es", "de")
+  new_areas <- c("fr", "es", "DE")
   
   lapply(new_areas, createArea,
          nodalOptimization = nodalOptimizationOptions())

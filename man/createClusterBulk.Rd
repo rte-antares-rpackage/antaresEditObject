@@ -6,17 +6,17 @@
 \usage{
 createClusterBulk(
   cluster_object,
-  add_prefix = TRUE,
   area_zone,
+  add_prefix = TRUE,
   opts = antaresRead::simOptions()
 )
 }
 \arguments{
 \item{cluster_object}{\code{list} mutiple list containing the parameters for writing each cluster}
 
-\item{add_prefix}{\code{logical} prefix cluster name with area name}
-
 \item{area_zone}{\code{character} name of area to create cluster}
+
+\item{add_prefix}{\code{logical} prefix cluster name with area name}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
