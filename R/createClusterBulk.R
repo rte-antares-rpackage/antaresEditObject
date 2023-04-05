@@ -19,7 +19,7 @@
 #'  The list must be structured with named items 
 #'  \itemize{
 #'  \item \code{parameter} : `list` of paramaters to write in .ini file
-#'  \item \code{overwrite} : `logical` to choose to overwrite an existing cluster
+#'  \item \code{overwrite} : `logical` to choose to overwrite an existing cluster (if not present, set to `FALSE`)
 #'  \item \code{time_series} : `matrix` or `data.frame` the "ready-made" 8760-hour time-series 
 #'  \item \code{prepro_data} : `matrix` or `data.frame` Pre-process data
 #'  \item \code{prepro_modulation} : `matrix` or `data.frame` Pre-process modulation
@@ -37,9 +37,6 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' 
-#' library(antaresRead)
-#' library(antaresEditObject)
 #' 
 #' # /!\/!\/!\ use or create a study /!\/!\/!\
 #' 
@@ -102,6 +99,9 @@ createClusterBulk <- function(cluster_object,
                             file.exists(opts$inputPath))
   check_area_name(area_zone, opts)
   
+  if(add_prefix)
+    names(cluster_object) <- paste0(area_zone, "_", names(cluster_object))
+  
   # Ini file path
   pathIni <- file.path(opts$inputPath, "thermal", "clusters", area_zone, "list.ini")
   
@@ -120,9 +120,7 @@ createClusterBulk <- function(cluster_object,
   updated_names <- setdiff(names(existing_cluster), names(list_full_cluster))
   
   final_list <- c(existing_cluster[updated_names], list_full_cluster)
-  
-  # # extract only the pamateres
-  # ini_params <- lapply(list_full_cluster, '[[', "parameter")
+  final_list <- final_list[order(names(final_list))]
   
   # check names parameters
   final_list <- lapply(final_list, hyphenize_names)
@@ -153,8 +151,9 @@ createClusterBulk <- function(cluster_object,
   # re-adjustment of list parameters
   list_params = list(...)[[1]]
   
-  if(!"overwrite" %in% names(list_params))
-    stop("Please enter required parameter 'overwrite'")
+  if(!"overwrite" %in% names(list_params)){
+    list_params$overwrite <- FALSE
+  }
   
   # check parameters required to list.ini file
   if(!"name" %in% names(list_params$parameter) & 
@@ -162,20 +161,10 @@ createClusterBulk <- function(cluster_object,
     stop("Please enter required parameters 'names' and 'group' in [['parameter']]")
   
   # check names cluster
-  if (list_params$parameter$name %in% names(existing_params) & !list_params$overwrite)
-    stop(paste("cluster : ", list_params$name, "already exist"))
-  
-  # # overwrite cluster
-  # if(list_params$parameter$name %in% names(existing_params) & list_params$overwrite){
-  #   index_overwrite <- which(names(existing_params) %in% list_params$parameter$name)
-  #   existing_params[index_overwrite] <- list_params$parameter
-  # }
-  # 
-  # # add new cluster
-  # if(!list_params$parameter$name %in% names(existing_params))
-  #   existing_params[[list_params$parameter$name]] <- list_params$parameter
-
-
+  if (list_params$parameter$name %in% names(existing_params) & !list_params$overwrite){
+    stop(paste("cluster : ", list_params$parameter$name, "already exist"))
+  }
+    
   
   # check time series values
   if (!NROW(list_params$time_series) %in% c(0, 8736, 8760)) {
@@ -192,7 +181,7 @@ createClusterBulk <- function(cluster_object,
   
   # add prefix
   if (add_prefix)
-    cluster_name <- paste(area_zone, 
+    list_params$parameter$name <- paste(area_zone, 
                           list_params$parameter$name, 
                           sep = "_")
   
@@ -201,7 +190,7 @@ createClusterBulk <- function(cluster_object,
   # initialize series
   dir.create(
     path = file.path(opts$inputPath, "thermal", "series", 
-                     tolower(area_zone), tolower(cluster_name)),
+                     tolower(area_zone), tolower(list_params$parameter$name)),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -225,13 +214,13 @@ createClusterBulk <- function(cluster_object,
   fwrite(
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "series", 
-                     tolower(area_zone), tolower(cluster_name), "series.txt")
+                     tolower(area_zone), tolower(list_params$parameter$name), "series.txt")
   )
   
   # prepro [DATA + MODULATION]
   dir.create(
     path = file.path(opts$inputPath, "thermal", "prepro", 
-                     tolower(area_zone), tolower(cluster_name)),
+                     tolower(area_zone), tolower(list_params$parameter$name)),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -248,7 +237,7 @@ createClusterBulk <- function(cluster_object,
   fwrite(
     x = list_params$prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "prepro", 
-                     tolower(area_zone), tolower(cluster_name), "data.txt")
+                     tolower(area_zone), tolower(list_params$parameter$name), "data.txt")
   )
   
   # default case
@@ -264,7 +253,7 @@ createClusterBulk <- function(cluster_object,
   fwrite(
     x = list_params$prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "prepro", 
-                     tolower(area_zone), tolower(cluster_name), "modulation.txt")
+                     tolower(area_zone), tolower(list_params$parameter$name), "modulation.txt")
   )
 
   return(list_params$parameter)

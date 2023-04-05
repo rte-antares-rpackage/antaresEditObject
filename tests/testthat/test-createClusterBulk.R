@@ -10,7 +10,7 @@ sourcedir <- system.file("test_v8", package = "antaresRead")
 studies <- list.files(sourcedir, pattern = "\\.tar\\.gz$", full.names = TRUE)
 
 # untar etude
-untar(studies, exdir = tempdir())
+untar(studies[1], exdir = tempdir()) # v8
 study_temp_path <- file.path(tempdir(), "test_case")
 opts_temp <- antaresRead::setSimulationPath(study_temp_path, "input")
 
@@ -81,7 +81,7 @@ zone_test_error <- list(
     name= "BASE",
     group = "not_important"
   ),
-  overwrite= FALSE,
+  # overwrite= FALSE, (default FALSE)
   time_series = NULL,
   prepro_data = NULL,
   prepro_modulation = NULL)
@@ -91,14 +91,19 @@ zone_test_error <- list(
 
 # bulk ----
 test_that("Create cluster bulk v8, time performance", {
+  
+  # /!\ this template study has no prefix on cluster's names
+  
   # multiple areas
   list_areas <- antaresRead::getAreas()[1:5]
   
   start_time <- Sys.time()
   
+  # with no prefix 
+    # launch BULK
   maj_opts <- lapply(list_areas, createClusterBulk,
          cluster_object = c(zone_test_1, zone_test_2),
-         add_prefix = TRUE, 
+         add_prefix = FALSE, 
          opts = opts_temp)
   
   end_time <- Sys.time()
@@ -123,6 +128,43 @@ test_that("Create cluster bulk v8, time performance", {
   # test error 
   testthat::expect_error(createClusterBulk(cluster_object = zone_test_error, area_zone = list_areas[1]))
   
+  
+  ## SAME tests with new areas and prefix (to be not confusing with template v8)
+  # with prefix
+  new_areas <- c("FR", "ES", "DE")
+  
+  maj_opts_prefixed <- lapply(new_areas, createArea,  
+         nodalOptimization = nodalOptimizationOptions(
+           non_dispatchable_power = FALSE,
+           dispatchable_hydro_power = TRUE,
+           other_dispatchable_power = FALSE,
+           spread_unsupplied_energy_cost = 10,
+           spread_spilled_energy_cost = 3.14,
+           average_unsupplied_energy_cost = 239,
+           average_spilled_energy_cost = 1000
+         ), 
+         opts= opts_temp)
+  
+  # areas list
+  antaresRead::getAreas()
+  
+  # keep the most recent modified study
+  maj_opts_prefixed <- maj_opts_prefixed[[length(maj_opts_prefixed)]]
+  
+  # launch BULK
+  maj_opts_prefixed <- lapply(new_areas, createClusterBulk,
+                     cluster_object = c(zone_test_1, 
+                                        zone_test_2, 
+                                        zone_test_error),
+                     add_prefix = TRUE, 
+                     opts = maj_opts_prefixed)
+  
+  # last modified study has more informations (clusters)
+  len_old <- length(maj_opts_prefixed[[2]]$areasWithClusters)
+  len_last <- length(maj_opts_prefixed[[3]]$areasWithClusters)
+  
+  testthat::expect_true(len_old<len_last)
+  
 })
 
 
@@ -133,7 +175,7 @@ test_that("create cluster test v8, timer information", {
   
   start_time <- Sys.time()
   
-  lapply(antaresRead::getAreas()[1:5], function(.x){
+  lapply(antaresRead::getAreas(opts = opts_temp)[1:5], function(.x){
     for (i in seq_along(data_bloc)) {
       # multi ecriture
       multi_cluster <- do.call("createCluster",

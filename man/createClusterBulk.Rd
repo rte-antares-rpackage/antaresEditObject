@@ -44,7 +44,7 @@ Structure of \code{cluster_object} :
 The list must be structured with named items
 \itemize{
 \item \code{parameter} : \code{list} of paramaters to write in .ini file
-\item \code{overwrite} : \code{logical} to choose to overwrite an existing cluster
+\item \code{overwrite} : \code{logical} to choose to overwrite an existing cluster (if not present, set to \code{FALSE})
 \item \code{time_series} : \code{matrix} or \code{data.frame} the "ready-made" 8760-hour time-series
 \item \code{prepro_data} : \code{matrix} or \code{data.frame} Pre-process data
 \item \code{prepro_modulation} : \code{matrix} or \code{data.frame} Pre-process modulation
@@ -60,9 +60,6 @@ it will prefixed by area name, unless you set add_prefix = FALSE
 }
 \examples{
 \dontrun{
-
-library(antaresRead)
-library(antaresEditObject)
 
 # /!\/!\/!\ use or create a study /!\/!\/!\
 
