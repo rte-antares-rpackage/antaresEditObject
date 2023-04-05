@@ -5,6 +5,7 @@ NEW FEATURES :
 * New function `deleteStudy()` (API compatible)  
 * New function `copyStudyWeb()` to import physical study into a managed study (API).
 * Added support of ".zip" compression to existing function `backupStudy()`
+* New function `createClusterBulk()` allow to create multiple thermal cluster constraints at once.
 
 BUGFIXES :
 
