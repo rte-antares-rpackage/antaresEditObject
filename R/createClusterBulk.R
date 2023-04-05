@@ -211,11 +211,12 @@ createClusterBulk <- function(cluster_object,
     time_series <-as.data.table(list_params$time_series)
   
   # writing series
+  suppressWarnings(
   fwrite(
     x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(opts$inputPath, "thermal", "series", 
                      tolower(area_zone), tolower(list_params$parameter$name), "series.txt")
-  )
+  ))
   
   # prepro [DATA + MODULATION]
   dir.create(
