@@ -27,7 +27,7 @@
 #' 
 #' @export
 #' 
-#' @name create-cluster
+#' @name createCluster
 #' 
 #' @importFrom antaresRead simOptions
 #' @importFrom stats setNames
@@ -182,7 +182,7 @@ createCluster <- function(area,
 
 #' @export
 #' 
-#' @rdname create-cluster
+#' @rdname createCluster
 createClusterRES <- function(area, 
                              cluster_name, 
                              group = "Other RES 1",

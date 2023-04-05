@@ -6,14 +6,14 @@
 #' Edit parameters, pre-process data and time series of an existing cluster, thermal or RES (renewable energy source).
 #'
 #'
-#' @inheritParams create-cluster
+#' @inheritParams createCluster
 #' @template opts
 #' 
 #' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
 #' 
 #' @export
 #' 
-#' @name edit-cluster
+#' @name editCluster
 #' 
 #' @importFrom antaresRead setSimulationPath
 #' @importFrom assertthat assert_that
@@ -53,7 +53,7 @@ editCluster <- function(area,
 
 #' @export
 #' 
-#' @rdname edit-cluster
+#' @rdname editCluster
 editClusterRES <- function(area,
                            cluster_name, 
                            ..., 

@@ -11,7 +11,7 @@
 #' @return Result of [antaresRead::setSimulationPath()] or [setSimulationPathAPI()] accordingly.
 #' @export
 #' 
-#' @name create-study
+#' @name createStudy
 #' 
 #' @importFrom whisker whisker.render
 #' @importFrom utils unzip
@@ -85,7 +85,7 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
 #' 
 #' @export
 #' 
-#' @rdname create-study
+#' @rdname createStudy
 createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_version = "8.2.0", ...) {
   studyId <- api_post(
     opts = list(host = host, token = token),

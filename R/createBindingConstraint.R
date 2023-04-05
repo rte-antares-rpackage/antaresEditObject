@@ -25,7 +25,7 @@
 #' 
 #' @export
 #' 
-#' @name create-binding-constraint
+#' @name createBindingConstraint
 #' 
 #' @importFrom antaresRead getLinks setSimulationPath
 #' @importFrom utils write.table
@@ -273,7 +273,7 @@ createBindingConstraint_ <- function(bindingConstraints,
 #'  **Warning** all arguments for creating a binding constraints must be provided, see examples.
 #' @export
 #' 
-#' @rdname create-binding-constraint
+#' @rdname createBindingConstraint
 createBindingConstraintBulk <- function(constraints,
                                         opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
