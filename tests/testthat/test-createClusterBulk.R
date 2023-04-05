@@ -133,38 +133,18 @@ test_that("Create cluster bulk v8, time performance", {
   # with prefix
   new_areas <- c("FR", "ES", "DE")
   
-  maj_opts_prefixed <- lapply(new_areas, createArea,  
-         nodalOptimization = nodalOptimizationOptions(
-           non_dispatchable_power = FALSE,
-           dispatchable_hydro_power = TRUE,
-           other_dispatchable_power = FALSE,
-           spread_unsupplied_energy_cost = 10,
-           spread_spilled_energy_cost = 3.14,
-           average_unsupplied_energy_cost = 239,
-           average_spilled_energy_cost = 1000
-         ), 
-         opts= opts_temp)
-  
-  # areas list
-  antaresRead::getAreas()
-  
-  # keep the most recent modified study
-  maj_opts_prefixed <- maj_opts_prefixed[[length(maj_opts_prefixed)]]
+  lapply(new_areas, createArea,
+         nodalOptimization = nodalOptimizationOptions())
   
   # launch BULK
-  maj_opts_prefixed <- lapply(new_areas, createClusterBulk,
-                     cluster_object = c(zone_test_1, 
-                                        zone_test_2, 
-                                        zone_test_error),
-                     add_prefix = TRUE, 
-                     opts = maj_opts_prefixed)
+  lapply(new_areas, createClusterBulk,
+         cluster_object = c(zone_test_1,
+                            zone_test_2,
+                            zone_test_error),
+         add_prefix = TRUE)
   
   # last modified study has more informations (clusters)
-  len_old <- length(maj_opts_prefixed[[2]]$areasWithClusters)
-  len_last <- length(maj_opts_prefixed[[3]]$areasWithClusters)
-  
-  testthat::expect_true(len_old<len_last)
-  
+  expect_true(all(tolower(new_areas) %in% simOptions()$areasWithClusters))
 })
 
 
