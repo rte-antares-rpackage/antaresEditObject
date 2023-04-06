@@ -7,13 +7,13 @@
 > Edit an Antares study before running a simulation.
 
 <!-- badges: start -->
-[![Coverage Status](https://img.shields.io/codecov/c/github/rte-antares-rpackage/antaresEditObject/master.svg)](https://codecov.io/github/rte-antares-rpackage/antaresEditObject?branch=master)
 [![version](http://www.r-pkg.org/badges/version/antaresEditObject)](https://CRAN.R-project.org/package=antaresEditObject)
 [![cran checks](https://cranchecks.info/badges/worst/antaresEditObject)](https://cranchecks.info/pkgs/antaresEditObject)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![cranlogs](http://cranlogs.r-pkg.org/badges/antaresEditObject)](https://CRAN.R-project.org/package=antaresEditObject)
 [![R-CMD-check](https://github.com/rte-antares-rpackage/antaresEditObject/workflows/R-CMD-check/badge.svg)](https://github.com/rte-antares-rpackage/antaresEditObject/actions)
+[![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/antaresEditObject/branch/master/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresEditObject?branch=master)
 <!-- badges: end -->
 
 

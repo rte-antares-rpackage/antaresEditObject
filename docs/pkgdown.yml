@@ -1,10 +1,10 @@
 pandoc: 2.11.2
-pkgdown: 2.0.7
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   antaresEditObject: antaresEditObject.html
   api-variant-management: api-variant-management.html
   renewables-energy-sources: renewables-energy-sources.html
   scenario-builder: scenario-builder.html
-last_built: 2023-03-10T17:04Z
+last_built: 2023-04-06T08:47Z
 

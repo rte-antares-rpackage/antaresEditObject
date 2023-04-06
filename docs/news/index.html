@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
       </span>
     </div>
 
@@ -67,6 +67,19 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.5.1" id="antareseditobject-051">antaresEditObject 0.5.1<a class="anchor" aria-label="anchor" href="#antareseditobject-051"></a></h2>
+<p>NEW FEATURES :</p>
+<ul><li>New function <code><a href="../reference/deleteStudy.html">deleteStudy()</a></code> (API compatible)<br></li>
+<li>New function <code><a href="../reference/copyStudyWeb.html">copyStudyWeb()</a></code> to import physical study into a managed study (API).</li>
+<li>New function <code><a href="../reference/createClusterBulk.html">createClusterBulk()</a></code> to create multiple thermal clusters at once.</li>
+<li>New function <code><a href="../reference/writeHydroValues.html">writeHydroValues()</a></code> to write hydro input files.</li>
+<li>Added support of “.zip” compression to existing function <code><a href="../reference/backupStudy.html">backupStudy()</a></code>
+</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>Fixed error when using <code><a href="../reference/removeArea.html">removeArea()</a></code>.</li>
+<li>Fixed error when using <code><a href="../reference/writeEconomicOptions.html">writeEconomicOptions()</a></code> in API mode.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.0" id="antareseditobject-050">antaresEditObject 0.5.0<a class="anchor" aria-label="anchor" href="#antareseditobject-050"></a></h2>
 <p>NEW FEATURES :</p>
 <ul><li>Full support of studies up to v8.5</li>
@@ -96,11 +109,12 @@
 <h2 class="page-header" data-toc-text="0.4.0" id="antareseditobject-040">antaresEditObject 0.4.0<a class="anchor" aria-label="anchor" href="#antareseditobject-040"></a></h2>
 <div class="section level4">
 <h4 id="new-functions-0-4-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-4-0"></a></h4>
-<ul><li><p>Antares v840 : new parameter <code>result-format</code> to choose output format (txt/zip) + new values for <code>transmission-capacities</code> parameter.</p></li>
-<li><p>Antares v832 : added filtering options to bindingConstraints.</p></li>
-<li><p>Antares v830 : <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> function to activate Adequacy Patch and set parameters.</p></li>
-<li><p>Antares v820 : <code><a href="../reference/createLink.html">createLink()</a></code> and <code><a href="../reference/editLink.html">editLink()</a></code> have a new argument <code>tsLink</code> allowing to write transmission capacities time-series.</p></li>
-<li><p><code><a href="../reference/create-binding-constraint.html">createBindingConstraintBulk()</a></code> allow to create multiple binding constraints at once.</p></li>
+<ul><li>Antares v840 : new parameter <code>result-format</code> to choose output format (txt/zip) + new values for <code>transmission-capacities</code> parameter.</li>
+<li>Antares v832 : added filtering options to bindingConstraints.</li>
+<li>Antares v830 : <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> function to activate Adequacy Patch and set parameters. + <code><a href="../reference/createArea.html">createArea()</a></code> and <code><a href="../reference/editArea.html">editArea()</a></code> support for new adequacy_patch.ini file.</li>
+<li>Antares v820 : <code><a href="../reference/createLink.html">createLink()</a></code> and <code><a href="../reference/editLink.html">editLink()</a></code> have a new argument <code>tsLink</code> allowing to write transmission capacities time-series.</li>
+<li>
+<code><a href="../reference/create-binding-constraint.html">createBindingConstraintBulk()</a></code> allow to create multiple binding constraints at once.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h4>
@@ -205,7 +219,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
