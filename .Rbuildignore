@@ -10,3 +10,4 @@ test_case/
 ^\.github$
 man-roxygen/
 ^codecov\.yml$
+^CRAN-SUBMISSION$
