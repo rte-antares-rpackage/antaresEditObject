@@ -9,3 +9,4 @@ test_case/
 ^pkgdown$
 ^\.github$
 man-roxygen/
+^codecov\.yml$
