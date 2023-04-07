@@ -86,8 +86,8 @@ createClusterST <- function(area,
   )
   
   for (name in names(storage_value)){
-    if (!NROW(get(name)) %in% c(0, 8760)) {
-      stop(paste0("Number of rows for ", name, " must be 0 or 8760"))
+    if (!(is.null(dim(get(name)))) || identical(dim(get(name)), c(8760L, 1L))){
+      stop(paste0("Input data for ", name, " must be 8760*1"))
     } 
   }
   
