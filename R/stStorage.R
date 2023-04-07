@@ -1,7 +1,7 @@
-#' @title Create a cluster
+#' @title Create a short-term storage cluster 
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_ok()` (ST-storage clusters only)
+#' `r antaresEditObject:::badge_api_no()`
 #' 
 #' Create a new ST-storage cluster.
 #'
@@ -21,10 +21,9 @@
 #' 
 #' @template opts
 #' 
-#' @seealso [editCluster()] or [editClusterRES()] to edit existing clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
+#' @seealso [editCluster()] to edit existing clusters, [removeCluster()] to remove clusters. (TODO for ST-storage)
 #' 
 #' @export
-#' 
 #' 
 #' @importFrom antaresRead simOptions
 #' @importFrom stats setNames
@@ -38,12 +37,11 @@
 #' library(antaresEditObject)
 #' 
 #' # Create a cluster :
-#' createCluster(
+#' createClusterST(
 #'   area = "fr", 
 #'   cluster_name = "my_cluster",
 #'   group = "other", 
 #'   unitcount = 1L, # or as.integer(1)
-#'   marginal_cost = 50
 #' )
 #' # by default, cluster name is prefixed 
 #' # by the area name
@@ -52,38 +50,39 @@
 #' 
 #' }
 createClusterST <- function(area,
-                          cluster_name, 
-                          group = "Other",
-                          ...,
-                          PMAX_charging = NULL,
-                          PMAX_discharging = NULL,
-                          inflow = NULL,
-                          lower_rule_curve = NULL,
-                          upper_rule_curve = NULL,
-                          add_prefix = TRUE, 
-                          overwrite = FALSE,
-                          opts = antaresRead::simOptions()) {
+                            cluster_name, 
+                            group = "Other",
+                            ...,
+                            PMAX_charging = NULL,
+                            PMAX_discharging = NULL,
+                            inflow = NULL,
+                            lower_rule_curve = NULL,
+                            upper_rule_curve = NULL,
+                            add_prefix = TRUE, 
+                            overwrite = FALSE,
+                            opts = antaresRead::simOptions()) {
   st_storage_group <- c("PSP_open", 
                         "PSP_closed", 
                         "Pondage", 
                         "Battery", 
                         "Other")
+  
   if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(st_storage_group, collapse = ", ")
     )
+  
   # Input path
   inputPath <- opts$inputPath
-  
+  antaresEditObject:::check_area_name(area, opts)  
   area <- tolower(area)
   
-  storage_value <- list(PMAX_charging = list(N=1, string= "PMAX-charging"),
-                        PMAX_discharging = list(N=1, string= "PMAX-discharging"),
-                        inflow = list(N=0, string= "inflow"),
-                        lower_rule_curve = list(N=0, string= "lower-rule-curve"),
-                        upper_rule_curve = list(N=1, string= "upper-rule-curve")
-  )
+  storage_value <- list(PMAX_charging = list(N=1, string = "PMAX-charging"),
+                        PMAX_discharging = list(N=1, string = "PMAX-discharging"),
+                        inflow = list(N=0, string = "inflow"),
+                        lower_rule_curve = list(N=0, string = "lower-rule-curve"),
+                        upper_rule_curve = list(N=1, string = "upper-rule-curve"))
   
   for (name in names(storage_value)){
     if (!(is.null(dim(get(name)))) || identical(dim(get(name)), c(8760L, 1L))){
@@ -95,11 +94,7 @@ createClusterST <- function(area,
   params_cluster <- antaresEditObject:::hyphenize_names(list(...))
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
-  params_cluster$name <- cluster_name
-  
-  
-  
-  
+  params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
   
   #################
   # API block
@@ -120,7 +115,7 @@ createClusterST <- function(area,
     )
     
     for (i in names(storage_value)){
-      if (is.null(get(i))) {
+      if (!is.null(get(i))) {
         currPath <- paste0("input/ST-storages/series/%s/%s/",storage_value[[i]]$string)
         cmd <- api_command_generate(
           action = "replace_matrix",
@@ -139,11 +134,8 @@ createClusterST <- function(area,
     return(invisible(opts))
   }
   ##########################
-  
-  
-  
+
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
-  antaresEditObject:::check_area_name(area, opts)
   
   # named list for writing ini file
   # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
@@ -172,7 +164,6 @@ createClusterST <- function(area,
     overwrite = TRUE
   )
   
-  
   # initialize series
   dir.create(
     path = file.path(inputPath, "ST-storages", "series", tolower(area), tolower(cluster_name)),
@@ -182,11 +173,11 @@ createClusterST <- function(area,
   for (name in names(storage_value)){
     if (is.null(get(name))) {
       k <- matrix(storage_value[[name]]$N,8760)
-    
-    fwrite(
-      x = k, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(inputPath, "ST-storages", "series", tolower(area), tolower(cluster_name), paste0(storage_value[[name]]$string, ".txt"))
-    )
+      
+      fwrite(
+        x = k, row.names = FALSE, col.names = FALSE, sep = "\t",
+        file = file.path(inputPath, "ST-storages", "series", tolower(area), tolower(cluster_name), paste0(storage_value[[name]]$string, ".txt"))
+      )
     } 
   }
   

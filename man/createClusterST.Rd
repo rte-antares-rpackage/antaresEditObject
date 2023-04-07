@@ -2,7 +2,7 @@
 % Please edit documentation in R/stStorage.R
 \name{createClusterST}
 \alias{createClusterST}
-\title{Create a cluster}
+\title{Create a short-term storage cluster}
 \usage{
 createClusterST(
   area,
@@ -51,7 +51,7 @@ to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}} (ST-storage clusters only)
+\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
 
 Create a new ST-storage cluster.
 }
@@ -62,12 +62,11 @@ library(antaresRead)
 library(antaresEditObject)
 
 # Create a cluster :
-createCluster(
+createClusterST(
   area = "fr", 
   cluster_name = "my_cluster",
   group = "other", 
   unitcount = 1L, # or as.integer(1)
-  marginal_cost = 50
 )
 # by default, cluster name is prefixed 
 # by the area name
@@ -77,5 +76,5 @@ levels(readClusterDesc()$cluster)
 }
 }
 \seealso{
-\code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} to edit existing clusters, \code{\link[=removeCluster]{removeCluster()}} or \code{\link[=removeClusterRES]{removeClusterRES()}} to remove clusters.
+\code{\link[=editCluster]{editCluster()}} to edit existing clusters, \code{\link[=removeCluster]{removeCluster()}} to remove clusters. (TODO for ST-storage)
 }
