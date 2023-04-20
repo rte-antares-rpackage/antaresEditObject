@@ -1,5 +1,5 @@
 
-
+# v7 ----
 context("Function createBindingConstraint")
 
 
@@ -175,3 +175,94 @@ sapply(studies, function(study) {
 })
 
 
+# v8.6 ----
+
+## Global data 
+# read / open template study
+opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
+
+# areas list
+antaresRead::getAreas(opts = opts_v850)
+
+# remove BC none v860
+names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
+
+lapply(names_bc_to_remove, 
+       removeBindingConstraint,
+       opts = simOptions())
+
+# temporary to test with "860"
+# force version
+opts_v850$antaresVersion <- 860
+
+# scenarized data 
+n <- 10
+lt_data <- matrix(data = rep(1, 8760 * n), ncol = n)
+gt_data <- matrix(data = rep(2, 8760 * n), ncol = n)
+eq_data <- matrix(data = rep(3, 8760 * n), ncol = n)
+
+scenar_values <- list(lt= lt_data,
+                      gt= gt_data, 
+                      eq= eq_data)
+
+test_that("createBindingConstraint v8.6", {
+  
+  # create binding constraint (default group value)  
+  createBindingConstraint(
+    name = "myconstraint",
+    values = scenar_values,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850
+  )
+  
+  # tests
+  testthat::expect_true("myconstraint" %in% 
+                names(readBindingConstraints(opts = opts_v850)))
+  
+  # remove BC
+  removeBindingConstraint(name = "myconstraint", 
+                          opts = opts_v850)
+  
+})
+
+
+test_that("createBindingConstraintBulk v8.6", {
+  # Prepare data for constraints 
+  bindings_constraints <- lapply(
+    X = seq_len(10),
+    FUN = function(i) {
+      # use arguments of createBindingConstraint()
+      # all arguments must be provided !
+      list(
+        name = paste0("constraints", i), 
+        id = paste0("constraints", i), 
+        values = scenar_values, 
+        enabled = FALSE, 
+        timeStep = "hourly",
+        operator = "both",
+        coefficients = c("al%gr" = 1),
+        group= "groupv860",
+        overwrite = TRUE
+      )
+    }
+  )
+  # create all constraints
+  createBindingConstraintBulk(bindings_constraints, opts = opts_v850)
+  
+  # tests
+  testthat::expect_true("constraints1" %in% 
+                          names(readBindingConstraints(opts = opts_v850)))
+  testthat::expect_true("constraints10" %in% 
+                          names(readBindingConstraints(opts = opts_v850)))
+})
+
+test_that("editBindingConstraint v8.6", {
+  
+})
+
+test_that("removeBindingConstraint v8.6", {
+  
+})

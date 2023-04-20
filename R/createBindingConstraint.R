@@ -17,15 +17,23 @@
 #' @param filter_year_by_year Marginal price granularity for year by year
 #' @param filter_synthesis Marginal price granularity for synthesis
 #' @param coefficients A named vector containing the coefficients used by the constraint.
+#' @param group "character" group of the constraint, default value : "default group"
 #' @param overwrite If the constraint already exist, overwrite the previous value.
 #' 
 #' @template opts
 #' 
 #' @seealso [editBindingConstraint()] to edit existing binding constraints, [removeBindingConstraint()] to remove binding constraints.
 #' 
+#' According to Antares version, usage may vary :
+#' 
+#' **< v8.6.0** : For each constraint name, a .txt file containing 3 time series `"less", "greater", "equal"`
+#' 
+#' **>= v8.6.0** : For each constraint name, one file .txt containing `<id>_lt.txt, <id>_gt.txt, <id>_eq.txt`  
+#' Parameter `values` must be named `list` ("lt", "gt", "eq") containing `data.frame` scenarized
+#' 
 #' @export
 #' 
-#' @name create-binding-constraint
+#' @name createBindingConstraint
 #' 
 #' @importFrom antaresRead getLinks setSimulationPath
 #' @importFrom utils write.table
@@ -73,6 +81,7 @@ createBindingConstraint <- function(name,
                                     filter_year_by_year = "hourly, daily, weekly, monthly, annual",
                                     filter_synthesis = "hourly, daily, weekly, monthly, annual",
                                     coefficients = NULL,
+                                    group = NULL,
                                     overwrite = FALSE,
                                     opts = antaresRead::simOptions()) {
   
@@ -108,6 +117,18 @@ createBindingConstraint <- function(name,
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
+  # v860
+  if(opts$antaresVersion>=860){
+    if(is.null(group))
+      group <- "default group"
+    
+    if(!is.null(values)){
+      assertthat::assert_that(inherits(values, "list"))
+      if(!all(names(values)%in%c("lt", "gt", "eq")))
+        stop("Put for 'values' argument, named 'list' => see Doc `?createBindingConstraint`")
+    }
+  }
+  
   bindingConstraints <- createBindingConstraint_(
     bindingConstraints,
     name,
@@ -119,6 +140,7 @@ createBindingConstraint <- function(name,
     filter_year_by_year,
     filter_synthesis,
     coefficients,
+    group,
     overwrite,
     links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
     opts = opts
@@ -136,6 +158,7 @@ createBindingConstraint <- function(name,
 }
 
 
+#' @importFrom data.table fwrite
 createBindingConstraint_ <- function(bindingConstraints,
                                      name,
                                      id,
@@ -146,6 +169,7 @@ createBindingConstraint_ <- function(bindingConstraints,
                                      filter_year_by_year = "hourly, daily, weekly, monthly, annual",
                                      filter_synthesis = "hourly, daily, weekly, monthly, annual",
                                      coefficients,
+                                     group,
                                      overwrite,
                                      links,
                                      opts) {
@@ -175,6 +199,10 @@ createBindingConstraint_ <- function(bindingConstraints,
     iniParams$`filter-year-by-year` <- filter_year_by_year
     iniParams$`filter-synthesis` <- filter_synthesis
   }
+  
+  # v860
+  if(opts$antaresVersion>=860)
+    iniParams$group <- group
   
   # Check coefficients
   if (!is.null(coefficients)) {
@@ -211,13 +239,74 @@ createBindingConstraint_ <- function(bindingConstraints,
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
   ## Values
-  values <- .valueCheck(values, timeStep)
+  if(opts$antaresVersion>=860 & !is.null(values)){
+    values <- .valueCheck860(values, timeStep)
+    }else
+    values <- .valueCheck(values, timeStep)
   
   # Write values
-  pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
-  data.table::fwrite(x = data.table::as.data.table(values), file = pathValues, col.names = FALSE, row.names = FALSE, sep = "\t")
-  
+  # v860
+  if(opts$antaresVersion>=860){
+    names_order_ts <- c("lt", "gt", "eq")
+    name_file <- paste0(id, "_", names_order_ts, ".txt")
+    
+    up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
+    
+    lapply(up_path, function(x, df_ts= values, vect_path= up_path){
+      index <- grep(x = up_path, pattern = x)
+      fwrite(x = data.table::as.data.table(df_ts[[index]]), 
+             file = x, 
+             col.names = FALSE, 
+             row.names = FALSE, 
+             sep = "\t")
+    })
+  }else{
+    pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
+    data.table::fwrite(x = data.table::as.data.table(values), 
+                       file = pathValues, 
+                       col.names = FALSE, 
+                       row.names = FALSE, 
+                       sep = "\t")
+  }
   return(bindingConstraints)
+}
+
+# v860
+.valueCheck860 <- function(values, timeStep){
+  # check nrow Vs timeStep
+    nrows <- switch(timeStep,
+                    hourly = 24*366,
+                    daily = 366,
+                    weekly = 366,
+                    monthly = 12,
+                    annual = 1)
+    
+    list_checked <- sapply(names(values), function(x, list_in= values, check_standard_rows= nrows){
+      list_work <- list_in[[x]]
+      
+      # one column scenario
+      if(ncol(list_work)==1){
+        if (NROW(list_work) == 24*365)
+            list_work <- rbind(list_work, matrix(rep(0, 24*1), ncol = 1))
+        if (NROW(list_work) == 365) 
+          list_work <- rbind(list_work, matrix(rep(0, 1), ncol = 1))
+        if (! NROW(list_work) %in% c(0, check_standard_rows)) 
+          stop("Incorrect number of rows according to the timeStep")
+        }else{# scenarized columns
+        if(dim(list_work)[1]==24*365)
+          list_work <- rbind(list_work, 
+                             matrix(rep(0, 24*dim(list_work)[2]), 
+                                    ncol = dim(list_work)[2]))
+        if(dim(list_work)[1]==365)
+          list_work <- rbind(list_work, 
+                             matrix(rep(0, dim(list_work)[2]), 
+                                    ncol = dim(list_work)[2]))
+        if (! dim(list_work)[1] %in% c(0, check_standard_rows)) 
+          stop("Incorrect number of rows according to the timeStep")
+        }
+      list_work
+      }, simplify = FALSE)
+    list_checked
 }
 
 
@@ -273,7 +362,7 @@ createBindingConstraint_ <- function(bindingConstraints,
 #'  **Warning** all arguments for creating a binding constraints must be provided, see examples.
 #' @export
 #' 
-#' @rdname create-binding-constraint
+#' @rdname createBindingConstraint
 createBindingConstraintBulk <- function(constraints,
                                         opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
