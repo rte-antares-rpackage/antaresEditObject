@@ -1,9 +1,9 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.5.1
+Version: 0.5.2
 Authors@R: c(
-    person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
+    person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
     person("Victor", "Perrier", role = c("aut")),
     person("Baptiste", "Seguinot", role = "ctb"),
