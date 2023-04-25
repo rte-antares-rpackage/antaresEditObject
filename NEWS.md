@@ -1,3 +1,10 @@
+# antaresEditObject 0.5.2
+
+### Breaking changes
+
+* `deleteStudy()` no longer requires user confirmation
+
+
 # antaresEditObject 0.5.1
 
 NEW FEATURES :
