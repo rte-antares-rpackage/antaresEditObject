@@ -192,7 +192,10 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
     api_put(opts, paste0(opts$study_id, "/generate"))
     result <- api_get(opts, paste0(opts$study_id, "/task"))
     while(is.null(result$result)) {
-      Sys.sleep(opts$sleep)
+      if(is.null(opts$sleep))
+        Sys.sleep(0.5)
+      else
+        Sys.sleep(opts$sleep)
       result <- api_get(opts, paste0(opts$study_id, "/task"))
     }
     result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
