@@ -29,11 +29,20 @@ setup_study <- function(study, sourcedir) {
 
 # study v850 ----
 sourcedir850 <- system.file("test_v8", package = "antaresRead")
-studies850 <- list.files(sourcedir850, pattern = "\\.tar\\.gz$", full.names = TRUE)
-studies850 <- studies850[grep(x = studies850, pattern = "v85")]
 
-# untar etude
-path_850 <- file.path(tempdir(), "studyv850")
-untar(studies850[1], exdir = path_850) # v85
-study_temp_path <- file.path(path_850, "test_case")
+setup_study_850 <- function(dir_path){
+  studies850 <- list.files(dir_path, pattern = "\\.tar\\.gz$", full.names = TRUE)
+  studies850 <- studies850[grep(x = studies850, pattern = "v85")]
+  # untar etude
+  path_850 <- file.path(tempdir(), "studyv850")
+  untar(studies850[1], exdir = path_850) # v85
+  study_temp_path <- file.path(path_850, "test_case")  
+  
+  assign("study_temp_path", 
+         file.path(path_850, 
+                   "test_case"), 
+         envir = globalenv())
+}
+
+
 

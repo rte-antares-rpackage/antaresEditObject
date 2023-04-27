@@ -179,6 +179,8 @@ sapply(studies, function(study) {
 
 ## Global data 
 # read / open template study
+setup_study_850(dir_path = sourcedir850)
+
 opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 # areas list
@@ -221,11 +223,6 @@ test_that("createBindingConstraint v8.6", {
   # tests
   testthat::expect_true("myconstraint" %in% 
                 names(readBindingConstraints(opts = opts_v850)))
-  
-  # remove BC
-  removeBindingConstraint(name = "myconstraint", 
-                          opts = opts_v850)
-  
 })
 
 
@@ -257,11 +254,12 @@ test_that("createBindingConstraintBulk v8.6", {
                           names(readBindingConstraints(opts = opts_v850)))
   testthat::expect_true("constraints10" %in% 
                           names(readBindingConstraints(opts = opts_v850)))
+  
+  # remove temporary study
+  unlink(x = study_temp_path, recursive = TRUE)
 })
 
-test_that("editBindingConstraint v8.6", {
-  
-})
+
 
 test_that("removeBindingConstraint v8.6", {
   

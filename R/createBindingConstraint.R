@@ -239,9 +239,9 @@ createBindingConstraint_ <- function(bindingConstraints,
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
   ## Values
-  if(opts$antaresVersion>=860 & !is.null(values)){
+  if(opts$antaresVersion>=860 & !is.null(values))
     values <- .valueCheck860(values, timeStep)
-    }else
+  else
     values <- .valueCheck(values, timeStep)
   
   # Write values

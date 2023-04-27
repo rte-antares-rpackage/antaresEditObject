@@ -99,7 +99,7 @@ createBindingConstraintBulk(bindings_constraints)
 \seealso{
 \code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints, \code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
 
-#' According to Antares version, usage may vary :
+According to Antares version, usage may vary :
 
 \strong{< v8.6.0} : For each constraint name, a .txt file containing 3 time series \verb{"less", "greater", "equal"}
 

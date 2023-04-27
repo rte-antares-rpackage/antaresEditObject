@@ -4,8 +4,9 @@
 
 ### Breaking changes (Antares v8.6) : 
 
-* Existing function `createBindingConstraint()` / `createBindingConstraintBulk()` has new arguments `group`(cf. Antares v8.6 changelog)
-  * Integration of the scenario of the coupling constraints of second member
+* Existing function `createBindingConstraint()` / `createBindingConstraintBulk()` has new arguments `group`
+* Existing function `editBindingConstraint()` has new arguments `group`
+  * Integration of the scenario of the coupling constraints of second member (cf. Antares v8.6 changelog)
 
 # antaresEditObject 0.5.1
 

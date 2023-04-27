@@ -14,6 +14,7 @@ editBindingConstraint(
   filter_year_by_year = NULL,
   filter_synthesis = NULL,
   coefficients = NULL,
+  group = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -37,6 +38,8 @@ It contains one line per time step and three columns "less", "greater" and "equa
 
 \item{coefficients}{A named vector containing the coefficients used by the constraint.}
 
+\item{group}{"character" group of the constraint, default value : "default group"}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
@@ -47,6 +50,7 @@ An updated list containing various information about the simulation.
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Update an existing binding constraint in an Antares study.
+The key search value of the constraint is the \code{id} field
 }
 \examples{
 \dontrun{

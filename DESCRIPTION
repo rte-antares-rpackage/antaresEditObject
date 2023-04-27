@@ -1,19 +1,20 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.5.1
+Version: 0.5.2
 Authors@R: c(
-    person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
-    person("Frederic", "Breant", role = "aut"),
-    person("Victor", "Perrier", role = c("aut")),
-    person("Baptiste", "Seguinot", role = "ctb"),
-    person("Benoit", "Thieurmel", role = "ctb"),
-    person("Titouan", "Robert", role = "ctb"),
-    person("Jalal-Edine", "Zawam", role = "ctb"),
+    person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
+    person("Jalal-Edine", "ZAWAM", role = "aut"),
+    person("Frederic", "Breant", role = "ctb"),
+    person("Francois", "Guillem", role = "aut"),
+    person("Benoit", "Thieurmel", role = "aut"),
+    person("Titouan", "Robert", role = "aut"),
+    person("Victor", "Perrier", role = "ctb"),
     person("Etienne", "Sanchez", role = "ctb"),
-    person("Janus", "De Bondt", role = "ctb"),
     person("Assil", "Mansouri", role = "ctb"),
-    person("RTE", role = "cph"))
+    person("Clement", "Berthet", role = "ctb"),
+    person("RTE", role = "cph")
+    )
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.
     'Antares' is an open source power system generator, more information available here : <https://antares-simulator.org/>.
