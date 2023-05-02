@@ -7,7 +7,7 @@
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
-#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other".
+#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.
 #' @param ... Parameters to write in the Ini file. Careful!
 #'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
 #'  to set `unitcount`, you'll have to use `unitcount = 1L`.
@@ -48,7 +48,7 @@
 #' levels(readClusterDesc()$cluster)
 #' # > "fr_my_cluster"
 #' 
-#' }
+#'
 createClusterST <- function(area,
                             cluster_name, 
                             group = "Other",
@@ -61,10 +61,11 @@ createClusterST <- function(area,
                             add_prefix = TRUE, 
                             overwrite = FALSE,
                             opts = antaresRead::simOptions()) {
+  #We define there, the different groups
   st_storage_group <- c("PSP_open", 
                         "PSP_closed", 
                         "Pondage", 
-                        "Battery", 
+                        "Battery",
                         "Other")
   
   if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
@@ -98,10 +99,11 @@ createClusterST <- function(area,
   
   #################
   # API block
+  #TODO
   if (antaresEditObject:::is_api_study(opts)) {
     
     cmd <- api_command_generate(
-      action = "create_cluster",
+      action = "create_cluster", 
       area_id = area,
       cluster_name = cluster_name,
       parameters = params_cluster
