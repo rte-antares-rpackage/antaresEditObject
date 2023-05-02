@@ -67,6 +67,9 @@
     <loc>/reference/copyOutput.html</loc>
   </url>
   <url>
+    <loc>/reference/copyStudyWeb.html</loc>
+  </url>
+  <url>
     <loc>/reference/create-binding-constraint.html</loc>
   </url>
   <url>
@@ -85,6 +88,9 @@
     <loc>/reference/createCluster.html</loc>
   </url>
   <url>
+    <loc>/reference/createClusterBulk.html</loc>
+  </url>
+  <url>
     <loc>/reference/createDistrict.html</loc>
   </url>
   <url>
@@ -98,6 +104,9 @@
   </url>
   <url>
     <loc>/reference/createStudy.html</loc>
+  </url>
+  <url>
+    <loc>/reference/deleteStudy.html</loc>
   </url>
   <url>
     <loc>/reference/dicoGeneralSettings.html</loc>
@@ -224,6 +233,9 @@
   </url>
   <url>
     <loc>/reference/writeEconomicOptions.html</loc>
+  </url>
+  <url>
+    <loc>/reference/writeHydroValues.html</loc>
   </url>
   <url>
     <loc>/reference/writeIni.html</loc>

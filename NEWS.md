@@ -1,15 +1,24 @@
+# antaresEditObject 0.5.2
+
+### Breaking changes
+
+* `deleteStudy()` no longer requires user confirmation
+
+
 # antaresEditObject 0.5.1
 
 NEW FEATURES :
 
 * New function `deleteStudy()` (API compatible)  
 * New function `copyStudyWeb()` to import physical study into a managed study (API).
+* New function `createClusterBulk()` to create multiple thermal clusters at once.
+* New function `writeHydroValues()` to write hydro input files.
 * Added support of ".zip" compression to existing function `backupStudy()`
 
 BUGFIXES :
 
-* Fixed error when using `removeArea()`
-
+* Fixed error when using `removeArea()`.
+* Fixed error when using `writeEconomicOptions()` in API mode.
 
 
 
@@ -49,9 +58,8 @@ BUGFIXES :
 
 * Antares v840 : new parameter `result-format` to choose output format (txt/zip) + new values for `transmission-capacities` parameter.
 * Antares v832 : added filtering options to bindingConstraints.
-* Antares v830 : `updateAdequacySettings()` function to activate Adequacy Patch and set parameters.
+* Antares v830 : `updateAdequacySettings()` function to activate Adequacy Patch and set parameters. + `createArea()` and `editArea()` support for new adequacy_patch.ini file.
 * Antares v820 : `createLink()` and `editLink()` have a new argument `tsLink` allowing to write transmission capacities time-series.
-
 * `createBindingConstraintBulk()` allow to create multiple binding constraints at once.
 
 
