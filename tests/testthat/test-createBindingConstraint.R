@@ -261,6 +261,3 @@ test_that("createBindingConstraintBulk v8.6", {
 
 
 
-test_that("removeBindingConstraint v8.6", {
-  
-})
