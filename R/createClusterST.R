@@ -3,7 +3,7 @@
 #' @description 
 #' `r antaresEditObject:::badge_api_no()`
 #' 
-#' Create a new ST-storage cluster.
+#' Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
@@ -21,7 +21,6 @@
 #' 
 #' @template opts
 #' 
-#' @seealso [editCluster()] to edit existing clusters, [removeCluster()] to remove clusters. (TODO for ST-storage)
 #' 
 #' @export
 #' 
@@ -61,6 +60,14 @@ createClusterST <- function(area,
                             add_prefix = TRUE, 
                             overwrite = FALSE,
                             opts = antaresRead::simOptions()) {
+  
+  #Check that the study has a valid type
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  #Check if the study has a valid version, >= v860
+  if (!opts$antaresVersion >= 860)
+    stop("Antares study must be >= v8.6.0")
+  
   #We define there, the different groups
   st_storage_group <- c("PSP_open", 
                         "PSP_closed", 
@@ -68,6 +75,7 @@ createClusterST <- function(area,
                         "Battery",
                         "Other")
   
+  #Check that the group name is valid
   if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
@@ -79,6 +87,7 @@ createClusterST <- function(area,
   antaresEditObject:::check_area_name(area, opts)  
   area <- tolower(area)
   
+  #Assign to the differents variables, the name of the file and the default value
   storage_value <- list(PMAX_charging = list(N=1, string = "PMAX-charging"),
                         PMAX_discharging = list(N=1, string = "PMAX-discharging"),
                         inflow = list(N=0, string = "inflow"),
@@ -97,45 +106,45 @@ createClusterST <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
   
-  #################
-  # API block
-  #TODO
-  if (antaresEditObject:::is_api_study(opts)) {
-    
-    cmd <- api_command_generate(
-      action = "create_cluster", 
-      area_id = area,
-      cluster_name = cluster_name,
-      parameters = params_cluster
-    )
-    
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_cluster}: {msg_api}"),
-      cli_command_registered("create_cluster")
-    )
-    
-    for (i in names(storage_value)){
-      if (!is.null(get(i))) {
-        currPath <- paste0("input/ST-storages/series/%s/%s/",storage_value[[i]]$string)
-        cmd <- api_command_generate(
-          action = "replace_matrix",
-          target = sprintf(currPath, area, tolower(cluster_name)),
-          matrix = time_series
-        )
-        api_command_register(cmd, opts = opts)
-        `if`(
-          should_command_be_executed(opts), 
-          api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
-          cli_command_registered("replace_matrix")
-        )
-      }
-    }
-    
-    return(invisible(opts))
-  }
-  ##########################
+  # #################
+  # # API block
+  # #TODO
+  # if (antaresEditObject:::is_api_study(opts)) {
+  # 
+  #   cmd <- api_command_generate(
+  #     action = "create_cluster",
+  #     area_id = area,
+  #     cluster_name = cluster_name,
+  #     parameters = params_cluster
+  #   )
+  # 
+  #   api_command_register(cmd, opts = opts)
+  #   `if`(
+  #     should_command_be_executed(opts),
+  #     api_command_execute(cmd, opts = opts, text_alert = "{.emph create_cluster}: {msg_api}"),
+  #     cli_command_registered("create_cluster")
+  #   )
+  # 
+  #   for (i in names(storage_value)){
+  #     if (!is.null(get(i))) {
+  #       currPath <- paste0("input/ST-storages/series/%s/%s/",storage_value[[i]]$string)
+  #       cmd <- api_command_generate(
+  #         action = "replace_matrix",
+  #         target = sprintf(currPath, area, tolower(cluster_name)),
+  #         matrix = time_series
+  #       )
+  #       api_command_register(cmd, opts = opts)
+  #       `if`(
+  #         should_command_be_executed(opts),
+  #         api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
+  #         cli_command_registered("replace_matrix")
+  #       )
+  #     }
+  #   }
+  # 
+  #   return(invisible(opts))
+  # }
+  # ##########################
 
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
