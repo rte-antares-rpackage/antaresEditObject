@@ -197,7 +197,7 @@ lapply(names_bc_to_remove,
 # force version
 opts_v850$antaresVersion <- 860
 
-# scenarized data 
+# scenarized data hourly
 n <- 10
 lt_data <- matrix(data = rep(1, 8760 * n), ncol = n)
 gt_data <- matrix(data = rep(2, 8760 * n), ncol = n)
@@ -206,6 +206,16 @@ eq_data <- matrix(data = rep(3, 8760 * n), ncol = n)
 scenar_values <- list(lt= lt_data,
                       gt= gt_data, 
                       eq= eq_data)
+
+# daily
+n <- 9
+lt_data <- matrix(data = rep(1, 365 * n), ncol = n)
+gt_data <- matrix(data = rep(2, 365 * n), ncol = n)
+eq_data <- matrix(data = rep(3, 365 * n), ncol = n)
+
+scenar_values_daily <- list(lt= lt_data,
+                            gt= gt_data, 
+                            eq= eq_data)
 
 test_that("createBindingConstraint v8.6", {
   
@@ -255,9 +265,127 @@ test_that("createBindingConstraintBulk v8.6", {
   testthat::expect_true("constraints10" %in% 
                           names(readBindingConstraints(opts = opts_v850)))
   
-  # remove temporary study
-  unlink(x = study_temp_path, recursive = TRUE)
 })
 
 
+test_that("createBindingConstraint check values group v8.6", {
+  
+  # create binding constraint (default group value)  
+  createBindingConstraint(
+    name = "myconstraint_group",
+    values = scenar_values,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850
+  )
+  
+  # create binding constraint   
+  createBindingConstraint(
+    name = "myconstraint_group1",
+    values = scenar_values_daily,
+    enabled = FALSE,
+    timeStep = "daily",
+    operator = "both", 
+    group = "group_test",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850
+  )
+  
+  # tests
+  testthat::expect_true(
+    all(
+      c("myconstraint_group", "myconstraint_group1") %in% 
+                          names(readBindingConstraints(opts = opts_v850))
+    )
+    )
+  
+  # create binding constraint with bad values of existing group [ERROR] 
+  testthat::expect_error(
+    createBindingConstraint(
+      name = "myconstraint_group2",
+      values = scenar_values,
+      enabled = FALSE,
+      timeStep = "hourly",
+      operator = "both", 
+      group = "group_test",
+      coefficients = c("al%gr" = 1), 
+      opts = opts_v850)
+  )
+  
+  # create binding constraint with existing group
+  createBindingConstraint(
+    name = "myconstraint_group2",
+    values = scenar_values_daily,
+    enabled = FALSE,
+    timeStep = "daily",
+    operator = "both", 
+    group = "group_test",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850)
+  
+  testthat::expect_true("myconstraint_group2" %in% 
+                          names(readBindingConstraints(opts = opts_v850)))
+  
+ 
+})
 
+
+test_that("createBindingConstraint check values (NULL case) group v8.6", {
+  # create binding constraint (NULL value)  
+  createBindingConstraint(
+    name = "myconstraint_group_NULL",
+    values = NULL,
+    enabled = FALSE,
+    operator = "both", 
+    group = "null_values",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850
+  )
+  
+  bc <- readBindingConstraints(opts = opts_v850)
+  
+  # check name
+  testthat::expect_true("myconstraint_group_NULL" %in% 
+                          names(bc))
+  
+  # check dim
+  dim_values <- unlist(lapply(bc$myconstraint_group_NULL$values, 
+         function(x) dim(x)[2]))
+  
+  testthat::expect_equal(sum(dim_values), 0)
+  
+  # create binding constraint (existing group with NULL value) 
+  createBindingConstraint(
+    name = "myconstraint_group_3",
+    values = scenar_values,
+    enabled = FALSE,
+    operator = "both", 
+    timeStep = "hourly",
+    group = "null_values",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850
+  )
+    
+  bc <- readBindingConstraints(opts = opts_v850)
+  
+  # check name
+  testthat::expect_true("myconstraint_group_3" %in% 
+                          names(bc))
+  
+  # create binding constraint (existing group) 
+  createBindingConstraint(
+    name = "myconstraint_group_4",
+    values = scenar_values,
+    enabled = FALSE,
+    operator = "both", 
+    timeStep = "hourly",
+    group = "null_values",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850
+  )
+  
+  # remove temporary study
+  unlink(x = study_temp_path, recursive = TRUE)
+})

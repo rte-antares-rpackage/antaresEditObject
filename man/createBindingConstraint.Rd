@@ -61,6 +61,14 @@ An updated list containing various information about the simulation.
 Create a new binding constraint in an Antares study.
 \code{createBindingConstraintBulk()} allow to create multiple constraints at once.
 }
+\details{
+According to Antares version, usage may vary :
+
+\strong{< v8.6.0} : For each constraint name, a .txt file containing 3 time series \verb{"less", "greater", "equal"}
+
+\strong{>= v8.6.0} : For each constraint name, one file .txt containing \verb{<id>_lt.txt, <id>_gt.txt, <id>_eq.txt}
+Parameter \code{values} must be named \code{list} ("lt", "gt", "eq") containing \code{data.frame} scenarized
+}
 \examples{
 \dontrun{
 createBindingConstraint(
@@ -97,12 +105,6 @@ createBindingConstraintBulk(bindings_constraints)
 }
 }
 \seealso{
-\code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints, \code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
-
-According to Antares version, usage may vary :
-
-\strong{< v8.6.0} : For each constraint name, a .txt file containing 3 time series \verb{"less", "greater", "equal"}
-
-\strong{>= v8.6.0} : For each constraint name, one file .txt containing \verb{<id>_lt.txt, <id>_gt.txt, <id>_eq.txt}
-Parameter \code{values} must be named \code{list} ("lt", "gt", "eq") containing \code{data.frame} scenarized
+\code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints,
+\code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
 }

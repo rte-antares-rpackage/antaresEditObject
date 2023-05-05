@@ -22,8 +22,10 @@
 #' 
 #' @template opts
 #' 
-#' @seealso [editBindingConstraint()] to edit existing binding constraints, [removeBindingConstraint()] to remove binding constraints.
+#' @seealso [editBindingConstraint()] to edit existing binding constraints, 
+#' [removeBindingConstraint()] to remove binding constraints.
 #' 
+#' @details 
 #' According to Antares version, usage may vary :
 #' 
 #' **< v8.6.0** : For each constraint name, a .txt file containing 3 time series `"less", "greater", "equal"`
@@ -127,6 +129,11 @@ createBindingConstraint <- function(name,
       if(!all(names(values)%in%c("lt", "gt", "eq")))
         stop("Put for 'values' argument, named 'list' => see Doc `?createBindingConstraint`")
     }
+    
+    # v860 : check group and values
+    group_values_check(group_value = group, 
+                       values_data = values,
+                       opts = opts)
   }
   
   bindingConstraints <- createBindingConstraint_(
@@ -253,12 +260,20 @@ createBindingConstraint_ <- function(bindingConstraints,
     up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
     
     lapply(up_path, function(x, df_ts= values, vect_path= up_path){
-      index <- grep(x = up_path, pattern = x)
-      fwrite(x = data.table::as.data.table(df_ts[[index]]), 
-             file = x, 
-             col.names = FALSE, 
-             row.names = FALSE, 
-             sep = "\t")
+      if(identical(df_ts, character(0)))
+        fwrite(x = data.table::as.data.table(df_ts), 
+               file = x, 
+               col.names = FALSE, 
+               row.names = FALSE, 
+               sep = "\t")
+      else{
+        index <- grep(x = up_path, pattern = x)
+        fwrite(x = data.table::as.data.table(df_ts[[index]]), 
+               file = x, 
+               col.names = FALSE, 
+               row.names = FALSE, 
+               sep = "\t")
+      }
     })
   }else{
     pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
@@ -269,6 +284,43 @@ createBindingConstraint_ <- function(bindingConstraints,
                        sep = "\t")
   }
   return(bindingConstraints)
+}
+
+
+
+#' @title Check dimension of time series for binding constraints
+#' @description Only needed for study version >= 860
+#' @param group_value `character` name of group
+#' @param values_data `list` values used by the constraint
+#' @template opts
+#' @export
+#' @keywords internal
+group_values_check <- function(group_value, 
+                               values_data,
+                               opts = antaresRead::simOptions()){
+
+  # read existing binding constraint
+  existing_bc <- readBindingConstraints(opts = opts)
+  
+  # study with no BC or virgin study
+  if(is.null(existing_bc))
+    return()
+  
+  # check existing group Versus new group to create
+  existing_groups <- unlist(lapply(existing_bc, `[[`, "group"))
+  search_group <- grep(pattern = group_value, x = existing_groups)
+  index_group <- search_group[length(search_group)]
+  
+  # check dimension values existing group Versus new group 
+  if( !identical(index_group, integer(0)) ){
+   p_col <- dim(existing_bc[[index_group]]$values[[1]])[2]
+   p_col_new <- dim(values_data[[1]])[2]
+   
+   if(p_col!=p_col_new & p_col!=0)
+     stop(paste0("Put right columns dimension : ", 
+                 p_col, " for existing 'group' : ", 
+                 group_value))
+  }
 }
 
 # v860
