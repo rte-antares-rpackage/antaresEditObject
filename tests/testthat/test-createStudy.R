@@ -1,5 +1,15 @@
 #Copyright © 2019 RTE Réseau de transport d’électricité
 
+test_that("Create a new v8.6.0 study", {
+  path <- file.path(tempdir(), "tests_createStudy")
+  suppressWarnings(
+    opts <- createStudy(path, antares_version = "8.6.0")
+  )
+  properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
+  expect_identical(properties$antares$version, 860L)
+  unlink(path, recursive = TRUE)
+})
+
 test_that("Create a new v8.1.0 study", {
   path <- file.path(tempdir(), "tests_createStudy")
   suppressWarnings(
