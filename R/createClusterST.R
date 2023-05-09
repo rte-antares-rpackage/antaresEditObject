@@ -46,7 +46,7 @@
 #' # by the area name
 #' levels(readClusterDesc()$cluster)
 #' # > "fr_my_cluster"
-#' 
+#' }
 #'
 createClusterST <- function(area,
                             cluster_name, 
@@ -84,7 +84,7 @@ createClusterST <- function(area,
   
   # Input path
   inputPath <- opts$inputPath
-  antaresEditObject:::check_area_name(area, opts)  
+  check_area_name(area, opts)  
   area <- tolower(area)
   
   #Assign to the differents variables, the name of the file and the default value
@@ -101,7 +101,7 @@ createClusterST <- function(area,
   }
   
   # Cluster's parameters
-  params_cluster <- antaresEditObject:::hyphenize_names(list(...))
+  params_cluster <- hyphenize_names(list(...))
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster <- c(list(name = cluster_name, group = group),params_cluster)

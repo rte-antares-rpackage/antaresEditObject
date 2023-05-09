@@ -55,3 +55,23 @@ An updated list containing various information about the simulation.
 
 Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 }
+\examples{
+\dontrun{
+
+library(antaresRead)
+library(antaresEditObject)
+
+# Create a cluster :
+createClusterST(
+  area = "fr", 
+  cluster_name = "my_cluster",
+  group = "other", 
+  unitcount = 1L, # or as.integer(1)
+)
+# by default, cluster name is prefixed 
+# by the area name
+levels(readClusterDesc()$cluster)
+# > "fr_my_cluster"
+}
+
+}
