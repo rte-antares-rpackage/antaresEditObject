@@ -59,9 +59,9 @@ removeClusterRES <- function(area,
 }
 
 removeClusterST <- function(area, 
-                             cluster_name, 
-                             add_prefix = TRUE, 
-                             opts = antaresRead::simOptions()) {
+                            cluster_name, 
+                            add_prefix = TRUE, 
+                            opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   .removeCluster(
     area = area, 
@@ -135,8 +135,8 @@ removeClusterST <- function(area,
   )
   
   if (length(previous_params) > 0) {
-      # remove series
-      unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    # remove series
+    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
     if (!identical(cluster_type, "ST-storages")) {
       # remove prepro
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
@@ -149,6 +149,7 @@ removeClusterST <- function(area,
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
   }
+  
   
   # Maj simulation
   suppressWarnings({
