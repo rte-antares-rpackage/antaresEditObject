@@ -135,18 +135,18 @@ removeClusterST <- function(area,
   )
   
   if (length(previous_params) > 0) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
-    if (!identical(cluster_type, "ST-storages")) {
       # remove series
-      unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
+      unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    if (!identical(cluster_type, "ST-storages")) {
+      # remove prepro
+      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
   } else {
-    # remove prepro
-    unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area)), recursive = TRUE)
+    # remove series
+    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area)), recursive = TRUE)
     if (!identical(cluster_type, "ST-storages")) {
-      # remove series
-      unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
+      # remove prepro
+      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
   }
   
