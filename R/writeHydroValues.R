@@ -65,7 +65,7 @@ writeHydroValues <- function(area,
     }
   } else {
     #Other cases    
-    if (type!="WaterValues")
+    if (type!="waterValues")
       if (!(identical(dim(data), dims)))
         stop(type, " 'data' must be a ", 
              do.call(paste, as.list(c(dims, sep = "*"))), " matrix.", call. = FALSE)
