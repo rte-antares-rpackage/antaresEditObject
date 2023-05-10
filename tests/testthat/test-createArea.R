@@ -98,7 +98,7 @@ test_that("adequacy patch options are properly written", {
     opts <- antaresRead::setSimulationPath(tmp)
   })
   
-  activateRES(quietly = TRUE)
+  #activateRES(quietly = TRUE)
   createArea(
     name = "testarea_adq",
     adequacy = adequacyOptions(
@@ -108,6 +108,21 @@ test_that("adequacy patch options are properly written", {
   
   adq_testarea <- readIniFile(file.path(opts$inputPath, "areas", "testarea_adq", "adequacy_patch.ini"))
   expect_equal(adq_testarea$`adequacy-patch`$`adequacy-patch-mode`, "inside")
+  
+  unlink(tmp, recursive = TRUE)
+})
+
+test_that("create area in 8.6.0", {
+  
+  tmp <- tempfile()
+  suppressWarnings({
+    createStudy(path = tmp, antares_version = "8.6.0")
+    opts <- antaresRead::setSimulationPath(tmp)
+  })
+  
+  expect_equal(getAreas(),character(0))
+  createArea(name = "myarea")
+  expect_equal(getAreas(),"myarea")
   
   unlink(tmp, recursive = TRUE)
 })
