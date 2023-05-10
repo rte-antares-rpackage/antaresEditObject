@@ -95,7 +95,7 @@ createClusterST <- function(area,
                         upper_rule_curve = list(N=1, string = "upper-rule-curve"))
   
   for (name in names(storage_value)){
-    if (!(is.null(dim(get(name)))) || identical(dim(get(name)), c(8760L, 1L))){
+    if (!(is.null(dim(get(name))) || (identical(dim(get(name)), c(8760L, 1L))))){
       stop(paste0("Input data for ", name, " must be 8760*1"))
     } 
   }
