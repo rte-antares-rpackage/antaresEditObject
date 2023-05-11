@@ -91,7 +91,7 @@ test_that("editBindingConstraint v8.6", {
   
   bc_names_v860 <- names(readBindingConstraints(opts = opts_v850))
     
-  # edit BC with NULL VALUES
+  # edit BC with NULL values (edit only .ini file)
   editBindingConstraint(name = bc_names_v860, 
                         values = NULL, 
                         timeStep = "daily",
@@ -128,8 +128,61 @@ test_that("editBindingConstraint v8.6", {
   res_dim_values <- lapply(res_dim_values, `[[`, 1)
   res_dim_values <- unlist(res_dim_values)
   testthat::expect_equal(mean(res_dim_values), 366)
+  
+  # test error with bad values dimension
+  testthat::expect_error(
+    editBindingConstraint(name = bc_names_v860, 
+                          values = list(lt=matrix(data = rep(1, 365 * 9), 
+                                                  ncol = 9)), 
+                          timeStep = "daily",
+                          operator = "both",
+                          opts = opts_v850), 
+    regexp = "Put right columns dimension : 10 for existing 'group' : default group" 
+  ) 
+  
+  # create new binding constraint with new dimension
+  n <- 20
+  lt_data <- matrix(data = rep(1, 8760 * n), ncol = n)
+  gt_data <- matrix(data = rep(2, 8760 * n), ncol = n)
+  eq_data <- matrix(data = rep(3, 8760 * n), ncol = n)
+  
+  scenar_values_hourly_new <- list(lt= lt_data,
+                               gt= gt_data, 
+                               eq= eq_data)
+  
+  createBindingConstraint(
+    name = "myconstraint_new",
+    values = scenar_values_hourly_new,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = c("al%gr" = 1), 
+    group = "new",
+    opts = opts_v850
+  )
+  
+  # edit group of last bindingConstraint with bad dimension
+  testthat::expect_error(
+    editBindingConstraint(name = "myconstraint_new", 
+                          group = "default group",
+                          opts = opts_v850), 
+    regexp = "Put right columns dimension : 10 for existing 'group' : default group"
+    )
+  
+  # edit param 
+  editBindingConstraint(name = "myconstraint_new", 
+                        operator = "less",
+                        opts = opts_v850)
+  
+  bc_modified <- readBindingConstraints(opts = opts_v850)
+  new_param <- bc_modified[["myconstraint_new"]]$operator
+  
+  # test coefs
+  testthat::expect_equal(new_param, "less")
+  
     
   # remove temporary study
   unlink(x = study_temp_path, recursive = TRUE)
-  
 })
+
+

@@ -316,7 +316,10 @@ group_values_check <- function(group_value,
    p_col <- dim(existing_bc[[index_group]]$values[[1]])[2]
    p_col_new <- dim(values_data[[1]])[2]
    
-   if(p_col!=p_col_new & p_col!=0)
+   if(is.null(p_col_new))
+     p_col_new <- 0
+   
+   if(p_col!=p_col_new) # & p_col!=0
      stop(paste0("Put right columns dimension : ", 
                  p_col, " for existing 'group' : ", 
                  group_value))
