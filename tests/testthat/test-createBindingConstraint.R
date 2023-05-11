@@ -217,9 +217,9 @@ scenar_values_daily <- list(lt= lt_data,
                             gt= gt_data, 
                             eq= eq_data)
 
-test_that("createBindingConstraint v8.6", {
+test_that("createBindingConstraint (default group value) v8.6", {
   
-  # create binding constraint (default group value)  
+  # create binding constraint   
   createBindingConstraint(
     name = "myconstraint",
     values = scenar_values,
@@ -230,9 +230,15 @@ test_that("createBindingConstraint v8.6", {
     opts = opts_v850
   )
   
+  bc <- readBindingConstraints(opts = opts_v850)
+  
   # tests
   testthat::expect_true("myconstraint" %in% 
-                names(readBindingConstraints(opts = opts_v850)))
+                names(bc))
+  
+  testthat::expect_equal(bc$myconstraint$group, "default group")
+  
+  
 })
 
 
@@ -268,7 +274,7 @@ test_that("createBindingConstraintBulk v8.6", {
 })
 
 
-test_that("createBindingConstraint check values group v8.6", {
+test_that("createBindingConstraint check group values v8.6", {
   
   # create binding constraint (default group value)  
   createBindingConstraint(
@@ -281,7 +287,18 @@ test_that("createBindingConstraint check values group v8.6", {
     opts = opts_v850
   )
   
-  # create binding constraint   
+  # ADD binding constraint still (default group value)  
+  createBindingConstraint(
+    name = "myconstraint_group_bis",
+    values = scenar_values,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = c("al%gr" = 1), 
+    opts = opts_v850
+  )
+  
+  # ADD binding constraint with named group
   createBindingConstraint(
     name = "myconstraint_group1",
     values = scenar_values_daily,
@@ -296,10 +313,36 @@ test_that("createBindingConstraint check values group v8.6", {
   # tests
   testthat::expect_true(
     all(
-      c("myconstraint_group", "myconstraint_group1") %in% 
+      c("myconstraint_group", "myconstraint_group_bis", "myconstraint_group1") %in% 
                           names(readBindingConstraints(opts = opts_v850))
     )
     )
+  
+  # create binding constraint with bad values of existing group (default group) [ERROR] 
+  testthat::expect_error(
+    createBindingConstraint(
+      name = "myconstraint_group_err",
+      values = scenar_values_daily,
+      enabled = FALSE,
+      timeStep = "daily",
+      operator = "both",
+      coefficients = c("al%gr" = 1), 
+      opts = opts_v850
+    )
+  )
+  
+  # create binding constraint with bad values (NULL) of existing group (default group) [ERROR] 
+  testthat::expect_error(
+    createBindingConstraint(
+      name = "myconstraint_group_err",
+      values = NULL,
+      enabled = FALSE,
+      timeStep = "daily",
+      operator = "both",
+      coefficients = c("al%gr" = 1), 
+      opts = opts_v850
+    )
+  )
   
   # create binding constraint with bad values of existing group [ERROR] 
   testthat::expect_error(
@@ -314,7 +357,7 @@ test_that("createBindingConstraint check values group v8.6", {
       opts = opts_v850)
   )
   
-  # create binding constraint with existing group
+  # ADD binding constraint with existing group
   createBindingConstraint(
     name = "myconstraint_group2",
     values = scenar_values_daily,
@@ -325,14 +368,17 @@ test_that("createBindingConstraint check values group v8.6", {
     coefficients = c("al%gr" = 1), 
     opts = opts_v850)
   
+  bc <- readBindingConstraints(opts = opts_v850)
+  
   testthat::expect_true("myconstraint_group2" %in% 
                           names(readBindingConstraints(opts = opts_v850)))
   
+  testthat::expect_equal(bc[["myconstraint_group2"]]$group, "group_test")
  
 })
 
 
-test_that("createBindingConstraint check values (NULL case) group v8.6", {
+test_that("createBindingConstraint check values (NULL) group v8.6", {
   # create binding constraint (NULL value)  
   createBindingConstraint(
     name = "myconstraint_group_NULL",
@@ -356,10 +402,10 @@ test_that("createBindingConstraint check values (NULL case) group v8.6", {
   
   testthat::expect_equal(sum(dim_values), 0)
   
-  # create binding constraint (existing group with NULL value) 
+  # ADD binding constraint (existing group with NULL value) 
   createBindingConstraint(
     name = "myconstraint_group_3",
-    values = scenar_values,
+    values = NULL,
     enabled = FALSE,
     operator = "both", 
     timeStep = "hourly",
@@ -373,18 +419,6 @@ test_that("createBindingConstraint check values (NULL case) group v8.6", {
   # check name
   testthat::expect_true("myconstraint_group_3" %in% 
                           names(bc))
-  
-  # create binding constraint (existing group) 
-  createBindingConstraint(
-    name = "myconstraint_group_4",
-    values = scenar_values,
-    enabled = FALSE,
-    operator = "both", 
-    timeStep = "hourly",
-    group = "null_values",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_v850
-  )
   
   # remove temporary study
   unlink(x = study_temp_path, recursive = TRUE)

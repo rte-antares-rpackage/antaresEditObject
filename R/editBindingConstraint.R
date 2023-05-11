@@ -119,8 +119,23 @@ editBindingConstraint <- function(name,
   
   # v860
   if(opts$antaresVersion>=860){
-    if(!is.null(group))
+    if(!is.null(group)){
       iniParams$group <- group
+      
+      # edit group with check group values
+      if(is.null(values))
+        group_values_check(group_value = group, 
+                           values_data = values,
+                           opts = opts)
+    }else
+      group <- "default group"
+    
+    # check group values
+    if(!is.null(values))
+      group_values_check(group_value = group, 
+                       values_data = values,
+                       opts = opts)
+    
   }
     
   # update constraint parameters with new parameters
