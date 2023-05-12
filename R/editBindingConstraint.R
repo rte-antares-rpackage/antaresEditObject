@@ -117,8 +117,8 @@ editBindingConstraint <- function(name,
       iniParams$`filter-synthesis` <- filter_synthesis
   }
   
-  # v860
-  if(opts$antaresVersion>=860){
+  # v870
+  if(opts$antaresVersion>=870){
     if(!is.null(group)){
       iniParams$group <- group
       
@@ -172,9 +172,9 @@ editBindingConstraint <- function(name,
   }
   
   # write txt files
-    # v860
-  if(opts$antaresVersion>=860 & !is.null(values))
-    values <- .valueCheck860(values, bindingConstraints[[bc_update_pos]]$type)
+    # v870
+  if(opts$antaresVersion>=870 & !is.null(values))
+    values <- .valueCheck870(values, bindingConstraints[[bc_update_pos]]$type)
   else
     values <- .valueCheck(values, bindingConstraints[[bc_update_pos]]$type)
   
@@ -182,8 +182,8 @@ editBindingConstraint <- function(name,
   writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
   
   # Write values
-  # v860
-  if(opts$antaresVersion>=860){
+  # v870
+  if(opts$antaresVersion>=870){
     if(!identical(values, character(0))){
       names_order_ts <- c("lt", "gt", "eq")
       name_file <- paste0(id, "_", names_order_ts, ".txt")

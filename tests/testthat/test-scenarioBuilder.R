@@ -139,4 +139,50 @@ sapply(studies, function(study) {
 })
 
 
+# v870 ----
+
+## Global data 
+# read / open template study
+setup_study_850(dir_path = sourcedir850)
+opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
+
+# areas list
+antaresRead::getAreas(opts = opts_v850)
+
+# remove BC none v870
+names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
+
+lapply(names_bc_to_remove, 
+       removeBindingConstraint,
+       opts = simOptions())
+
+# temporary to test with "870"
+# force version
+opts_v850$antaresVersion <- 870
+
+test_that("scenarioBuilder works with binding constraint (v870)", {
+  
+  # Read, create & update scenario builder
+  
+  sbuilder <- scenarioBuilder(
+    n_scenario = opts_v850$parameters$general$nbyears,
+    n_mc = opts_v850$parameters$general$nbyears,
+    areas = getAreas()[1:3],
+    areas_rand = getAreas()[1:2], 
+    opts = opts_v850
+  )
+  
+  # Read previous scenario builder
+  # in a matrix format
+  prev_sb <- readScenarioBuilder(opts = opts_v850, as_matrix = TRUE)
+  
+  # Update scenario builder
+  # for binding constraints series
+  # updateScenarioBuilder(ldata = sbuilder, series = "binding")
+  
+  # remove temporary study
+  unlink(x = study_temp_path, recursive = TRUE)
+})
+
+
 

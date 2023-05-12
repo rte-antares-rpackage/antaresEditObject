@@ -1,5 +1,5 @@
 
-# v860 ----
+# v870 ----
 
 ## Global data 
 # read / open template study
@@ -9,16 +9,16 @@ opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
 # areas list
 antaresRead::getAreas(opts = opts_v850)
 
-# remove BC none v860
+# remove BC none v870
 names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
 
 lapply(names_bc_to_remove, 
        removeBindingConstraint,
        opts = simOptions())
 
-# temporary to test with "860"
+# temporary to test with "870"
 # force version
-opts_v850$antaresVersion <- 860
+opts_v850$antaresVersion <- 870
 
 # scenarized data 
 # hourly
@@ -74,9 +74,9 @@ test_that("removeBindingConstraint v8.6", {
     opts = opts_v850
   )
   
-  bc_names_v860 <- names(readBindingConstraints(opts = opts_v850))
+  bc_names_v870 <- names(readBindingConstraints(opts = opts_v850))
   
-  removeBindingConstraint(bc_names_v860[1], 
+  removeBindingConstraint(bc_names_v870[1], 
                           opts = opts_v850)
   
   bc_in_study <- readBindingConstraints(opts = opts_v850)

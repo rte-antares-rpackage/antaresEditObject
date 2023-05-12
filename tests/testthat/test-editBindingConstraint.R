@@ -35,7 +35,7 @@ test_that("editBindingConstraint v710", {
   
 })
 
-# v860 ----
+# v870 ----
 
 ## Global data 
 # read / open template study
@@ -45,16 +45,16 @@ opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
 # areas list
 antaresRead::getAreas(opts = opts_v850)
 
-# remove BC none v860
+# remove BC none v870
 names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
 
 lapply(names_bc_to_remove, 
        removeBindingConstraint,
        opts = simOptions())
 
-# temporary to test with "860"
+# temporary to test with "870"
 # force version
-opts_v850$antaresVersion <- 860
+opts_v850$antaresVersion <- 870
 
 # scenarized data 
   # hourly
@@ -89,10 +89,10 @@ test_that("editBindingConstraint v8.6", {
     opts = opts_v850
   )
   
-  bc_names_v860 <- names(readBindingConstraints(opts = opts_v850))
+  bc_names_v870 <- names(readBindingConstraints(opts = opts_v850))
     
   # edit BC with NULL values (edit only .ini file)
-  editBindingConstraint(name = bc_names_v860, 
+  editBindingConstraint(name = bc_names_v870, 
                         values = NULL, 
                         timeStep = "daily",
                         operator = "both", 
@@ -100,14 +100,14 @@ test_that("editBindingConstraint v8.6", {
                         opts = opts_v850)
   
   bc_modified <- readBindingConstraints(opts = opts_v850)
-  new_coef <- bc_modified[[bc_names_v860[1]]]$coefs
+  new_coef <- bc_modified[[bc_names_v870[1]]]$coefs
   
   # test
   testthat::expect_true(all(new_coef %in% c(7.45)))
   
   # edit BC with "daily" VALUES
     # add new coeff
-  editBindingConstraint(name = bc_names_v860, 
+  editBindingConstraint(name = bc_names_v870, 
                         values = scenar_values_daily, 
                         timeStep = "daily",
                         operator = "both", 
@@ -117,7 +117,7 @@ test_that("editBindingConstraint v8.6", {
                         opts = opts_v850)
   
   bc_modified <- readBindingConstraints(opts = opts_v850)
-  new_coef <- bc_modified[[bc_names_v860[1]]]$coefs
+  new_coef <- bc_modified[[bc_names_v870[1]]]$coefs
   
   # test coefs
   testthat::expect_true(all(new_coef %in% c(0.5, 12.0, 0.0)))
@@ -131,7 +131,7 @@ test_that("editBindingConstraint v8.6", {
   
   # test error with bad values dimension
   testthat::expect_error(
-    editBindingConstraint(name = bc_names_v860, 
+    editBindingConstraint(name = bc_names_v870, 
                           values = list(lt=matrix(data = rep(1, 365 * 9), 
                                                   ncol = 9)), 
                           timeStep = "daily",

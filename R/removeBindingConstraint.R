@@ -56,8 +56,8 @@ removeBindingConstraint <- function(name, opts = antaresRead::simOptions()) {
       index <- which(namesbc == i)
       id <- bindingConstraints[[index]]$id
       bindingConstraints[[index]] <- NULL
-      # v860
-      if(opts$antaresVersion>=860){
+      # v870
+      if(opts$antaresVersion>=870){
         path_lt <- file.path(opts$inputPath, 
                              sprintf("bindingconstraints/%s.txt", 
                                      paste0(id, "_lt")))

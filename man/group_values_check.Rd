@@ -18,6 +18,6 @@ group_values_check(group_value, values_data, opts = antaresRead::simOptions())
 An updated list containing various information about the simulation.
 }
 \description{
-Only needed for study version >= 860
+Only needed for study version >= 870
 }
 \keyword{internal}

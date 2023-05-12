@@ -28,9 +28,9 @@
 #' @details 
 #' According to Antares version, usage may vary :
 #' 
-#' **< v8.6.0** : For each constraint name, a .txt file containing 3 time series `"less", "greater", "equal"`
+#' **< v8.7.0** : For each constraint name, a .txt file containing 3 time series `"less", "greater", "equal"`
 #' 
-#' **>= v8.6.0** : For each constraint name, one file .txt containing `<id>_lt.txt, <id>_gt.txt, <id>_eq.txt`  
+#' **>= v8.7.0** : For each constraint name, one file .txt containing `<id>_lt.txt, <id>_gt.txt, <id>_eq.txt`  
 #' Parameter `values` must be named `list` ("lt", "gt", "eq") containing `data.frame` scenarized
 #' 
 #' @export
@@ -119,8 +119,8 @@ createBindingConstraint <- function(name,
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
-  # v860
-  if(opts$antaresVersion>=860){
+  # v870
+  if(opts$antaresVersion>=870){
     if(is.null(group))
       group <- "default group"
     
@@ -130,7 +130,7 @@ createBindingConstraint <- function(name,
         stop("Put for 'values' argument, named 'list' => see Doc `?createBindingConstraint`")
     }
     
-    # v860 : check group and values
+    # v870 : check group and values
     group_values_check(group_value = group, 
                        values_data = values,
                        opts = opts)
@@ -207,8 +207,8 @@ createBindingConstraint_ <- function(bindingConstraints,
     iniParams$`filter-synthesis` <- filter_synthesis
   }
   
-  # v860
-  if(opts$antaresVersion>=860)
+  # v870
+  if(opts$antaresVersion>=870)
     iniParams$group <- group
   
   # Check coefficients
@@ -246,14 +246,14 @@ createBindingConstraint_ <- function(bindingConstraints,
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
   ## Values
-  if(opts$antaresVersion>=860 & !is.null(values))
-    values <- .valueCheck860(values, timeStep)
+  if(opts$antaresVersion>=870 & !is.null(values))
+    values <- .valueCheck870(values, timeStep)
   else
     values <- .valueCheck(values, timeStep)
   
   # Write values
-  # v860
-  if(opts$antaresVersion>=860){
+  # v870
+  if(opts$antaresVersion>=870){
     names_order_ts <- c("lt", "gt", "eq")
     name_file <- paste0(id, "_", names_order_ts, ".txt")
     
@@ -289,7 +289,7 @@ createBindingConstraint_ <- function(bindingConstraints,
 
 
 #' @title Check dimension of time series for binding constraints
-#' @description Only needed for study version >= 860
+#' @description Only needed for study version >= 870
 #' @param group_value `character` name of group
 #' @param values_data `list` values used by the constraint
 #' @template opts
@@ -326,8 +326,8 @@ group_values_check <- function(group_value,
   }
 }
 
-# v860
-.valueCheck860 <- function(values, timeStep){
+# v870
+.valueCheck870 <- function(values, timeStep){
   # check nrow Vs timeStep
     nrows <- switch(timeStep,
                     hourly = 24*366,

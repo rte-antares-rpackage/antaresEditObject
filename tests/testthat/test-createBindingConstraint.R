@@ -175,7 +175,7 @@ sapply(studies, function(study) {
 })
 
 
-# v8.6 ----
+# v8.7 ----
 
 ## Global data 
 # read / open template study
@@ -186,16 +186,16 @@ opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
 # areas list
 antaresRead::getAreas(opts = opts_v850)
 
-# remove BC none v860
+# remove BC none v870
 names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
 
 lapply(names_bc_to_remove, 
        removeBindingConstraint,
        opts = simOptions())
 
-# temporary to test with "860"
+# temporary to test with "870"
 # force version
-opts_v850$antaresVersion <- 860
+opts_v850$antaresVersion <- 870
 
 # scenarized data hourly
 n <- 10
@@ -217,7 +217,7 @@ scenar_values_daily <- list(lt= lt_data,
                             gt= gt_data, 
                             eq= eq_data)
 
-test_that("createBindingConstraint (default group value) v8.6", {
+test_that("createBindingConstraint (default group value) v8.7", {
   
   # create binding constraint   
   createBindingConstraint(
@@ -242,7 +242,7 @@ test_that("createBindingConstraint (default group value) v8.6", {
 })
 
 
-test_that("createBindingConstraintBulk v8.6", {
+test_that("createBindingConstraintBulk v8.7", {
   # Prepare data for constraints 
   bindings_constraints <- lapply(
     X = seq_len(10),
@@ -257,7 +257,7 @@ test_that("createBindingConstraintBulk v8.6", {
         timeStep = "hourly",
         operator = "both",
         coefficients = c("al%gr" = 1),
-        group= "groupv860",
+        group= "groupv870",
         overwrite = TRUE
       )
     }
@@ -274,7 +274,7 @@ test_that("createBindingConstraintBulk v8.6", {
 })
 
 
-test_that("createBindingConstraint check group values v8.6", {
+test_that("createBindingConstraint check group values v8.7", {
   
   # create binding constraint (default group value)  
   createBindingConstraint(
@@ -378,7 +378,7 @@ test_that("createBindingConstraint check group values v8.6", {
 })
 
 
-test_that("createBindingConstraint check values (NULL) group v8.6", {
+test_that("createBindingConstraint check values (NULL) group v8.7", {
   # create binding constraint (NULL value)  
   createBindingConstraint(
     name = "myconstraint_group_NULL",
