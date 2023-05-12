@@ -58,6 +58,9 @@ removeClusterRES <- function(area,
   )
 }
 
+#' @export
+#' 
+#' @rdname remove-cluster
 removeClusterST <- function(area, 
                             cluster_name, 
                             add_prefix = TRUE, 

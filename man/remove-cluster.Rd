@@ -4,6 +4,7 @@
 \alias{remove-cluster}
 \alias{removeCluster}
 \alias{removeClusterRES}
+\alias{removeClusterST}
 \title{Remove a cluster}
 \usage{
 removeCluster(
@@ -14,6 +15,13 @@ removeCluster(
 )
 
 removeClusterRES(
+  area,
+  cluster_name,
+  add_prefix = TRUE,
+  opts = antaresRead::simOptions()
+)
+
+removeClusterST(
   area,
   cluster_name,
   add_prefix = TRUE,
