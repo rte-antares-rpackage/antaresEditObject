@@ -14,8 +14,7 @@ Authors@R: c(
     person("Janus", "De Bondt", role = "ctb"),
     person("Assil", "Mansouri", role = "ctb"),
     person("Clement", "Berthet", role = "ctb"),
-    person("RTE", role = "cph")
-    )
+    person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.
     'Antares' is an open source power system generator, more information available here : <https://antares-simulator.org/>.

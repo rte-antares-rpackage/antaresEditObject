@@ -11,6 +11,11 @@
 * `deleteStudy()` no longer requires user confirmation
 
 
+BUGFIXES : 
+
+* `api_command_execute()` add timer to request api
+
+
 # antaresEditObject 0.5.1
 
 NEW FEATURES :
