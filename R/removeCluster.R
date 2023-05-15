@@ -58,6 +58,7 @@ removeClusterRES <- function(area,
   )
 }
 
+
 .removeCluster <- function(area, 
                            cluster_name, 
                            add_prefix = TRUE,
@@ -117,15 +118,17 @@ removeClusterRES <- function(area,
   )
   
   if (length(previous_params) > 0) {
+    # remove series
+    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    
     # remove prepro
     unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
-    # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
   } else {
-    # remove prepro
-    unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area)), recursive = TRUE)
     # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
+    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area)), recursive = TRUE)
+    
+    # remove prepro
+    unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
   }
   
   # Maj simulation
