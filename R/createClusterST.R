@@ -65,6 +65,7 @@ createClusterST <- function(area,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   #Check if the study has a valid version, >= v860
+  #TODO use check_active_ST from script ST.R
   if (!opts$antaresVersion >= 860)
     stop("Antares study must be >= v8.6.0")
   
