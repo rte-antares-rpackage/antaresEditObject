@@ -119,10 +119,8 @@ test_that("create area in 8.6.0", {
     createStudy(path = tmp, antares_version = "8.6.0")
     opts <- antaresRead::setSimulationPath(tmp)
   })
-  
-  expect_equal(getAreas(),character(0))
+  expect_false(file.exists(file.path(tmp,"input","ST-storages","clusters","myarea")))
   createArea(name = "myarea")
-  expect_equal(getAreas(),"myarea")
-  
+  expect_true(dir.exists(file.path(tmp,"input","ST-storages","clusters","myarea")))
   unlink(tmp, recursive = TRUE)
 })

@@ -34,6 +34,8 @@ activateST <- function(opts = antaresRead::simOptions(), quietly = !interactive(
 }
 
 
+# If the study does not have an ST-storages repository, it creates it. Useful for existant study with version < 8.6.0
+
 initialize_ST <- function(opts) {
   if (is_api_study(opts)) {
     # no need in API mode

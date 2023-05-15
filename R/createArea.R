@@ -130,8 +130,6 @@ createArea <- function(name,
   areas <- paste(sort(areas), collapse = "\n")
   writeLines(text = areas, con = file.path(inputPath, "areas/list.txt"))
   
-  
-  
   ## Create area ----
   # dir
   dir.create(path = file.path(inputPath, "areas", name), showWarnings = FALSE)

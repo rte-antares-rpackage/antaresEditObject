@@ -51,6 +51,6 @@ removeCluster(area = "fr", cluster_name = "fr_gas")
 }
 }
 \seealso{
-\code{\link[=createCluster]{createCluster()}}, \code{\link[=createClusterRES]{createClusterRES()}} or \code{\link[=createClusterST]{createClusterST()}} to create new clusters,
+\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRES]{createClusterRES()}} to create new clusters,
 \code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} to edit existing clusters.
 }

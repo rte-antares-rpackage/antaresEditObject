@@ -6,5 +6,7 @@ test_that("ActivateST works", {
     opts <- antaresRead::setSimulationPath(tmp)
   })
   activateST(quietly = TRUE)
-  expect_true(file.exists(file.path(tmp, "input", "renewables")))
+  expect_true(dir.exists(file.path(tmp,"input","ST-storages")))
+  expect_true(dir.exists(file.path(tmp,"input","ST-storages","clusters")))
+  expect_true(dir.exists(file.path(tmp,"input","ST-storages","series")))
 })

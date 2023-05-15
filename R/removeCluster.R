@@ -9,7 +9,7 @@
 #' @inheritParams create-cluster
 #' @template opts
 #' 
-#' @seealso [createCluster()], [createClusterRES()] or [createClusterST()] to create new clusters,
+#' @seealso [createCluster()] or [createClusterRES()] to create new clusters,
 #'  [editCluster()] or [editClusterRES()] to edit existing clusters.
 #' 
 #' @export
@@ -57,21 +57,6 @@ removeClusterRES <- function(area,
     opts = opts
   )
 }
-
-removeClusterST <- function(area, 
-                             cluster_name, 
-                             add_prefix = TRUE, 
-                             opts = antaresRead::simOptions()) {
-  assertthat::assert_that(inherits(opts, "simOptions"))
-  .removeCluster(
-    area = area, 
-    cluster_name = cluster_name, 
-    add_prefix = add_prefix, 
-    cluster_type = "ST-storages",
-    opts = opts
-  )
-}
-
 
 .removeCluster <- function(area, 
                            cluster_name, 
@@ -135,19 +120,15 @@ removeClusterST <- function(area,
   )
   
   if (length(previous_params) > 0) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
-    if (!identical(cluster_type, "ST-storages")) {
-      # remove series
-      unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
-    }
+    # remove prepro
+    unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    # remove series
+    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
   } else {
     # remove prepro
     unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area)), recursive = TRUE)
-    if (!identical(cluster_type, "ST-storages")) {
-      # remove series
-      unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
-    }
+    # remove series
+    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
   }
   
   # Maj simulation
