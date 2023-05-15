@@ -1,10 +1,9 @@
 # antaresEditObject 0.5.2
 
-
-### Breaking changes (Antares v8.6) :
+### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
 
 * `createStudy()` integrate ST-storages.
-* `createArea()` integrate ST-storages.
+* `createArea()` / `removeArea()` integrate ST-storages.
 
 
 NEW FEATURES (Antares v8.6) :
@@ -15,11 +14,6 @@ NEW FEATURES (Antares v8.6) :
 ### Breaking changes
 
 * `deleteStudy()` no longer requires user confirmation
-
-
-NEW FEATURES :
-
-* New function `deleteStudy()` (API compatible)
 
 
 BUGFIXES : 
