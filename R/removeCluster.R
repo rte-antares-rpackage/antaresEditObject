@@ -61,7 +61,7 @@ removeClusterRES <- function(area,
 .removeCluster <- function(area, 
                            cluster_name, 
                            add_prefix = TRUE,
-                           cluster_type = c("thermal", "renewables","ST-storages"),
+                           cluster_type = c("thermal", "renewables"),
                            opts = antaresRead::simOptions()) {
   
   cluster_type <- match.arg(cluster_type)
@@ -78,9 +78,6 @@ removeClusterRES <- function(area,
     
     if (identical(cluster_type, "renewables"))
       stop("RES clusters not implemented with the API yet.")
-    
-    if (identical(cluster_type, "ST-storages"))
-      stop("ST-storages clusters not implemented with the API yet.")
     
     cmd <- api_command_generate(
       action = "remove_cluster",
