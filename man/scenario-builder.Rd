@@ -78,6 +78,7 @@ Read, create & update scenario builder.
 }
 \note{
 \code{series = "ntc"} is only available with Antares >= 8.2.0.
+\code{series = "binding"} is only available with Antares >= 8.7.0.
 }
 \examples{
 \dontrun{

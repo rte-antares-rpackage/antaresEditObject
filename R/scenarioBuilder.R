@@ -124,28 +124,32 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
                                 as_matrix = TRUE,
                                 opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # read existing scenariobuilder.dat
   if (is_api_study(opts)) {
     if (is_api_mocked(opts)) {
       sb <- list("Default Ruleset" = NULL)
     } else {
-      sb <- readIni("settings/scenariobuilder", opts = opts, default_ext = ".dat")
+      sb <- readIni("settings/scenariobuilder", 
+                    opts = opts, default_ext = ".dat")
     }
   } else {
-    sb <- readIni("settings/scenariobuilder", opts = opts, default_ext = ".dat")
+    sb <- readIni("settings/scenariobuilder", 
+                  opts = opts, default_ext = ".dat")
   }
+  
+  # check structure in top of file scenariobuilder.dat
   if (!ruleset %in% names(sb)) {
-    warning(sprintf("Ruleset '%s' not found, possible values are: %s", ruleset, paste(names(sb), collapse = ", ")), call. = FALSE)
+    warning(sprintf("Ruleset '%s' not found, possible values are: %s", 
+                    ruleset, paste(names(sb), collapse = ", ")), 
+            call. = FALSE)
     sb <- NULL
   } else {
     sb <- sb[[ruleset]]
   }
   if (is.null(sb))
     return(list())
-  extract_el <- function(l, indice) {
-    res <- strsplit(x = names(l), split = ",")
-    res <- lapply(res, `[`, i = indice)
-    unlist(res)
-  }
+ 
   types <- extract_el(sb, 1)
   sbt <- split(x = sb, f = types)
   if (is_active_RES(opts)) {
@@ -205,6 +209,12 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
   )
 }
 
+extract_el <- function(l, indice) {
+  res <- strsplit(x = names(l), split = ",")
+  res <- lapply(res, `[`, i = indice)
+  unlist(res)
+}
+
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
@@ -219,7 +229,8 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #'  
 #'  
 #' @note
-#' `series = "ntc"` is only available with Antares >= 8.2.0.
+#' `series = "ntc"` is only available with Antares >= 8.2.0.  
+#' `series = "binding"` is only available with Antares >= 8.7.0. 
 #'
 #' @export
 #' 
@@ -232,18 +243,21 @@ updateScenarioBuilder <- function(ldata,
                                   opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
+  
   if (!is.list(ldata)) {
     if (!is.null(series)) {
       series <- match.arg(
         arg = series,
-        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc"),
+        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "binding"),
         several.ok = TRUE
       )
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
       ind_ntc <- which(series == "ntc")
+      ind_bc <- which(series == "binding")
       series <- substr(series, 1, 1)
       series[ind_ntc] <- "ntc"
+      series[ind_bc] <- "bc"
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
@@ -258,8 +272,8 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc"))) {
-      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r' or 'ntc'", call. = FALSE)
+    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc", "bc"))) {
+      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r' , 'bc' or 'ntc'", call. = FALSE)
     }
     if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
@@ -344,7 +358,7 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' Converts a scenarioBuilder matrix to a list
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
-#' @param series Name of the series, among 'l', 'h', 'w', 's', 't' and 'r'.
+#' @param series Name of the series, among 'l', 'h', 'w', 's', 't' 'bc' and 'r'.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to use for thermal or renewable series.
 #' @param links Either a simple vector with links described as `"area01%area02` or a `data.table` with two columns `from` and `to`.

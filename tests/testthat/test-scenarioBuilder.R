@@ -2,6 +2,7 @@
 
 context("Function scenarioBuilder")
 
+# v710 ----
 
 sapply(studies, function(study) {
   
@@ -149,13 +150,6 @@ opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
 # areas list
 antaresRead::getAreas(opts = opts_v850)
 
-# remove BC none v870
-names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
-
-lapply(names_bc_to_remove, 
-       removeBindingConstraint,
-       opts = simOptions())
-
 # temporary to test with "870"
 # force version
 opts_v850$antaresVersion <- 870
@@ -178,7 +172,7 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   
   # Update scenario builder
   # for binding constraints series
-  # updateScenarioBuilder(ldata = sbuilder, series = "binding")
+  updateScenarioBuilder(ldata = sbuilder, series = "binding")
   
   # remove temporary study
   unlink(x = study_temp_path, recursive = TRUE)
