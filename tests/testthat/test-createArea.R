@@ -112,15 +112,46 @@ test_that("adequacy patch options are properly written", {
   unlink(tmp, recursive = TRUE)
 })
 
-test_that("create area in 8.6.0", {
+test_that("create area / ST-storages in 8.6.0", {
   
   tmp <- tempfile()
   suppressWarnings({
-    createStudy(path = tmp, antares_version = "8.6.0")
+    temp_study_860 <- createStudy(path = tmp, antares_version = "8.6.0")
     opts <- antaresRead::setSimulationPath(tmp)
   })
-  expect_false(file.exists(file.path(tmp,"input","ST-storages","clusters","myarea")))
-  createArea(name = "myarea")
+  
+  # check area 
+  createArea(name = "myarea", 
+             opts = temp_study_860)
+  
+  areas_created <- getAreas()
+  expect_true("myarea" %in% areas_created)
+  
   expect_true(dir.exists(file.path(tmp,"input","ST-storages","clusters","myarea")))
+  
+  # check ini file
+  ini_path_file <- file.path(temp_study_860$inputPath, 
+                             "ST-storages","clusters","myarea", "list.ini")
+  expect_true(file.exists(ini_path_file))
+  
+  # REMOVE TESTS
+  test_that("Remove an area in 8.6.0", {
+    area2remove <- "myareatoremove"
+    createArea(name = area2remove, 
+               opts = temp_study_860)
+    
+    ra <- checkRemovedArea(area = area2remove)
+    expect_true(length(ra$areaResiduFiles) > 0)
+    expect_true(length(ra$areaResidus) > 0)
+    
+    removeArea(name = area2remove)
+    ra <- checkRemovedArea(area = area2remove)
+    expect_length(ra$areaResiduFiles, 0)
+    expect_length(ra$areaResidus, 0)
+    
+    expect_equal(getAreas(select = area2remove), character(0))
+  })
+  
+  # remove temp study
   unlink(tmp, recursive = TRUE)
 })

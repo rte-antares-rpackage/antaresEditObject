@@ -179,7 +179,14 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
     text = paste(bindingconstraints[ind1 | ind2], collapse = "\n"), 
     con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
   )
-
+  
+  # ST-storages
+  unlink(x = file.path(inputPath, "ST-storages", "clusters", name), recursive = TRUE)
+  unlink(x = file.path(inputPath, "ST-storages", "series", name), recursive = TRUE)
+  
+  # renewables
+  unlink(x = file.path(inputPath, "renewables", "clusters", name), recursive = TRUE)
+  unlink(x = file.path(inputPath, "renewables", "series", name), recursive = TRUE)
 
   # Maj simulation
   suppressWarnings({
