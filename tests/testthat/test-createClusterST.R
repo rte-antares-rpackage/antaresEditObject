@@ -1,6 +1,6 @@
-context("createClusterST function")
 
-test_that("Create short-term storage cluster",{
+
+test_that("Create short-term storage cluster (new feature v8.6)",{
   setup_study_850(sourcedir850)
   opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
   
