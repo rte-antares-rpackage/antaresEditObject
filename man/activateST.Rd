@@ -2,7 +2,7 @@
 % Please edit documentation in R/ST.R
 \name{activateST}
 \alias{activateST}
-\title{Activate ST-storages in an Antares study}
+\title{Activate st-storage in an Antares study}
 \usage{
 activateST(opts = antaresRead::simOptions(), quietly = !interactive())
 }
@@ -16,7 +16,7 @@ activateST(opts = antaresRead::simOptions(), quietly = !interactive())
 An updated list containing various information about the simulation.
 }
 \description{
-Activate ST-storages in an Antares study
+Activate st-storage in an Antares study
 }
 \examples{
 \dontrun{

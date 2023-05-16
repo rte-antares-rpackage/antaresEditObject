@@ -433,15 +433,15 @@ createArea <- function(name,
   }
   
   
-  ## ST-storages ----
+  ## st-storage ----
   
   # dir
   if (opts$antaresVersion >= 860 ){
-    dir.create(path = file.path(inputPath, "ST-storages", "clusters", name), showWarnings = FALSE)
+    dir.create(path = file.path(inputPath, "st-storage", "clusters", name), showWarnings = FALSE)
     
     writeIni(
       listData = list(),
-      pathIni = file.path(inputPath, "ST-storages", "clusters", name, "list.ini"),
+      pathIni = file.path(inputPath, "st-storage", "clusters", name, "list.ini"),
       overwrite = overwrite
     )
   }

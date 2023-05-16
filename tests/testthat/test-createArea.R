@@ -112,7 +112,7 @@ test_that("adequacy patch options are properly written", {
   unlink(tmp, recursive = TRUE)
 })
 
-test_that("create area / ST-storages in 8.6.0", {
+test_that("create area / st-storage in 8.6.0", {
   
   tmp <- tempfile()
   suppressWarnings({
@@ -127,11 +127,11 @@ test_that("create area / ST-storages in 8.6.0", {
   areas_created <- getAreas()
   expect_true("myarea" %in% areas_created)
   
-  expect_true(dir.exists(file.path(tmp,"input","ST-storages","clusters","myarea")))
+  expect_true(dir.exists(file.path(tmp,"input","st-storage","clusters","myarea")))
   
   # check ini file
   ini_path_file <- file.path(temp_study_860$inputPath, 
-                             "ST-storages","clusters","myarea", "list.ini")
+                             "st-storage","clusters","myarea", "list.ini")
   expect_true(file.exists(ini_path_file))
   
   # REMOVE TESTS

@@ -7,9 +7,9 @@ test_that("Create a new v8.6.0 study", {
   )
   properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
   expect_identical(properties$antares$version, 860L)
-  expect_true(dir.exists(file.path(path,"input","ST-storages")))
-  expect_true(dir.exists(file.path(path,"input","ST-storages","clusters")))
-  expect_true(dir.exists(file.path(path,"input","ST-storages","series")))
+  expect_true(dir.exists(file.path(path,"input","st-storage")))
+  expect_true(dir.exists(file.path(path,"input","st-storage","clusters")))
+  expect_true(dir.exists(file.path(path,"input","st-storage","series")))
   unlink(path, recursive = TRUE)
 })
 

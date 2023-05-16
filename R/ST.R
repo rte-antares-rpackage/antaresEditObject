@@ -1,8 +1,8 @@
 
 
-# ST-storages utilities functions -------------------------------------------------
+# st-storage utilities functions -------------------------------------------------
 
-#' @title Activate ST-storages in an Antares study
+#' @title Activate st-storage in an Antares study
 #' 
 #' @param quietly Display or not a message to the user if success.
 #'
@@ -34,7 +34,7 @@ activateST <- function(opts = antaresRead::simOptions(), quietly = !interactive(
 }
 
 
-# If the study does not have an ST-storages repository, it creates it. Useful for existant study with version < 8.6.0
+# If the study does not have an st-storage repository, it creates it. Useful for existant study with version < 8.6.0
 
 initialize_ST <- function(opts) {
   if (is_api_study(opts)) {
@@ -42,13 +42,13 @@ initialize_ST <- function(opts) {
     return(invisible(TRUE))
   }
   inputPath <- opts$inputPath
-  st_dir <- file.path(inputPath, "ST-storages")
+  st_dir <- file.path(inputPath, "st-storage")
   dir.create(st_dir, showWarnings = FALSE)
   dir.create(file.path(st_dir, "clusters"), showWarnings = FALSE)
   areas <- antaresRead::getAreas(opts = opts)
   for (area in areas) {
-    dir.create(file.path(inputPath, "ST-storages", "clusters", tolower(area)), showWarnings = FALSE)
-    path_ini <- file.path(inputPath, "ST-storages", "clusters", tolower(area), "list.ini")
+    dir.create(file.path(inputPath, "st-storage", "clusters", tolower(area)), showWarnings = FALSE)
+    path_ini <- file.path(inputPath, "st-storage", "clusters", tolower(area), "list.ini")
     if (!file.exists(path_ini))
       writeLines(character(0), con = path_ini)
   }
@@ -64,10 +64,10 @@ check_active_ST <- function(opts, check_dir = FALSE) {
     check_dir <- FALSE
   if (isTRUE(check_dir)) {
     inputPath <- opts$inputPath
-    st_dir <- file.path(inputPath, "ST-storages")
+    st_dir <- file.path(inputPath, "st-storage")
     if (!dir.exists(st_dir)) {
       stop(
-        "There is no 'ST-storages' directory in the study.",
+        "There is no 'st-storage' directory in the study.",
         call. = FALSE
       )
     }
