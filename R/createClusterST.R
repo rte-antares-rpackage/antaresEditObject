@@ -60,23 +60,23 @@ createClusterST <- function(area,
                             add_prefix = TRUE, 
                             overwrite = FALSE,
                             opts = antaresRead::simOptions()) {
-  
-  #Check that the study has a valid type
+ 
+  # Check that the study has a valid type
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  #Check if the study has a valid version, >= v860
-  #TODO use check_active_ST from script ST.R
+  # Check if the study has a valid version, >= v860
+  # TODO use check_active_ST from script ST.R
   if (!opts$antaresVersion >= 860)
     stop("Antares study must be >= v8.6.0")
   
-  #We define there, the different groups
+  # We define there, the different groups
   st_storage_group <- c("PSP_open", 
                         "PSP_closed", 
                         "Pondage", 
                         "Battery",
                         "Other")
   
-  #Check that the group name is valid
+  # Check that the group name is valid
   if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
@@ -107,7 +107,7 @@ createClusterST <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
   
-  # #################
+  # ################# -
   # # API block
   # #TODO
   # if (antaresEditObject:::is_api_study(opts)) {
@@ -128,7 +128,7 @@ createClusterST <- function(area,
   # 
   #   for (i in names(storage_value)){
   #     if (!is.null(get(i))) {
-  #       currPath <- paste0("input/ST-storages/series/%s/%s/",storage_value[[i]]$string)
+  #       currPath <- paste0("input/st-storage/series/%s/%s/",storage_value[[i]]$string)
   #       cmd <- api_command_generate(
   #         action = "replace_matrix",
   #         target = sprintf(currPath, area, tolower(cluster_name)),
@@ -145,7 +145,7 @@ createClusterST <- function(area,
   # 
   #   return(invisible(opts))
   # }
-  # ##########################
+  # ########################## -
 
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
@@ -153,7 +153,7 @@ createClusterST <- function(area,
   # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
   
   # path to ini file containing clusters' name and parameters
-  path_clusters_ini <- file.path(inputPath, "ST-storages", "clusters", tolower(area), "list.ini")
+  path_clusters_ini <- file.path(inputPath, "st-storage", "clusters", tolower(area), "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
@@ -178,7 +178,7 @@ createClusterST <- function(area,
   
   # initialize series
   dir.create(
-    path = file.path(inputPath, "ST-storages", "series", tolower(area), tolower(cluster_name)),
+    path = file.path(inputPath, "st-storage", "series", tolower(area), tolower(cluster_name)),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -188,7 +188,7 @@ createClusterST <- function(area,
       
       fwrite(
         x = k, row.names = FALSE, col.names = FALSE, sep = "\t",
-        file = file.path(inputPath, "ST-storages", "series", tolower(area), tolower(cluster_name), paste0(storage_value[[name]]$string, ".txt"))
+        file = file.path(inputPath, "st-storage", "series", tolower(area), tolower(cluster_name), paste0(storage_value[[name]]$string, ".txt"))
       )
     } 
   }

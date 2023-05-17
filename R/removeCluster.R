@@ -70,7 +70,7 @@ removeClusterST <- function(area,
     area = area, 
     cluster_name = cluster_name, 
     add_prefix = add_prefix, 
-    cluster_type = "ST-storages",
+    cluster_type = "st-storage",
     opts = opts
   )
 }
@@ -79,7 +79,7 @@ removeClusterST <- function(area,
 .removeCluster <- function(area, 
                            cluster_name, 
                            add_prefix = TRUE,
-                           cluster_type = c("thermal", "renewables","ST-storages"),
+                           cluster_type = c("thermal", "renewables","st-storage"),
                            opts = antaresRead::simOptions()) {
   
   cluster_type <- match.arg(cluster_type)
@@ -97,8 +97,8 @@ removeClusterST <- function(area,
     if (identical(cluster_type, "renewables"))
       stop("RES clusters not implemented with the API yet.")
     
-    if (identical(cluster_type, "ST-storages"))
-      stop("ST-storages clusters not implemented with the API yet.")
+    if (identical(cluster_type, "st-storage"))
+      stop("st-storage clusters not implemented with the API yet.")
     
     cmd <- api_command_generate(
       action = "remove_cluster",
@@ -140,14 +140,14 @@ removeClusterST <- function(area,
   if (length(previous_params) > 0) {
     # remove series
     unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
-    if (!identical(cluster_type, "ST-storages")) {
+    if (!identical(cluster_type, "st-storage")) {
       # remove prepro
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
   } else {
     # remove series
     unlink(x = file.path(inputPath, cluster_type, "series", tolower(area)), recursive = TRUE)
-    if (!identical(cluster_type, "ST-storages")) {
+    if (!identical(cluster_type, "st-storage")) {
       # remove prepro
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
