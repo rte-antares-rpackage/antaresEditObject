@@ -209,7 +209,9 @@ editArea <- function(name,
   invisible(res)
 }
 
-# ## Hydro ----
+
+# OLD 
+# ## Hydro  
 # 
 # # capacity
 # con <- file(description = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", name, ".txt")), open = "wt")
@@ -280,7 +282,7 @@ editArea <- function(name,
 # 
 # 
 # 
-# ## Links ----
+# ## Links  
 # # dir
 # dir.create(path = file.path(inputPath, "links", name), showWarnings = FALSE)
 # writeIni(
@@ -291,7 +293,7 @@ editArea <- function(name,
 # 
 # 
 # 
-# ## Load ----
+# ## Load  
 # 
 # # prepro
 # # dir
@@ -333,21 +335,21 @@ editArea <- function(name,
 # 
 # 
 # 
-# ## Misc-gen ----
+# ## Misc-gen  
 # utils::write.table(
 #   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
 #   file = file.path(inputPath, "misc-gen", paste0("miscgen-", name, ".txt"))
 # )
 # 
 # 
-# ## Reserves ----
+# ## Reserves  
 # utils::write.table(
 #   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
 #   file = file.path(inputPath, "reserves", paste0(name, ".txt"))
 # )
 # 
 # 
-# ## Solar ----
+# ## Solar  
 # 
 # # prepro
 # # dir
@@ -388,7 +390,7 @@ editArea <- function(name,
 # )
 # 
 # 
-# ## Thermal ----
+# ## Thermal  
 # 
 # # dir
 # dir.create(path = file.path(inputPath, "thermal", "clusters", name), showWarnings = FALSE)
@@ -412,7 +414,7 @@ editArea <- function(name,
 # 
 # 
 # 
-# ## Wind ----
+# ## Wind  
 # 
 # # prepro
 # # dir
