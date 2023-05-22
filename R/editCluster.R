@@ -95,7 +95,8 @@ editClusterRES <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   
   # Handle case sensitivity in name of clusters API 
-  clusters <- names(readIni(file.path("input", cluster_type, "clusters", area, "list")))
+  clusters <- names(readIni(file.path("input", cluster_type, "clusters", area, "list"), 
+                            opts= opts))
   
   if (!cluster_name %in% clusters){
     if (tolower(cluster_name) %in% tolower(clusters)){
