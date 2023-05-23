@@ -10,7 +10,7 @@
 #' @template opts
 #' 
 #' @seealso [createCluster()], [createClusterRES()] or [createClusterST()] to create new clusters,
-#'  [editCluster()] or [editClusterRES()] to edit existing clusters.
+#'  [editCluster()] or [editClusterRES()] or [editClusterST()] to edit existing clusters.
 #' 
 #' @export
 #' 
@@ -140,14 +140,14 @@ removeClusterST <- function(area,
   if (length(previous_params) > 0) {
     # remove series
     unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
-    if (!identical(cluster_type, "st-storage")) {
+    if (identical(cluster_type, "thermal")) {
       # remove prepro
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
   } else {
     # remove series
     unlink(x = file.path(inputPath, cluster_type, "series", tolower(area)), recursive = TRUE)
-    if (!identical(cluster_type, "st-storage")) {
+    if (identical(cluster_type, "thermal")) {
       # remove prepro
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
