@@ -9,9 +9,9 @@ createClusterST(
   cluster_name,
   group = "Other",
   ...,
-  PMAX_charging = NULL,
-  PMAX_discharging = NULL,
-  inflow = NULL,
+  PMAX_injection = NULL,
+  PMAX_withdrawal = NULL,
+  inflows = NULL,
   lower_rule_curve = NULL,
   upper_rule_curve = NULL,
   add_prefix = TRUE,
@@ -30,11 +30,11 @@ createClusterST(
 Some parameters must be set as \code{integers} to avoid warnings in Antares, for example,
 to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 
-\item{PMAX_charging}{modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_injection}{modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.}
 
-\item{PMAX_discharging}{modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_withdrawal}{modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.}
 
-\item{inflow}{imposed withdrawals from the stock for other uses, The values are integer.}
+\item{inflows}{imposed withdrawals from the stock for other uses, The values are integer.}
 
 \item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.}
 
@@ -55,6 +55,16 @@ An updated list containing various information about the simulation.
 
 Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 }
+\note{
+five files are written in output according to the input parameters
+\itemize{
+\item PMAX-injection.txt
+\item PMAX-withdrawal.txt
+\item inflows.txt
+\item lower-rule-curve.txt
+\item upper-rule-curve.txt
+}
+}
 \examples{
 \dontrun{
 
@@ -70,8 +80,11 @@ createClusterST(
 )
 # by default, cluster name is prefixed 
 # by the area name
-levels(readClusterDesc()$cluster)
+levels(readClusterSTDesc()$cluster)
 # > "fr_my_cluster"
 }
 
+}
+\seealso{
+\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
 }

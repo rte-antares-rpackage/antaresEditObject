@@ -11,16 +11,23 @@
 #' @param ... Parameters to write in the Ini file. Careful!
 #'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
 #'  to set `unitcount`, you'll have to use `unitcount = 1L`.
-#' @param PMAX_charging modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param PMAX_discharging modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param inflow imposed withdrawals from the stock for other uses, The values are integer.
+#' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
+#' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
+#' @param inflows imposed withdrawals from the stock for other uses, The values are integer.
 #' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite Logical, overwrite the cluster or not.
 #' 
 #' @template opts
-#' 
+#' @note five files are written in output according to the input parameters  
+#'  - PMAX-injection.txt 
+#'  - PMAX-withdrawal.txt
+#'  - inflows.txt
+#'  - lower-rule-curve.txt
+#'  - upper-rule-curve.txt
+#'  
+#' @seealso [editClusterST()] to edit existing clusters, [removeClusterST()] to remove clusters.
 #' 
 #' @export
 #' 
@@ -44,7 +51,7 @@
 #' )
 #' # by default, cluster name is prefixed 
 #' # by the area name
-#' levels(readClusterDesc()$cluster)
+#' levels(readClusterSTDesc()$cluster)
 #' # > "fr_my_cluster"
 #' }
 #'
@@ -52,9 +59,9 @@ createClusterST <- function(area,
                             cluster_name, 
                             group = "Other",
                             ...,
-                            PMAX_charging = NULL,
-                            PMAX_discharging = NULL,
-                            inflow = NULL,
+                            PMAX_injection = NULL,
+                            PMAX_withdrawal = NULL,
+                            inflows = NULL,
                             lower_rule_curve = NULL,
                             upper_rule_curve = NULL,
                             add_prefix = TRUE, 
@@ -89,9 +96,9 @@ createClusterST <- function(area,
   area <- tolower(area)
   
   #Assign to the differents variables, the name of the file and the default value
-  storage_value <- list(PMAX_charging = list(N=1, string = "PMAX-charging"),
-                        PMAX_discharging = list(N=1, string = "PMAX-discharging"),
-                        inflow = list(N=0, string = "inflow"),
+  storage_value <- list(PMAX_injection = list(N=1, string = "PMAX-injection"),
+                        PMAX_withdrawal = list(N=1, string = "PMAX-withdrawal"),
+                        inflows = list(N=0, string = "inflows"),
                         lower_rule_curve = list(N=0, string = "lower-rule-curve"),
                         upper_rule_curve = list(N=1, string = "upper-rule-curve"))
   

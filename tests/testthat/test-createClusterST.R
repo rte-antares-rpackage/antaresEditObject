@@ -25,11 +25,11 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
                  regexp = "is not a valid area name")
     
     # createClusterST throws error for incorrect number of rows in storage values.
-    testthat::expect_error(createClusterST(area_test, "cluster1",
-                                 PMAX_charging = matrix(1, 2, 2),
-                                 opts = opts_test))
+    testthat::expect_error(createClusterST(area_test, "cluster1", 
+                                           PMAX_injection = matrix(1, 2, 2),
+                                           opts = opts_test))
       
-    # check cluster exists
+    # check cluster exists with default values
     createClusterST(area_test, 
                     "cluster1", 
                     opts = opts_test) 
@@ -37,12 +37,17 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
     testthat::expect_true(paste(area_test, "cluster1", sep = "_") 
                 %in% levels(readClusterSTDesc(opts = opts_test)$cluster))
     
-    # testthat::expect_true(file.exists(file.path(opts_test$inputPath, 
-    #                                   "st-storage",
-    #                                   "series",
-    #                                   area_test,
-    #                                   paste0(area_test, "_", "cluster1"),
-    #                                   "inflow.txt")))
+    # read series
+    # TODO => test with readInputTS
+    file_series <- antaresRead:::fread_antares(opts = opts_test, 
+                                file = file.path(path_master, 
+                                                 "series",
+                                                 area_test, 
+                                                 paste(area_test, "cluster1", sep = "_"),
+                                                 "lower-rule-curve.txt"))
+    # check default value and dimension
+    testthat::expect_equal(dim(file_series), c(8760, 1))
+    testthat::expect_equal(mean(file_series$V1), 0)
     
     # createClusterST throws error when cluster already exist.
     testthat::expect_error(createClusterST(area_test, 
@@ -50,16 +55,13 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
                                  opts = opts_test),
                  regexp = "already exist")
       
-    # RemoveClusterST (if no cluster => function read return error => see readClusterDesc tests)
-    removeClusterST(area = area_test, "cluster1")
+    test_that("Remove storage cluster (new feature v8.6)", {
+      # RemoveClusterST (if no cluster => function read return error => see readClusterDesc tests)
+      removeClusterST(area = area_test, "cluster1")
+      
+      testthat::expect_error(readClusterSTDesc(opts = opts_test))
+    })
     
-    testthat::expect_error(readClusterSTDesc(opts = opts_test))
-    
-    # testthat::expect_true(!dir.exists(file.path(opts_test$inputPath, 
-    #                                   "st-storage",
-    #                                   "series",
-    #                                   area_test,
-    #                                   paste0(area_test, "_", "cluster1"))))
   }
   #Delete study
   unlink(opts_test$studyPath, recursive = TRUE)
