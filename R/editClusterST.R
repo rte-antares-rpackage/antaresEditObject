@@ -11,22 +11,25 @@
 #' @param ... Parameters to write in the Ini file. Careful!
 #'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
 #'  to set `unitcount`, you'll have to use `unitcount = 1L`.
-#' @param PMAX_charging modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param PMAX_discharging modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param inflow imposed withdrawals from the stock for other uses, The values are integer.
+#' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
+#' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
+#' @param inflows imposed withdrawals from the stock for other uses, The values are integer.
 #' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' 
 #' @template opts
+#' 
+#' @seealso [createClusterST()] to edit existing clusters, [removeClusterST()] to remove clusters.
+#' 
 #' @export
 editClusterST <- function(area,
                           cluster_name, 
                           group = "Other",
                           ...,
-                          PMAX_charging = NULL,
-                          PMAX_discharging = NULL,
-                          inflow = NULL,
+                          PMAX_injection = NULL,
+                          PMAX_withdrawal = NULL,
+                          inflows = NULL,
                           lower_rule_curve = NULL,
                           upper_rule_curve = NULL,
                           add_prefix = TRUE, 
@@ -95,6 +98,64 @@ editClusterST <- function(area,
     overwrite = TRUE
   )
   
+  # PMAX_injection = NULL,
+  # PMAX_withdrawal = NULL,
+  # inflows = NULL,
+  # lower_rule_curve = NULL,
+  # upper_rule_curve 
+ 
+  
+  # datas associated with cluster
+  path_txt_file <- file.path(opts$inputPath, 
+                             "st-storage", 
+                             "series", 
+                             tolower(area), 
+                             tolower(cluster_name))
+  
+  # PMAX_injection
+  if(!is.null(PMAX_injection)){
+    fwrite(
+      x = PMAX_injection, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(path_txt_file, 
+                       paste0("PMAX-injection", ".txt"))
+    )
+  }
+  
+  # PMAX_withdrawal
+  if(!is.null(PMAX_withdrawal)){
+    fwrite(
+      x = PMAX_withdrawal, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(path_txt_file, 
+                       paste0("PMAX-withdrawal", ".txt"))
+    )
+  }
+  
+  # inflows
+  if(!is.null(inflows)){
+    fwrite(
+      x = inflows, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(path_txt_file, 
+                       paste0("inflows", ".txt"))
+    )
+  }
+  
+  # lower_rule_curve
+  if(!is.null(lower_rule_curve)){
+    fwrite(
+      x = lower_rule_curve, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(path_txt_file, 
+                       paste0("lower-rule-curve", ".txt"))
+    )
+  }
+  
+  # upper_rule_curve 
+  if(!is.null(upper_rule_curve)){
+    fwrite(
+      x = upper_rule_curve, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(path_txt_file, 
+                       paste0("upper-rule-curve", ".txt"))
+    )
+  }
   
   # Maj simulation
   suppressWarnings({
