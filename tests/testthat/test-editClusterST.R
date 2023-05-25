@@ -19,19 +19,23 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   writeIni(NULL, file.path(path_master, "clusters", area_test, "list"))
   
   # create tests clusters
-  createClusterST(area_test, 
+  opts_test <- createClusterST(area_test, 
                   "cluster-st-1", 
                   opts = opts_test) 
   
-  createClusterST(area_test, 
+  opts_test$antaresVersion <- 860
+  
+  opts_test <- createClusterST(area_test, 
                   "cluster-st-2", 
                   opts = opts_test) 
+  
+  opts_test$antaresVersion <- 860
   
   st_clusters <- readClusterSTDesc(opts = opts_test)
   
   # edit cluster
   val <- 0.007
-  editClusterST(area = area_test, 
+  opts_test <- editClusterST(area = area_test, 
                 cluster_name = levels(st_clusters$cluster)[1], 
                 test_param1= "test",
                 test_param2= 0.002154,
@@ -43,6 +47,8 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                 opts = opts_test, 
                 add_prefix = FALSE)
   
+  opts_test$antaresVersion <- 860
+  
   st_clusters <- readClusterSTDesc(opts = opts_test)
   
   res <- st_clusters[cluster == levels(st_clusters$cluster)[1], test.param1, test.param2]
@@ -50,8 +56,7 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   # test parameters values edited
   testthat::expect_true(all(res %in% c(0.002154, "test")))
   
-  # test data value 
-  # TODO => test with readInputTS
+  # test data value (with fread_antares)
   path_dir_test <- file.path(opts_test$inputPath, "st-storage", "series", area_test, 
                              paste(area_test, "cluster-st-1", sep = "_"))
   files_test <- list.files(path_dir_test, full.names = TRUE)
@@ -62,6 +67,12 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                          mean(.x$V1)}))
   
   testthat::expect_equal(value_test, val)
+  
+  # test data value with readInputTS
+  st_ts <- readInputTS(st_storage = "all", opts = opts_test)
+  
+  # check clusters
+  testthat::expect_true(all(levels(st_clusters$cluster) %in% unique(st_ts$cluster)))
   
   # delete study
   unlink(opts_test$studyPath, recursive = TRUE)
