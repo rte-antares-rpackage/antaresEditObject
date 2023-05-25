@@ -2,13 +2,14 @@
 
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
 
-* `createStudy()` integrate ST-storages.
-* `createArea()` / `removeArea()` integrate ST-storages.
+* `createStudy()` integrate "st-storage".
+* `createArea()` / `removeArea()` integrate "st-storage".
 
 
 NEW FEATURES (Antares v8.6) :
 
-* New function `activateST()` to use new ST features in an Antares study.
+* New function `activateST()` Activate "st-storage" in an Antares study.
+* New functions `createClusterST()`, `editClusterST()`, `removeClusterST()` ("st-storage" family of functions for a study in "input" mode)
 
 
 ### Breaking changes

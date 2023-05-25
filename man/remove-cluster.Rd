@@ -4,6 +4,7 @@
 \alias{remove-cluster}
 \alias{removeCluster}
 \alias{removeClusterRES}
+\alias{removeClusterST}
 \title{Remove a cluster}
 \usage{
 removeCluster(
@@ -14,6 +15,13 @@ removeCluster(
 )
 
 removeClusterRES(
+  area,
+  cluster_name,
+  add_prefix = TRUE,
+  opts = antaresRead::simOptions()
+)
+
+removeClusterST(
   area,
   cluster_name,
   add_prefix = TRUE,
@@ -51,6 +59,6 @@ removeCluster(area = "fr", cluster_name = "fr_gas")
 }
 }
 \seealso{
-\code{\link[=createCluster]{createCluster()}} or \code{\link[=createClusterRES]{createClusterRES()}} to create new clusters,
-\code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} to edit existing clusters.
+\code{\link[=createCluster]{createCluster()}}, \code{\link[=createClusterRES]{createClusterRES()}} or \code{\link[=createClusterST]{createClusterST()}} to create new clusters,
+\code{\link[=editCluster]{editCluster()}} or \code{\link[=editClusterRES]{editClusterRES()}} or \code{\link[=editClusterST]{editClusterST()}} to edit existing clusters.
 }
