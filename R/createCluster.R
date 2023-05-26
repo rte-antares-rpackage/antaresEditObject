@@ -13,6 +13,7 @@
 #' @param ... Parameters to write in the Ini file. Careful!
 #'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
 #'  to set `unitcount`, you'll have to use `unitcount = 1L`.
+#' @param list_polluants `list` named with specific polluants (only for Antares version >= 860)  
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
 #' @param prepro_data Pre-process data, a `data.frame` or `matrix`, 
 #'  default is a matrix with 365 rows and 6 columns.
@@ -33,6 +34,17 @@
 #' @importFrom stats setNames
 #' @importFrom utils read.table write.table
 #' @importFrom data.table setcolorder year yday month setnames
+#' 
+#' @note 
+#' Parameter `list_polluants` is only available for Antares studies >= v8.6.0.  
+#' 
+#' You must provide named `list` (numerical values or NULL ) :    
+#' 
+#' `list(
+#' "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25,  
+#' "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25,  
+#' "op1"= 0.25, "op2"= 0.25, "op3"= 0.25,  
+#' "op4"= 0.25, "op5"= NULL, "co2"= NULL)`
 #'
 #' @examples
 #' \dontrun{
@@ -144,12 +156,33 @@ createCluster <- function(area,
                           cluster_name, 
                           group = "Other",
                           ...,
+                          list_polluants = NULL,
                           time_series = NULL,
                           prepro_data = NULL,
                           prepro_modulation = NULL,
                           add_prefix = TRUE, 
                           overwrite = FALSE,
                           opts = antaresRead::simOptions()) {
+  # check study parameters
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # static name of list parameters of pulluants
+  name_list_param_poll <- c("nh3", "nox", "pm2_5", "pm5", "pm10", 
+                            "nmvoc", "op1", "op2", "op3", "op4", "op5", "co2")
+  
+  # check v860
+    # check list pulluants parameters
+  if(opts$antaresVersion >= 860){
+    if(!is.null(list_polluants) & !assert_that(inherits(list_polluants, "list")))
+      stop("Parameter 'list_polluants' must be a 'list'")
+    
+    if(!all(names(list_polluants) %in% name_list_param_poll))
+      stop(append("Parameter 'list_polluants' must be named with the following elements: ", 
+                  paste0(name_list_param_poll, collapse= ", ")))
+  }
+    
+  
+  # statics groups
   thermal_group <- c("Gas",
                      "Hard coal",
                      "Lignite",
@@ -160,16 +193,19 @@ createCluster <- function(area,
                      "Other 2",
                      "Other 3",
                      "Other 4")
+  
   if (!is.null(group) && !tolower(group) %in% tolower(thermal_group))
     warning(
       "Group: '", group, "' is not a valid name recognized by Antares,",
       " you should be using one of: ", paste(thermal_group, collapse = ", ")
     )
+  
   .createCluster(
     area = area, 
     cluster_name = cluster_name, 
     group = group,
     ...,
+    list_polluants = list_polluants,
     time_series = time_series,
     prepro_data = prepro_data,
     prepro_modulation = prepro_modulation,
@@ -227,6 +263,7 @@ createClusterRES <- function(area,
 .createCluster <- function(area, 
                            cluster_name, 
                            ...,
+                           list_polluants = NULL,
                            time_series = NULL,
                            prepro_data = NULL,
                            prepro_modulation = NULL,
@@ -257,6 +294,10 @@ createClusterRES <- function(area,
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
+  
+  # v860 polluants
+  if(opts$antaresVersion >= 860)
+    params_cluster <- append(params_cluster, list_polluants)
   
   # API block
   if (is_api_study(opts)) {
