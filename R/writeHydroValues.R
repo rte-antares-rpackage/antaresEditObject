@@ -3,7 +3,7 @@
 #' @description 
 #' `r antaresEditObject:::badge_api_ok()`
 #' 
-#' Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulations data for a given area.
+#' Write waterValues, reservoirLevels, maxpower, inflowPattern, creditModulations and mingen data for a given area.
 #'
 #' @param area The area where to add the values.
 #' @param type Type of hydro file, it can be "waterValues", "reservoir", "maxpower", "inflowPattern" or "creditmodulations".
@@ -39,18 +39,43 @@
 #' }
 writeHydroValues <- function(area,
                              type,
-                             data = NULL, 
+                             data, 
                              overwrite = TRUE,
                              opts = antaresRead::simOptions()) {
   
-  type <- match.arg(type, c("waterValues", "reservoir", "maxpower", "inflowPattern", "creditmodulations"))
+  check_area_name(area, opts)
+  
+  type <- match.arg(type, c("waterValues", "reservoir", "maxpower", "inflowPattern", "creditmodulations","mingen"))
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  #mingen dimension depends on file "mod.txt"
+  if (type == "mingen"){
+    #read the mod.txt data table
+    mod_data <- suppressWarnings(fread(file.path(opts$studyPath,"input","hydro","series",area,"mod.txt")))
+    
+    #initialize the number of columns to the data input
+    dim_column = dim(data)[2]
+    
+    #If mod.txt has more than 1 column, mingen must have either 1 or same width than mod.txt 
+    if (dim(mod_data)[2] > 1) {
+      dim_column = c(1, dim(mod_data)[2])
+      
+      #If the dimensions does not match, we stop
+      if (!(dim(data)[2] %in% dim_column)){
+        stop("mingen 'data' must be either a 8760*1 or 8760*", dim(mod_data)[2], " matrix.", call. = FALSE)
+        
+      } else {
+        #The data number of columns is correct
+        dim_column = dim(data)[2]
+      }
+    }
+  }
   dims <- switch(type,
                  "reservoir" = c(365L, 3L),
                  "maxpower" = c(365L, 4L),
                  "inflowPattern" = c(365L, 1L),
-                 "creditmodulations" = c(2L, 101L))
+                 "creditmodulations" = c(2L, 101L),
+                 "mingen" = c(8760L,dim_column))
   
   #Case waterValues    
   if (type=="waterValues"){
@@ -64,14 +89,11 @@ writeHydroValues <- function(area,
       data$date <- NULL
     }
   } else {
-    #Other cases    
-    if (type!="WaterValues")
-      if (!(identical(dim(data), dims)))
-        stop(type, " 'data' must be a ", 
-             do.call(paste, as.list(c(dims, sep = "*"))), " matrix.", call. = FALSE)
+    #Other cases
+    if (!(identical(dim(data), dims)))
+      stop(type, " 'data' must be a ", 
+           do.call(paste, as.list(c(dims, sep = "*"))), " matrix.", call. = FALSE)
   }
-  
-  check_area_name(area, opts)
   
   # API block
   if (is_api_study(opts)) {

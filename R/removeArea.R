@@ -103,6 +103,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("creditmodulations_", name, ".txt")), recursive = TRUE)
   unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("inflowPattern_", name, ".txt")), recursive = TRUE)
   unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("waterValues_", name, ".txt")), recursive = TRUE)
+  unlink(x = file.path(inputPath, "hydro", "common", "capacity", paste0("mingen_", name, ".txt")), recursive = TRUE)
   # prepro
   unlink(x = file.path(inputPath, "hydro", "prepro", name), recursive = TRUE)
   # series

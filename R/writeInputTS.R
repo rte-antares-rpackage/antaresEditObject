@@ -57,6 +57,7 @@ writeInputTS <- function(data,
   if (type %in% c("load", "hydroROR", "wind", "solar")) {
     if (NROW(data) != 8760)
       stop("'data' must be a 8760*N matrix.", call. = FALSE)
+    
   } else if(type %in% "hydroSTOR") {
     if (is_antares_v7(opts)) {
       if (NROW(data) != 365)
@@ -64,6 +65,26 @@ writeInputTS <- function(data,
     } else {
       if (NROW(data) != 12)
         stop("'data' must be a 12*N matrix.", call. = FALSE)
+    }
+    
+    #mod dimension depends on file "mingen.txt"
+    if (file.exists(file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))){
+      #read the mingen.txt data table
+      mingen_data <- fread(file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))
+      
+      #initialize the number of columns to the data input
+      dim_column = dim(data)[2]
+      
+      #If mingen.txt has more than 1 column, mod must have either 1 or same width than mingen.txt 
+      if (dim(mingen_data)[2] > 1) {
+        dim_column = c(1, dim(mingen_data)[2])
+        
+        #If the dimensions does not match, we alert
+        if (!(dim(data)[2] %in% dim_column)){
+          warning("mod 'data' must be either a ", NROW(data),"*1 or ", NROW(data), "*", dim(mingen_data)[2], " matrix. You should adapt the format of either mingen or mod to match the number of columns", call. = FALSE)
+
+        }
+      }
     }
   }
   

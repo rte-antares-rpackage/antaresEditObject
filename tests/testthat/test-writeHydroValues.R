@@ -10,6 +10,7 @@ sapply(studies, function(study) {
   m_maxpower <- matrix(3,365,4)
   m_inflowPattern <- matrix(4,365,1)
   m_creditmodulations <- matrix(5,2,101)
+  m_mingen <- matrix(6,8760,1)
   
   area <- sample(x = getOption("antares")$areaList, size = 1)
   
@@ -50,12 +51,13 @@ sapply(studies, function(study) {
     )
     
     #reservoir/maxpower/inflowPattern/creditsmodulation
-    for (file_type in c("reservoir", "maxpower", "inflowPattern", "creditmodulations")){
+    for (file_type in c("reservoir", "maxpower", "inflowPattern", "creditmodulations","mingen")){
       m_data <- switch(file_type,
                        "reservoir" = m_reservoir,
                        "maxpower" = m_maxpower,
                        "inflowPattern" = m_inflowPattern,
-                       "creditmodulations" = m_creditmodulations)
+                       "creditmodulations" = m_creditmodulations,
+                       "mingen" = m_mingen)
       
       writeHydroValues(area = area, type = file_type, data = m_data , overwrite = TRUE)
       

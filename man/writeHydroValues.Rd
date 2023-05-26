@@ -7,7 +7,7 @@
 writeHydroValues(
   area,
   type,
-  data = NULL,
+  data,
   overwrite = TRUE,
   opts = antaresRead::simOptions()
 )
@@ -39,7 +39,7 @@ ascending day, ascending level.}
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
-Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulations data for a given area.
+Write waterValues, reservoirLevels, maxpower, inflowPattern, creditModulations and mingen data for a given area.
 }
 \examples{
 \dontrun{
