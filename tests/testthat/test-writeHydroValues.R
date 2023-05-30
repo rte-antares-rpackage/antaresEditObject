@@ -50,8 +50,9 @@ sapply(studies, function(study) {
       regexp = "valid area"
     )
     
-    #reservoir/maxpower/inflowPattern/creditsmodulation
+    #reservoir/maxpower/inflowPattern/creditsmodulation/mingen
     for (file_type in c("reservoir", "maxpower", "inflowPattern", "creditmodulations","mingen")){
+      
       m_data <- switch(file_type,
                        "reservoir" = m_reservoir,
                        "maxpower" = m_maxpower,
@@ -59,19 +60,26 @@ sapply(studies, function(study) {
                        "creditmodulations" = m_creditmodulations,
                        "mingen" = m_mingen)
       
-      writeHydroValues(area = area, type = file_type, data = m_data , overwrite = TRUE)
-      
-      values_file <- file.path(pathstd, "test_case", "input", "hydro", "common", "capacity", 
-                               paste0(file_type, "_", tolower(area), ".txt"))
-      
-      expect_equal(fread(values_file), as.data.table(m_data))
-      
-      expect_error(
-        writeHydroValues(area = area, type=file_type, data = matrix(1:4), overwrite = TRUE),
-        regexp = "'data' must be"
+      if (!(file_type == "mingen" && opts$antaresVersion < 860)){
+        
+        writeHydroValues(area = area, type = file_type, data = m_data , overwrite = TRUE)
+        
+        values_file <- file.path(pathstd, "test_case", "input", "hydro", "common", "capacity", 
+                                 paste0(file_type, "_", tolower(area), ".txt"))
+        
+        expect_equal(fread(values_file), as.data.table(m_data))
+        
+        expect_error(
+          writeHydroValues(area = area, type=file_type, data = matrix(1:4), overwrite = TRUE),
+          regexp = "'data' must be"
       )
+      } else {
+        expect_error(
+          writeHydroValues(area = area, type=file_type, data = m_data, overwrite = TRUE),
+          regexp = "antaresVersion should be")
+      }
     }
-    
+
     #unknown type
     expect_error(
       writeHydroValues(area = area, type = "toto", data = matrix(1:4), overwrite = TRUE),
