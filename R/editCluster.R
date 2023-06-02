@@ -6,14 +6,25 @@
 #' Edit parameters, pre-process data and time series of an existing cluster, thermal or RES (renewable energy source).
 #'
 #'
-#' @inheritParams create-cluster
+#' @inheritParams createCluster
 #' @template opts
 #' 
 #' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
 #' 
+#' @note 
+#' Parameter `list_polluants` is only available for Antares studies >= v8.6.0.  
+#' 
+#' You must provide named `list` (numerical values or NULL ) :    
+#' 
+#' `list(
+#' "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25,  
+#' "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25, 
+#' "op1"= 0.25, "op2"= 0.25, "op3"= 0.25,  
+#' "op4"= 0.25, "op5"= NULL, "co2"= NULL)`
+#' 
 #' @export
 #' 
-#' @name edit-cluster
+#' @name editCluster
 #' 
 #' @importFrom antaresRead setSimulationPath
 #' @importFrom assertthat assert_that
@@ -33,6 +44,7 @@
 editCluster <- function(area,
                         cluster_name, 
                         ..., 
+                        list_polluants = NULL,
                         time_series = NULL,
                         prepro_data = NULL,
                         prepro_modulation = NULL,
@@ -42,6 +54,7 @@ editCluster <- function(area,
     area = area,
     cluster_name = cluster_name, 
     ..., 
+    list_polluants = list_polluants,
     time_series = time_series,
     prepro_data = prepro_data,
     prepro_modulation = prepro_modulation,
@@ -53,7 +66,7 @@ editCluster <- function(area,
 
 #' @export
 #' 
-#' @rdname edit-cluster
+#' @rdname editCluster
 editClusterRES <- function(area,
                            cluster_name, 
                            ..., 
@@ -77,6 +90,7 @@ editClusterRES <- function(area,
 .editCluster <- function(area,
                          cluster_name, 
                          ..., 
+                         list_polluants = NULL,
                          time_series = NULL,
                          prepro_data = NULL,
                          prepro_modulation = NULL,
@@ -93,6 +107,10 @@ editClusterRES <- function(area,
   params_cluster <- hyphenize_names(list(...))
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
+  
+  # v860 polluants
+  if(opts$antaresVersion >= 860)
+    params_cluster <- append(params_cluster, list_polluants)
   
   # Handle case sensitivity in name of clusters API 
   clusters <- names(readIni(file.path("input", cluster_type, "clusters", area, "list"), 

@@ -96,9 +96,9 @@ test_that("Create cluster with polluants params (new feature v8.6)",{
   
   polluants_params <- list(
     "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
-    "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, 
+    "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,
     "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, 
-    "op4"= 0.25, "op5"= 0.25, "co2"= 0.25
+    "op4"= 0.25, "op5"= 0.25, "co2"= NULL
   )
   
   createCluster(
@@ -116,9 +116,17 @@ test_that("Create cluster with polluants params (new feature v8.6)",{
     opts = opts_test
   )
   
-  testthat::expect_true(paste(getAreas()[1], "mycluster_polluant", sep = "_") %in% 
-                levels(antaresRead::readClusterDesc()$cluster))
+  res_cluster <- antaresRead::readClusterDesc()
   
+  # check if cluster is created
+  testthat::expect_true(paste(getAreas()[1], "mycluster_polluant", sep = "_") %in% 
+                levels(res_cluster$cluster))
+  
+  names_polluants <- names(polluants_params)
+  
+  # check if polluants is read well
+  testthat::expect_true(all(names_polluants %in% 
+                              names(res_cluster)))
   
   # remove temporary study
   unlink(x = opts_test$studyPath, recursive = TRUE)

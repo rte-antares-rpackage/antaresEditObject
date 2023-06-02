@@ -28,7 +28,7 @@
 #' 
 #' @export
 #' 
-#' @name create-cluster
+#' @name createCluster
 #' 
 #' @importFrom antaresRead simOptions
 #' @importFrom stats setNames
@@ -42,7 +42,7 @@
 #' 
 #' `list(
 #' "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25,  
-#' "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25,  
+#' "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25, 
 #' "op1"= 0.25, "op2"= 0.25, "op3"= 0.25,  
 #' "op4"= 0.25, "op5"= NULL, "co2"= NULL)`
 #'
@@ -168,7 +168,7 @@ createCluster <- function(area,
   
   # static name of list parameters of pulluants
   name_list_param_poll <- c("nh3", "nox", "pm2_5", "pm5", "pm10", 
-                            "nmvoc", "op1", "op2", "op3", "op4", "op5", "co2")
+                            "nmvoc", "so2", "op1", "op2", "op3", "op4", "op5", "co2")
   
   # check v860
     # check list pulluants parameters
@@ -218,7 +218,7 @@ createCluster <- function(area,
 
 #' @export
 #' 
-#' @rdname create-cluster
+#' @rdname createCluster
 createClusterRES <- function(area, 
                              cluster_name, 
                              group = "Other RES 1",

@@ -6,7 +6,7 @@
 #' Remove a cluster, thermal or RES (renewable energy source), and all its data.
 #' 
 #'
-#' @inheritParams create-cluster
+#' @inheritParams createCluster
 #' @template opts
 #' 
 #' @seealso [createCluster()], [createClusterRES()] or [createClusterST()] to create new clusters,
@@ -14,7 +14,7 @@
 #' 
 #' @export
 #' 
-#' @name remove-cluster
+#' @name removeCluster
 #'
 #' @examples
 #' \dontrun{
@@ -42,7 +42,7 @@ removeCluster <- function(area,
 
 #' @export
 #' 
-#' @rdname remove-cluster
+#' @rdname removeCluster
 removeClusterRES <- function(area, 
                              cluster_name, 
                              add_prefix = TRUE, 
@@ -60,7 +60,7 @@ removeClusterRES <- function(area,
 
 #' @export
 #' 
-#' @rdname remove-cluster
+#' @rdname removeCluster
 removeClusterST <- function(area, 
                             cluster_name, 
                             add_prefix = TRUE, 
