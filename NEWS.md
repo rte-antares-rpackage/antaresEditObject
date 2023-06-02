@@ -1,9 +1,10 @@
-# antaresEditObject 0.5.2
+# antaresEditObject 0.6.0
 
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
 
 * `createStudy()` integrate "st-storage".
 * `createArea()` / `removeArea()` integrate "st-storage".
+* `createCluster()` / `editCluster()` have new parameter `list_polluants ` for list of pollutants
 
 
 NEW FEATURES (Antares v8.6) :
