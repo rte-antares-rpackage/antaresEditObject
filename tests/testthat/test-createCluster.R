@@ -1,5 +1,5 @@
 
-
+# v710 ----
 context("Function createCluster")
 
 
@@ -83,3 +83,51 @@ sapply(studies, function(study) {
 })
 
 
+# v860 ----
+# global params for structure v8.6 
+setup_study_850(sourcedir850)
+opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+
+# temporary to test with "860"
+# force version
+opts_test$antaresVersion <- 860
+
+test_that("Create cluster with polluants params (new feature v8.6)",{
+  
+  polluants_params <- list(
+    "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
+    "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,
+    "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, 
+    "op4"= 0.25, "op5"= 0.25, "co2"= NULL
+  )
+  
+  createCluster(
+    area = getAreas()[1], 
+    cluster_name = "mycluster_polluant",
+    group = "Other",
+    unitcount = 1,
+    nominalcapacity = 8000,
+    `min-down-time` = 0,
+    `marginal-cost` = 0.010000,
+    `market-bid-cost` = 0.010000, 
+    list_polluants = polluants_params,
+    time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
+    prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4), 
+    opts = opts_test
+  )
+  
+  res_cluster <- antaresRead::readClusterDesc()
+  
+  # check if cluster is created
+  testthat::expect_true(paste(getAreas()[1], "mycluster_polluant", sep = "_") %in% 
+                levels(res_cluster$cluster))
+  
+  names_polluants <- names(polluants_params)
+  
+  # check if polluants is read well
+  testthat::expect_true(all(names_polluants %in% 
+                              names(res_cluster)))
+  
+  # remove temporary study
+  unlink(x = opts_test$studyPath, recursive = TRUE)
+})
