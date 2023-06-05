@@ -6,15 +6,15 @@
 #' Remove a cluster, thermal or RES (renewable energy source), and all its data.
 #' 
 #'
-#' @inheritParams create-cluster
+#' @inheritParams createCluster
 #' @template opts
 #' 
-#' @seealso [createCluster()] or [createClusterRES()] to create new clusters,
-#'  [editCluster()] or [editClusterRES()] to edit existing clusters.
+#' @seealso [createCluster()], [createClusterRES()] or [createClusterST()] to create new clusters,
+#'  [editCluster()] or [editClusterRES()] or [editClusterST()] to edit existing clusters.
 #' 
 #' @export
 #' 
-#' @name remove-cluster
+#' @name removeCluster
 #'
 #' @examples
 #' \dontrun{
@@ -42,7 +42,7 @@ removeCluster <- function(area,
 
 #' @export
 #' 
-#' @rdname remove-cluster
+#' @rdname removeCluster
 removeClusterRES <- function(area, 
                              cluster_name, 
                              add_prefix = TRUE, 
@@ -58,11 +58,28 @@ removeClusterRES <- function(area,
   )
 }
 
+#' @export
+#' 
+#' @rdname removeCluster
+removeClusterST <- function(area, 
+                            cluster_name, 
+                            add_prefix = TRUE, 
+                            opts = antaresRead::simOptions()) {
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  .removeCluster(
+    area = area, 
+    cluster_name = cluster_name, 
+    add_prefix = add_prefix, 
+    cluster_type = "st-storage",
+    opts = opts
+  )
+}
+
 
 .removeCluster <- function(area, 
                            cluster_name, 
                            add_prefix = TRUE,
-                           cluster_type = c("thermal", "renewables"),
+                           cluster_type = c("thermal", "renewables","st-storage"),
                            opts = antaresRead::simOptions()) {
   
   cluster_type <- match.arg(cluster_type)
@@ -79,6 +96,9 @@ removeClusterRES <- function(area,
     
     if (identical(cluster_type, "renewables"))
       stop("RES clusters not implemented with the API yet.")
+    
+    if (identical(cluster_type, "st-storage"))
+      stop("st-storage clusters not implemented with the API yet.")
     
     cmd <- api_command_generate(
       action = "remove_cluster",
@@ -120,16 +140,19 @@ removeClusterRES <- function(area,
   if (length(previous_params) > 0) {
     # remove series
     unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
-    
-    # remove prepro
-    unlink(x = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    if (identical(cluster_type, "thermal")) {
+      # remove prepro
+      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
+    }
   } else {
     # remove series
     unlink(x = file.path(inputPath, cluster_type, "series", tolower(area)), recursive = TRUE)
-    
-    # remove prepro
-    unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
+    if (identical(cluster_type, "thermal")) {
+      # remove prepro
+      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
+    }
   }
+  
   
   # Maj simulation
   suppressWarnings({
