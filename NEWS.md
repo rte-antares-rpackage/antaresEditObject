@@ -3,7 +3,10 @@
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
 
 * `createStudy()` integrate ST-storages.
-* `createArea()` / `removeArea()` integrate ST-storages.
+* `createArea()`  integrate ST-storages.
+* `removeArea()`  integrate ST-storages and "mingen" data.
+* `writeHydroValues()` integrate "mingen" data and dependency with "mod.txt" data.
+* `writeInputTS()` integrate dependency with "mingen" data
 
 
 NEW FEATURES (Antares v8.6) :

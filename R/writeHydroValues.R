@@ -56,7 +56,7 @@ writeHydroValues <- function(area,
   #mingen dimension depends on file "mod.txt"
   if (type == "mingen"){
     #read the mod.txt data table
-    mod_data <- suppressWarnings(fread(file.path(opts$studyPath,"input","hydro","series",area,"mod.txt")))
+    mod_data <- suppressWarnings(antaresRead:::fread_antares(opts = opts, file = file.path(opts$studyPath,"input","hydro","series",area,"mod.txt")))
     
     #initialize the number of columns to the data input
     dim_column = dim(data)[2]
@@ -68,7 +68,7 @@ writeHydroValues <- function(area,
       #If the dimensions does not match, we stop
       if (!(dim(data)[2] %in% dim_column)){
         stop("mingen 'data' must be either a 8760*1 or 8760*", dim(mod_data)[2], " matrix.", call. = FALSE)
-        
+    
       } else {
         #The data number of columns is correct
         dim_column = dim(data)[2]

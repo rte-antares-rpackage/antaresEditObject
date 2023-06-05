@@ -23,7 +23,7 @@ sapply(studies, function(study) {
     values_file <- file.path(pathstd, "test_case", "input", "hydro", "common", "capacity", 
                              paste0(file_type,"_", tolower(area), ".txt"))
     
-    expect_equal(fread(values_file), as.data.table(m_water))
+    expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_water))
     
     M2 <- cbind(
       date = rep(seq(as.Date("2018-01-01"), by = 1, length.out = 365), each = 101),
@@ -38,7 +38,7 @@ sapply(studies, function(study) {
     
     writeHydroValues(area = area, type=file_type, data = M2, overwrite = TRUE)
     
-    expect_equal(fread(values_file), as.data.table(m_water))
+    expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_water))
     
     expect_error(
       writeHydroValues(area = area,type=file_type, data = matrix(1:4), overwrite = TRUE),
@@ -60,22 +60,23 @@ sapply(studies, function(study) {
                        "creditmodulations" = m_creditmodulations,
                        "mingen" = m_mingen)
       
+      opts$antaresVersion <- 860
       if (!(file_type == "mingen" && opts$antaresVersion < 860)){
         
-        writeHydroValues(area = area, type = file_type, data = m_data , overwrite = TRUE)
+        writeHydroValues(area = area, type = file_type, data = m_data , overwrite = TRUE, opts = opts)
         
         values_file <- file.path(pathstd, "test_case", "input", "hydro", "common", "capacity", 
                                  paste0(file_type, "_", tolower(area), ".txt"))
         
-        expect_equal(fread(values_file), as.data.table(m_data))
+        expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_data))
         
         expect_error(
-          writeHydroValues(area = area, type=file_type, data = matrix(1:4), overwrite = TRUE),
+          writeHydroValues(area = area, type=file_type, data = matrix(1:4), overwrite = TRUE, opts = opts),
           regexp = "'data' must be"
       )
       } else {
         expect_error(
-          writeHydroValues(area = area, type=file_type, data = m_data, overwrite = TRUE),
+          writeHydroValues(area = area, type=file_type, data = m_data, overwrite = TRUE, opts = opts),
           regexp = "antaresVersion should be")
       }
     }

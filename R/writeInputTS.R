@@ -67,10 +67,10 @@ writeInputTS <- function(data,
         stop("'data' must be a 12*N matrix.", call. = FALSE)
     }
     
-    #mod dimension depends on file "mingen.txt"
-    if (file.exists(file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))){
+    #mod dimension depends on file "mingen.txt". The file can be created only in version >= 8.6.0. We do not need to put version condition here.
+    if (file.exists(file.path(opts$studyPath,"input","hydro","common","capacity",paste0("mingen_",area,".txt")))){
       #read the mingen.txt data table
-      mingen_data <- fread(file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))
+      mingen_data <- antaresRead:::fread_antares(opts = opts, file = file.path(opts$studyPath,"input","hydro","common","capacity",paste0("mingen_",area,".txt")))
       
       #initialize the number of columns to the data input
       dim_column = dim(data)[2]
