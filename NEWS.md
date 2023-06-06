@@ -1,4 +1,4 @@
-# antaresEditObject 0.5.2
+# antaresEditObject 0.6.0
 
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
 
@@ -12,7 +12,8 @@
 
 NEW FEATURES (Antares v8.6) :
 
-* New function `activateST()` to use new ST features in an Antares study.
+* New function `activateST()` Activate "st-storage" in an Antares study.
+* New functions `createClusterST()`, `editClusterST()`, `removeClusterST()` ("st-storage" family of functions for a study in "input" mode)
 
 
 ### Breaking changes
