@@ -56,7 +56,8 @@ writeHydroValues <- function(area,
   #mingen dimension depends on file "mod.txt"
   if (type == "mingen"){
     #read the mod.txt data table
-    mod_data <- suppressWarnings(antaresRead:::fread_antares(opts = opts, file = file.path(opts$studyPath,"input","hydro","series",area,"mod.txt")))
+    mod_data <- antaresRead:::fread_antares(opts = opts,
+                                            file = file.path(opts$studyPath,"input","hydro","series",area,"mod.txt"))
     
     #initialize the number of columns to the data input
     dim_column = dim(data)[2]
