@@ -1,10 +1,15 @@
 context("Function writeHydroValues")
 
-sapply(studies, function(study) {
+# v850 ----
+# global params for structure v8.5
+setup_study_850(sourcedir850)
+
+#Avoid warning related to code writed outside test_that.
+suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))
+
+test_that("Write hydro values", {
   
-  setup_study(study, sourcedir)
-  opts <- antaresRead::setSimulationPath(studyPath, "input")
-  
+  #Initialize data for each type of file.
   m_water <- matrix(1,365,101)
   m_reservoir <- matrix(2,365,3)
   m_maxpower <- matrix(3,365,4)
@@ -14,83 +19,88 @@ sapply(studies, function(study) {
   
   area <- sample(x = getOption("antares")$areaList, size = 1)
   
-  test_that("Write hydro values", {
+  #waterValues case
+  file_type="waterValues"
+  writeHydroValues(area = area,type=file_type, data = m_water , overwrite = FALSE)
+  
+  values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity", 
+                           paste0(file_type,"_", tolower(area), ".txt"))
+  
+  expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_water))
+  
+  M2 <- cbind(
+    date = rep(seq(as.Date("2018-01-01"), by = 1, length.out = 365), each = 101),
+    level = rep(0:100, times = 365),
+    value = rep(1, 365*101)
+  )
+  
+  expect_error(
+    writeHydroValues(area = area,type=file_type, data = M2, overwrite = FALSE),
+    regexp = "already exist"
+  )
+  
+  writeHydroValues(area = area, type=file_type, data = M2, overwrite = TRUE)
+  
+  expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_water))
+  
+  expect_error(
+    writeHydroValues(area = area,type=file_type, data = matrix(1:4), overwrite = TRUE),
+    regexp = "a 365\\*101 or \\(365\\*101\\)\\*3 matrix"
+  )
+  
+  expect_error(
+    writeHydroValues(area = "fake area",type=file_type, data = M2, overwrite = TRUE),
+    regexp = "valid area"
+  )
+  
+  # v860 ----
+  # temporary to test with "860"
+  # force version
+  opts$antaresVersion <- 860
+  
+  #reservoir/maxpower/inflowPattern/creditsmodulation/mingen
+  for (file_type in c("reservoir", "maxpower", "inflowPattern", "creditmodulations","mingen")){
     
-    #waterValues case
-    file_type="waterValues"
-    writeHydroValues(area = area,type=file_type, data = m_water , overwrite = FALSE)
+    m_data <- switch(file_type,
+                     "reservoir" = m_reservoir,
+                     "maxpower" = m_maxpower,
+                     "inflowPattern" = m_inflowPattern,
+                     "creditmodulations" = m_creditmodulations,
+                     "mingen" = m_mingen)
     
-    values_file <- file.path(pathstd, "test_case", "input", "hydro", "common", "capacity", 
-                             paste0(file_type,"_", tolower(area), ".txt"))
-    
-    expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_water))
-    
-    M2 <- cbind(
-      date = rep(seq(as.Date("2018-01-01"), by = 1, length.out = 365), each = 101),
-      level = rep(0:100, times = 365),
-      value = rep(1, 365*101)
-    )
-    
-    expect_error(
-      writeHydroValues(area = area,type=file_type, data = M2, overwrite = FALSE),
-      regexp = "already exist"
-    )
-    
-    writeHydroValues(area = area, type=file_type, data = M2, overwrite = TRUE)
-    
-    expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_water))
-    
-    expect_error(
-      writeHydroValues(area = area,type=file_type, data = matrix(1:4), overwrite = TRUE),
-      regexp = "a 365\\*101 or \\(365\\*101\\)\\*3 matrix"
-    )
-    
-    expect_error(
-      writeHydroValues(area = "fake area",type=file_type, data = M2, overwrite = TRUE),
-      regexp = "valid area"
-    )
-    
-    #reservoir/maxpower/inflowPattern/creditsmodulation/mingen
-    for (file_type in c("reservoir", "maxpower", "inflowPattern", "creditmodulations","mingen")){
+    #"mingen file can only be writed for antaresVersion >=860. 
+    if (!(file_type == "mingen" && opts$antaresVersion < 860)){
       
-      m_data <- switch(file_type,
-                       "reservoir" = m_reservoir,
-                       "maxpower" = m_maxpower,
-                       "inflowPattern" = m_inflowPattern,
-                       "creditmodulations" = m_creditmodulations,
-                       "mingen" = m_mingen)
+      writeHydroValues(area = area, type = file_type, data = m_data , overwrite = TRUE, opts = opts)
       
-      opts$antaresVersion <- 860
-      if (!(file_type == "mingen" && opts$antaresVersion < 860)){
-        
-        writeHydroValues(area = area, type = file_type, data = m_data , overwrite = TRUE, opts = opts)
-        
-        values_file <- file.path(pathstd, "test_case", "input", "hydro", "common", "capacity", 
-                                 paste0(file_type, "_", tolower(area), ".txt"))
-        
-        expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_data))
-        
-        expect_error(
-          writeHydroValues(area = area, type=file_type, data = matrix(1:4), overwrite = TRUE, opts = opts),
-          regexp = "'data' must be"
+      values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity", 
+                               paste0(file_type, "_", tolower(area), ".txt"))
+      
+      #Test that the created file respect the matrix.
+      expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(m_data))
+      
+      #Expect error when data format does not correspond.
+      expect_error(
+        writeHydroValues(area = area, type=file_type, data = matrix(1:4), overwrite = TRUE, opts = opts),
+        regexp = "'data' must be"
       )
-      } else {
-        expect_error(
-          writeHydroValues(area = area, type=file_type, data = m_data, overwrite = TRUE, opts = opts),
-          regexp = "antaresVersion should be")
-      }
+      
+      #When we are in case mingen and antaresversion <v860. 
+    } else {
+      expect_error(
+        writeHydroValues(area = area, type=file_type, data = m_data, overwrite = TRUE, opts = opts),
+        regexp = "antaresVersion should be >= v8.6.0 to write mingen 'data'.")
     }
-
-    #unknown type
-    expect_error(
-      writeHydroValues(area = area, type = "toto", data = matrix(1:4), overwrite = TRUE),
-      regexp = "'arg'"
-    )
-    
-  })
-
-  # remove temporary study
-  unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
+  }
+  
+  #unknown type
+  expect_error(
+    writeHydroValues(area = area, type = "toto", data = matrix(1:4), overwrite = TRUE),
+    regexp = "'arg'"
+  )
   
 })
+
+# remove temporary study
+unlink(x = opts$studyPath, recursive = TRUE)
 

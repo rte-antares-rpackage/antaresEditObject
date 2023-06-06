@@ -21,16 +21,19 @@ sapply(studies, function(study) {
     
     expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(M))
     
+    #Wrong Area
     expect_error(
       writeInputTS(area = "fake area", type = "solar", data = M),
       regexp = "not a valid area"
     )
     
+    #Run a second time the function without overwrite = TRUE.
     expect_error(
       writeInputTS(area = area, type = "solar", data = M, overwrite = FALSE),
       regexp = "already exist"
     )
     
+    #Wrong dimension for data.
     expect_error(
       writeInputTS(area = area, type = "solar", data = matrix(1:3)),
       regexp = "8760\\*N matrix"
@@ -44,16 +47,19 @@ sapply(studies, function(study) {
     
     expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(M_hydrostor))
     
+    #Wrong area
     expect_error(
       writeInputTS(area = "fake area", type = "hydroSTOR", data = M_hydrostor),
       regexp = "not a valid area"
     )
     
+    #Run a second time the function without overwrite = TRUE.
     expect_error(
       writeInputTS(area = area, type = "hydroSTOR", data = M_hydrostor, overwrite = FALSE),
       regexp = "already exist"
     )
     
+    #Wrong dimension for data.
     expect_error(
       writeInputTS(area = area, type = "hydroSTOR", data = matrix(1:3)),
       regexp = "365\\*N matrix"

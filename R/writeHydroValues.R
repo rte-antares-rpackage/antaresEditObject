@@ -48,7 +48,7 @@ writeHydroValues <- function(area,
   type <- match.arg(type, c("waterValues", "reservoir", "maxpower", "inflowPattern", "creditmodulations","mingen"))
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  #Check for version
+  #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
   if (type == "mingen" && opts$antaresVersion < 860 ){
     stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
   }
