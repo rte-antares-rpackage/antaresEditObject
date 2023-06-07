@@ -1,6 +1,7 @@
 context("Function writeHydroValues")
 
-# v850 waterValues ----
+#WriteHydroValues does not depend on antaresVersion.
+# waterValues ----
 # global params for structure v8.5
 setup_study_850(sourcedir850)
 
@@ -78,7 +79,7 @@ test_that("Write hydro values, 'waterValues' case", {
   )
 })
 
-# v850 other cases ----
+# Other cases ----
 test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations cases", {
   
   #Initialize data
@@ -130,64 +131,6 @@ test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations 
       regexp = "'arg'"
     )
   }
-})
-
-
-# v860 ----
-test_that("writeHydroValues 'mingen' file v860.",{
-  
-  #Initialize 'mingen' data.
-  m_mingen <- matrix(6,8760,1)
-  
-  area <- sample(x = getOption("antares")$areaList, size = 1)
-  
-  #When we are in case mingen and antaresVersion <v860. 
-  expect_error(
-    writeHydroValues(area = area,
-                     type="mingen",
-                     data = m_mingen,
-                     overwrite = TRUE,
-                     opts = opts),
-    regexp = "antaresVersion should be >= v8.6.0 to write mingen 'data'.")
-  
-  # temporary to test with "860"
-  # force version
-  opts$antaresVersion <- 860
-  
-  #Create the file
-  writeHydroValues(area = area,
-                   type = "mingen",
-                   data = m_mingen ,
-                   overwrite = TRUE,
-                   opts = opts)
-  
-  values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity", 
-                           paste0("mingen_", tolower(area), ".txt"))
-  
-  #Test that the created file respect the matrix.
-  expect_equal(antaresRead:::fread_antares(opts = opts,
-                                           file = values_file),
-               as.data.table(m_mingen))
-  
-  #Expect error when data format does not correspond.
-  expect_error(
-    writeHydroValues(area = area,
-                     type="mingen",
-                     data = matrix(1:4),
-                     overwrite = TRUE,
-                     opts = opts),
-    regexp = "'data' must be"
-  )
-  
-  #unknown type
-  expect_error(
-    writeHydroValues(area = area,
-                     type = "toto",
-                     data = m_mingen,
-                     overwrite = TRUE,
-                     opts = opts),
-    regexp = "'arg'"
-  )
 })
 
 

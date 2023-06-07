@@ -6,10 +6,23 @@
 #' This function writes input time series in an Antares project.
 #'
 #' @param data A 8760*N matrix of hourly time series, except when `type` is
-#'  `"hydroSTOR"`. In this latter case, `data` must either be 365*N
-#'  (Antares v7) or 12*N (v6 and earlier).
+#'  `"hydroSTOR"`.
+#'  In this latter case `"hydroSTOR"` data must have either be 365 rows
+#'  (Antares v7) or 12 rows (v6 and earlier).
+#'  
+#'  In the `"mingen"` case, `"antaresVersion"` should be >= 860.
+#'  
+#'  `"hydroSTOR"` and `"mingen"` number of columns must be the same :
+#'  
+#'  If the `"hydroSTOR"` (`"mingen"`) data consists of only one column, 
+#'  then there are no constraints on the number of `"mingen"` (`"hydroSTOR"`) columns.
+#'  
+#'  If the `"hydroSTOR"` (`"mingen"`) data is composed of more than a one column,
+#'  then `"mingen"` (`"hydroSTOR"`) data must be composed of either one column,
+#'  or the same number as `"hydroSTOR"` (`"mingen"`) data.
+#'  
 #' @param type Serie to write: `"load"`, `"hydroROR"`, `"hydroSTOR"`,
-#'  `"wind"`, `"solar"`, or `"tsLink"`.
+#'  `"wind"`, `"solar"`, `"tsLink"` or `"mingen"`.
 #' @param area The area where to write the input time series.
 #' @param link Link for which writing transmission capacities time series, 
 #'  must like `"area01%area02"` or `c("area01", "area02")`.
@@ -39,7 +52,7 @@
 #'
 #' }
 writeInputTS <- function(data, 
-                         type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink"),
+                         type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink", "mingen"),
                          area = NULL, 
                          link = NULL,
                          overwrite = TRUE, 
@@ -54,7 +67,7 @@ writeInputTS <- function(data,
     stop("Cannot use area and link simultaneously.")
   }
   
-  if (type %in% c("load", "hydroROR", "wind", "solar")) {
+  if (type %in% c("load", "hydroROR", "wind", "solar", "mingen")) {
     if (NROW(data) != 8760)
       stop("'data' must be a 8760*N matrix.", call. = FALSE)
     
@@ -90,8 +103,39 @@ writeInputTS <- function(data,
                   NROW(data), "*", dim(mingen_data)[2],
                   " matrix. You should adapt the format of either mingen or mod to match the number of columns",
                   call. = FALSE)
-
+          
         }
+      }
+    }
+    
+  }
+  
+  #mingen dimension depends on file "mod.txt"
+  if (type == "mingen"){
+    
+    #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
+    if (opts$antaresVersion < 860 ){
+      stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
+    }
+    
+    #read the mod.txt data table
+    mod_data <- antaresRead:::fread_antares(opts = opts,
+                                            file = file.path(opts$studyPath,"input","hydro","series",area,"mod.txt"))
+    
+    #initialize the number of columns to the data input
+    dim_column = dim(data)[2]
+    
+    #If mod.txt has more than 1 column, mingen must have either 1 or same width than mod.txt 
+    if (dim(mod_data)[2] > 1) {
+      dim_column = c(1, dim(mod_data)[2])
+      
+      #If the dimensions does not match, we stop
+      if (!(dim(data)[2] %in% dim_column)){
+        stop("mingen 'data' must be either a 8760*1 or 8760*", dim(mod_data)[2], " matrix.", call. = FALSE)
+        
+      } else {
+        #The data number of columns is correct
+        dim_column = dim(data)[2]
       }
     }
   }
@@ -157,6 +201,12 @@ writeInputTS <- function(data,
         target = sprintf("input/hydro/series/%s/mod", tolower(area)),
         matrix = data
       )
+    } else if (type == "mingen") {
+      cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = sprintf("input/hydro/common/capacity/%s_%s", type, area),
+        matrix = data
+      )
     }
     api_command_register(cmd, opts = opts)
     `if`(
@@ -178,6 +228,8 @@ writeInputTS <- function(data,
     path <- file.path(inputPath, "hydro", "series", area, "ror.txt")
   } else if (type == "hydroSTOR") {
     path <- file.path(inputPath, "hydro", "series", area, "mod.txt")
+  } else if (type == "mingen") {
+    path <- file.path(inputPath, "hydro", "common", "capacity", paste0("mingen_", tolower(area), ".txt"))
   }
   
   if (isTRUE(file.size(path) > 0) && !overwrite)

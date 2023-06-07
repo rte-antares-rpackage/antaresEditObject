@@ -6,7 +6,7 @@
 \usage{
 writeInputTS(
   data,
-  type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink"),
+  type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink", "mingen"),
   area = NULL,
   link = NULL,
   overwrite = TRUE,
@@ -14,12 +14,24 @@ writeInputTS(
 )
 }
 \arguments{
-\item{data}{A 8760\emph{N matrix of hourly time series, except when \code{type} is
-\code{"hydroSTOR"}. In this latter case, \code{data} must either be 365}N
-(Antares v7) or 12*N (v6 and earlier).}
+\item{data}{A 8760*N matrix of hourly time series, except when \code{type} is
+\code{"hydroSTOR"}.
+In this latter case \code{"hydroSTOR"} data must have either be 365 rows
+(Antares v7) or 12 rows (v6 and earlier).
+
+In the \code{"mingen"} case, \code{"antaresVersion"} should be >= 860.
+
+\code{"hydroSTOR"} and \code{"mingen"} number of columns must be the same :
+
+If the \code{"hydroSTOR"} (\code{"mingen"}) data consists of only one column,
+then there are no constraints on the number of \code{"mingen"} (\code{"hydroSTOR"}) columns.
+
+If the \code{"hydroSTOR"} (\code{"mingen"}) data is composed of more than a one column,
+then \code{"mingen"} (\code{"hydroSTOR"}) data must be composed of either one column,
+or the same number as \code{"hydroSTOR"} (\code{"mingen"}) data.}
 
 \item{type}{Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
-\code{"wind"}, \code{"solar"}, or \code{"tsLink"}.}
+\code{"wind"}, \code{"solar"}, \code{"tsLink"} or \code{"mingen"}.}
 
 \item{area}{The area where to write the input time series.}
 
