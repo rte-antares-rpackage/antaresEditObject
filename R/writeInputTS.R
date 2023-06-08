@@ -62,6 +62,11 @@ writeInputTS <- function(data,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
+  if (type == "mingen" && (opts$antaresVersion < 860 )){
+    stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
+  }
+  
   # Data validation
   if (!is.null(area) & !is.null(link)) {
     stop("Cannot use area and link simultaneously.")
@@ -112,11 +117,6 @@ writeInputTS <- function(data,
   
   #mingen dimension depends on file "mod.txt"
   if (type == "mingen"){
-    
-    #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
-    if (opts$antaresVersion < 860 ){
-      stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
-    }
     
     #read the mod.txt data table
     mod_data <- antaresRead:::fread_antares(opts = opts,
