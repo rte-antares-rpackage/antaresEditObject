@@ -88,19 +88,6 @@ sapply(studies, function(study) {
                    opts = opts),
       regexp = "'arg'"
     )
-    
-    # mingen case ----
-    #When we are in case mingen and antaresVersion <v860. 
-    
-    expect_error(
-      writeInputTS(area = area,
-                   type= "mingen",
-                   data = matrix(1,8760,3),
-                   overwrite = TRUE,
-                   opts = opts),
-      regexp = "antaresVersion should be >= v8.6.0 to write mingen 'data'.")
-    
-    
   })
   
   # remove temporary study
@@ -116,12 +103,24 @@ setup_study_850(sourcedir850)
 #Avoid warning related to code writed outside test_that.
 suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))
 
-#Only for antaresVersion >= 860
-opts$antaresVersion <- 860
 
 test_that("test 860 error when wrong format of mingen data", {
   
-  area <- sample(x = getOption("antares")$areaList, size = 1)
+  area <- getAreas()[1]
+  
+  opts$antaresVersion <- 850
+  
+  #When we are in case mingen and antaresVersion <v860.
+  expect_error(
+    writeInputTS(area = area,
+                 type= "mingen",
+                 data = matrix(1,8760,3),
+                 overwrite = TRUE,
+                 opts = opts),
+    regexp = "antaresVersion should be >= v8.6.0 to write mingen 'data'.")
+  
+  #Only for antaresVersion >= 860
+  opts$antaresVersion <- 860
   
   #Initialize hydroSTOR data with more than 1 column.
   M_hydrostor <- matrix(c(rep(8, 365), rep(5.1, 365)), nrow = 365)
@@ -132,24 +131,53 @@ test_that("test 860 error when wrong format of mingen data", {
                regexp = "mingen 'data' must be")
 })
 
-test_that("test 860 warning when wrong format of hydroSTOR data", {
+test_that("test 860 mingen data", {
   
-  area <- sample(x = getOption("antares")$areaList, size = 1)
+  #Only for antaresVersion >= 860
+  opts$antaresVersion <- 860
   
-  #Initialize mod.txt with 1 column to avoid error when we write mingen
-  writeInputTS(area = area, type = "hydroSTOR", data = matrix(1,365,1), opts = opts)
+  #Area with just 1 column in mod data.
+  area <- getAreas()[5]
   
   #Initialize mingen data
   M_mingen = matrix(6,8760,5)
+  
+  #Write and read mingen data
   writeInputTS(area = area, type = "mingen", data = M_mingen , overwrite = TRUE, opts = opts)
   
-  values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity", 
-                           paste0("mingen_", tolower(area), ".txt"))  
+  values_file <- file.path(study_temp_path, "input", "hydro", "series", area, "mingen.txt")  
   
   expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file), as.data.table(M_mingen))
   
+  #Wrong area
+  expect_error(
+    writeInputTS(area = "fake area", type = "mingen", data = M_mingen, opts = opts),
+    regexp = "not a valid area"
+  )
   
-  #Wrong format of data, here it must be either 1 or 6 columns.
+  #Run a second time the function without overwrite = TRUE.
+  expect_error(
+    writeInputTS(area = area, type = "mingen", data = M_mingen, overwrite = FALSE, opts = opts),
+    regexp = "already exist"
+  )
+  
+  #Wrong dimension for data.
+  expect_error(
+    writeInputTS(area = area, type = "mingen", data = matrix(1:3), opts = opts),
+    regexp = "8760\\*N matrix"
+  )
+  
+  #unknown type
+  expect_error(
+    writeInputTS(area = area,
+                 type = "toto",
+                 data = M_mingen,
+                 overwrite = TRUE,
+                 opts = opts),
+    regexp = "'arg'"
+  )
+  
+  #Wrong format of data, here it must be either 1 or 5 columns.
   M_hydrostor <- matrix(c(rep(8, 365), rep(5.1, 365)), nrow = 365)
   
   #warning about the file format

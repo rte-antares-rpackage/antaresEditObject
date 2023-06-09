@@ -17,21 +17,13 @@ writeInputTS(
 \item{data}{A 8760*N matrix of hourly time series, except when \code{type} is
 \code{"hydroSTOR"}.
 In this latter case \code{"hydroSTOR"} data must have either be 365 rows
-(Antares v7) or 12 rows (v6 and earlier).
-
-In the \code{"mingen"} case, \code{"antaresVersion"} should be >= 860.
-
-\code{"hydroSTOR"} and \code{"mingen"} number of columns must be the same :
-
-If the \code{"hydroSTOR"} (\code{"mingen"}) data consists of only one column,
-then there are no constraints on the number of \code{"mingen"} (\code{"hydroSTOR"}) columns.
-
-If the \code{"hydroSTOR"} (\code{"mingen"}) data is composed of more than a one column,
-then \code{"mingen"} (\code{"hydroSTOR"}) data must be composed of either one column,
-or the same number as \code{"hydroSTOR"} (\code{"mingen"}) data.}
+(Antares v7) or 12 rows (v6 and earlier).}
 
 \item{type}{Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
-\code{"wind"}, \code{"solar"}, \code{"tsLink"} or \code{"mingen"}.}
+\code{"wind"}, \code{"solar"}, \code{"tsLink"} or \code{"mingen"}.
+
+If type == \code{"mingen"}, \code{"antaresVersion"} should be >= 860.
+Refers to note section below.}
 
 \item{area}{The area where to write the input time series.}
 
@@ -50,6 +42,19 @@ An updated list containing various information about the simulation.
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 This function writes input time series in an Antares project.
+}
+\note{
+Introduction of mingen file in antares v860.
+Note that If type == \code{"hydroSTOR"}, writeInputTS create a \code{"mod.txt"} file.
+
+\code{"mod"} and \code{"mingen"} number of columns must be the same :
+
+If \code{"mod"} data consists of only one column,
+then there are no constraints on the number of \code{"mingen"} columns.
+
+If \code{"mod"} data is composed of more than one column,
+then \code{"mingen"} data must be composed of either one column,
+or the same number as \code{"mod"} data.
 }
 \section{Warning}{
 

@@ -10,23 +10,33 @@
 #'  In this latter case `"hydroSTOR"` data must have either be 365 rows
 #'  (Antares v7) or 12 rows (v6 and earlier).
 #'  
-#'  In the `"mingen"` case, `"antaresVersion"` should be >= 860.
-#'  
-#'  `"hydroSTOR"` and `"mingen"` number of columns must be the same :
-#'  
-#'  If the `"hydroSTOR"` (`"mingen"`) data consists of only one column, 
-#'  then there are no constraints on the number of `"mingen"` (`"hydroSTOR"`) columns.
-#'  
-#'  If the `"hydroSTOR"` (`"mingen"`) data is composed of more than a one column,
-#'  then `"mingen"` (`"hydroSTOR"`) data must be composed of either one column,
-#'  or the same number as `"hydroSTOR"` (`"mingen"`) data.
 #'  
 #' @param type Serie to write: `"load"`, `"hydroROR"`, `"hydroSTOR"`,
 #'  `"wind"`, `"solar"`, `"tsLink"` or `"mingen"`.
+#'  
+#'  If type == `"mingen"`, `"antaresVersion"` should be >= 860.
+#'  Refers to note section below.
+#'  
 #' @param area The area where to write the input time series.
 #' @param link Link for which writing transmission capacities time series, 
 #'  must like `"area01%area02"` or `c("area01", "area02")`.
 #' @param overwrite Logical. Overwrite the values if a file already exists.
+#' 
+#' 
+#' @note
+#' 
+#' 
+#' Introduction of mingen file in antares v860.
+#' Note that If type == `"hydroSTOR"`, writeInputTS create a `"mod.txt"` file.
+#' 
+#' `"mod"` and `"mingen"` number of columns must be the same :
+#'  
+#'  If `"mod"` data consists of only one column, 
+#'  then there are no constraints on the number of `"mingen"` columns.
+#'  
+#'  If `"mod"` data is composed of more than one column,
+#'  then `"mingen"` data must be composed of either one column,
+#'  or the same number as `"mod"` data.
 #' 
 #' @template opts
 #'
@@ -59,11 +69,12 @@ writeInputTS <- function(data,
                          opts = antaresRead::simOptions()) {
   
   type <- match.arg(type)
+  check_area_name(area, opts)
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
-  if (type == "mingen" && (opts$antaresVersion < 860 )){
+  if (type == "mingen" & (opts$antaresVersion < 860 )){
     stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
   }
   
@@ -88,12 +99,10 @@ writeInputTS <- function(data,
     #mod dimension depends on file "mingen.txt". 
     #The file can be created only in version >= 8.6.0. 
     #We do not need to put version condition here.
-    if (file.exists(file.path(opts$studyPath,"input","hydro","common","capacity",
-                              paste0("mingen_",area,".txt")))){
+    if (file.exists(file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))){
       #read the mingen.txt data table
       mingen_data <- antaresRead:::fread_antares(opts = opts,
-                                                 file = file.path(opts$studyPath,"input","hydro","common","capacity",
-                                                                  paste0("mingen_",area,".txt")))
+                                                 file = file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))
       
       #initialize the number of columns to the data input
       dim_column = dim(data)[2]
@@ -204,7 +213,7 @@ writeInputTS <- function(data,
     } else if (type == "mingen") {
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf("input/hydro/common/capacity/%s_%s", type, area),
+        target = sprintf("input/hydro/series/%s/mingen", tolower(area)),
         matrix = data
       )
     }
@@ -229,7 +238,7 @@ writeInputTS <- function(data,
   } else if (type == "hydroSTOR") {
     path <- file.path(inputPath, "hydro", "series", area, "mod.txt")
   } else if (type == "mingen") {
-    path <- file.path(inputPath, "hydro", "common", "capacity", paste0("mingen_", tolower(area), ".txt"))
+    path <- file.path(inputPath, "hydro", "series", area, "mingen.txt")
   }
   
   if (isTRUE(file.size(path) > 0) && !overwrite)
@@ -238,6 +247,7 @@ writeInputTS <- function(data,
       call. = FALSE
     )
   
+  #Writing or creation if file does not exist.
   fwrite(
     x = as.data.table(data),
     row.names = FALSE, 
