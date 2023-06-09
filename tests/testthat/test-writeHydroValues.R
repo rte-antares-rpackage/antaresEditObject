@@ -90,7 +90,7 @@ test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations 
   
   area <- sample(x = getOption("antares")$areaList, size = 1)
   
-  #reservoir/maxpower/inflowPattern/creditsmodulation/mingen
+  #reservoir/maxpower/inflowPattern/creditsmodulation
   for (file_type in c("reservoir", "maxpower", "inflowPattern", "creditmodulations")){
     
     m_data <- switch(file_type,
