@@ -96,40 +96,50 @@ writeInputTS <- function(data,
         stop("'data' must be a 12*N matrix.", call. = FALSE)
     }
     
-    #mod dimension depends on file "mingen.txt". 
-    #The file can be created only in version >= 8.6.0. 
-    #We do not need to put version condition here.
-    if (file.exists(file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))){
-      #read the mingen.txt data table
-      mingen_data <- antaresRead:::fread_antares(opts = opts,
-                                                 file = file.path(opts$studyPath,"input","hydro","series",area,"mingen.txt"))
+    # v860
+      # "mod.txt" dimension depends on file "mingen.txt". 
+      # The file can be created only in version >= 8.6.0. 
+      # We do not need to put version condition here.
+    if(opts$antaresVersion >= 860){
+      path_mingen_file <- file.path(opts$inputPath,
+                                    "hydro","series",area,"mingen.txt")
       
-      #initialize the number of columns to the data input
-      dim_column = dim(data)[2]
-      
-      #If mingen.txt has more than 1 column, mod must have either 1 or same width than mingen.txt 
-      if (dim(mingen_data)[2] > 1) {
-        dim_column = c(1, dim(mingen_data)[2])
+      if (file.exists(path_mingen_file)){
+        #read the mingen.txt data table
+        mingen_data <- antaresRead:::fread_antares(opts = opts,
+                                                   file = path_mingen_file)
         
-        #If the dimensions does not match, we alert
-        if (!(dim(data)[2] %in% dim_column)){
-          warning("mod 'data' must be either a ", NROW(data),"*1 or ",
-                  NROW(data), "*", dim(mingen_data)[2],
-                  " matrix. You should adapt the format of either mingen or mod to match the number of columns",
-                  call. = FALSE)
+        #initialize the number of columns to the data input
+        dim_column = dim(data)[2]
+        
+        #If mingen.txt has more than 1 column, mod must have either 1 or same width than mingen.txt 
+        if (dim(mingen_data)[2] > 1) {
+          dim_column = c(1, dim(mingen_data)[2])
           
+          #If the dimensions does not match, we alert
+          if (!(dim(data)[2] %in% dim_column)){
+            warning("mod 'data' must be either a ", NROW(data),"*1 or ",
+                    NROW(data), "*", dim(mingen_data)[2],
+                    " matrix. You should adapt the format of either mingen or mod to match the number of columns",
+                    call. = FALSE)
+            
+          }
         }
       }
+      
     }
+    
     
   }
   
-  #mingen dimension depends on file "mod.txt"
+  # v860 - mingen dimension depends on file "mod.txt"
   if (type == "mingen"){
+    path_mingen_file <- file.path(opts$inputPath,
+                                  "hydro","series",area,"mod.txt")
     
     #read the mod.txt data table
     mod_data <- antaresRead:::fread_antares(opts = opts,
-                                            file = file.path(opts$studyPath,"input","hydro","series",area,"mod.txt"))
+                                            file = path_mingen_file)
     
     #initialize the number of columns to the data input
     dim_column = dim(data)[2]
@@ -140,7 +150,8 @@ writeInputTS <- function(data,
       
       #If the dimensions does not match, we stop
       if (!(dim(data)[2] %in% dim_column)){
-        stop("mingen 'data' must be either a 8760*1 or 8760*", dim(mod_data)[2], " matrix.", call. = FALSE)
+        stop(paste0("mingen 'data' must be either a 8760*1 or 8760*", dim(mod_data)[2], " matrix."), 
+             call. = FALSE)
         
       } else {
         #The data number of columns is correct
@@ -184,8 +195,6 @@ writeInputTS <- function(data,
   
   if (identical(type, "tsLink"))
     stop("type = \"tsLink\" can only be used if link argument is provided")
-  
-  check_area_name(area, opts)
   
   
   # API block
