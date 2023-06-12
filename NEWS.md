@@ -4,7 +4,7 @@
 
 * `createStudy()` integrate "st-storage".
 * `createArea()` integrate "st-storage".
-* `removeArea()`  integrate "st-storage" and "mingen" data.
+* `removeArea()`  integrate "st-storage".
 * `writeInputTS()` integrate "mingen" data and dependency between "mod.txt" and "mingen.txt" data.
 * `createCluster()` / `editCluster()` have new parameter `list_polluants ` for list of pollutants.
 
