@@ -48,7 +48,7 @@ For an \strong{Antares version >= 860}, the \code{mingen.txt} file is created.
 
 The \code{mingen.txt} file can be created under two conditions:
 \itemize{
-\item The number of columns must be equal to the number in \code{mod.txt}
+\item The number of columns must be equal to either \code{1} or the number in \code{mod.txt}
 \item If the \code{mod.txt} file is empty or has one column, then there is no dimension constraint
 }
 }

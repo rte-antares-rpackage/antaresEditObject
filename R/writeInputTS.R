@@ -27,7 +27,7 @@
 #' For an **Antares version >= 860**, the `mingen.txt` file is created.
 #' 
 #' The `mingen.txt` file can be created under two conditions:   
-#'   - The number of columns must be equal to the number in `mod.txt`  
+#'   - The number of columns must be equal to either `1` or the number in `mod.txt`  
 #'   - If the `mod.txt` file is empty or has one column, then there is no dimension constraint
 #'   
 #' @template opts
