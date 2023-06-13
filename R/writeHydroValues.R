@@ -39,9 +39,11 @@
 #' }
 writeHydroValues <- function(area,
                              type,
-                             data = NULL, 
+                             data, 
                              overwrite = TRUE,
                              opts = antaresRead::simOptions()) {
+  
+  check_area_name(area, opts)
   
   type <- match.arg(type, c("waterValues", "reservoir", "maxpower", "inflowPattern", "creditmodulations"))
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -64,14 +66,11 @@ writeHydroValues <- function(area,
       data$date <- NULL
     }
   } else {
-    #Other cases    
-    if (type!="WaterValues")
-      if (!(identical(dim(data), dims)))
-        stop(type, " 'data' must be a ", 
-             do.call(paste, as.list(c(dims, sep = "*"))), " matrix.", call. = FALSE)
+    #Other cases
+    if (!(identical(dim(data), dims)))
+      stop(type, " 'data' must be a ", 
+           do.call(paste, as.list(c(dims, sep = "*"))), " matrix.", call. = FALSE)
   }
-  
-  check_area_name(area, opts)
   
   # API block
   if (is_api_study(opts)) {

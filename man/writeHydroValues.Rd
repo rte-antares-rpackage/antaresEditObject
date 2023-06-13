@@ -7,7 +7,7 @@
 writeHydroValues(
   area,
   type,
-  data = NULL,
+  data,
   overwrite = TRUE,
   opts = antaresRead::simOptions()
 )

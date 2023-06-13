@@ -3,8 +3,10 @@
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
 
 * `createStudy()` integrate "st-storage".
-* `createArea()` / `removeArea()` integrate "st-storage".
-* `createCluster()` / `editCluster()` have new parameter `list_polluants ` for list of pollutants
+* `createArea()` integrate "st-storage".
+* `removeArea()`  integrate "st-storage".
+* `writeInputTS()` integrate "mingen" data and dependency between "mod.txt" and "mingen.txt" data.
+* `createCluster()` / `editCluster()` have new parameter `list_polluants ` for list of pollutants.
 
 
 NEW FEATURES (Antares v8.6) :
