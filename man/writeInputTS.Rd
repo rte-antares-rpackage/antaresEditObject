@@ -44,17 +44,13 @@ An updated list containing various information about the simulation.
 This function writes input time series in an Antares project.
 }
 \note{
-Introduction of mingen file in antares v860.
-Note that If type == \code{"hydroSTOR"}, writeInputTS create a \code{"mod.txt"} file.
+For an \strong{Antares version >= 860}, the \code{mingen.txt} file is created.
 
-\code{"mod"} and \code{"mingen"} number of columns must be the same :
-
-If \code{"mod"} data consists of only one column,
-then there are no constraints on the number of \code{"mingen"} columns.
-
-If \code{"mod"} data is composed of more than one column,
-then \code{"mingen"} data must be composed of either one column,
-or the same number as \code{"mod"} data.
+The \code{mingen.txt} file can be created under two conditions:
+\itemize{
+\item The number of columns must be equal to the number in \code{mod.txt}
+\item If the \code{mod.txt} file is empty or has one column, then there is no dimension constraint
+}
 }
 \section{Warning}{
 
