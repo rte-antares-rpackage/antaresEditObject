@@ -53,12 +53,8 @@ sapply(studies, function(study) {
 
 # v860 ----
 # global params for structure v8.6 
-setup_study_850(sourcedir850)
+setup_study_860(sourcedir860)
 opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
-
-# temporary to test with "860"
-# force version
-opts_test$antaresVersion <- 860
 
 test_that("Edit cluster with polluants params (new feature v8.6)",{
   
@@ -84,8 +80,6 @@ test_that("Edit cluster with polluants params (new feature v8.6)",{
     opts = opts_test
   )
   
-  opts_test$antaresVersion <- 860
-  
   res_cluster <- antaresRead::readClusterDesc(opts = opts_test)
   
   # NULL as to effect to delete parameters
@@ -98,8 +92,6 @@ test_that("Edit cluster with polluants params (new feature v8.6)",{
                 "pm5"= NULL), 
               add_prefix = FALSE,
               opts = opts_test)
-  
-  opts_test$antaresVersion <- 860
   
   res_cluster <- antaresRead::readClusterDesc(opts = opts_test)
   
