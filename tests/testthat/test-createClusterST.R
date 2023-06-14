@@ -1,24 +1,15 @@
 
 # global params for structure v8.6 ----
-setup_study_850(sourcedir850)
+setup_study_860(sourcedir860)
 opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
-# Need to create a "st-storage" folder
 path_master <- file.path(opts_test$inputPath, "st-storage")
-dir.create(path_master)
-dir.create(file.path(path_master, "clusters"))
-dir.create(file.path(path_master, "series"))
-# temporary to test with "860"
-# force version
-opts_test$antaresVersion <- 860
+
 
 test_that("Create short-term storage cluster (new feature v8.6)",{
   
   if (opts_test$antaresVersion >= 860){
-    #TODO Use createStudy and createArea instead
     area_test = getAreas()[1]
-    dir.create(file.path(path_master, "clusters",area_test))
-    writeIni(NULL, file.path(path_master, "clusters", area_test, "list"))
     
     # createClusterST throws error for invalid area name
     testthat::expect_error(createClusterST("INVALID_AREA", "cluster_name", opts = opts_test),
@@ -34,10 +25,8 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
                     "cluster1", 
                     opts = opts_test) 
     
-    opts_test$antaresVersion <- 860
-    
-    testthat::expect_true(paste(area_test, "cluster1", sep = "_") 
-                %in% levels(readClusterSTDesc(opts = opts_test)$cluster))
+    testthat::expect_true(paste(area_test, "cluster1", sep = "_") %in% 
+                            levels(readClusterSTDesc(opts = opts_test)$cluster))
     
     # read series (with fread_antares)
     file_series <- antaresRead:::fread_antares(opts = opts_test, 
@@ -78,7 +67,9 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
     df_ref_default_value <- df_ref_default_value[base::order(df_ref_default_value$name_file)]
     
       # mean of default TS created
-    test_txt_value <- st_ts[, list(mean=mean(`st-storage`)), by=name_file]
+    test_txt_value <- st_ts[area %in% area_test, 
+                            list(mean=mean(`st-storage`)), 
+                            by=name_file]
     
     # check default values
     testthat::expect_equal(df_ref_default_value$mean, test_txt_value$mean)
@@ -91,9 +82,11 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
       
     test_that("Remove storage cluster (new feature v8.6)", {
       # RemoveClusterST (if no cluster => function read return error => see readClusterDesc tests)
-      removeClusterST(area = area_test, "cluster1")
+      opts_test <- removeClusterST(area = area_test, "cluster1", 
+                                   opts = opts_test)
       
-      testthat::expect_error(readClusterSTDesc(opts = opts_test))
+      testthat::expect_false(paste(area_test, "cluster1", sep = "_") %in% 
+                               levels(readClusterSTDesc(opts = opts_test)$cluster))
     })
     
   }

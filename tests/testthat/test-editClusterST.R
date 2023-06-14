@@ -1,35 +1,23 @@
 # global params for structure v8.6 ----
-setup_study_850(sourcedir850)
+setup_study_860(sourcedir860)
 opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 # need to create a "st-storage" folder
 path_master <- file.path(opts_test$inputPath, "st-storage")
-dir.create(path_master)
-dir.create(file.path(path_master, "clusters"))
-dir.create(file.path(path_master, "series"))
-# temporary to test with "860"
-# force version
-opts_test$antaresVersion <- 860
 
 test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   
   # areas tests 
   area_test = getAreas()[1]
-  dir.create(file.path(path_master, "clusters",area_test))
-  writeIni(NULL, file.path(path_master, "clusters", area_test, "list"))
-  
+   
   # create tests clusters
   opts_test <- createClusterST(area_test, 
                   "cluster-st-1", 
                   opts = opts_test) 
   
-  opts_test$antaresVersion <- 860
-  
   opts_test <- createClusterST(area_test, 
                   "cluster-st-2", 
                   opts = opts_test) 
-  
-  opts_test$antaresVersion <- 860
   
   st_clusters <- readClusterSTDesc(opts = opts_test)
   
@@ -46,8 +34,6 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                 upper_rule_curve = matrix(val, 8760),
                 opts = opts_test, 
                 add_prefix = FALSE)
-  
-  opts_test$antaresVersion <- 860
   
   st_clusters <- readClusterSTDesc(opts = opts_test)
   
