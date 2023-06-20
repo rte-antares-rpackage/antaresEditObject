@@ -112,6 +112,8 @@ test_that("adequacy patch options are properly written", {
   unlink(tmp, recursive = TRUE)
 })
 
+
+# v860 ----
 test_that("create area / st-storage in 8.6.0", {
   
   tmp <- tempfile()
@@ -133,6 +135,11 @@ test_that("create area / st-storage in 8.6.0", {
   ini_path_file <- file.path(temp_study_860$inputPath, 
                              "st-storage","clusters","myarea", "list.ini")
   expect_true(file.exists(ini_path_file))
+  
+  # check mingen.txt file (hydro)
+  mingen_path_file <- file.path(temp_study_860$inputPath, 
+                             "hydro", "series","myarea", "mingen.txt")
+  expect_true(file.exists(mingen_path_file))
   
   # REMOVE TESTS
   test_that("Remove an area in 8.6.0", {

@@ -105,9 +105,6 @@ suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"
 
 test_that("create mingen file data v860", {
   
-  # Only for antaresVersion >= 860
-  opts$antaresVersion <- 860
-  
   #Initialize mingen data
   M_mingen = matrix(6,8760,5)
   
