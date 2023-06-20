@@ -51,7 +51,7 @@ to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 }
@@ -68,7 +68,6 @@ five files are written in output according to the input parameters
 \examples{
 \dontrun{
 
-library(antaresRead)
 library(antaresEditObject)
 
 # Create a cluster :

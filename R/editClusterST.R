@@ -55,19 +55,29 @@ editClusterST <- function(area,
       paste(st_storage_group, collapse = ", ")
     )
   
-  # API block
-  if (is_api_study(opts)) {
-    
-    return(invisible(opts))
-  }
-  
-  
   # Cluster's parameters
   area <- tolower(area)
   params_cluster <- hyphenize_names(list(...))
   
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
+  
+  ##### API block ----
+  if (is_api_study(opts)) {
+    
+    # update parameters if something else than name
+    if (length(params_cluster) > 1) {
+      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/clusters/%s/list/%s", "input/thermal/clusters/%s/list/%s")
+      writeIni(
+        listData = params_cluster,
+        pathIni = sprintf(currPath, area, cluster_name),
+        opts = opts
+      )
+    }
+    
+    return(invisible(opts))
+  }
+  #####-
   
   # path to ini file
   path_clusters_ini <- file.path(opts$inputPath, "st-storage", "clusters", tolower(area), "list.ini")
