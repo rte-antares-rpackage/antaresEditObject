@@ -67,7 +67,7 @@ editClusterST <- function(area,
     
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
-      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/clusters/%s/list/%s", "input/thermal/clusters/%s/list/%s")
+      currPath <- "input/thermal/clusters/%s/list/%s"
       writeIni(
         listData = params_cluster,
         pathIni = sprintf(currPath, area, cluster_name),
