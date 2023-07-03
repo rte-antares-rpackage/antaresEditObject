@@ -14,6 +14,10 @@ NEW FEATURES (Antares v8.6) :
 * New function `activateST()` Activate "st-storage" in an Antares study.
 * New functions `createClusterST()`, `editClusterST()`, `removeClusterST()` ("st-storage" family of functions for a study in "input" mode)
 
+NEW FEATURES :
+
+* Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
+
 
 ### Breaking changes
 
