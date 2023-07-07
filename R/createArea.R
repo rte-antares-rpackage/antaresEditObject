@@ -183,32 +183,10 @@ createArea <- function(name,
   
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    hydro <- readIniFile(file = file.path(inputPath, "hydro", "hydro.ini"))
-    if (!is.null(hydro$`inter-daily-breakdown`))
-      hydro$`inter-daily-breakdown`[[name]] <- 1
-    if (!is.null(hydro$`intra-daily-modulation`))
-      hydro$`intra-daily-modulation`[[name]] <- 24
-    if (!is.null(hydro$`inter-monthly-breakdown`))
-      hydro$`inter-monthly-breakdown`[[name]] <- 1
-    
-    if (v7) {
-      if (!is.null(hydro$`initialize reservoir date`))
-        hydro$`initialize reservoir date`[[name]] <- 0
-      if (!is.null(hydro$`leeway low`))
-        hydro$`leeway low`[[name]] <- 1
-      if (!is.null(hydro$`leeway up`))
-        hydro$`leeway up`[[name]] <- 1
-      if (!is.null(hydro$`pumping efficiency`))
-        hydro$`pumping efficiency`[[name]] <- 1
-    }
-    
-    writeIni(
-      listData = hydro,
-      pathIni = file.path(inputPath, "hydro", "hydro.ini"),
-      overwrite = TRUE
-    )
+    default_params <- get_default_hydro_ini_values()
+	# Check area is not possible at this step
+    writeIniHydro(area = name, params = default_params, with_check_area = FALSE, opts = opts)
   }
-  
   
   # allocation
   allocation <- list(as.character(1))

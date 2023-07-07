@@ -74,26 +74,24 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   # Hydro
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    hydro <- readIniFile(file = file.path(inputPath, "hydro", "hydro.ini"))
-    if (!is.null(hydro$`inter-daily-breakdown`))
-      hydro$`inter-daily-breakdown`[[name]] <- NULL
-    if (!is.null(hydro$`intra-daily-modulation`))
-      hydro$`intra-daily-modulation`[[name]] <- NULL
-    if (!is.null(hydro$`inter-monthly-breakdown`))
-      hydro$`inter-monthly-breakdown`[[name]] <- NULL
-    if (!is.null(hydro$`initialize reservoir date`))
-      hydro$`initialize reservoir date`[[name]] <- NULL
-    if (!is.null(hydro$`leeway low`))
-      hydro$`leeway low`[[name]] <- NULL
-    if (!is.null(hydro$`leeway up`))
-      hydro$`leeway up`[[name]] <- NULL
-    if (!is.null(hydro$`pumping efficiency`))
-      hydro$`pumping efficiency`[[name]] <- NULL
-    writeIni(
-      listData = hydro,
-      pathIni = file.path(inputPath, "hydro", "hydro.ini"),
-      overwrite = TRUE
+    empty_params <- list(
+      "inter-daily-breakdown" = NULL
+      , "intra-daily-modulation" = NULL
+      , "inter-monthly-breakdown" = NULL
+      , "leeway low" = NULL
+      , "leeway up" = NULL
+      , "pumping efficiency" = NULL
+      , "initialize reservoir date" = NULL
+      , "follow load" = NULL
+      , "use heuristic" = NULL
+      , "use water" = NULL
+      , "hard bounds" = NULL
+      , "use leeway" = NULL
+      , "power to level" = NULL
+      , "reservoir" = NULL
+      , "reservoir capacity" = NULL
     )
+    writeIniHydro(area = name, params = empty_params, with_check_area = TRUE, opts = opts)
   }
   # allocation
   unlink(x = file.path(inputPath, "hydro", "allocation", paste0(name, ".ini")), recursive = TRUE)

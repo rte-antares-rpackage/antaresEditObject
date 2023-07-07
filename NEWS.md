@@ -17,6 +17,7 @@ NEW FEATURES (Antares v8.6) :
 NEW FEATURES :
 
 * Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
+* Call writeIniHydro() in createArea() and removeArea()
 
 ### Breaking changes
 
