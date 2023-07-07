@@ -134,6 +134,52 @@ test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations 
 })
 
 
+# hydro.ini
+test_that("Write hydro.ini values for the first area, edit leeway up, leeway low and reservoir", {
+  
+  translate_value <- 23
+  
+  hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts= opts)
+  
+  area_to_edit <- opts$areaList[1]
+  new_data <- list("leeway low" = hydro_ini_data[["leeway low"]][[area_to_edit]] + translate_value
+                   , "leeway up" = hydro_ini_data[["leeway up"]][[area_to_edit]] + translate_value
+                   , "reservoir" = !is.null(hydro_ini_data[["reservoir"]][[area_to_edit]])
+  )
+  writeIniHydro(area = area_to_edit, params = new_data, with_check_area = TRUE, opts = opts)
+  hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_equal(hydro_ini_after_edit[["leeway low"]][[area_to_edit]] - hydro_ini_data[["leeway low"]][[area_to_edit]], translate_value)
+  expect_equal(hydro_ini_after_edit[["leeway up"]][[area_to_edit]] - hydro_ini_data[["leeway up"]][[area_to_edit]], translate_value)
+  expect_equal(hydro_ini_after_edit[["reservoir"]][[area_to_edit]], !is.null(hydro_ini_data[["reservoir"]][[area_to_edit]]))
+  
+  # Bad section names
+  bad_data <- list("leeway lowwwwwwwwww" = hydro_ini_data[["leeway low"]][[area_to_edit]] + translate_value
+                   , "leeway upppppppppp" = hydro_ini_data[["leeway up"]][[area_to_edit]] + translate_value
+                   , "reservoirrrrrrrrr" = !is.null(hydro_ini_data[["reservoir"]][[area_to_edit]])
+  )
+  
+  expect_error(
+    writeIniHydro(area = area_to_edit, params = bad_data, with_check_area = TRUE, opts = opts),
+    regexp = "Parameter params must be named with the following elements:"
+  )
+  
+  # Bad types
+  bad_types <- list("leeway low" = "toto"
+                    , "leeway up" = "titi"
+                    , "reservoir" = 35
+  )
+  
+  expect_error(
+    writeIniHydro(area = area_to_edit, params = bad_types, with_check_area = TRUE, opts = opts),
+    regexp = "The following parameters have a wrong type:"
+  )
+  
+})
+
+
+
 # remove temporary study
 unlink(x = opts$studyPath, recursive = TRUE)
 

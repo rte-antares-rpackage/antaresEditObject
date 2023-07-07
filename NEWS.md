@@ -14,6 +14,9 @@ NEW FEATURES (Antares v8.6) :
 * New function `activateST()` Activate "st-storage" in an Antares study.
 * New functions `createClusterST()`, `editClusterST()`, `removeClusterST()` ("st-storage" family of functions for a study in "input" mode)
 
+NEW FEATURES :
+
+* Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
 
 ### Breaking changes
 

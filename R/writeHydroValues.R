@@ -101,3 +101,129 @@ writeHydroValues <- function(area,
   
   fwrite(x = data, row.names = FALSE, col.names = FALSE, sep = "\t", file = values_file)
 }
+
+
+#' @title Get default hydro.ini values 
+get_default_hydro_ini_values <- function(){
+  
+  default_hydro_params <- list(
+        "inter-daily-breakdown" = 1
+      , "intra-daily-modulation" = 24
+      , "inter-monthly-breakdown" = 1
+      , "leeway low" = 1
+      , "leeway up" = 1
+      , "pumping efficiency" = 1
+      , "initialize reservoir date" = 0
+      , "follow load" = TRUE
+      , "use heuristic" = TRUE
+      , "use water" = FALSE
+      , "hard bounds" = FALSE
+      , "use leeway" = FALSE
+      , "power to level" = FALSE
+      , "reservoir" = FALSE
+      , "reservoir capacity" = 0
+    )
+  
+  return(default_hydro_params)
+}
+
+
+#' @title Edit hydro.ini values 
+#' 
+#' @description 
+#' `r antaresEditObject:::badge_api_ok()`
+#' 
+#' For a given area, write its data in the hydro.ini file.
+#' @param area The area where to edit the values.
+#' @param params The list data must have specific names and specific types :
+#' \itemize{
+#'			\item{follow load}{ : logical or NULL}
+#'			\item{use heuristic}{ : logical or NULL}
+#'			\item{use water}{ : logical or NULL}
+#'			\item{hard bounds}{ : logical or NULL}
+#'			\item{use leeway}{ : logical or NULL}
+#'			\item{power to level}{ : logical or NULL}
+#'			\item{reservoir}{ : logical or NULL}
+#'			\item{inter-daily-breakdown}{ : numeric, integer or NULL}
+#'			\item{intra-daily-modulation}{ : numeric, integer or NULL}
+#'			\item{inter-monthly-breakdown}{ : numeric, integer or NULL}
+#'			\item{leeway low}{ : numeric, integer or NULL}
+#'			\item{leeway up}{ : numeric, integer or NULL}
+#'			\item{pumping efficiency}{ : numeric, integer or NULL}
+#'			\item{initialize reservoir date}{ : numeric, integer or NULL}
+#'			\item{reservoir capacity}{ : numeric, integer or NULL}
+#'   }
+#' @param with_check_area Enable the control of the areas' existence. Useful when you create a new area and when the area is still not created.
+#' @param opts List of simulation parameters returned by the function
+#'   [antaresRead::setSimulationPath()].
+#'
+#' @export
+#'
+#' @importFrom antaresRead simOptions readIni
+#' @importFrom assertthat assert_that
+#'
+#' @examples
+#' \dontrun{
+#' opts <- setSimulationPath(studypath, simulation = "input")
+#' createArea("fictive_area", opts = opts) 
+#' writeIniHydro(area = "fictive_area"
+#' , params = list("leeway low" = 2.5, "leeway up" = 25)
+#' , opts = opts)
+#'
+#' }
+writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRead::simOptions()){
+  
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  if(with_check_area){
+    check_area_name(area, opts)
+  }
+  
+  # Allowed names/types for hydro sections
+  expected_params <- list("inter-daily-breakdown" = c("numeric", "integer", "NULL")
+                        , "intra-daily-modulation" = c("numeric", "integer", "NULL")
+                        , "inter-monthly-breakdown" = c("numeric", "integer", "NULL")
+                        , "leeway low" = c("numeric", "integer", "NULL")
+                        , "leeway up" = c("numeric", "integer", "NULL")
+                        , "pumping efficiency" = c("numeric", "integer", "NULL")
+                        , "initialize reservoir date" = c("numeric", "integer", "NULL")
+                        , "follow load" = c("logical", "NULL")
+                        , "use heuristic" = c("logical", "NULL")
+                        , "use water" = c("logical", "NULL")
+                        , "hard bounds" = c("logical", "NULL")
+                        , "use leeway" = c("logical", "NULL")
+                        , "power to level" = c("logical", "NULL")
+                        , "reservoir" = c("logical", "NULL")
+                        , "reservoir capacity" = c("numeric", "integer", "NULL")
+  )
+  
+  params_names <- names(params)
+  expected_params_names <- names(expected_params)
+  
+  # Name control
+  if(!all(params_names %in% expected_params_names)){
+    stop(append("Parameter params must be named with the following elements:\n ", 
+                paste0(expected_params_names, collapse = "\n ")))
+  }
+  
+  # Type control
+  check_param_types <- sapply(params_names, FUN = function(x) {
+    inherits(params[[x]], what = expected_params[[x]])
+  })
+  
+  bad_param_types <- check_param_types[!check_param_types]
+  if(length(bad_param_types) > 0){
+    stop(append("The following parameters have a wrong type:\n ", 
+                paste0(names(bad_param_types), collapse = "\n ")))
+  }
+  
+  # Previous data
+  path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
+  ini_hydro_data <- readIni(path_ini_hydro, opts = opts)
+  
+  # Edit hydro data
+  for(name in params_names){
+    ini_hydro_data[[name]][[area]] <- params[[name]]
+  }
+  
+  writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
+}
