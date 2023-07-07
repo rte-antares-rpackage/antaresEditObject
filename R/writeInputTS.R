@@ -126,12 +126,12 @@ writeInputTS <- function(data,
   
   # v860 - mingen dimension depends on file "mod.txt"
   if (type == "mingen"){
-    path_mingen_file <- file.path(opts$inputPath,
+    path_mod_file <- file.path(opts$inputPath,
                                   "hydro","series",area,"mod.txt")
     
     #read the mod.txt data table
     mod_data <- antaresRead:::fread_antares(opts = opts,
-                                            file = path_mingen_file)
+                                            file = path_mod_file)
     
     #initialize the number of columns to the data input
     dim_column = dim(data)[2]

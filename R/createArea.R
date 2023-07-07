@@ -422,28 +422,38 @@ createArea <- function(name,
   ## Renewables ----
   
   if (is_active_RES(opts)) {
-    # dir
+    # INIT dir
     dir.create(path = file.path(inputPath, "renewables", "clusters", name), showWarnings = FALSE)
     
+    # INIT list.ini file
     writeIni(
       listData = list(),
       pathIni = file.path(inputPath, "renewables", "clusters", name, "list.ini"),
       overwrite = overwrite
     )
+    
+    
   }
   
   
   ## st-storage ----
   
-  # dir
+  # INIT dir
   if (opts$antaresVersion >= 860 ){
     dir.create(path = file.path(inputPath, "st-storage", "clusters", name), showWarnings = FALSE)
     
+  # INIT list.ini file  
     writeIni(
       listData = list(),
       pathIni = file.path(inputPath, "st-storage", "clusters", name, "list.ini"),
       overwrite = overwrite
     )
+    
+    # INIT mingen.txt
+      # /series
+    con <- file(description = file.path(inputPath, "hydro", "series", name, "mingen.txt"), open = "wt")
+    writeLines(text = character(0), con = con)
+    close(con)
   }
   
   ## Wind ----
