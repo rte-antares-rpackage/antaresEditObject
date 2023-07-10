@@ -179,6 +179,22 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
 })
 
 
+test_that("Write NULL hydro.ini values to ensure its behaviour", {
+  
+  hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts= opts)
+  
+  fname <- names(hydro_ini_data)[1]
+  farea <- names(hydro_ini_data[[fname]])[1]
+  
+  writeIniHydro(area = farea, params = setNames(list(NULL), fname), with_check_area = TRUE, opts = opts)
+  hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_true(!is.null(hydro_ini_data[[fname]][[farea]]))
+  expect_true(is.null(hydro_ini_after_edit[[fname]][[farea]]))
+})
+
+
 
 # remove temporary study
 unlink(x = opts$studyPath, recursive = TRUE)
