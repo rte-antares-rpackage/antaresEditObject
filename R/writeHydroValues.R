@@ -137,23 +137,23 @@ get_default_hydro_ini_values <- function(){
 #' @param area The area where to edit the values.
 #' @param params The list data must have specific names and specific types :
 #' \itemize{
-#'			\item{follow load}{ : logical or NULL}
-#'			\item{use heuristic}{ : logical or NULL}
-#'			\item{use water}{ : logical or NULL}
-#'			\item{hard bounds}{ : logical or NULL}
-#'			\item{use leeway}{ : logical or NULL}
-#'			\item{power to level}{ : logical or NULL}
-#'			\item{reservoir}{ : logical or NULL}
-#'			\item{inter-daily-breakdown}{ : numeric, integer or NULL}
-#'			\item{intra-daily-modulation}{ : numeric, integer or NULL}
-#'			\item{inter-monthly-breakdown}{ : numeric, integer or NULL}
-#'			\item{leeway low}{ : numeric, integer or NULL}
-#'			\item{leeway up}{ : numeric, integer or NULL}
-#'			\item{pumping efficiency}{ : numeric, integer or NULL}
-#'			\item{initialize reservoir date}{ : numeric, integer or NULL}
-#'			\item{reservoir capacity}{ : numeric, integer or NULL}
+#'      \item{follow load}{ : logical or NULL}
+#'      \item{use heuristic}{ : logical or NULL}
+#'      \item{use water}{ : logical or NULL}
+#'      \item{hard bounds}{ : logical or NULL}
+#'      \item{use leeway}{ : logical or NULL}
+#'      \item{power to level}{ : logical or NULL}
+#'      \item{reservoir}{ : logical or NULL}
+#'      \item{inter-daily-breakdown}{ : numeric, integer or NULL}
+#'      \item{intra-daily-modulation}{ : numeric, integer or NULL}
+#'      \item{inter-monthly-breakdown}{ : numeric, integer or NULL}
+#'      \item{leeway low}{ : numeric, integer or NULL}
+#'      \item{leeway up}{ : numeric, integer or NULL}
+#'      \item{pumping efficiency}{ : numeric, integer or NULL}
+#'      \item{initialize reservoir date}{ : numeric, integer or NULL}
+#'      \item{reservoir capacity}{ : numeric, integer or NULL}
 #'   }
-#' @param with_check_area Enable the control of the areas' existence. Useful when you create a new area and when the area is still not created.
+#' @param with_check_area Enable the control of the areas' existence. Useful when you create a new area.
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
