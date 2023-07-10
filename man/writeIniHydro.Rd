@@ -33,7 +33,7 @@ writeIniHydro(
 \item{reservoir capacity}{ : numeric, integer or NULL}
 }}
 
-\item{with_check_area}{Enable the control of the areas' existence. Useful when you create a new area and when the area is still not created.}
+\item{with_check_area}{Enable the control of the areas' existence. Useful when you create a new area.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
@@ -46,10 +46,9 @@ For a given area, write its data in the hydro.ini file.
 \examples{
 \dontrun{
 opts <- setSimulationPath(studypath, simulation = "input")
-createArea("fictive_area", opts = opts) 
+createArea("fictive_area") 
 writeIniHydro(area = "fictive_area"
-, params = list("leeway low" = 2.5, "leeway up" = 25)
-, opts = opts)
+, params = list("leeway low" = 2.5, "leeway up" = 25))
 
 }
 }
