@@ -184,7 +184,7 @@ createArea <- function(name,
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
     default_params <- get_default_hydro_ini_values()
-	# Check area is not possible at this step
+    # Check area is not possible at this step
     writeIniHydro(area = name, params = default_params, with_check_area = FALSE, opts = opts)
   }
   
@@ -283,7 +283,7 @@ createArea <- function(name,
   # dir
   dir.create(path = file.path(inputPath, "load", "prepro", name), showWarnings = FALSE)
   
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "load", "prepro", name, "conversion.txt")
@@ -339,7 +339,7 @@ createArea <- function(name,
   # dir
   dir.create(path = file.path(inputPath, "solar", "prepro", name), showWarnings = FALSE)
   
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "solar", "prepro", name, "conversion.txt")
@@ -440,7 +440,7 @@ createArea <- function(name,
   # dir
   dir.create(path = file.path(inputPath, "wind", "prepro", name), showWarnings = FALSE)
   
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "wind", "prepro", name, "conversion.txt")
