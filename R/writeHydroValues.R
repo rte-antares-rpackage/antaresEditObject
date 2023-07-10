@@ -165,10 +165,9 @@ get_default_hydro_ini_values <- function(){
 #' @examples
 #' \dontrun{
 #' opts <- setSimulationPath(studypath, simulation = "input")
-#' createArea("fictive_area", opts = opts) 
+#' createArea("fictive_area") 
 #' writeIniHydro(area = "fictive_area"
-#' , params = list("leeway low" = 2.5, "leeway up" = 25)
-#' , opts = opts)
+#' , params = list("leeway low" = 2.5, "leeway up" = 25))
 #'
 #' }
 writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRead::simOptions()){
@@ -178,7 +177,7 @@ writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRe
     check_area_name(area, opts)
   }
   
-  # Allowed names/types for hydro sections
+  # Allowed names/types for sections
   expected_params <- list("inter-daily-breakdown" = c("numeric", "integer", "NULL")
                         , "intra-daily-modulation" = c("numeric", "integer", "NULL")
                         , "inter-monthly-breakdown" = c("numeric", "integer", "NULL")
