@@ -74,23 +74,8 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   # Hydro
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    empty_params <- list(
-      "inter-daily-breakdown" = NULL
-      , "intra-daily-modulation" = NULL
-      , "inter-monthly-breakdown" = NULL
-      , "leeway low" = NULL
-      , "leeway up" = NULL
-      , "pumping efficiency" = NULL
-      , "initialize reservoir date" = NULL
-      , "follow load" = NULL
-      , "use heuristic" = NULL
-      , "use water" = NULL
-      , "hard bounds" = NULL
-      , "use leeway" = NULL
-      , "power to level" = NULL
-      , "reservoir" = NULL
-      , "reservoir capacity" = NULL
-    )
+    default_params <- get_default_hydro_ini_values()
+    empty_params <- sapply(names(default_params), FUN = function(n) default_params[[n]] <- NULL)
     writeIniHydro(area = name, params = empty_params, with_check_area = TRUE, opts = opts)
   }
   # allocation
