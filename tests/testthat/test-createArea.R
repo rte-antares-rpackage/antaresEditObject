@@ -67,7 +67,44 @@ sapply(studies, function(study) {
     
   })
   
-
+  # Initialize hydro.ini values for a new area 
+  test_that("Check if hydro.ini default values are initialized when creating an area", {
+    
+    default_hydro_params <- get_default_hydro_ini_values()
+    
+    hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
+    hydro_ini_data <- readIni(pathIni = hydro_ini_path, opts = opts)
+    
+    new_area <- "area_check_hydro"
+    createArea(new_area)
+    
+    hydro_ini_data_after_area_creation <- readIni(pathIni = hydro_ini_path, opts = opts)
+    
+    # Check if each section is in the hydro.ini file
+    name_ref <- names(default_hydro_params)
+    name_ref <- name_ref[order(name_ref)]
+    name_ <- names(hydro_ini_data_after_area_creation)
+    name_ <- name_[order(name_)]
+    
+    expect_equal(name_, name_ref)
+    
+    # Check if new_area has an entry for each section
+    check_by_section <- sapply(names(hydro_ini_data_after_area_creation),
+                               FUN = function(name) new_area %in% names(hydro_ini_data_after_area_creation[[name]])
+    )
+    expect_true(all(check_by_section))
+    
+    # Check if the value for new_area is the default value
+    value_by_section <- sapply(names(hydro_ini_data_after_area_creation),
+                               FUN = function(name) hydro_ini_data_after_area_creation[[name]][[new_area]],
+                               simplify = FALSE
+    )
+    
+    for(key in name_ref){
+      expect_equal(default_hydro_params[[key]], value_by_section[[key]])
+    }
+    
+  })
   
   
   test_that("Remove an area", {
@@ -163,49 +200,3 @@ test_that("create area / st-storage in 8.6.0", {
   unlink(tmp, recursive = TRUE)
 })
 
-
-sapply(studies, function(study) {
-  
-  setup_study(study, sourcedir)
-  opts <- antaresRead::setSimulationPath(studyPath, "input")
-  
-  test_that("Check if hydro.ini default values are initialized when creating an area", {
-    
-    default_hydro_params <- get_default_hydro_ini_values()
-    
-    hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
-    hydro_ini_data <- readIni(pathIni = hydro_ini_path, opts = opts)
-    
-    new_area <- "area_check_hydro"
-    createArea(new_area)
-    
-    hydro_ini_data_after_area_creation <- readIni(pathIni = hydro_ini_path, opts = opts)
-    
-    # Check if each section is in the hydro.ini file
-    name_ref <- names(default_hydro_params)
-    name_ref <- name_ref[order(name_ref)]
-    name_ <- names(hydro_ini_data_after_area_creation)
-    name_ <- name_[order(name_)]
-    
-    expect_equal(name_, name_ref)
-    
-    # Check if new_area has an entry for each section
-    check_by_section <- sapply(names(hydro_ini_data_after_area_creation),
-                               FUN = function(name) new_area %in% names(hydro_ini_data_after_area_creation[[name]])
-    )
-    expect_true(all(check_by_section))
-    
-    # Check if the value for new_area is the default value
-    value_by_section <- sapply(names(hydro_ini_data_after_area_creation),
-                               FUN = function(name) hydro_ini_data_after_area_creation[[name]][[new_area]],
-                               simplify = FALSE
-    )
-    
-    for(key in name_ref){
-      expect_equal(default_hydro_params[[key]], value_by_section[[key]])
-    }
-    
-    # remove temporary study
-    unlink(x = opts$studyPath, recursive = TRUE)
-  })
-})
