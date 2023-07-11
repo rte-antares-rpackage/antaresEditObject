@@ -131,7 +131,7 @@ get_default_hydro_ini_values <- function(){
 #' @title Edit hydro.ini values 
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_no()`
 #' 
 #' For a given area, write its data in the hydro.ini file.
 #' @param area The area where to edit the values.
