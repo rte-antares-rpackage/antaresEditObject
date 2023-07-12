@@ -13,7 +13,5 @@ check_mingen_vs_hydro_storage(area, opts = antaresRead::simOptions())
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
-
 At each hourly time step, mingen must be less or equal than maxpower.
 }

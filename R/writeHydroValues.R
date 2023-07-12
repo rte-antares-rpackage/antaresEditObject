@@ -449,7 +449,7 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
     
       dt_merged <- merge(mingen_data, mod_data[,c("timeId", "tsId", "hydroStorage")], by = c("timeId", "tsId"))
     
-      dt_agg <- dt_merged[, .(mingen = sum(mingen), hydroStorage = sum(hydroStorage)), by = eval(type_control[["agg_by"]])]
+      dt_agg <- dt_merged[, .(mingen = sum(mingen), hydroStorage = sum(hydroStorage)), by = eval(type_control[["level_aggregation"]])]
       dt_agg$is_hydroST_gt_mingen <- dt_agg$hydroStorage >= dt_agg$mingen
       check <- all(dt_agg$is_hydroST_gt_mingen)
       
