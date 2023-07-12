@@ -107,22 +107,22 @@ writeHydroValues <- function(area,
 get_default_hydro_ini_values <- function(){
   
   default_hydro_params <- list(
-        "inter-daily-breakdown" = 1
-      , "intra-daily-modulation" = 24
-      , "inter-monthly-breakdown" = 1
-      , "leeway low" = 1
-      , "leeway up" = 1
-      , "pumping efficiency" = 1
-      , "initialize reservoir date" = 0
-      , "follow load" = TRUE
-      , "use heuristic" = TRUE
-      , "use water" = FALSE
-      , "hard bounds" = FALSE
-      , "use leeway" = FALSE
-      , "power to level" = FALSE
-      , "reservoir" = FALSE
-      , "reservoir capacity" = 0
-    )
+        "inter-daily-breakdown" = 1,
+        "intra-daily-modulation" = 24,
+        "inter-monthly-breakdown" = 1,
+        "leeway low" = 1,
+        "leeway up" = 1,
+        "pumping efficiency" = 1,
+        "initialize reservoir date" = 0,
+        "follow load" = TRUE,
+        "use heuristic" = TRUE,
+        "use water" = FALSE,
+        "hard bounds" = FALSE,
+        "use leeway" = FALSE,
+        "power to level" = FALSE,
+        "reservoir" = FALSE,
+        "reservoir capacity" = 0
+  )
   
   return(default_hydro_params)
 }
@@ -131,7 +131,7 @@ get_default_hydro_ini_values <- function(){
 #' @title Edit hydro.ini values 
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_no()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' For a given area, write its data in the hydro.ini file.
 #' @param area The area where to edit the values.
@@ -178,21 +178,21 @@ writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRe
   }
   
   # Allowed names/types for sections
-  expected_params <- list("inter-daily-breakdown" = c("numeric", "integer", "NULL")
-                        , "intra-daily-modulation" = c("numeric", "integer", "NULL")
-                        , "inter-monthly-breakdown" = c("numeric", "integer", "NULL")
-                        , "leeway low" = c("numeric", "integer", "NULL")
-                        , "leeway up" = c("numeric", "integer", "NULL")
-                        , "pumping efficiency" = c("numeric", "integer", "NULL")
-                        , "initialize reservoir date" = c("numeric", "integer", "NULL")
-                        , "follow load" = c("logical", "NULL")
-                        , "use heuristic" = c("logical", "NULL")
-                        , "use water" = c("logical", "NULL")
-                        , "hard bounds" = c("logical", "NULL")
-                        , "use leeway" = c("logical", "NULL")
-                        , "power to level" = c("logical", "NULL")
-                        , "reservoir" = c("logical", "NULL")
-                        , "reservoir capacity" = c("numeric", "integer", "NULL")
+  expected_params <- list("inter-daily-breakdown" = c("numeric", "integer", "NULL"),
+                          "intra-daily-modulation" = c("numeric", "integer", "NULL"),
+                          "inter-monthly-breakdown" = c("numeric", "integer", "NULL"),
+                          "leeway low" = c("numeric", "integer", "NULL"),
+                          "leeway up" = c("numeric", "integer", "NULL"),
+                          "pumping efficiency" = c("numeric", "integer", "NULL"),
+                          "initialize reservoir date" = c("numeric", "integer", "NULL"),
+                          "follow load" = c("logical", "NULL"),
+                          "use heuristic" = c("logical", "NULL"),
+                          "use water" = c("logical", "NULL"),
+                          "hard bounds" = c("logical", "NULL"),
+                          "use leeway" = c("logical", "NULL"),
+                          "power to level" = c("logical", "NULL"),
+                          "reservoir" = c("logical", "NULL"),
+                          "reservoir capacity" = c("numeric", "integer", "NULL")
   )
   
   params_names <- names(params)
