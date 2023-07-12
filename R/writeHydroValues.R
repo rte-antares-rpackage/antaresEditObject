@@ -445,10 +445,13 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
       mod_data <- antaresRead::readInputTS(hydroStorage = area, opts = opts)
       
       mingen_data <- replicate_missing_ts(mingen_data, mod_data)
+      if (type_control[["type"]] == "weekly") {
+        mingen_data <- add_week_number_column_to_ts(mingen_data)
+      }
       mod_data <- replicate_missing_ts(mod_data, mingen_data)
-    
+      
       dt_merged <- merge(mingen_data, mod_data[,c("timeId", "tsId", "hydroStorage")], by = c("timeId", "tsId"))
-    
+      
       dt_agg <- dt_merged[, .(mingen = sum(mingen), hydroStorage = sum(hydroStorage)), by = eval(type_control[["level_aggregation"]])]
       dt_agg$is_hydroST_gt_mingen <- dt_agg$hydroStorage >= dt_agg$mingen
       check <- all(dt_agg$is_hydroST_gt_mingen)
