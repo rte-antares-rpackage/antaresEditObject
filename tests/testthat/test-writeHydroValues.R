@@ -245,6 +245,165 @@ test_that("get_type_check_mingen_vs_hydrostorage() : type of control to make bet
 })
 
 
+test_that("check_mingen_vs_hydro_storage() in 8.6.0 : control data consistency between mingen.txt and mod.txt", {
+  
+  opts <- createStudy(path = pathstd, study_name = "my_study_860", antares_version = "8.6.0")
+  area <- "zone51"
+  createArea(area)
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  nb_hours_per_year <- 8760
+  nb_hours_per_day <- 24
+  nb_days_per_year <- 365
+  nb_days_per_week <- 7
+  
+  val <- 2
+  values_ts1 <- rep(val, nb_hours_per_year)
+  values_ts2 <- rep(val-0.1, nb_hours_per_year)
+  writeInputTS(area = area, data = matrix(data = c(values_ts1,values_ts2), nrow = nb_hours_per_year), type = "mingen", opts = opts)
+  
+  
+  mat_mod_false <- matrix(data = c(rep(nb_hours_per_day-1, nb_days_per_year)*val),
+                          nrow = nb_days_per_year)
+  
+  mat_mod_true <- matrix(data = c(rep(nb_hours_per_day+1, nb_days_per_year)*val),
+                         nrow = nb_days_per_year)
+  
+  
+  lst_yearly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
+  lst_monthly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
+  lst_weekly <- list("use heuristic" = TRUE, "follow load" = FALSE, "reservoir" = TRUE)
+  lst_wo_control <- list("use heuristic" = FALSE, "follow load" = FALSE, "reservoir" = TRUE)
+  
+  
+  # YEARLY
+  # yearly data -- enabled check
+  writeIniHydro(area, params = lst_yearly, opts = opts)
+  # inconsistent
+  writeInputTS(area = area, data = mat_mod_false, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(!res_check$check)
+  expect_true(startsWith(res_check$msg, "Data does not respect the yearly condition."))
+  # consistent
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  
+  
+  # yearly data -- disabled check
+  writeIniHydro(area, params = lst_wo_control, opts = opts)
+  # inconsistent
+  writeInputTS(area = area, data = mat_mod_false, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  # consistent
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  
+  
+  # MONTHLY
+  # monthly data -- enabled check
+  writeIniHydro(area, params = lst_monthly, opts = opts)
+  # inconsistent
+  writeInputTS(area = area, data = mat_mod_false, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(!res_check$check)
+  expect_true(startsWith(res_check$msg, "Data does not respect the monthly condition."))
+  # consistent
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  
+  
+  # monthly data -- disabled check
+  writeIniHydro(area, params = lst_wo_control, opts = opts)
+  # inconsistent
+  writeInputTS(area = area, data = mat_mod_false, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  # consistent
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  
+  
+  # WEEKLY
+  # weekly data -- enabled check
+  mat_mod_false_weekly <- matrix(data = c(rep(nb_hours_per_day - 1, nb_days_per_week)*val, rep(nb_hours_per_day, nb_days_per_year - nb_days_per_week)*val),
+                                 nrow = nb_days_per_year)
+  mat_mod_true_weekly <- matrix(data = rep(nb_hours_per_day + 1, nb_days_per_year) * val,
+                                nrow = nb_days_per_year)
+  writeIniHydro(area, params = lst_weekly, opts = opts)
+  # inconsistent
+  writeInputTS(area = area, data = mat_mod_false_weekly, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(!res_check$check)
+  expect_true(startsWith(res_check$msg, "Data does not respect the weekly condition."))
+  # consistent
+  writeInputTS(area = area, data = mat_mod_true_weekly, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  
+  # weekly data -- disabled check
+  writeIniHydro(area, params = lst_wo_control, opts = opts)
+  # inconsistent
+  writeInputTS(area = area, data = mat_mod_false_weekly, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  # consistent
+  writeInputTS(area = area, data = mat_mod_true_weekly, type = "hydroSTOR", opts = opts)
+  res_check <- check_mingen_vs_hydro_storage(area, opts)
+  expect_true(res_check$check)
+  expect_true(identical(res_check$msg,""))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+test_that("replicate_missing_ts() : control if data is replicated if 2 data.tables have not same number of tsId", {
+  
+  opts <- createStudy(path = pathstd, study_name = "my_study_860", antares_version = "8.6.0")
+  area <- "zone51"
+  createArea(area)
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  nb_hours_per_year <- 8760
+  nb_days_per_year <- 365
+  
+  val <- 2
+  values_ts1 <- rep(val, nb_hours_per_year)
+  values_ts2 <- rep(val - 0.1, nb_hours_per_year)
+  nb_rep_ts_mingen <- 4
+  mat_mingen <- matrix(data = rep(c(values_ts1, values_ts2), nb_rep_ts_mingen), nrow = nb_hours_per_year)
+  writeInputTS(area = area, data = mat_mingen, type = "mingen", opts = opts)
+  
+  mat_mod <- matrix(data = seq(1,nb_days_per_year), nrow = nb_days_per_year)
+  writeInputTS(area = area, data = mat_mod, type = "hydroSTOR", opts = opts)
+  
+  ts_mingen <- antaresRead::readInputTS(mingen = area, opts = opts)
+  ts_mod_before <- antaresRead::readInputTS(hydroStorage = area, opts = opts)
+  
+  ts_mod_after <- replicate_missing_ts(ts_mod_before, ts_mingen)
+  
+  expect_equal(max(ts_mod_after$tsId), max(ts_mingen$tsId))
+  expect_equal(max(ts_mod_after$tsId), nb_rep_ts_mingen * 2)
+  expect_equal(nrow(ts_mod_after), nrow(ts_mingen))
+  ts_mod_after_agg <- ts_mod_after[,.N,by = tsId]
+  expect_true(all(ts_mod_after_agg$N == opts$timeIdMax) & nrow(ts_mod_after_agg) == nb_rep_ts_mingen * 2)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
 # remove temporary study
 unlink(x = opts$studyPath, recursive = TRUE)
 
