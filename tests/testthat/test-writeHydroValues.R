@@ -195,6 +195,55 @@ test_that("Write NULL hydro.ini values to ensure its behaviour", {
 })
 
 
+test_that("fill_empty_hydro_ini_file() : fill specific sections in hydro.ini by default values", {
+  
+  hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  all_areas <- unique(unlist(lapply(names(hydro_ini_data), function(n) names(hydro_ini_data[[n]]))))
+  farea <- all_areas[1]
+  
+  writeIniHydro(farea, list("use heuristic" = NULL, "follow load" = NULL, "reservoir" = NULL), opts = opts)
+  
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  fill_empty_hydro_ini_file(farea, opts)
+  
+  hydro_ini_data_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_true(is.null(hydro_ini_data[["use heuristic"]][[farea]]) & hydro_ini_data_after_edit[["use heuristic"]][[farea]])
+  expect_true(is.null(hydro_ini_data[["follow load"]][[farea]]) & hydro_ini_data_after_edit[["follow load"]][[farea]])
+  expect_true(is.null(hydro_ini_data[["reservoir"]][[farea]]) & !hydro_ini_data_after_edit[["reservoir"]][[farea]])
+})
+
+
+test_that("get_type_check_mingen_vs_hydrostorage() : type of control to make between mingen.txt and mod.txt", {
+  
+  hydro_params <- list("use heuristic" = FALSE, "follow load" = TRUE, "reservoir" = TRUE)
+  expect_true(is.null(get_type_check_mingen_vs_hydrostorage(hydro_params)))
+
+  hydro_params <- list("use heuristic" = FALSE, "follow load" = TRUE, "reservoir" = FALSE)
+  expect_true(is.null(get_type_check_mingen_vs_hydrostorage(hydro_params)))
+
+  hydro_params <- list("use heuristic" = FALSE, "follow load" = FALSE, "reservoir" = TRUE)
+  expect_true(is.null(get_type_check_mingen_vs_hydrostorage(hydro_params)))
+
+  hydro_params <- list("use heuristic" = FALSE, "follow load" = FALSE, "reservoir" = FALSE)
+  expect_true(is.null(get_type_check_mingen_vs_hydrostorage(hydro_params)))
+  
+  hydro_params <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "yearly")
+
+  hydro_params <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "monthly")
+
+  hydro_params <- list("use heuristic" = TRUE, "follow load" = FALSE, "reservoir" = TRUE)
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "weekly")
+
+  hydro_params <- list("use heuristic" = TRUE, "follow load" = FALSE, "reservoir" = FALSE)
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "weekly")
+})
+
 
 # remove temporary study
 unlink(x = opts$studyPath, recursive = TRUE)
