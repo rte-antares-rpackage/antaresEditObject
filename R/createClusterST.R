@@ -116,7 +116,10 @@ createClusterST <- function(area,
   ################# -
   # API block
   if (is_api_study(opts)) {
-
+    # format name for API 
+    cluster_name <- transform_name_to_id(cluster_name)
+    params_cluster$name <- cluster_name
+    
     cmd <- api_command_generate(
       action = "create_st_storage",
       area_id = area,
@@ -133,10 +136,14 @@ createClusterST <- function(area,
 
     for (i in names(storage_value)){
       if (!is.null(get(i))) {
-        currPath <- paste0("input/st-storage/series/%s/%s/",storage_value[[i]]$string)
+        # format name for API 
+        data_param_name <- transform_name_to_id(storage_value[[i]]$string, 
+                                                id_dash = TRUE)
+        
+        currPath <- paste0("input/st-storage/series/%s/%s/",data_param_name)
         cmd <- api_command_generate(
           action = "replace_matrix",
-          target = sprintf(currPath, area, tolower(cluster_name)),
+          target = sprintf(currPath, area, cluster_name),
           matrix = get(i)
         )
         api_command_register(cmd, opts = opts)

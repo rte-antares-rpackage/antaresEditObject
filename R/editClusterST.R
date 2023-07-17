@@ -64,15 +64,48 @@ editClusterST <- function(area,
   
   ##### API block ----
   if (is_api_study(opts)) {
+    # format name for API 
+    cluster_name <- transform_name_to_id(cluster_name)
     
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
-      currPath <- "input/thermal/clusters/%s/list/%s"
+      currPath <- "input/st-storage/clusters/%s/list/%s" 
       writeIni(
         listData = params_cluster,
         pathIni = sprintf(currPath, area, cluster_name),
         opts = opts
       )
+    }
+    
+    # update data
+    names_data_params <- c("PMAX_injection",
+                           "PMAX_withdrawal",
+                           "inflows",
+                           "lower_rule_curve",
+                           "upper_rule_curve")
+    
+    for (i in names_data_params){
+      if (!is.null(get(i))) {
+        # format name for API 
+        data_param_name <- transform_name_to_id(i, id_dash = TRUE)
+        
+        currPath <- paste0("input/st-storage/series/%s/%s/",data_param_name)
+        cmd <- api_command_generate(
+          action = "replace_matrix",
+          target = sprintf(currPath, area, cluster_name),
+          matrix = get(i)
+        )
+        api_command_register(cmd, opts = opts)
+        `if`(
+          should_command_be_executed(opts),
+          api_command_execute(cmd, 
+                              opts = opts, 
+                              text_alert = paste0("Update ", 
+                                                  i, 
+                                                  " cluster's series: {msg_api}")),
+          cli_command_registered("replace_matrix")
+        )
+      }
     }
     
     return(invisible(opts))

@@ -93,6 +93,8 @@ removeClusterST <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   
   if (is_api_study(opts)) {
+    # format name for API 
+    cluster_name <- transform_name_to_id(cluster_name)
     
     if (identical(cluster_type, "renewables"))
       stop("RES clusters not implemented with the API yet.")

@@ -248,5 +248,15 @@ api_get_variants <- function(id, opts) {
   )
 }
 
-
+# standardization of character strings for the API 
+# (e.g. cluster names, links, etc.)
+transform_name_to_id <- function(name, lower = TRUE, id_dash = FALSE) {
+  valid_id <- gsub("[^a-zA-Z0-9_(),& -]+", " ", name)
+  valid_id <- trimws(valid_id)
+  if(lower)
+    valid_id <- tolower(valid_id)
+  if(id_dash)
+    valid_id <- gsub("-", "_", valid_id)
+  return(valid_id)
+}
 

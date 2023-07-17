@@ -103,8 +103,12 @@ test_that("API Command test for createClusterST", {
                                  antares_version = "860")
   
   # create complete cluster st-storage
-  createClusterST(area = "area01", 
-                  cluster_name = "cluster01", 
+  area_name <- "area01"
+  cluster_name <- "ClusTER01"
+    
+    # no casse sensitiv
+  createClusterST(area = area_name, 
+                  cluster_name = cluster_name, 
                   group = "Other",
                   unitcount = 1,
                   nominalcapacity = 8000,
@@ -132,6 +136,13 @@ test_that("API Command test for createClusterST", {
       # just check for some parameters
   testthat::expect_true(all(c("min-down-time", "marginal-cost") 
                             %in% names_vector_parameters))
+    # check casse name cluster
+  name_ori <- paste0(area_name, "_", cluster_name)
+  
+  testthat::expect_equal(tolower(name_ori), 
+                         action_api_1$args$parameters$name) 
+  testthat::expect_equal(tolower(name_ori), 
+                         action_api_1$args$storage_name) 
   
   ## test other group for data
     # search "replace_matrix" action
@@ -149,13 +160,16 @@ test_that("API Command test for createClusterST", {
   
     # test for every path, the path destination + name of txt file 
        # name txt files corresponding data parameters of function `createClusterST()`
-  name_area <- "area01"
-  cluster_name <- paste0(name_area, "_cluster01")
-  full_root_path_name <- file.path("input", "st-storage", "series", name_area,
-                                   cluster_name)
+  full_root_path_name <- file.path("input", "st-storage", "series", area_name,
+                                   tolower(name_ori))
   
+  # from code 
+    # these names ares approved with antares desktop but not with API
   names_file_list <- c("PMAX-injection", "PMAX-withdrawal", "inflows", 
                        "lower-rule-curve", "upper-rule-curve")
+  
+  # reformat API 
+  names_file_list <- transform_name_to_id(names_file_list, id_dash = TRUE)
   
     # check root path for every file
   is_good_path <- lapply(data_path_files, function(x){
