@@ -94,12 +94,34 @@ writeHydroValues <- function(area,
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
   values_file <- file.path(inputPath, "hydro", "common", "capacity", paste0(type, "_", tolower(area), ".txt"))
+	
+  if (opts$antaresVersion >= 860 & type == "maxpower") {
+    data_ori <- antaresRead:::fread_antares(opts = opts,
+                                            file = values_file)
+  }
   
   if (isTRUE(file.size(values_file) > 0) && !overwrite)
     stop(type," Data already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
          call. = FALSE)
   
   fwrite(x = data, row.names = FALSE, col.names = FALSE, sep = "\t", file = values_file)
+  
+  if (opts$antaresVersion >= 860 & type == "maxpower") {
+    comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
+    if (!comp_mingen_vs_maxpower$check) {
+      # ROLLBACK
+      fwrite(
+        x = as.data.table(data_ori),
+        row.names = FALSE, 
+        col.names = FALSE, 
+        sep = "\t",
+        file = values_file
+    )
+      cat(comp_mingen_vs_maxpower$msg)
+      stop_message <- sprintf("File %s can not be updated", values_file)
+      stop(stop_message)
+    }
+  }
 }
 
 
@@ -153,7 +175,7 @@ get_default_hydro_ini_values <- function(){
 #'      \item{initialize reservoir date}{ : numeric, integer or NULL}
 #'      \item{reservoir capacity}{ : numeric, integer or NULL}
 #'   }
-#' @param with_check_area Enable the control of the areas' existence. Useful when you create a new area.
+#' @param mode Execution mode. Useful when you create a new area or remove an existing area to avoid control on hydro data.
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
@@ -170,12 +192,15 @@ get_default_hydro_ini_values <- function(){
 #' , params = list("leeway low" = 2.5, "leeway up" = 25))
 #'
 #' }
-writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRead::simOptions()){
+writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simOptions()){
   
   assertthat::assert_that(inherits(opts, "simOptions"))
-  if(with_check_area){
+  assertthat::assert_that(mode %in% c("createArea", "removeArea", "other"), msg = "Impossible value")
+  
+  if(mode %in% c("removeArea", "other")){
     check_area_name(area, opts)
   }
+  area <- tolower(area)
   
   # Allowed names/types for sections
   expected_params <- list("inter-daily-breakdown" = c("numeric", "integer", "NULL"),
@@ -218,6 +243,7 @@ writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRe
   # Previous data
   path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
   ini_hydro_data <- readIni(path_ini_hydro, opts = opts)
+  ini_hydro_data_ori <- ini_hydro_data
   
   # Edit hydro data
   for(name in params_names){
@@ -225,9 +251,24 @@ writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRe
   }
   
   writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
+  
+  # Enable control of consistency data 
+  if(mode == "other"){
+    comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
+    if(!comp_mingen_vs_hydro_storage$check){
+      # ROLLBACK
+      writeIni(ini_hydro_data_ori, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
+      cat(comp_mingen_vs_hydro_storage$msg)
+      stop("File input/hydro/hydro.ini can not be updated")
+    }
+    comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
+    if(!comp_mingen_vs_maxpower$check){
+      writeIni(ini_hydro_data_ori, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
+      cat(comp_mingen_vs_maxpower$msg)
+      stop("File input/hydro/hydro.ini can not be updated")
+    }
+  }
 }
-
-
 
 
 #' @title Write default values in hydro.ini file if the section is empty.
@@ -249,20 +290,22 @@ fill_empty_hydro_ini_file <- function(area, opts = antaresRead::simOptions()){
     path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
     ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
     if (is.null(ini_hydro_data[["use heuristic"]][[area]])) {
-      writeIniHydro(area, list("use heuristic" = TRUE), opts = opts)
+      ini_hydro_data[["use heuristic"]][[area]] <- TRUE
+      writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
       ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
     }
     if (is.null(ini_hydro_data[["follow load"]][[area]])) {
-      writeIniHydro(area, list("follow load" = TRUE), opts = opts)
+      ini_hydro_data[["follow load"]][[area]] <- TRUE
+      writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
       ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
     }
     if (is.null(ini_hydro_data[["reservoir"]][[area]])) {
-      writeIniHydro(area, list("reservoir" = FALSE), opts = opts)
+      ini_hydro_data[["reservoir"]][[area]] <- FALSE
+      writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
       ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
     }
   }
 }
-
 
 
 #' @title Write default input time series if file is empty.
@@ -274,17 +317,28 @@ fill_empty_hydro_ini_file <- function(area, opts = antaresRead::simOptions()){
 fill_empty_hydro_ts_file <- function(area, opts = antaresRead::simOptions()){
   
   if (opts$antaresVersion >= 860 & opts$typeLoad != "api") {
-    file_mingen <- file.path(opts$studyPath, "input", "hydro", "series", area, "mingen.txt")
-    file_mod <- file.path(opts$studyPath, "input", "hydro", "series", area, "mod.txt")
+    file_mingen <- file.path(opts$inputPath, "hydro", "series", area, "mingen.txt")
+    file_mod <- file.path(opts$inputPath, "hydro", "series", area, "mod.txt")
     if (file.info(file_mingen)$size == 0) {
-      writeInputTS(area = area, data = rep(0, 8760), type = "mingen", opts = opts)
+      fwrite(
+            x = as.data.table(rep(0, 8760)),
+            row.names = FALSE, 
+            col.names = FALSE, 
+            sep = "\t",
+            file = file_mingen
+      )  
     }
     if (file.info(file_mod)$size == 0) {
-      writeInputTS(area = area, data = rep(0, 365), type = "hydroSTOR", opts = opts)
+      fwrite(
+            x = as.data.table(rep(0, 365)),
+            row.names = FALSE, 
+            col.names = FALSE, 
+            sep = "\t",
+            file = file_mod
+      )  
     }
   }
 }
-
 
 
 #' @title Get the type of control to execute using the 3 necessary booleans.
@@ -320,7 +374,6 @@ get_type_check_mingen_vs_hydrostorage <- function(hydro_params){
   
   return(type_control)
 }
-
 
 
 #' @title Get the type of control to execute between mingen data and hydro storage data.
@@ -369,8 +422,8 @@ get_type_check_mingen_vs_hydrostorage_to_trigger <- function(area, opts = antare
 
 #' @title Replicate a data.table as many times as needed to get the same number of time series between 2 data.tables.
 #'
-#' @param x a data.table of time series type to replicate if necessary.
-#' @param y a data.table of time series type to use as reference to match its number of time series.
+#' @param xts a data.table of time series type to replicate if necessary.
+#' @param yts a data.table of time series type to use as reference to match its number of time series.
 #'
 #' @return 
 #' the data.table x replicated to match the number of time series of y.
@@ -424,10 +477,11 @@ add_week_number_column_to_ts <- function(xts){
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
-#'
 #' @importFrom antaresRead simOptions readInputTS
 #' @importFrom assertthat assert_that
 #'
+#' @return 
+#' a list containing the boolean if the check is ok and the message to display.
 check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()){
   
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -435,6 +489,8 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
   
   check <- TRUE
   msg <- ""
+  mingen <- NULL
+  hydroStorage <- NULL
   
   if (opts$antaresVersion >= 860) {
     type_control <- get_type_check_mingen_vs_hydrostorage_to_trigger(area, opts)
@@ -452,7 +508,10 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
       
       dt_merged <- merge(mingen_data, mod_data[,c("timeId", "tsId", "hydroStorage")], by = c("timeId", "tsId"))
       
-      dt_agg <- dt_merged[, .(mingen = sum(mingen), hydroStorage = sum(hydroStorage)), by = eval(type_control[["level_aggregation"]])]
+      dt_agg <- dt_merged[,
+                          c("mingen", "hydroStorage") := list(sum(mingen), sum(hydroStorage)),
+                          by = eval(type_control[["level_aggregation"]])
+                         ]
       dt_agg$is_hydroST_gt_mingen <- dt_agg$hydroStorage >= dt_agg$mingen
       check <- all(dt_agg$is_hydroST_gt_mingen)
       
@@ -460,6 +519,98 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
         msg <- sprintf("Data does not respect the %s condition.\nYou must check input/hydro/series/%s/mingen.txt and input/hydro/series/%s/mod.txt\n"
         , type_control[["type"]], area, area
         )
+      }
+    }
+  }
+  
+  return(list("check" = check, "msg" = msg))
+}
+
+
+#' @title Get the type of control to execute between mingen data and maxpower data.
+#' 
+#' @description 
+#'
+#' Compute the type of control to make between :
+#' \itemize{
+#'      \item{`input/hydro/series/<area>/mingen.txt`}
+#'      \item{`input/hydro/common/capacity/maxpower_<area>.txt`}
+#' }
+#' This control is implemented in Antares too.
+#' 
+#' @param area The area where the type of control must be computed.
+#' @param opts List of simulation parameters returned by the function
+#'   [antaresRead::setSimulationPath()].
+#'
+#' @importFrom antaresRead simOptions readIni
+#' @importFrom assertthat assert_that
+#'
+#' @return 
+#' a list containing the type of control to execute and the variables to use for aggregation.
+get_type_check_mingen_vs_maxpower_to_trigger <- function(area, opts = antaresRead::simOptions()){
+  
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  check_area_name(area, opts)
+  
+  type_control <- NULL
+  
+  if (opts$antaresVersion >= 860) {
+    fill_empty_hydro_ini_file(area, opts)
+    path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
+    ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
+    
+    reservoir <- ini_hydro_data[["reservoir"]][[area]]
+    
+    if (!reservoir) {
+      type_control <- list("type" = "hourly")
+    }
+  }
+  
+  return(type_control)
+}
+
+
+#' @title Check if mingen data and maxpower data are consistent.
+#' 
+#' @description 
+#' `r antaresEditObject:::badge_api_ok()`
+#'
+#' At each hourly time step, mingen must be less or equal than generatingMaxPower.
+#' 
+#' @param area The area to check.
+#' @param opts List of simulation parameters returned by the function
+#'   [antaresRead::setSimulationPath()].
+#'
+#' @importFrom antaresRead simOptions readIni readInputTS
+#' @importFrom assertthat assert_that
+#'
+#' @return 
+#' a list containing the boolean if the check is ok and the message to display.
+check_mingen_vs_maxpower <- function(area, opts = antaresRead::simOptions()){
+  
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  check_area_name(area, opts)
+  
+  check <- TRUE
+  msg <- ""
+  
+  if (opts$antaresVersion >= 860) {
+    type_control <- get_type_check_mingen_vs_maxpower_to_trigger(area, opts)
+    if (!is.null(type_control)) {
+      fill_empty_hydro_ts_file(area, opts)
+      mingen_data <- antaresRead::readInputTS(mingen = area, opts = opts)
+      maxpower_data <- antaresRead::readInputTS(hydroStorageMaxPower = area, opts = opts)
+      cols_to_exclude <- c("generatingMaxEnergy", "pumpingMaxPower", "pumpingMaxEnergy")
+      cols_to_keep <- setdiff(colnames(maxpower_data), cols_to_exclude)
+      maxpower_data <- maxpower_data[, cols_to_keep, with = FALSE]
+      
+      dt_merged <- merge(mingen_data, maxpower_data[,c("time","generatingMaxPower")], by = "time")
+      dt_merged$is_max_gt_min <- dt_merged$generatingMaxPower >= dt_merged$mingen
+      
+      check <- all(dt_merged$is_max_gt_min)
+      if (!check) {
+        msg <- sprintf("Data does not respect the hourly condition.\nYou must check input/hydro/series/%s/mingen.txt and input/hydro/common/capacity/maxpower_%s.txt\n"
+        , area, area)
       }
     }
   }

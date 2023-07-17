@@ -4,12 +4,7 @@
 \alias{writeIniHydro}
 \title{Edit hydro.ini values}
 \usage{
-writeIniHydro(
-  area,
-  params,
-  with_check_area = TRUE,
-  opts = antaresRead::simOptions()
-)
+writeIniHydro(area, params, mode = "other", opts = antaresRead::simOptions())
 }
 \arguments{
 \item{area}{The area where to edit the values.}
@@ -33,7 +28,7 @@ writeIniHydro(
 \item{reservoir capacity}{ : numeric, integer or NULL}
 }}
 
-\item{with_check_area}{Enable the control of the areas' existence. Useful when you create a new area.}
+\item{mode}{Execution mode. Useful when you create a new area or remove an existing area to avoid control on hydro data.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}

@@ -106,7 +106,7 @@ suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"
 test_that("create mingen file data v860", {
   
   #Initialize mingen data
-  M_mingen = matrix(6,8760,5)
+  M_mingen = matrix(0,8760,5)
   
   
   # [management rules] for mingen data : 
@@ -200,6 +200,98 @@ test_that("create mingen file data v860", {
 
 
 
+test_that("create mingen file data v860", {
 
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860",paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+
+  nb_hours_per_day <- 24
+  nb_days_per_year <- 365
+  nb_hours_per_year <- nb_hours_per_day * nb_days_per_year
+  nb_days_per_month <- 31
+  nb_hours_per_month <- nb_days_per_month * nb_hours_per_day
+
+  val <- 3
+  writeInputTS(area = area, data = matrix(data = rep(val, nb_days_per_year), nrow = nb_days_per_year), type = "hydroSTOR", opts = opts)
+  
+  mat_maxpower_true <- matrix(data = rep(c(10000, 24, 0, 24), each = 365), ncol = 4)
+  writeHydroValues(area= area, type = "maxpower", data = mat_maxpower_true, opts = opts)
+  # division by nb_hours_per_month + 1 => writing OK
+  val_mingen_ok <- val * nb_days_per_month / (nb_hours_per_month + 1)
+  writeInputTS(area = area, data = matrix(data = rep(val_mingen_ok, nb_hours_per_year), nrow = nb_hours_per_year), type = "mingen", opts = opts)
+
+  path_mingen <- file.path(opts$inputPath, "hydro", "series", area, "mingen.txt")
+  data_mingen <- antaresRead:::fread_antares(opts = opts, file = path_mingen)
+
+  expect_equal(val_mingen_ok, as.numeric(unique(data_mingen)))
+
+  # try to increase val_mingen
+  # division by nb_hours_per_month - 1 => writing KO
+  val_mingen_ko <- val * nb_days_per_month / (nb_hours_per_month - 1)
+
+  data_mingen <- antaresRead:::fread_antares(opts = opts, file = path_mingen)
+
+  expect_error(writeInputTS(area = area,
+                            data = matrix(data = rep(val_mingen_ko, nb_hours_per_year),
+                                          nrow = nb_hours_per_year),
+                            type = "mingen",
+                            opts = opts)
+               ,regexp = "can not be updated")
+  expect_equal(val_mingen_ok, as.numeric(unique(data_mingen)))
+  expect_true(! val_mingen_ok == val_mingen_ko)
+
+
+  # YEARLY
+  writeIniHydro(area, params = list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE), mode = "other", opts = opts)
+  expect_error(writeInputTS(area = area,
+                              data = matrix(data = rep(val_mingen_ko, nb_hours_per_year),
+                                            nrow = nb_hours_per_year),
+                              type = "mingen",
+                              opts = opts)
+                 ,regexp = "can not be updated")
+
+  # WEEKLY
+  writeIniHydro(area, params = list("use heuristic" = TRUE, "follow load" = FALSE), mode = "other", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = matrix(data = rep(val_mingen_ko, nb_hours_per_year),
+                                          nrow = nb_hours_per_year),
+                            type = "mingen",
+                            opts = opts)
+               ,regexp = "can not be updated")
+
+  # try to decrease val_mod
+  # MONTHLY
+  writeIniHydro(area, params = list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE), mode = "other", opts = opts)
+  val_mod <- 2
+  expect_error(writeInputTS(area = area,
+                              data = matrix(data = rep(val_mod, nb_days_per_year), nrow = nb_days_per_year),
+                              type = "hydroSTOR",
+                              opts = opts)
+               ,regexp = "can not be updated")
+
+  # YEARLY
+  writeIniHydro(area, params = list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE), mode = "other", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = matrix(data = rep(val_mod, nb_days_per_year), nrow = nb_days_per_year),
+                            type = "hydroSTOR",
+                            opts = opts)
+               ,regexp = "can not be updated")
+
+  # WEEKLY
+  writeIniHydro(area, params = list("use heuristic" = TRUE, "follow load" = FALSE), mode = "other", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = matrix(data = rep(val_mod, nb_days_per_year), nrow = nb_days_per_year),
+                            type = "hydroSTOR",
+                            opts = opts)
+               ,regexp = "can not be updated")
+
+
+  unlink(x = opts$studyPath, recursive = TRUE)
+
+})
 
 

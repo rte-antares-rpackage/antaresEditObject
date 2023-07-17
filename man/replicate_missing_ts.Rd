@@ -7,9 +7,9 @@
 replicate_missing_ts(xts, yts)
 }
 \arguments{
-\item{x}{a data.table of time series type to replicate if necessary.}
+\item{xts}{a data.table of time series type to replicate if necessary.}
 
-\item{y}{a data.table of time series type to use as reference to match its number of time series.}
+\item{yts}{a data.table of time series type to use as reference to match its number of time series.}
 }
 \value{
 the data.table x replicated to match the number of time series of y.
