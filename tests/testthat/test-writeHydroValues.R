@@ -271,7 +271,7 @@ test_that("check_mingen_vs_hydro_storage() in 8.6.0 : control data consistency w
 
   lst_yearly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
   lst_monthly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
-  lst_weekly <- list("use heuristic" = TRUE, "follow load" = FALSE, "reservoir" = TRUE)
+  lst_weekly <- list("use heuristic" = TRUE, "follow load" = FALSE)
 
 
   # YEARLY
