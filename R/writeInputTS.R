@@ -37,7 +37,8 @@
 #' @section Warning:
 #'
 #' You cannot use `area` and `link` arguments at the same time.
-#' There are controls of consistency between mingen, maxpower and hydroSTOR.
+#' If some conditions are fulfilled, controls of data consistency between mingen.txt (type = "mingen") and mod.txt (type = "hydroSTOR") are executed.
+#' These controls depend on the values you find input/hydro/hydro.ini.
 #'
 #' @importFrom antaresRead simOptions
 #' @importFrom assertthat assert_that
@@ -103,7 +104,7 @@ writeInputTS <- function(data,
                                                    file = path_mingen_file)
         
         #initialize the number of columns to the data input
-        dim_column = dim(data)[2]
+        dim_column <- dim(data)[2]
         
         #If mingen.txt has more than 1 column, mod must have either 1 or same width than mingen.txt 
         if (dim(mingen_data)[2] > 1) {
@@ -135,11 +136,11 @@ writeInputTS <- function(data,
                                             file = path_mod_file)
     
     #initialize the number of columns to the data input
-    dim_column = dim(data)[2]
+    dim_column <- dim(data)[2]
     
     #If mod.txt has more than 1 column, mingen must have either 1 or same width than mod.txt 
     if (dim(mod_data)[2] > 1) {
-      dim_column = c(1, dim(mod_data)[2])
+      dim_column <- c(1, dim(mod_data)[2])
       
       #If the dimensions does not match, we stop
       if (!(dim(data)[2] %in% dim_column)){
@@ -148,7 +149,7 @@ writeInputTS <- function(data,
         
       } else {
         #The data number of columns is correct
-        dim_column = dim(data)[2]
+        dim_column <- dim(data)[2]
       }
     }
   }
@@ -228,7 +229,7 @@ writeInputTS <- function(data,
     
     return(update_api_opts(opts))
   }
-
+  
   # File block
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
@@ -249,18 +250,18 @@ writeInputTS <- function(data,
       call. = FALSE
     )
   
-	if (opts$antaresVersion >= 860) {
-	  if (type == "mingen") {
+  if (opts$antaresVersion >= 860) {
+    if (type == "mingen") {
       filename <- "mingen.txt"
-		}
-		if (type == "hydroSTOR") {
-		  filename <- "mod.txt"
-		}
-	  path_ori_file <- file.path(opts$inputPath, "hydro", "series", area, filename)
+    }
+    if (type == "hydroSTOR") {
+      filename <- "mod.txt"
+    }
+    path_ori_file <- file.path(opts$inputPath, "hydro", "series", area, filename)
     data_ori <- antaresRead:::fread_antares(opts = opts,
                                             file = path_ori_file)
   }
-	
+  
   #Writing or creation if file does not exist.
   fwrite(
     x = as.data.table(data),
@@ -271,55 +272,55 @@ writeInputTS <- function(data,
   )
   
   if (opts$antaresVersion >= 860) {
-	  if (type == "mingen") {
-		  # Check mingen vs hydroSTOR and maxpower
+    if (type == "mingen") {
+      # Check mingen vs hydroSTOR and maxpower
       comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
       if (!comp_mingen_vs_hydro_storage$check) {
-			  # ROLLBACK
+        # Rollback
         fwrite(
           x = as.data.table(data_ori),
           row.names = FALSE, 
           col.names = FALSE, 
           sep = "\t",
           file = path
-      )
+        )
         cat(comp_mingen_vs_hydro_storage$msg)
-			  stop_message <- sprintf("File %s can not be updated", path)
+        stop_message <- sprintf("File %s can not be updated", path)
         stop(stop_message)
       }
-		comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
-		if (!comp_mingen_vs_maxpower$check) {
-			  # ROLLBACK
+    comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
+    if (!comp_mingen_vs_maxpower$check) {
+        # Rollback
         fwrite(
           x = as.data.table(data_ori),
           row.names = FALSE, 
           col.names = FALSE, 
           sep = "\t",
           file = path
-      )
+        )
         cat(comp_mingen_vs_maxpower$msg)
-			  stop_message <- sprintf("File %s can not be updated", path)
+        stop_message <- sprintf("File %s can not be updated", path)
         stop(stop_message)
       }
     }
-		if (type == "hydroSTOR") {
-		  # Check hydroSTOR vs mingen
+    if (type == "hydroSTOR") {
+      # Check hydroSTOR vs mingen
       comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
       if (!comp_mingen_vs_hydro_storage$check) {
-			  # ROLLBACK
+        # Rollback
         fwrite(
           x = as.data.table(data_ori),
           row.names = FALSE, 
           col.names = FALSE, 
           sep = "\t",
           file = path
-      )
+        )
         cat(comp_mingen_vs_hydro_storage$msg)
-			  stop_message <- sprintf("File %s can not be updated", path)
+        stop_message <- sprintf("File %s can not be updated", path)
         stop(stop_message)
-      }		
-		}
-	}
+      }    
+    }
+  }
   
   # Maj simulation
   suppressWarnings({
