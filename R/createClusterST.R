@@ -123,7 +123,6 @@ createClusterST <- function(area,
     cmd <- api_command_generate(
       action = "create_st_storage",
       area_id = area,
-      storage_name = cluster_name,
       parameters = params_cluster
     )
 
