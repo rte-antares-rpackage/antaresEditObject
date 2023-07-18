@@ -199,8 +199,7 @@ test_that("create mingen file data v860", {
 })
 
 
-
-test_that("writeInputTS() in 8.6.0 : check if there is an error when data is inconsistent between mingen.txt and mod.txt", {
+test_that("writeInputTS() in 8.6.0 : check if there is an error when control is enabled and data is inconsistent between mingen.txt and mod.txt", {
 
   ant_version <- "8.6.0"
   st_test <- paste0("my_study_860",paste0(sample(letters,5),collapse = ""))
@@ -212,7 +211,7 @@ test_that("writeInputTS() in 8.6.0 : check if there is an error when data is inc
   lst_yearly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
   lst_monthly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
   lst_weekly <- list("use heuristic" = TRUE, "follow load" = FALSE)
-
+  
   nb_hours_per_day <- 24
   nb_days_per_year <- 365
   nb_hours_per_year <- nb_hours_per_day * nb_days_per_year
@@ -229,9 +228,7 @@ test_that("writeInputTS() in 8.6.0 : check if there is an error when data is inc
   mat_mod_true <- matrix(1,nb_days_per_year,nb_ts)
   mat_mod_init <- matrix(0,nb_days_per_year,nb_ts)
   
-  
   writeHydroValues(area= area, type = "maxpower", data = mat_maxpower_init, opts = opts)
-  
   
   # YEARLY
   writeIniHydro(area, params = lst_yearly, mode = "other", opts = opts)
@@ -254,7 +251,6 @@ test_that("writeInputTS() in 8.6.0 : check if there is an error when data is inc
   ,regexp = "can not be updated"
   )
   
-  
   # MONTHLY
   writeIniHydro(area, params = lst_monthly, mode = "other", opts = opts)
   # ref mod
@@ -275,7 +271,6 @@ test_that("writeInputTS() in 8.6.0 : check if there is an error when data is inc
   )
   ,regexp = "can not be updated"
   )
-
   
   # WEEKLY
   writeIniHydro(area, params = lst_weekly, mode = "other", opts = opts)
@@ -298,9 +293,8 @@ test_that("writeInputTS() in 8.6.0 : check if there is an error when data is inc
   ,regexp = "can not be updated"
   )
   
-  
   unlink(x = opts$studyPath, recursive = TRUE)
-
+  
 })
 
 
@@ -336,9 +330,7 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
   mat_mod_true <- matrix(1,nb_days_per_year,nb_ts)
   mat_mod_init <- matrix(0,nb_days_per_year,nb_ts)
   
-  
   writeHydroValues(area= area, type = "maxpower", data = mat_maxpower_init, opts = opts)
-  
   
   # YEARLY
   writeIniHydro(area, params = lst_yearly, mode = "other", opts = opts)
@@ -355,7 +347,6 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
                                            file = path_mod_file),
                as.data.table(mat_mod_true))
   
-  
   # MONTHLY
   writeIniHydro(area, params = lst_monthly, mode = "other", opts = opts)
   # ref mod
@@ -370,7 +361,6 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
   expect_equal(antaresRead:::fread_antares(opts = opts,
                                            file = path_mod_file),
                as.data.table(mat_mod_true))
-  
   
   # WEEKLY
   writeIniHydro(area, params = lst_weekly, mode = "other", opts = opts)
@@ -387,11 +377,9 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
                                            file = path_mod_file),
                as.data.table(mat_mod_true))
   
-  
   unlink(x = opts$studyPath, recursive = TRUE)
   
 })
-
 
 
 test_that("writeInputTS() in 8.6.0 : check if new data is written when control is disabled", {
@@ -424,10 +412,8 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
   mat_mod_true <- matrix(1,nb_days_per_year,nb_ts)
   mat_mod_init <- matrix(0,nb_days_per_year,nb_ts)
   
-  
   writeIniHydro(area, params = lst_wo_control, mode = "other", opts = opts)
   writeHydroValues(area= area, type = "maxpower", data = mat_maxpower_init, opts = opts)
-  
   
   # ref mod
   writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
