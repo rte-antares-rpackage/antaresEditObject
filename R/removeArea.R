@@ -180,10 +180,6 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 }
 
 
-
-
-
-
 #' @title Seek for a removed area
 #'
 #' @description Check if it remains trace of a deleted area in the input folder
@@ -239,9 +235,3 @@ checkRemovedArea <- function(area, all_files = TRUE, opts = antaresRead::simOpti
   )
   
 }
-
-
-
-
-
-
