@@ -197,7 +197,7 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
   assertthat::assert_that(inherits(opts, "simOptions"))
   assertthat::assert_that(mode %in% c("createArea", "removeArea", "other"), msg = "Impossible value")
   
-  if(mode %in% c("removeArea", "other")){
+  if (mode %in% c("removeArea", "other")) {
     check_area_name(area, opts)
   }
   area <- tolower(area)
@@ -224,7 +224,7 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
   expected_params_names <- names(expected_params)
   
   # Name control
-  if(!all(params_names %in% expected_params_names)){
+  if (!all(params_names %in% expected_params_names)) {
     stop(append("Parameter params must be named with the following elements:\n ", 
                 paste0(expected_params_names, collapse = "\n ")))
   }
@@ -235,7 +235,7 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
   })
   
   bad_param_types <- check_param_types[!check_param_types]
-  if(length(bad_param_types) > 0){
+  if (length(bad_param_types) > 0) {
     stop(append("The following parameters have a wrong type:\n ", 
                 paste0(names(bad_param_types), collapse = "\n ")))
   }
@@ -253,16 +253,16 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
   writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
   
   # Enable control of consistency data 
-  if(mode == "other"){
+  if (mode == "other") {
     comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
     if(!comp_mingen_vs_hydro_storage$check){
-      # ROLLBACK
+      # Rollback
       writeIni(ini_hydro_data_ori, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
       cat(comp_mingen_vs_hydro_storage$msg)
       stop("File input/hydro/hydro.ini can not be updated")
     }
     comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
-    if(!comp_mingen_vs_maxpower$check){
+    if (!comp_mingen_vs_maxpower$check) {
       writeIni(ini_hydro_data_ori, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
       cat(comp_mingen_vs_maxpower$msg)
       stop("File input/hydro/hydro.ini can not be updated")
