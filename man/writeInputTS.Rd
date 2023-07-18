@@ -56,7 +56,8 @@ The \code{mingen.txt} file can be created under two conditions:
 
 
 You cannot use \code{area} and \code{link} arguments at the same time.
-There are controls of consistency between mingen, maxpower and hydroSTOR.
+If some conditions are fulfilled, controls of data consistency between mingen.txt (type = "mingen") and mod.txt (type = "hydroSTOR") are executed.
+These controls depend on the values you find input/hydro/hydro.ini.
 }
 
 \examples{

@@ -251,15 +251,15 @@ writeInputTS <- function(data,
     )
   
   if (opts$antaresVersion >= 860) {
-    if (type == "mingen") {
-      filename <- "mingen.txt"
+    filename <- switch(type,
+                       "mingen" = "mingen.txt",
+                       "hydroSTOR" = "mod.txt"
+                      )
+    if (!is.null(filename)) {
+      path_ori_file <- file.path(inputPath, "hydro", "series", area, filename)
+      data_ori <- antaresRead:::fread_antares(opts = opts,
+                                              file = path_ori_file)
     }
-    if (type == "hydroSTOR") {
-      filename <- "mod.txt"
-    }
-    path_ori_file <- file.path(opts$inputPath, "hydro", "series", area, filename)
-    data_ori <- antaresRead:::fread_antares(opts = opts,
-                                            file = path_ori_file)
   }
   
   #Writing or creation if file does not exist.
