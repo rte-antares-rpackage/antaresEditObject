@@ -202,7 +202,7 @@ test_that("create mingen file data v860", {
 test_that("writeInputTS() in 8.6.0 : check if there is an error when control is enabled and data is inconsistent between mingen.txt and mod.txt", {
 
   ant_version <- "8.6.0"
-  st_test <- paste0("my_study_860",paste0(sample(letters,5),collapse = ""))
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
   suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
   area <- "zone51"
   createArea(area)
@@ -301,7 +301,7 @@ test_that("writeInputTS() in 8.6.0 : check if there is an error when control is 
 test_that("writeInputTS() in 8.6.0 : check if new data is written when control is enabled and data is consistent between mingen.txt and mod.txt", {
   
   ant_version <- "8.6.0"
-  st_test <- paste0("my_study_860",paste0(sample(letters,5),collapse = ""))
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
   suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
   area <- "zone51"
   createArea(area)
@@ -385,7 +385,7 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
 test_that("writeInputTS() in 8.6.0 : check if new data is written when control is disabled", {
   
   ant_version <- "8.6.0"
-  st_test <- paste0("my_study_860",paste0(sample(letters,5),collapse = ""))
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
   suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
   area <- "zone51"
   createArea(area)

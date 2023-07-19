@@ -219,6 +219,8 @@ test_that("fill_empty_hydro_ini_file() : fill specific sections in hydro.ini by 
 
 test_that("get_type_check_mingen_vs_hydrostorage() : type of control to make between mingen.txt and mod.txt", {
   
+  # 8 combinations
+  
   # No control
   hydro_params <- list("use heuristic" = FALSE, "follow load" = TRUE, "reservoir" = TRUE)
   expect_true(is.null(get_type_check_mingen_vs_hydrostorage(hydro_params)))
