@@ -194,32 +194,22 @@ writeInputTS <- function(data,
   # API block
   if (is_api_study(opts)) {
     
-    data <- as.matrix(data)
+    l_area <- tolower(area)
+    
     if (type %in% c("load", "wind", "solar")) {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/%s/series/%s_%s", type, type, tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/%s/series/%s_%s", type, type, l_area)
     } else if (type == "hydroROR") {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/ror", tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/hydro/series/%s/ror", l_area)
     } else if (type == "hydroSTOR") {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/mod", tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/hydro/series/%s/mod", l_area)
     } else if (type == "mingen") {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/mingen", tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/hydro/series/%s/mingen", l_area)
     }
+    cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = target_type,
+        matrix = as.matrix(data)
+    )
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
@@ -286,7 +276,7 @@ writeInputTS <- function(data,
         )
         cat(comp_mingen_vs_hydro_storage$msg)
         stop_message <- sprintf("File %s can not be updated", path)
-        stop(stop_message)
+        stop(stop_message, call. = FALSE)
       }
     comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
     if (!comp_mingen_vs_maxpower$check) {
@@ -300,7 +290,7 @@ writeInputTS <- function(data,
         )
         cat(comp_mingen_vs_maxpower$msg)
         stop_message <- sprintf("File %s can not be updated", path)
-        stop(stop_message)
+        stop(stop_message, call. = FALSE)
       }
     }
     if (type == "hydroSTOR") {
@@ -317,7 +307,7 @@ writeInputTS <- function(data,
         )
         cat(comp_mingen_vs_hydro_storage$msg)
         stop_message <- sprintf("File %s can not be updated", path)
-        stop(stop_message)
+        stop(stop_message, call. = FALSE)
       }    
     }
   }
