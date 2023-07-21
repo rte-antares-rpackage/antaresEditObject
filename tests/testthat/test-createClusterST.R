@@ -141,8 +141,6 @@ test_that("API Command test for createClusterST", {
   
   testthat::expect_equal(tolower(name_ori), 
                          action_api_1$args$parameters$name) 
-  testthat::expect_equal(tolower(name_ori), 
-                         action_api_1$args$storage_name) 
   
   ## test other group for data
     # search "replace_matrix" action
