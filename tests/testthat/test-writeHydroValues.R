@@ -236,19 +236,19 @@ test_that("get_type_check_mingen_vs_hydrostorage() : type of control to make bet
   
   # Control yearly
   hydro_params <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
-  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "yearly")
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params) == "annual")
   
   # Control monthly
   hydro_params <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
-  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "monthly")
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params) == "monthly")
   
   # Control weekly
   hydro_params <- list("use heuristic" = TRUE, "follow load" = FALSE, "reservoir" = TRUE)
-  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "weekly")
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params) == "weekly")
   
   # Control weekly
   hydro_params <- list("use heuristic" = TRUE, "follow load" = FALSE, "reservoir" = FALSE)
-  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params)[["type"]] == "weekly")
+  expect_true(get_type_check_mingen_vs_hydrostorage(hydro_params) == "weekly")
 })
 
 
@@ -277,12 +277,12 @@ test_that("check_mingen_vs_hydro_storage() in 8.6.0 : check if the control betwe
   mat_mingen_true <- matrix(-1, nb_hours_per_year, nb_ts)
   mat_mingen_init <- matrix(0, nb_hours_per_year, nb_ts)
   
-  lst_yearly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
+  lst_annual <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
   lst_monthly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
   lst_weekly <- list("use heuristic" = TRUE, "follow load" = FALSE)
   
   # YEARLY
-  writeIniHydro(area, params = lst_yearly, mode = "other", opts = opts)
+  writeIniHydro(area, params = lst_annual, mode = "other", opts = opts)
   # init mingen
   fwrite(
     x = as.data.table(mat_mingen_init),
@@ -301,7 +301,7 @@ test_that("check_mingen_vs_hydro_storage() in 8.6.0 : check if the control betwe
   )
   res_check <- check_mingen_vs_hydro_storage(area, opts)
   expect_true(!res_check$check)
-  expect_true(startsWith(res_check$msg, "Data does not respect the yearly condition."))
+  expect_true(startsWith(res_check$msg, "Data does not respect the annual condition."))
   # consistent mod
   fwrite(
     x = as.data.table(mat_mod_true),
@@ -332,7 +332,7 @@ test_that("check_mingen_vs_hydro_storage() in 8.6.0 : check if the control betwe
   )
   res_check <- check_mingen_vs_hydro_storage(area, opts)
   expect_true(!res_check$check)
-  expect_true(startsWith(res_check$msg, "Data does not respect the yearly condition."))
+  expect_true(startsWith(res_check$msg, "Data does not respect the annual condition."))
   # consistent mingen
   fwrite(
     x = as.data.table(mat_mingen_true),
