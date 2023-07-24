@@ -266,8 +266,8 @@ writeInputTS <- function(data,
   
   # v860 - rollback to original data if necessary
   if (opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")) {
-	  comp_mingen_vs_hydro_storage <- list("check" = TRUE, "msg" = "")
-		comp_mingen_vs_maxpower <- list("check" = TRUE, "msg" = "")
+    comp_mingen_vs_hydro_storage <- list("check" = TRUE, "msg" = "")
+    comp_mingen_vs_maxpower <- list("check" = TRUE, "msg" = "")
     if (type == "mingen") {
       comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
       comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
