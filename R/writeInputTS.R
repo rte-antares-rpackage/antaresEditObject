@@ -37,8 +37,10 @@
 #' @section Warning:
 #'
 #' You cannot use `area` and `link` arguments at the same time.
-#' If some conditions are fulfilled, controls of data consistency between mingen.txt (type = "mingen") and mod.txt (type = "hydroSTOR") are executed.
-#' These controls depend on the values you find input/hydro/hydro.ini.
+#'
+#' For an **Antares version >= 860**, control of data consistency between `mingen.txt` and `mod.txt` can be executed.
+#'
+#' These controls depend on the values you find in `hydro.ini` file.
 #'
 #' @importFrom antaresRead simOptions
 #' @importFrom assertthat assert_that
@@ -240,7 +242,8 @@ writeInputTS <- function(data,
       call. = FALSE
     )
   
-  if (opts$antaresVersion >= 860) {
+  # v860 - save the original data
+  if (opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")) {
     filename <- switch(type,
                        "mingen" = "mingen.txt",
                        "hydroSTOR" = "mod.txt"
@@ -261,54 +264,24 @@ writeInputTS <- function(data,
     file = path
   )
   
-  if (opts$antaresVersion >= 860) {
+  # v860 - rollback to original data if necessary
+  if (opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")) {
+	  comp_mingen_vs_hydro_storage <- list("check" = TRUE, "msg" = "")
+		comp_mingen_vs_maxpower <- list("check" = TRUE, "msg" = "")
     if (type == "mingen") {
-      # Check mingen vs hydroSTOR and maxpower
       comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
-      if (!comp_mingen_vs_hydro_storage$check) {
-        # Rollback
-        fwrite(
-          x = as.data.table(data_ori),
-          row.names = FALSE, 
-          col.names = FALSE, 
-          sep = "\t",
-          file = path
-        )
-        cat(comp_mingen_vs_hydro_storage$msg)
-        stop_message <- sprintf("File %s can not be updated", path)
-        stop(stop_message, call. = FALSE)
-      }
-    comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
-    if (!comp_mingen_vs_maxpower$check) {
-        # Rollback
-        fwrite(
-          x = as.data.table(data_ori),
-          row.names = FALSE, 
-          col.names = FALSE, 
-          sep = "\t",
-          file = path
-        )
-        cat(comp_mingen_vs_maxpower$msg)
-        stop_message <- sprintf("File %s can not be updated", path)
-        stop(stop_message, call. = FALSE)
-      }
+      comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
     }
     if (type == "hydroSTOR") {
-      # Check hydroSTOR vs mingen
       comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
-      if (!comp_mingen_vs_hydro_storage$check) {
-        # Rollback
-        fwrite(
-          x = as.data.table(data_ori),
-          row.names = FALSE, 
-          col.names = FALSE, 
-          sep = "\t",
-          file = path
-        )
-        cat(comp_mingen_vs_hydro_storage$msg)
-        stop_message <- sprintf("File %s can not be updated", path)
-        stop(stop_message, call. = FALSE)
-      }    
+    }
+    if (!comp_mingen_vs_hydro_storage$check){
+      cat(comp_mingen_vs_hydro_storage$msg)
+      rollback_to_previous_data(area = area, prev_data = data_ori, rollback_type = type, opts = opts)
+    }
+    if (!comp_mingen_vs_maxpower$check){
+      cat(comp_mingen_vs_maxpower$msg)
+      rollback_to_previous_data(area = area, prev_data = data_ori, rollback_type = type, opts = opts)
     }
   }
   
