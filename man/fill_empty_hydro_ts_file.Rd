@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{fill_empty_hydro_ts_file}
 \alias{fill_empty_hydro_ts_file}
-\title{Write default input time series if file is empty.}
+\title{Write default input time series if \code{mingen.txt} or/and \code{mod.txt} is empty}
 \usage{
 fill_empty_hydro_ts_file(area, opts = antaresRead::simOptions())
 }
@@ -13,5 +13,5 @@ fill_empty_hydro_ts_file(area, opts = antaresRead::simOptions())
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
 }
 \description{
-Write default input time series if file is empty.
+Write default input time series if \code{mingen.txt} or/and \code{mod.txt} is empty
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{get_type_check_mingen_vs_maxpower_to_trigger}
 \alias{get_type_check_mingen_vs_maxpower_to_trigger}
-\title{Get the type of control to execute between mingen data and maxpower data.}
+\title{Get the type of control to execute between mingen data and maxpower data}
 \usage{
 get_type_check_mingen_vs_maxpower_to_trigger(
   area,
@@ -16,7 +16,7 @@ get_type_check_mingen_vs_maxpower_to_trigger(
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
 }
 \value{
-a list containing the type of control to execute and the variables to use for aggregation.
+a character containing the type of control to execute.
 }
 \description{
 Compute the type of control to make between :
@@ -25,4 +25,5 @@ Compute the type of control to make between :
 \item{\verb{input/hydro/common/capacity/maxpower_<area>.txt}}
 }
 This control is implemented in Antares too.
+No control to execute if \code{reservoir} section in hydro.ini for the area is set to TRUE.
 }

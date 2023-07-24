@@ -2,12 +2,12 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{check_mingen_vs_maxpower}
 \alias{check_mingen_vs_maxpower}
-\title{Check if mingen data and maxpower data are consistent.}
+\title{Check if mingen data and maxpower data are consistent}
 \usage{
 check_mingen_vs_maxpower(area, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{area}{The area to check.}
+\item{area}{The area where to check the data.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
@@ -16,7 +16,5 @@ check_mingen_vs_maxpower(area, opts = antaresRead::simOptions())
 a list containing the boolean if the check is ok and the message to display.
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
-
 At each hourly time step, mingen must be less or equal than generatingMaxPower.
 }

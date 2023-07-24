@@ -38,6 +38,15 @@ writeIniHydro(area, params, mode = "other", opts = antaresRead::simOptions())
 
 For a given area, write its data in the hydro.ini file.
 }
+\section{Warning}{
+
+For an \strong{Antares version >= 860}, control of data consistency between \code{mingen.txt} and \code{mod.txt} can be executed.
+
+For an \strong{Antares version >= 860}, control of data consistency between \code{mingen.txt} and \verb{maxpower_<area>.txt} can be executed.
+
+These controls depend on the values you find in \code{hydro.ini} file.
+}
+
 \examples{
 \dontrun{
 opts <- setSimulationPath(studypath, simulation = "input")
@@ -46,4 +55,5 @@ writeIniHydro(area = "fictive_area"
 , params = list("leeway low" = 2.5, "leeway up" = 25))
 
 }
+
 }

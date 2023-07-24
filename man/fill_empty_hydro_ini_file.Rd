@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{fill_empty_hydro_ini_file}
 \alias{fill_empty_hydro_ini_file}
-\title{Write default values in hydro.ini file if the section is empty.}
+\title{Write default values in hydro.ini file if the section is empty}
 \usage{
 fill_empty_hydro_ini_file(area, opts = antaresRead::simOptions())
 }
@@ -13,7 +13,5 @@ fill_empty_hydro_ini_file(area, opts = antaresRead::simOptions())
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
-
-For a given area, if the data is empty, write TRUE for \verb{use heuristic} and \verb{follow load} sections and FALSE for \code{reservoir} section.
+For a given area, if the data is empty, pick value from default values for \verb{use heuristic}, \verb{follow load} and \code{reservoir} sections.
 }

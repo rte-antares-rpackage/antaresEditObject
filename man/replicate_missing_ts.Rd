@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{replicate_missing_ts}
 \alias{replicate_missing_ts}
-\title{Replicate a data.table as many times as needed to get the same number of time series between 2 data.tables.}
+\title{Replicate a data.table as many times as needed to get the same number of time series between 2 data.tables}
 \usage{
 replicate_missing_ts(xts, yts)
 }
@@ -15,5 +15,5 @@ replicate_missing_ts(xts, yts)
 the data.table x replicated to match the number of time series of y.
 }
 \description{
-Replicate a data.table as many times as needed to get the same number of time series between 2 data.tables.
+Replicate a data.table as many times as needed to get the same number of time series between 2 data.tables
 }

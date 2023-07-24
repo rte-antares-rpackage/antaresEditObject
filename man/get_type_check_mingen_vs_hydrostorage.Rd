@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{get_type_check_mingen_vs_hydrostorage}
 \alias{get_type_check_mingen_vs_hydrostorage}
-\title{Get the type of control to execute using the 3 necessary booleans.}
+\title{Get the type of control to execute using the 3 necessary booleans}
 \usage{
 get_type_check_mingen_vs_hydrostorage(hydro_params)
 }
@@ -10,8 +10,8 @@ get_type_check_mingen_vs_hydrostorage(hydro_params)
 \item{hydro_params}{a list of 3 booleans to compute the type of control to make.}
 }
 \value{
-a list containing the type of control to execute and the variables to use for aggregation.
+a character containing the type of control to execute.
 }
 \description{
-Get the type of control to execute using the 3 necessary booleans.
+Get the type of control to execute using the 3 necessary booleans
 }

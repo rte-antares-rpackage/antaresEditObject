@@ -2,7 +2,7 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{add_week_number_column_to_ts}
 \alias{add_week_number_column_to_ts}
-\title{Add week number column to a data.time of time series type.}
+\title{Add week number column to a data.time of time series type}
 \usage{
 add_week_number_column_to_ts(xts)
 }
@@ -13,5 +13,5 @@ add_week_number_column_to_ts(xts)
 the data.table xts with a new column week.
 }
 \description{
-If timeId column exists, add the week of the number. A week is 168 consecutive hours (= 24 * 7).
+If timeId column exists, add a week number column. A week is 168 consecutive hours (= 24 * 7).
 }

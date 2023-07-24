@@ -56,8 +56,10 @@ The \code{mingen.txt} file can be created under two conditions:
 
 
 You cannot use \code{area} and \code{link} arguments at the same time.
-If some conditions are fulfilled, controls of data consistency between mingen.txt (type = "mingen") and mod.txt (type = "hydroSTOR") are executed.
-These controls depend on the values you find input/hydro/hydro.ini.
+
+For an \strong{Antares version >= 860}, control of data consistency between \code{mingen.txt} and \code{mod.txt} can be executed.
+
+These controls depend on the values you find in \code{hydro.ini} file.
 }
 
 \examples{

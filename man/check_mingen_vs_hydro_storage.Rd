@@ -2,12 +2,12 @@
 % Please edit documentation in R/writeHydroValues.R
 \name{check_mingen_vs_hydro_storage}
 \alias{check_mingen_vs_hydro_storage}
-\title{Check if mingen data and maxpower data are consistent.}
+\title{Check if mingen data and hydro storage data are consistent}
 \usage{
 check_mingen_vs_hydro_storage(area, opts = antaresRead::simOptions())
 }
 \arguments{
-\item{area}{The area to check.}
+\item{area}{The area where to check the data.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
@@ -16,5 +16,5 @@ check_mingen_vs_hydro_storage(area, opts = antaresRead::simOptions())
 a list containing the boolean if the check is ok and the message to display.
 }
 \description{
-At each hourly time step, mingen must be less or equal than maxpower.
+At each weekly/monthly/annual time step, mingen must be less or equal than hydro storage.
 }
