@@ -22,6 +22,6 @@ rollback_to_previous_data(
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}.}
 }
 \description{
-For an \strong{Antares version >= 860}, rollback the data to previous one if the check is KO.
-For a given area, check if the data is consistent and rollback to previous data if the check is KO, i.e. data is not consistent.
+Rollback the data to previous one if the check is KO.
+For a given area, check if the data is consistent and rollback to previous data if the check is KO.
 }
