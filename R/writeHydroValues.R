@@ -289,6 +289,7 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
 #'
 #' @importFrom antaresRead simOptions
 #' @importFrom assertthat assert_that
+#' @importFrom data.table fwrite
 #'
 rollback_to_previous_data <- function(area, prev_data, rollback_type, opts = antaresRead::simOptions()){
   
@@ -387,6 +388,9 @@ fill_empty_hydro_ini_file <- function(area, opts = antaresRead::simOptions()){
 #' @param area The area where to write the input time series.
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
+#'
+#' @importFrom antaresRead simOptions
+#' @importFrom data.table fwrite
 #'
 fill_empty_hydro_ts_file <- function(area, opts = antaresRead::simOptions()){
 
