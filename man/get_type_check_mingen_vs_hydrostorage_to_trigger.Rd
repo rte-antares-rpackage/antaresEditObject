@@ -26,3 +26,6 @@ Compute the type of control to make between :
 }
 This control is implemented in Antares too.
 }
+\note{
+Function called only for an \strong{Antares version >= 860}.
+}

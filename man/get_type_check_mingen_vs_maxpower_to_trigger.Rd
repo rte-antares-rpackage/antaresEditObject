@@ -27,3 +27,6 @@ Compute the type of control to make between :
 This control is implemented in Antares too.
 No control to execute if \code{reservoir} section in hydro.ini for the area is set to TRUE.
 }
+\note{
+Function called only for an \strong{Antares version >= 860}.
+}

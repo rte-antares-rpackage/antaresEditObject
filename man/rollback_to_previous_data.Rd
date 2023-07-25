@@ -25,3 +25,6 @@ rollback_to_previous_data(
 Rollback the data to previous one if the check is KO.
 For a given area, check if the data is consistent and rollback to previous data if the check is KO.
 }
+\note{
+Function called only for an \strong{Antares version >= 860}.
+}

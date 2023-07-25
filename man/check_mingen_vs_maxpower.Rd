@@ -18,3 +18,6 @@ a list containing the boolean if the check is ok and the message to display.
 \description{
 At each hourly time step, mingen must be less or equal than generatingMaxPower.
 }
+\note{
+Function called only for an \strong{Antares version >= 860}.
+}
