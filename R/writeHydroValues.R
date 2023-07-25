@@ -287,6 +287,9 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
+#' @note
+#' Function called only for an **Antares version >= 860**.
+#'
 #' @importFrom antaresRead simOptions
 #' @importFrom assertthat assert_that
 #' @importFrom data.table fwrite
@@ -357,28 +360,26 @@ fill_empty_hydro_ini_file <- function(area, opts = antaresRead::simOptions()){
   
   area <- tolower(area)
   
-  if (opts$antaresVersion >= 860) {
-    path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
+  path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
+  ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
+  default_params <- get_default_hydro_ini_values()
+  # use heuristic
+  if (is.null(ini_hydro_data[["use heuristic"]][[area]])) {
+    ini_hydro_data[["use heuristic"]][[area]] <- default_params[["use heuristic"]]
+    writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
     ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-    default_params <- get_default_hydro_ini_values()
-    # use heuristic
-    if (is.null(ini_hydro_data[["use heuristic"]][[area]])) {
-      ini_hydro_data[["use heuristic"]][[area]] <- default_params[["use heuristic"]]
-      writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
-      ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-    }
-    # follow load
-    if (is.null(ini_hydro_data[["follow load"]][[area]])) {
-      ini_hydro_data[["follow load"]][[area]] <- default_params[["follow load"]]
-      writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
-      ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-    }
-    # reservoir
-    if (is.null(ini_hydro_data[["reservoir"]][[area]])) {
-      ini_hydro_data[["reservoir"]][[area]] <- default_params[["reservoir"]]
-      writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
-      ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-    }
+  }
+  # follow load
+  if (is.null(ini_hydro_data[["follow load"]][[area]])) {
+    ini_hydro_data[["follow load"]][[area]] <- default_params[["follow load"]]
+    writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
+    ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
+  }
+  # reservoir
+  if (is.null(ini_hydro_data[["reservoir"]][[area]])) {
+    ini_hydro_data[["reservoir"]][[area]] <- default_params[["reservoir"]]
+    writeIni(ini_hydro_data, pathIni = path_ini_hydro, opts = opts, overwrite = TRUE)
+    ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
   }
 }
 
@@ -399,18 +400,8 @@ fill_empty_hydro_ts_file <- function(area, opts = antaresRead::simOptions()){
   
   area <- tolower(area)
   
-  if (opts$antaresVersion >= 860 & opts$typeLoad == "txt") {
-    file_mingen <- file.path(opts$inputPath, "hydro", "series", area, "mingen.txt")
+  if (opts$typeLoad == "txt") {
     file_mod <- file.path(opts$inputPath, "hydro", "series", area, "mod.txt")
-    if (file.info(file_mingen)$size == 0) {
-      fwrite(
-            x = as.data.table(rep(0, 8760)),
-            row.names = FALSE, 
-            col.names = FALSE, 
-            sep = "\t",
-            file = file_mingen
-      )  
-    }
     if (file.info(file_mod)$size == 0) {
       fwrite(
             x = as.data.table(rep(0, 365)),
@@ -419,6 +410,18 @@ fill_empty_hydro_ts_file <- function(area, opts = antaresRead::simOptions()){
             sep = "\t",
             file = file_mod
       )  
+    }
+    if (opts$antaresVersion >= 860) {
+      file_mingen <- file.path(opts$inputPath, "hydro", "series", area, "mingen.txt")
+      if (file.info(file_mingen)$size == 0) {
+        fwrite(
+              x = as.data.table(rep(0, 8760)),
+              row.names = FALSE, 
+              col.names = FALSE, 
+              sep = "\t",
+              file = file_mingen
+        )  
+      }
     }
   }
 }
@@ -475,6 +478,9 @@ get_type_check_mingen_vs_hydrostorage <- function(hydro_params){
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
+#' @note
+#' Function called only for an **Antares version >= 860**.
+#'
 #' @importFrom antaresRead simOptions readIni
 #' @importFrom assertthat assert_that
 #'
@@ -488,20 +494,16 @@ get_type_check_mingen_vs_hydrostorage_to_trigger <- function(area, opts = antare
   
   area <- tolower(area)
   
-  type_control <- NULL
-  
-  if (opts$antaresVersion >= 860) {
-    fill_empty_hydro_ini_file(area, opts)
-    path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
-    ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-    mandatory_params <- c("use heuristic", "follow load", "reservoir")
-    ini_hydro_data_fi <- ini_hydro_data[which(names(ini_hydro_data) %in% mandatory_params)]
-    ini_hydro_data_area <- sapply(names(ini_hydro_data_fi), FUN = function(name){
-      ini_hydro_data_fi[[name]][[area]]},
-      simplify = FALSE
-    )
-    type_control <- get_type_check_mingen_vs_hydrostorage(ini_hydro_data_area)
-  }
+  fill_empty_hydro_ini_file(area, opts)
+  path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
+  ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
+  mandatory_params <- c("use heuristic", "follow load", "reservoir")
+  ini_hydro_data_fi <- ini_hydro_data[which(names(ini_hydro_data) %in% mandatory_params)]
+  ini_hydro_data_area <- sapply(names(ini_hydro_data_fi), FUN = function(name){
+    ini_hydro_data_fi[[name]][[area]]},
+    simplify = FALSE
+  )
+  type_control <- get_type_check_mingen_vs_hydrostorage(ini_hydro_data_area)
   
   return(type_control)
 }
@@ -566,6 +568,9 @@ add_week_number_column_to_ts <- function(xts){
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
+#' @note
+#' Function called only for an **Antares version >= 860**.
+#'
 #' @importFrom antaresRead simOptions readInputTS
 #' @importFrom assertthat assert_that
 #'
@@ -584,46 +589,44 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
   mingen <- NULL
   hydroStorage <- NULL
   
-  if (opts$antaresVersion >= 860) {
-    timeStep_control <- get_type_check_mingen_vs_hydrostorage_to_trigger(area, opts)
-    if (!is.null(timeStep_control)) {
-      # Fill ts files if empty
-      fill_empty_hydro_ts_file(area, opts)
-      # Read the mingen data and hydro storage data
-      if (timeStep_control %in% c("monthly", "annual")) {
-        mingen_data <- antaresRead::readInputTS(mingen = area, opts = opts, timeStep = timeStep_control)
-        mod_data <- antaresRead::readInputTS(hydroStorage = area, opts = opts, timeStep = timeStep_control)
-      }
-      # weekly is not used as argument in readInputTS
-      # for this control, a week is a 168 consecutive hours from the first hour
-      # parameters from settings/generaldata.ini are not used here and they are used in the implementation of readInputTS/changetimeStep
-      if (timeStep_control == "weekly") {
-        mingen_data <- antaresRead::readInputTS(mingen = area, opts = opts, timeStep = "hourly")
-        mod_data <- antaresRead::readInputTS(hydroStorage = area, opts = opts, timeStep = "hourly")
-        mingen_data <- add_week_number_column_to_ts(mingen_data)      
-      }
-      # Replicate the ts to have the same number of ts for the 2 data tables
-      mingen_data <- replicate_missing_ts(mingen_data, mod_data)
-      mod_data <- replicate_missing_ts(mod_data, mingen_data)
-      # Join the data
-      dt_merged <- merge(mingen_data,
-                         mod_data[,c("timeId", "tsId", "hydroStorage")],
-                         by = c("timeId", "tsId")
-                        )
-      if (timeStep_control == "weekly") {
-        dt_merged <- dt_merged[,
-                               list(mingen = sum(mingen), hydroStorage = sum(hydroStorage)),
-                               by = c("tsId", "week")
-                               ]
-      }
-      # Check consistency
-      check <- all(dt_merged$hydroStorage >= dt_merged$mingen)
-      
-      if (!check) {
-        msg <- sprintf("Data does not respect the %s condition.\nYou must check input/hydro/series/%s/mingen.txt and input/hydro/series/%s/mod.txt\n"
-        , timeStep_control, area, area
-        )
-      }
+  timeStep_control <- get_type_check_mingen_vs_hydrostorage_to_trigger(area, opts)
+  if (!is.null(timeStep_control)) {
+    # Fill ts files if empty
+    fill_empty_hydro_ts_file(area, opts)
+    # Read the mingen data and hydro storage data
+    if (timeStep_control %in% c("monthly", "annual")) {
+      mingen_data <- antaresRead::readInputTS(mingen = area, opts = opts, timeStep = timeStep_control)
+      mod_data <- antaresRead::readInputTS(hydroStorage = area, opts = opts, timeStep = timeStep_control)
+    }
+    # weekly is not used as argument in readInputTS
+    # for this control, a week is a 168 consecutive hours from the first hour
+    # parameters from settings/generaldata.ini are not used here and they are used in the implementation of readInputTS/changetimeStep
+    if (timeStep_control == "weekly") {
+      mingen_data <- antaresRead::readInputTS(mingen = area, opts = opts, timeStep = "hourly")
+      mod_data <- antaresRead::readInputTS(hydroStorage = area, opts = opts, timeStep = "hourly")
+      mingen_data <- add_week_number_column_to_ts(mingen_data)      
+    }
+    # Replicate the ts to have the same number of ts for the 2 data tables
+    mingen_data <- replicate_missing_ts(mingen_data, mod_data)
+    mod_data <- replicate_missing_ts(mod_data, mingen_data)
+    # Join the data
+    dt_merged <- merge(mingen_data,
+                       mod_data[,c("timeId", "tsId", "hydroStorage")],
+                       by = c("timeId", "tsId")
+                      )
+    if (timeStep_control == "weekly") {
+      dt_merged <- dt_merged[,
+                             list(mingen = sum(mingen), hydroStorage = sum(hydroStorage)),
+                             by = c("tsId", "week")
+                             ]
+    }
+    # Check consistency
+    check <- all(dt_merged$hydroStorage >= dt_merged$mingen)
+    
+    if (!check) {
+      msg <- sprintf("Data does not respect the %s condition.\nYou must check input/hydro/series/%s/mingen.txt and input/hydro/series/%s/mod.txt\n"
+      , timeStep_control, area, area
+      )
     }
   }
   
@@ -647,6 +650,9 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
+#' @note
+#' Function called only for an **Antares version >= 860**.
+#'
 #' @importFrom antaresRead simOptions readIni
 #' @importFrom assertthat assert_that
 #'
@@ -658,22 +664,19 @@ get_type_check_mingen_vs_maxpower_to_trigger <- function(area, opts = antaresRea
   assertthat::assert_that(inherits(opts, "simOptions"))
   check_area_name(area, opts)
   
-  area <- tolower(area)
-  
   timeStep_control <- NULL
   
-  if (opts$antaresVersion >= 860) {
-    fill_empty_hydro_ini_file(area, opts)
-    path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
-    ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-    
-    reservoir <- ini_hydro_data[["reservoir"]][[area]]
-    
-    if (!reservoir) {
-      timeStep_control <- "hourly"
-    }
-  }
+  area <- tolower(area)
+  fill_empty_hydro_ini_file(area, opts)
+  path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
+  ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
   
+  reservoir <- ini_hydro_data[["reservoir"]][[area]]
+  
+  if (!reservoir) {
+    timeStep_control <- "hourly"
+  }
+    
   return(timeStep_control)
 }
 
@@ -686,6 +689,9 @@ get_type_check_mingen_vs_maxpower_to_trigger <- function(area, opts = antaresRea
 #' @param area The area where to check the data.
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
+#'
+#' @note
+#' Function called only for an **Antares version >= 860**.
 #'
 #' @importFrom antaresRead simOptions readIni readInputTS
 #' @importFrom assertthat assert_that
@@ -703,22 +709,20 @@ check_mingen_vs_maxpower <- function(area, opts = antaresRead::simOptions()){
   check <- TRUE
   msg <- ""
   
-  if (opts$antaresVersion >= 860) {
-    timeStep_control <- get_type_check_mingen_vs_maxpower_to_trigger(area, opts)
-    if (!is.null(timeStep_control)) {
-      # Fill ts files if empty
-      fill_empty_hydro_ts_file(area, opts)
-      # Read the mingen data and maxpower data
-      mingen_data <- antaresRead::readInputTS(mingen = area, opts = opts)
-      maxpower_data <- antaresRead::readInputTS(hydroStorageMaxPower = area, opts = opts)
-      # Join the data
-      dt_merged <- merge(mingen_data, maxpower_data[,c("timeId","generatingMaxPower")], by = "timeId")
-      # Check consistency
-      check <- all(dt_merged$generatingMaxPower >= dt_merged$mingen)
-      if (!check) {
-        msg <- sprintf("Data does not respect the hourly condition.\nYou must check input/hydro/series/%s/mingen.txt and input/hydro/common/capacity/maxpower_%s.txt\n"
-        , area, area)
-      }
+  timeStep_control <- get_type_check_mingen_vs_maxpower_to_trigger(area, opts)
+  if (!is.null(timeStep_control)) {
+    # Fill ts files if empty
+    fill_empty_hydro_ts_file(area, opts)
+    # Read the mingen data and maxpower data
+    mingen_data <- antaresRead::readInputTS(mingen = area, opts = opts)
+    maxpower_data <- antaresRead::readInputTS(hydroStorageMaxPower = area, opts = opts)
+    # Join the data
+    dt_merged <- merge(mingen_data, maxpower_data[,c("timeId","generatingMaxPower")], by = "timeId")
+    # Check consistency
+    check <- all(dt_merged$generatingMaxPower >= dt_merged$mingen)
+    if (!check) {
+      msg <- sprintf("Data does not respect the hourly condition.\nYou must check input/hydro/series/%s/mingen.txt and input/hydro/common/capacity/maxpower_%s.txt\n"
+      , area, area)
     }
   }
   
