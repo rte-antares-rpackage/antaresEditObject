@@ -127,18 +127,18 @@ writeHydroValues <- function(area,
 get_default_hydro_ini_values <- function(){
   
   default_hydro_params <- list(
-        "inter-daily-breakdown" = 1,
-        "intra-daily-modulation" = 24,
-        "inter-monthly-breakdown" = 1,
-        "leeway low" = 1,
-        "leeway up" = 1,
-        "pumping efficiency" = 1,
-        "initialize reservoir date" = 0,
+        "inter-daily-breakdown" = 1, #
+        "intra-daily-modulation" = 24, #
+        "inter-monthly-breakdown" = 1, #
+        "leeway low" = 1, #v7
+        "leeway up" = 1, #v7
+        "pumping efficiency" = 1, #v7
+        "initialize reservoir date" = 0, #v7
         "follow load" = TRUE,
         "use heuristic" = TRUE,
-        "use water" = FALSE,
+        "use water" = FALSE, # v7
         "hard bounds" = FALSE,
-        "use leeway" = FALSE,
+        "use leeway" = FALSE, #v7
         "power to level" = FALSE,
         "reservoir" = FALSE,
         "reservoir capacity" = 0
