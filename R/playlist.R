@@ -58,8 +58,18 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
   # otherwise, update the vector of mc_years by removing disabled years
   playlist_update_type <- names(parameters$playlist)
   playlist_update_value <- parameters$playlist
+  
   for (type in playlist_update_type){
-    if (class(playlist_update_value[[type]]) %in% "list") playlist_update_value[[type]] <- unlist(playlist_update_value[[type]], recursive = F)
+    no_uptdate <- grepl(pattern = "reset", type)
+    if (!no_uptdate){
+      transform_values <- gsub(pattern = "\\[|\\]", 
+                               x = playlist_update_value[[type]],
+                               replacement = "")
+      transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+      
+      playlist_update_value[[type]] <- as.integer(transform_values)
+    } 
+      
   }
   
   # untouched playlist - no modification have been made
