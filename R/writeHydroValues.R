@@ -128,6 +128,83 @@ get_default_hydro_ini_values <- function(){
 }
 
 
+#' @title For a given area, check consistency between reservoir and reservoir capacity values
+#'
+#' @param area The area where to run the check.
+#' @param new_data The new list of parameters.
+#' @param prev_data The previous data found in hydro.ini.
+#'
+check_consistency_reservoir_values <- function(area, new_data, prev_data){
+  
+  new_data_names <- names(new_data)
+  
+  with_reservoir <- "reservoir" %in% new_data_names
+  with_reservoir_capacity <- "reservoir capacity" %in% new_data_names
+  nb_cond <- with_reservoir + with_reservoir_capacity
+  
+  warning_msg <- "Reservoir capacity not defined."
+  stop_msg <- "Invalid reservoir capacity."
+  
+  # Update reservoir and reservoir capacity
+  if (nb_cond == 2) {
+    if (!new_data[["reservoir"]]) {
+      new_data[["reservoir capacity"]] <- NULL
+      new_data <- append(new_data, setNames(list(NULL), "reservoir capacity"))
+    } else {
+      if (is.null(new_data[["reservoir capacity"]])) {
+        warning(warning_msg, call. = FALSE)
+      }
+      if (new_data[["reservoir capacity"]] == 0) {
+        stop(stop_msg, call. = FALSE)
+      }
+    } 
+  }
+  
+  # Extract area data from previous data
+  if (nb_cond == 1) {
+    prev_data_area <- sapply(names(prev_data), FUN = function(name){
+      prev_data[[name]][[area]]},
+      simplify = FALSE
+    )
+  }
+  
+  # Update only reservoir
+  if (with_reservoir & !with_reservoir_capacity) {
+    if (!new_data[["reservoir"]]) {
+      new_data <- append(new_data, setNames(list(NULL), "reservoir capacity"))
+    } else {
+      if (is.null(prev_data_area[["reservoir capacity"]])) {
+        warning(warning_msg, call. = FALSE)
+      }
+      if (!is.null(prev_data_area[["reservoir capacity"]])) {
+        if (prev_data_area[["reservoir capacity"]] == 0) {
+          stop(stop_msg, call. = FALSE)
+        }
+      }
+    }
+  }
+  
+  # Update only reservoir capacity
+  if (!with_reservoir & with_reservoir_capacity) {
+    if (!prev_data_area[["reservoir"]]) {
+      new_data[["reservoir capacity"]] <- NULL
+      new_data <- append(new_data, setNames(list(NULL), "reservoir capacity"))
+    } else {
+      if (is.null(new_data[["reservoir capacity"]])) {
+        warning(warning_msg, call. = FALSE)
+      }
+      if (!is.null(new_data[["reservoir capacity"]])) {
+        if (new_data[["reservoir capacity"]] == 0) {
+          stop(stop_msg, call. = FALSE)
+        }
+      }
+    }
+  }
+  
+  return(new_data)
+}
+
+
 #' @title Edit hydro.ini values 
 #' 
 #' @description 
@@ -153,7 +230,7 @@ get_default_hydro_ini_values <- function(){
 #'      \item{initialize reservoir date}{ : numeric, integer or NULL}
 #'      \item{reservoir capacity}{ : numeric, integer or NULL}
 #'   }
-#' @param with_check_area Enable the control of the areas' existence. Useful when you create a new area.
+#' @param mode Execution mode. Useful when you create a new area or remove an existing area to avoid control on hydro data.
 #' @param opts List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()].
 #'
@@ -170,10 +247,11 @@ get_default_hydro_ini_values <- function(){
 #' , params = list("leeway low" = 2.5, "leeway up" = 25))
 #'
 #' }
-writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRead::simOptions()){
+writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simOptions()){
   
   assertthat::assert_that(inherits(opts, "simOptions"))
-  if(with_check_area){
+  assertthat::assert_that(mode %in% c("createArea", "removeArea", "other"), msg = "Impossible value")
+  if (mode %in% c("removeArea", "other")) {
     check_area_name(area, opts)
   }
   
@@ -218,6 +296,11 @@ writeIniHydro <- function(area, params, with_check_area = TRUE, opts = antaresRe
   # Previous data
   path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
   ini_hydro_data <- readIni(path_ini_hydro, opts = opts)
+  
+  if (mode %in% c("other", "createArea")) {
+    params <- check_consistency_reservoir_values(area, params, ini_hydro_data)
+    params_names <- names(params)
+  }
   
   # Edit hydro data
   for(name in params_names){

@@ -81,7 +81,7 @@ sapply(studies, function(study) {
     hydro_ini_data_after_area_creation <- readIni(pathIni = hydro_ini_path, opts = opts)
     
     # Check if each section is in the hydro.ini file
-    name_ref <- names(default_hydro_params)
+    name_ref <- setdiff(names(default_hydro_params), "reservoir capacity")
     name_ref <- name_ref[order(name_ref)]
     name_ <- names(hydro_ini_data_after_area_creation)
     name_ <- name_[order(name_)]

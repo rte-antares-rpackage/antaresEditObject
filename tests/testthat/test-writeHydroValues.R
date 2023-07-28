@@ -147,7 +147,7 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
                    "leeway up" = hydro_ini_data[["leeway up"]][[area_to_edit]] + translate_value,
                    "reservoir" = !is.null(hydro_ini_data[["reservoir"]][[area_to_edit]])
   )
-  writeIniHydro(area = area_to_edit, params = new_data, with_check_area = TRUE, opts = opts)
+  writeIniHydro(area = area_to_edit, params = new_data, mode = "other", opts = opts)
   hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
   
   expect_equal(hydro_ini_after_edit[["leeway low"]][[area_to_edit]] - hydro_ini_data[["leeway low"]][[area_to_edit]], translate_value)
@@ -161,7 +161,7 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
   )
   
   expect_error(
-    writeIniHydro(area = area_to_edit, params = bad_data, with_check_area = TRUE, opts = opts),
+    writeIniHydro(area = area_to_edit, params = bad_data, mode = "other", opts = opts),
     regexp = "Parameter params must be named with the following elements:"
   )
   
@@ -172,7 +172,7 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
   )
   
   expect_error(
-    writeIniHydro(area = area_to_edit, params = bad_types, with_check_area = TRUE, opts = opts),
+    writeIniHydro(area = area_to_edit, params = bad_types, mode = "other", opts = opts),
     regexp = "The following parameters have a wrong type:"
   )
   
@@ -187,13 +187,118 @@ test_that("Write NULL hydro.ini values to ensure its behaviour", {
   fname <- names(hydro_ini_data)[1]
   farea <- names(hydro_ini_data[[fname]])[1]
   
-  writeIniHydro(area = farea, params = setNames(list(NULL), fname), with_check_area = TRUE, opts = opts)
+  writeIniHydro(area = farea, params = setNames(list(NULL), fname), mode = "other", opts = opts)
   hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
   
   expect_true(!is.null(hydro_ini_data[[fname]][[farea]]))
   expect_true(is.null(hydro_ini_after_edit[[fname]][[farea]]))
 })
 
+
+
+test_that("writeIniHydro(): check if consistency between reservoir and reservoir capacity is preserved", {
+  
+  custom_reservoir_capa <- 123456
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+	area2 <- "zone52"
+  createArea(area)
+	createArea(area2)
+	suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
+  
+  ## Both params with reservoir TRUE
+  # reservoir capacity > 0
+  my_params <- list("reservoir" = TRUE, "reservoir capacity" = custom_reservoir_capa)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_equal(my_params[["reservoir"]], hydro_ini_data[["reservoir"]][[area]])
+  expect_equal(my_params[["reservoir capacity"]], hydro_ini_data[["reservoir capacity"]][[area]])
+  
+  # reservoir capacity = 0
+  my_params <- list("reservoir" = TRUE, "reservoir capacity" = 0)
+  expect_error(writeIniHydro(area = area, params = my_params, opts = opts),
+              regexp = "Invalid reservoir capacity")
+  
+  
+  ## Both params with reservoir FALSE
+  # reservoir capacity > 0
+  my_params <- list("reservoir" = FALSE, "reservoir capacity" = custom_reservoir_capa)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_equal(my_params[["reservoir"]], hydro_ini_data[["reservoir"]][[area]])
+  expect_true(is.null(hydro_ini_data[["reservoir capacity"]][[area]]))
+  
+  # reservoir capacity = 0
+  my_params <- list("reservoir" = FALSE, "reservoir capacity" = 0)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  expect_equal(my_params[["reservoir"]], hydro_ini_data[["reservoir"]][[area]])
+  expect_true(is.null(hydro_ini_data[["reservoir capacity"]][[area]]))
+  
+  
+  ## One param with reservoir TRUE
+  # init FALSE (no capacity reservoir)
+  my_params <- list("reservoir" = FALSE)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  
+  my_params <- list("reservoir" = TRUE)
+  expect_warning(writeIniHydro(area = area, params = my_params, opts = opts),
+                 regexp = "Reservoir capacity not defined.") 
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_equal(my_params[["reservoir"]], hydro_ini_data[["reservoir"]][[area]])
+  expect_true(is.null(hydro_ini_data[["reservoir capacity"]][[area]]))
+
+  
+  # One param with reservoir FALSE
+  # init TRUE (with capacity reservoir)
+  my_params <- list("reservoir" = TRUE, "reservoir capacity" = custom_reservoir_capa)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  
+  my_params <- list("reservoir" = FALSE)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_equal(my_params[["reservoir"]], hydro_ini_data[["reservoir"]][[area]])
+  expect_true(is.null(hydro_ini_data[["reservoir capacity"]][[area]]))
+  
+  
+  # One param with reservoir capacity > 0
+  # init reservoir to TRUE (with capacity reservoir)
+  my_params <- list("reservoir" = TRUE, "reservoir capacity" = custom_reservoir_capa)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  
+  my_params <- list("reservoir capacity" = custom_reservoir_capa * 2)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_equal(my_params[["reservoir capacity"]], hydro_ini_data[["reservoir capacity"]][[area]])
+  expect_true(hydro_ini_data[["reservoir"]][[area]])
+  
+  my_params <- list("reservoir capacity" = 0)
+  expect_error(writeIniHydro(area = area, params = my_params, opts = opts),
+               regexp = "Invalid reservoir capacity")
+  
+  
+  # One param with reservoir capacity > 0
+  # init reservoir to FALSE (no capacity reservoir)
+  my_params <- list("reservoir" = FALSE, "reservoir capacity" = custom_reservoir_capa)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  
+  my_params <- list("reservoir capacity" = custom_reservoir_capa * 2)
+  writeIniHydro(area = area, params = my_params, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  
+  expect_true(is.null(hydro_ini_data[["reservoir capacity"]][[area]]))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
 
 
 # remove temporary study
