@@ -205,7 +205,8 @@ test_that("fill_empty_hydro_ini_file() : fill specific sections in hydro.ini by 
   all_areas <- unique(unlist(lapply(names(hydro_ini_data), function(n) names(hydro_ini_data[[n]]))))
   farea <- all_areas[1]
   
-  suppressWarnings(writeIniHydro(farea, list("use heuristic" = NULL, "follow load" = NULL, "reservoir" = NULL), mode = "other", opts = opts))
+  # With argument mode set to "removeArea" to avoid control at this step
+  suppressWarnings(writeIniHydro(farea, list("use heuristic" = NULL, "follow load" = NULL, "reservoir" = NULL), mode = "removeArea", opts = opts))
   
   hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
   
