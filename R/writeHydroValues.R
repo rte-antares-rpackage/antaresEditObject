@@ -327,7 +327,9 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
   path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
   ini_hydro_data <- readIni(path_ini_hydro, opts = opts)
   # v860 - save the original data
-  ini_hydro_data_ori <- ini_hydro_data
+  if (opts$antaresVersion >= 860 & mode == "other") {
+    ini_hydro_data_ori <- ini_hydro_data
+  }
   
   if (mode %in% c("other", "createArea")) {
     params <- check_consistency_reservoir_values(area, params, ini_hydro_data)
