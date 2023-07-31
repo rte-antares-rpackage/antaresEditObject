@@ -18,6 +18,7 @@ NEW FEATURES (Antares v8.6) :
 ### Breaking changes
 
 * `deleteStudy()` no longer requires user confirmation
+* `removeLink()` delete properly data for an Antares version >= 820
 
 
 BUGFIXES : 
