@@ -25,6 +25,7 @@ NEW FEATURES (Antares v8.6) :
 BUGFIXES : 
 
 * `api_command_execute()` add timer to request api
+* `writeInputTS()` works with argument `type = "tsLink"`
 
 
 # antaresEditObject 0.5.1

@@ -199,7 +199,53 @@ test_that("create mingen file data v860", {
 })
 
 
+test_that("Chekc if writeInpuTS() writes time series link regardless alphabetical order", {
+	
+	ant_version <- "8.2.0"
+	st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+	suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+	area <- "aa"
+	area2 <- "zz"
+	createArea(area)
+	createArea(area2)
+	suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
 
+	createLink(from = area, to = area2, opts = opts)
+	suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
 
+	path_direct_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_direct.txt"))
+	path_indirect_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_indirect.txt"))
+
+	dat_mat <- c(1,3,2,4)
+	dat_mat_inv <- c(4,2,3,1)
+	nb_cols <- length(dat_mat)
+	
+	## Future developments will come because this is not the expected behaviour
+	## Time series direct and indirect have to be reordered
+	# alphabetical order
+	mat_multi_scen <- matrix(data = rep(dat_mat, each = 8760), ncol = nb_cols)
+	writeInputTS(data = mat_multi_scen, link = paste0(area,"%",area2), type = "tsLink", opts = opts)
+
+	expect_equal(antaresRead:::fread_antares(opts = opts,
+																					 file = path_direct_link_file),
+							 as.data.table(mat_multi_scen[,seq(1, nb_cols/2)]))
+
+	expect_equal(antaresRead:::fread_antares(opts = opts,
+																					 file = path_indirect_link_file),
+							 as.data.table(mat_multi_scen[,seq((nb_cols/2)+1, nb_cols)]))
+  
+	# no alphabetical order
+	mat_multi_scen_inv <- matrix(data = rep(dat_mat_inv, each = 8760), ncol = nb_cols)
+	writeInputTS(data = mat_multi_scen_inv, link = paste0(area2,"%",area), type = "tsLink", opts = opts)
+
+	expect_equal(antaresRead:::fread_antares(opts = opts,
+																					 file = path_direct_link_file),
+							 as.data.table(mat_multi_scen_inv[,seq(1, nb_cols/2)]))
+
+	expect_equal(antaresRead:::fread_antares(opts = opts,
+																					 file = path_indirect_link_file),
+							 as.data.table(mat_multi_scen_inv[,seq((nb_cols/2)+1, nb_cols)]))
+
+})
 
 
