@@ -84,6 +84,8 @@ createBindingConstraint <- function(name,
   # API block
   if (is_api_study(opts)) {
     
+    values <- .valueCheck(values, timeStep)
+    
     cmd <- api_command_generate(
       "create_binding_constraint", 
       name = name,
