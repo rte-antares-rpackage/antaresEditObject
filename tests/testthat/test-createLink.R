@@ -84,3 +84,76 @@ sapply(studies, function(study) {
 })
 
 
+test_that("Check if createLink() in version >= 8.2 writes time series link in the right file regardless alphabetical order", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "aa"
+  area2 <- "zz"
+  createArea(area)
+  createArea(area2)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  dat_mat <- c(1,3,2,4)
+  dat_mat_inv <- c(2,4,1,3)
+  nb_cols <- length(dat_mat)
+  mat_multi_scen <- matrix(data = rep(dat_mat, each = 8760), ncol = nb_cols)
+  mat_multi_scen_inv <- matrix(data = rep(dat_mat_inv, each = 8760), ncol = nb_cols)
+  
+  path_direct_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_direct.txt"))
+  path_indirect_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_indirect.txt"))
+  
+  # alphabetical order ----
+  createLink(from = area, to = area2, opts = opts, tsLink = mat_multi_scen, overwrite = TRUE)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  # first columns go to direct file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_multi_scen[,seq(1, nb_cols/2)]))
+  
+  # last columns go to indirect file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_multi_scen[,seq((nb_cols/2)+1, nb_cols)]))
+  
+  editLink(from = area, to = area2, opts = opts, tsLink = mat_multi_scen_inv)
+  
+  # first columns go to direct file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_multi_scen_inv[,seq(1, nb_cols/2)]))
+  
+  # last columns go to indirect file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_multi_scen_inv[,seq((nb_cols/2)+1, nb_cols)]))
+  
+  # no alphabetical order ----
+  createLink(from = area2, to = area, opts = opts, tsLink = mat_multi_scen_inv, overwrite = TRUE)
+  
+  # first columns go to indirect file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_multi_scen_inv[,seq(1, nb_cols/2)]))
+  
+  # last columns go to direct file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_multi_scen_inv[,seq((nb_cols/2)+1, nb_cols)]))
+  
+  editLink(from = area2, to = area, opts = opts, tsLink = mat_multi_scen)
+  
+  # first columns go to direct file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_multi_scen[,seq(1, nb_cols/2)]))
+  
+  # last columns go to indirect file
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_multi_scen[,seq((nb_cols/2)+1, nb_cols)]))
+
+})
+

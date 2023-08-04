@@ -26,6 +26,7 @@ BUGFIXES :
 
 * `api_command_execute()` add timer to request api
 * `writeInputTS()` works with argument `type = "tsLink"`
+* `createLink()` and `editLink()` write the appropriate time series in _direct.txt and _indirect.txt files even if the areas `from` and `to` given as arguments are not sorted
 
 
 # antaresEditObject 0.5.1
