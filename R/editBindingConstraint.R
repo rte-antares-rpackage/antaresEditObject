@@ -47,6 +47,8 @@ editBindingConstraint <- function(name,
     if (is.null(operator))
       stop("You must provide `operator` argument with API.", call. = FALSE)
     
+    values <- .valueCheck(values, timeStep)
+    
     cmd <- api_command_generate(
       "update_binding_constraint", 
       id = name,
