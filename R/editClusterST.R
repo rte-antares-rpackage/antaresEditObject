@@ -1,16 +1,14 @@
 #' @title Edit a short-term storage cluster 
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_no()`
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
 #' Edit parameters and time series of an existing `st-storage` cluster (Antares studies >= v8.6.0).
 #' 
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
 #' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.
-#' @param ... Parameters to write in the Ini file. Careful!
-#'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
-#'  to set `unitcount`, you'll have to use `unitcount = 1L`.
+#' @param storage_parameters Parameters to write in the Ini file. 
 #' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
 #' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
 #' @param inflows imposed withdrawals from the stock for other uses, The values are integer.
@@ -25,8 +23,8 @@
 #' @export
 editClusterST <- function(area,
                           cluster_name, 
-                          group = "Other",
-                          ...,
+                          group = NULL,
+                          storage_parameters = NULL,
                           PMAX_injection = NULL,
                           PMAX_withdrawal = NULL,
                           inflows = NULL,
@@ -45,22 +43,49 @@ editClusterST <- function(area,
                         "PSP_closed", 
                         "Pondage", 
                         "Battery",
-                        "Other")
+                        paste0("Other", 
+                               seq(1,5)))
   
-  # Check valid group
+  # check valid group
   if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
-    warning(
-      "Group: '", group, "' is not a valid name recognized by Antares,",
+    stop(
+      "Group: '", group, "' is not a valid group recognized by Antares,",
       " you should be using one of: ", 
-      paste(st_storage_group, collapse = ", ")
+      paste(st_storage_group, collapse = ", "), call. = FALSE
     )
   
-  # Cluster's parameters
-  area <- tolower(area)
-  params_cluster <- hyphenize_names(list(...))
+  ##
+  # check parameters (ini file)
+  ##
+  params_cluster <- NULL
   
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  if(!is.null(storage_parameters)){
+    assertthat::assert_that(inherits(storage_parameters, "list"))
+    
+    # static name of list parameters 
+    names_parameters <- names(storage_values_default())
+    
+    if(!all(names(storage_parameters) %in% names_parameters))
+      stop(append("Parameter 'st-storage' must be named with the following elements: ", 
+                  paste0(names_parameters, collapse= ", ")))
+    
+    # check values parameters
+    .st_mandatory_params(list_values = storage_parameters)
+    
+    # check list of parameters
+    params_cluster <- hyphenize_names(storage_parameters)
+  }
+  
+  # make list of parameters
+  area <- tolower(area)
+  if(!(is.null(params_cluster)&&is.null(group))){
+    if (add_prefix)
+      cluster_name <- paste(area, cluster_name, sep = "_")
+    params_cluster <- c(list(name = cluster_name, group = group), 
+                        params_cluster)
+  }
+  if(is.null(group))
+    params_cluster$group <- NULL
   
   ##### API block ----
   if (is_api_study(opts)) {
@@ -113,40 +138,50 @@ editClusterST <- function(area,
   #####-
   
   # path to ini file
-  path_clusters_ini <- file.path(opts$inputPath, "st-storage", "clusters", tolower(area), "list.ini")
+  path_clusters_ini <- file.path(opts$inputPath, 
+                                 "st-storage", 
+                                 "clusters", 
+                                 tolower(area), 
+                                 "list.ini")
   if (!file.exists(path_clusters_ini))
     stop("'", cluster_name, "' in area '", area, "' doesn't seems to exist.")
   
-  # read previous content of ini
-  previous_params <- readIniFile(file = path_clusters_ini)
-  
-  if (!tolower(cluster_name) %in% tolower(names(previous_params))){
-    stop(
-      "'", cluster_name, "' doesn't exist, it can't be edited. You can create cluster with createCluster().",
-      call. = FALSE
+  # only edition if parameters are no NULL
+  if(is.null(params_cluster))
+    warning("No edition for 'list.ini' file", call. = FALSE)
+  else{
+    # read previous content of ini
+    previous_params <- readIniFile(file = path_clusters_ini)
+    
+    if (!tolower(cluster_name) %in% tolower(names(previous_params))){
+      stop(
+        "'", cluster_name, "' doesn't exist, it can't be edited. You can create cluster with createCluster().",
+        call. = FALSE
+      )
+    }
+    
+    # select existing cluster
+    ind_cluster <- which(tolower(names(previous_params)) %in% 
+                           tolower(cluster_name))[1]
+    previous_params[[ind_cluster]] <- utils::modifyList(x = previous_params[[ind_cluster]], 
+                                                        val = params_cluster)
+    names(previous_params)[[ind_cluster]] <- cluster_name
+    
+    # write modified ini file
+    writeIni(
+      listData = previous_params,
+      pathIni = path_clusters_ini,
+      overwrite = TRUE
     )
   }
   
-  # select existing cluster
-  ind_cluster <- which(tolower(names(previous_params)) %in% 
-                         tolower(cluster_name))[1]
-  previous_params[[ind_cluster]] <- utils::modifyList(x = previous_params[[ind_cluster]], 
-                                                      val = params_cluster)
-  names(previous_params)[[ind_cluster]] <- cluster_name
   
-  # write modified ini file
-  writeIni(
-    listData = previous_params,
-    pathIni = path_clusters_ini,
-    overwrite = TRUE
-  )
   
-  # PMAX_injection = NULL,
-  # PMAX_withdrawal = NULL,
-  # inflows = NULL,
-  # lower_rule_curve = NULL,
-  # upper_rule_curve 
- 
+  
+  ##
+  # check DATA (series/)
+  ##
+  
   
   # datas associated with cluster
   path_txt_file <- file.path(opts$inputPath, 

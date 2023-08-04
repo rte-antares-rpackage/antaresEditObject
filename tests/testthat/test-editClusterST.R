@@ -6,8 +6,10 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   
   # areas tests 
   area_test = getAreas()[1]
-   
-  # create tests clusters
+  
+  ## 
+  # INIT : create tests clusters
+  ##
   opts_test <- createClusterST(area_test, 
                   "cluster-st-1", 
                   opts = opts_test) 
@@ -18,26 +20,101 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   
   st_clusters <- readClusterSTDesc(opts = opts_test)
   
-  # edit cluster
-  val <- 0.007
+  ## basics errors cases ----
+  testthat::expect_error(editClusterST(area = area_test, 
+                                       cluster_name = "cluster-st-1", 
+                                       opts = "toto"), 
+                         regexp = "inherit from class simOptions")
+  opts_fake <- opts_test
+  opts_fake$antaresVersion <- 820
+  testthat::expect_error(editClusterST(area = area_test, 
+                                       cluster_name = "cluster-st-1", 
+                                       opts = opts_fake), 
+                         regexp = "only available if using Antares >= 8.6.0")
+  testthat::expect_error(editClusterST(area = "area_test", 
+                                       cluster_name = "cluster-st-1", 
+                                       opts = opts_test), 
+                         regexp = "is not a valid area name")
+  testthat::expect_error(editClusterST(area = area_test, 
+                                       cluster_name = levels(st_clusters$cluster)[1], 
+                                       group = "new group", 
+                                       add_prefix = FALSE, 
+                                       opts = opts_test), 
+                         regexp = "is not a valid group recognized by Antares")
+  testthat::expect_error(editClusterST(area = area_test, 
+                                       cluster_name = "casper", 
+                                       group = "Other1",
+                                       add_prefix = FALSE, 
+                                       opts = opts_test), 
+                         regexp = "'casper' doesn't exist,")
+  
+  ## default edition cluster ----
+    # if all parameters are NULL => no edition of ini and data .txt
+  testthat::expect_warning(editClusterST(area = area_test, 
+                                         cluster_name = levels(st_clusters$cluster)[1],
+                                         opts = opts_test), 
+                           regexp = "No edition for 'list.ini' file")
+  
+  ## edit list ini ----
+    # edit only group value
+  name_cluster_test <- levels(st_clusters$cluster)[1]
   opts_test <- editClusterST(area = area_test, 
-                cluster_name = levels(st_clusters$cluster)[1], 
-                test_param1= "test",
-                test_param2= 0.002154,
-                PMAX_injection = matrix(val, 8760), 
-                PMAX_withdrawal = matrix(val, 8760),
-                inflows =  matrix(0.007, 8760), 
-                lower_rule_curve = matrix(val, 8760), 
-                upper_rule_curve = matrix(val, 8760),
-                opts = opts_test, 
-                add_prefix = FALSE)
+                             cluster_name = name_cluster_test,
+                             group = "Other2", 
+                             add_prefix = FALSE,
+                             opts = opts_test)
+  
+    # check update "group"
+  st_clusters <- readClusterSTDesc(opts = opts_test)
+  group_test <- st_clusters[cluster %in% name_cluster_test, 
+                            .SD, 
+                            .SDcols= "group"]
+  testthat::expect_equal("Other2", group_test$group)
+  
+    # edit values (only 2 parameters)
+  name_cluster_test <- levels(st_clusters$cluster)[2]
+  list_params <- storage_values_default()[1:2]
+  list_params$efficiency <- 0.5
+  list_params$reservoircapacity <- 50
+  
+  initial_values <- st_clusters[cluster %in% name_cluster_test, 
+                                .SD, 
+                                .SDcols= c("efficiency", "reservoircapacity")]
+  
+  opts_test <- editClusterST(area = area_test, 
+                             cluster_name = name_cluster_test, 
+                             storage_parameters = list_params,
+                             opts = opts_test, 
+                             add_prefix = FALSE)
   
   st_clusters <- readClusterSTDesc(opts = opts_test)
+  value_to_test <- st_clusters[cluster %in% name_cluster_test, 
+                               .SD, 
+                               .SDcols= c("group", 
+                                          "efficiency", 
+                                          "reservoircapacity")]
   
-  res <- st_clusters[cluster == levels(st_clusters$cluster)[1], test.param1, test.param2]
+  # test value group is default
+  testthat::expect_equal("Other1", value_to_test$group)
   
-  # test parameters values edited
-  testthat::expect_true(all(res %in% c(0.002154, "test")))
+  # test parameters are updated
+  value_to_test <- as.list(value_to_test[, .SD, 
+                                         .SDcols= c("efficiency", 
+                                                    "reservoircapacity")])
+  testthat::expect_equal(list_params, value_to_test)
+  
+ 
+  ## edit DATA ----
+  val <- 0.007
+  opts_test <- editClusterST(area = area_test, 
+                             cluster_name = levels(st_clusters$cluster)[1],  
+                             PMAX_injection = matrix(val, 8760), 
+                             PMAX_withdrawal = matrix(val, 8760),
+                             inflows =  matrix(0.007, 8760), 
+                             lower_rule_curve = matrix(val, 8760), 
+                             upper_rule_curve = matrix(val, 8760),
+                             opts = opts_test, 
+                             add_prefix = FALSE)
   
   # test data value (with fread_antares)
   path_dir_test <- file.path(opts_test$inputPath, "st-storage", "series", area_test, 
@@ -76,22 +153,18 @@ test_that("API Command test for editClusterST", {
 
   # create complete cluster st-storage
   editClusterST(area = area_name,
-                  cluster_name = cluster_name,
-                  group = "Other",
-                  unitcount = 1,
-                  nominalcapacity = 8000,
-                  `min-down-time` = 0,
-                  `marginal-cost` = 0.010000,
-                  `market-bid-cost` = 0.010000,
-                  PMAX_injection = matrix(1,8760),
-                  PMAX_withdrawal = matrix(0.5,8760),
-                  inflows = matrix(0.25,8760),
-                  lower_rule_curve = matrix(0.2,8760),
-                  upper_rule_curve = matrix(0.9,8760))
+                cluster_name = cluster_name,
+                group = "Other1", 
+                storage_parameters = storage_values_default(),
+                PMAX_injection = matrix(1,8760),
+                PMAX_withdrawal = matrix(0.5,8760),
+                inflows = matrix(0.25,8760),
+                lower_rule_curve = matrix(0.2,8760),
+                upper_rule_curve = matrix(0.9,8760))
 
   # use getVariantCommands to catch information
-  # here (specific st-storage : list with 5 group (parameters) + 5 data parameters)
-  res_list <- getVariantCommands(last = 10)
+  # here (specific st-storage : list with 8 group (parameters) + 5 data parameters)
+  res_list <- getVariantCommands(last = 13)
 
   ## test first group of list for ini parameters
   action_api_1 <- res_list[[1]]
@@ -99,12 +172,12 @@ test_that("API Command test for editClusterST", {
   # name of api instruction/action
   testthat::expect_equal(action_api_1$action, "update_config")
   # check "args" name parameters (just for one parameter/one action)
-  param_target <- action_api_1$args$target
+  param_target <- res_list[[3]]$args$target
   param_target <- regmatches(param_target, regexpr("([^\\/]+$)",param_target))
-  testthat::expect_equal(param_target, "unitcount")
+  testthat::expect_equal(param_target, "efficiency")
   
   # check "data" (value of parameter)
-  testthat::expect_equal("1.000000", action_api_1$args$data)
+  testthat::expect_equal("1.000000", res_list[[3]]$args$data)
 
   ## test other group for data
   # search "replace_matrix" action
