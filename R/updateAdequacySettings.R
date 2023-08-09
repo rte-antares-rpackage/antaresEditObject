@@ -9,9 +9,10 @@
 #' @param include_adq_patch Logical. If TRUE, will run Adequacy Patch
 #' @param set_to_null_ntc_from_physical_out_to_physical_in_for_first_step Logical. default to TRUE
 #' @param set_to_null_ntc_between_physical_out_for_first_step Logical. default to TRUE
-#' @param price_taking_order Character. can take values DENS (default value) and Load.
 #' @param include_hurdle_cost_csr Logical. default to FALSE
 #' @param check_csr_cost_function Logical. default to FALSE
+#' @param enable_first_step Logical. default to TRUE
+#' @param price_taking_order Character. can take values DENS (default value) and Load.
 #' @param threshold_initiate_curtailment_sharing_rule Double. default to 0.0
 #' @param threshold_display_local_matching_rule_violations Double. default to 0.0
 #' @param threshold_csr_variable_bounds_relaxation Integer. default to 3
@@ -36,9 +37,10 @@
 updateAdequacySettings <- function(include_adq_patch = NULL,
                                    set_to_null_ntc_from_physical_out_to_physical_in_for_first_step = NULL,
                                    set_to_null_ntc_between_physical_out_for_first_step = NULL,
-                                   price_taking_order = NULL,
                                    include_hurdle_cost_csr = NULL,
                                    check_csr_cost_function = NULL,
+                                   enable_first_step = NULL,
+                                   price_taking_order = NULL,
                                    threshold_initiate_curtailment_sharing_rule = NULL,
                                    threshold_display_local_matching_rule_violations = NULL,
                                    threshold_csr_variable_bounds_relaxation = NULL,
@@ -81,7 +83,7 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
   if (!is.null(set_to_null_ntc_between_physical_out_for_first_step))
     adequacy$`set-to-null-ntc-between-physical-out-for-first-step` <- set_to_null_ntc_between_physical_out_for_first_step
   
-  if (opts$antaresVersion >= 850){
+  if (opts$antaresVersion >= 850) {
     if (!is.null(price_taking_order))
       adequacy$`price-taking-order` <- price_taking_order
     if (!is.null(include_hurdle_cost_csr))
@@ -95,7 +97,13 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
     if (!is.null(threshold_csr_variable_bounds_relaxation))
       adequacy$`threshold-csr-variable-bounds-relaxation` <- threshold_csr_variable_bounds_relaxation
   }
-
+  
+	# Necessary only for desktop application. Not used in API mode.
+  if (opts$antaresVersion >= 860) {
+    if (!is.null(enable_first_step)) {
+      adequacy$`enable-first-step` <- enable_first_step
+    }  
+  }
   general$`adequacy patch` <- adequacy
   
   writeIni(listData = general, pathIni = pathIni, overwrite = TRUE)

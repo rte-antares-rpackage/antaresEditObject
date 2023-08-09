@@ -13,6 +13,7 @@ NEW FEATURES (Antares v8.6) :
 
 * New function `activateST()` Activate "st-storage" in an Antares study.
 * New functions `createClusterST()`, `editClusterST()`, `removeClusterST()` ("st-storage" family of functions for a study in "input" mode)
+* Add and edit the property `enable-first-step` in `adequacy patch` section in `settings/generaldata.ini`
 
 
 ### Breaking changes
