@@ -71,9 +71,18 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
     pathIni = file.path(inputPath, "links", from, "properties.ini"),
     overwrite = TRUE
   )
+
+  # check version
+  v820 <- is_antares_v820(opts)
   
-  # remove initialization data
-  unlink(x = file.path(inputPath, "links", from, paste0(to, ".txt")), recursive = TRUE)
+  # Remove files
+  if (v820) {
+    unlink(x = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt")), recursive = TRUE)
+    unlink(x = file.path(inputPath, "links", from, "capacities", paste0(to, "_indirect.txt")), recursive = TRUE)
+    unlink(x = file.path(inputPath, "links", from, paste0(to, "_parameters.txt")), recursive = TRUE)
+  } else {
+    unlink(x = file.path(inputPath, "links", from, paste0(to, ".txt")), recursive = TRUE)
+  }
   
   # Maj simulation
   suppressWarnings({
