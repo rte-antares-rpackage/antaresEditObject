@@ -13,6 +13,7 @@ scenarioBuilder(
   n_mc = NULL,
   areas = NULL,
   areas_rand = NULL,
+  coef_hydro_levels = NULL,
   opts = antaresRead::simOptions()
 )
 

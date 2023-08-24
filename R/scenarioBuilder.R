@@ -77,6 +77,7 @@ scenarioBuilder <- function(n_scenario,
                             n_mc = NULL,
                             areas = NULL,
                             areas_rand = NULL,
+														coef_hydro_levels = NULL,
                             opts = antaresRead::simOptions()) {
   if (is_api_study(opts) && is_api_mocked(opts)) {
     stopifnot("In mocked API mode, n_mc cannot be NULL" = !is.null(n_mc))
@@ -97,8 +98,15 @@ scenarioBuilder <- function(n_scenario,
       warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
     }
   }
+	
+	if (!is.null(coef_hydro_levels)) {
+    data_mat <- rep_len(coef_hydro_levels, length(areas) * n_mc)
+	} else {
+	  data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
+	}
+	
   sb <- matrix(
-    data = rep_len(seq_len(n_scenario), length(areas) * n_mc),
+    data = data_mat,
     byrow = TRUE, 
     nrow = length(areas),
     dimnames = list(areas, NULL)
@@ -108,6 +116,15 @@ scenarioBuilder <- function(n_scenario,
 }
 
 
+
+create_referential_series_type <- function(){
+
+  ref_series <- data.frame("series" = c("l", "h", "w", "s", "t", "r", "ntc", "hl"),
+                           "choices" = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels")
+                         )
+
+  return(ref_series)
+}
 
 
 #' @param ruleset Ruleset to read.
@@ -232,18 +249,14 @@ updateScenarioBuilder <- function(ldata,
                                   opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
+	ref_series <- create_referential_series_type()
+	
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- match.arg(
-        arg = series,
-        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc"),
-        several.ok = TRUE
-      )
+      series <- ref_series[ref_series$series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
-      ind_ntc <- which(series == "ntc")
-      series <- substr(series, 1, 1)
-      series[ind_ntc] <- "ntc"
+      series <- ref_series[ref_series$choices %in% series, "series"]
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
