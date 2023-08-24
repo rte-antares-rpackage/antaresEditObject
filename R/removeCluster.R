@@ -93,24 +93,40 @@ removeClusterST <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   
   if (is_api_study(opts)) {
+    # Factorization with sprintf() once each type is implemented
+    # Renewables
+    if (identical(cluster_type, "renewables")) {
+      cmd <- api_command_generate(
+        action = "remove_renewables_cluster",
+        area_id = area,
+        cluster_id = cluster_name
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_renewables_cluster}: {msg_api}"),
+        cli_command_registered("remove_renewables_cluster")
+      )
+    }
     
-    if (identical(cluster_type, "renewables"))
-      stop("RES clusters not implemented with the API yet.")
-    
+    # ST Storage
     if (identical(cluster_type, "st-storage"))
       stop("st-storage clusters not implemented with the API yet.")
     
-    cmd <- api_command_generate(
-      action = "remove_cluster",
-      area_id = area,
-      cluster_id = cluster_name
-    )
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_cluster}: {msg_api}"),
-      cli_command_registered("remove_cluster")
-    )
+    # Thermal
+    if (identical(cluster_type, "thermal")) {
+      cmd <- api_command_generate(
+        action = "remove_cluster",
+        area_id = area,
+        cluster_id = cluster_name
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_cluster}: {msg_api}"),
+        cli_command_registered("remove_cluster")
+      )
+    }
     
     return(invisible(opts))
   }

@@ -20,7 +20,7 @@ NEW FEATURES (Antares v8.6) :
 * `deleteStudy()` no longer requires user confirmation
 * `api_command_execute()` displays an error message and causes the program to stop following an http error code. The error message is completed with the API error description
 * `getPlaylist()` is compatible with the new format returned by `readIniAPI()`
-
+* `removeClusterRES()` in API mode
 
 BUGFIXES : 
 
