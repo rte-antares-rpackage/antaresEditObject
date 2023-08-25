@@ -8,9 +8,10 @@ updateAdequacySettings(
   include_adq_patch = NULL,
   set_to_null_ntc_from_physical_out_to_physical_in_for_first_step = NULL,
   set_to_null_ntc_between_physical_out_for_first_step = NULL,
-  price_taking_order = NULL,
   include_hurdle_cost_csr = NULL,
   check_csr_cost_function = NULL,
+  enable_first_step = NULL,
+  price_taking_order = NULL,
   threshold_initiate_curtailment_sharing_rule = NULL,
   threshold_display_local_matching_rule_violations = NULL,
   threshold_csr_variable_bounds_relaxation = NULL,
@@ -24,11 +25,13 @@ updateAdequacySettings(
 
 \item{set_to_null_ntc_between_physical_out_for_first_step}{Logical. default to TRUE}
 
-\item{price_taking_order}{Character. can take values DENS (default value) and Load.}
-
 \item{include_hurdle_cost_csr}{Logical. default to FALSE}
 
 \item{check_csr_cost_function}{Logical. default to FALSE}
+
+\item{enable_first_step}{Logical. default to TRUE}
+
+\item{price_taking_order}{Character. can take values DENS (default value) and Load.}
 
 \item{threshold_initiate_curtailment_sharing_rule}{Double. default to 0.0}
 

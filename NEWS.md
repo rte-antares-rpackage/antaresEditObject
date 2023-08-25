@@ -15,6 +15,7 @@ NEW FEATURES (Antares v8.6) :
 * New functions `createClusterST()`, `editClusterST()`, `removeClusterST()` ("st-storage" family of functions for a study in "input" mode)
 * Add control of data consistency between `mingen.txt` and `mod.txt` based on values in `hydro.ini` file
 * Add control of data consistency between `mingen.txt` and `maxpower.txt` based on values in `hydro.ini` file
+* Add and edit the property `enable-first-step` in `adequacy patch` section in `settings/generaldata.ini`
 
 NEW FEATURES :
 
@@ -32,6 +33,8 @@ NEW FEATURES :
 BUGFIXES : 
 
 * `api_command_execute()` add timer to request api
+* `writeInputTS()` works with argument `type = "tsLink"`
+* `createLink()` and `editLink()` write the appropriate time series in _direct.txt and _indirect.txt files even if the areas `from` and `to` given as arguments are not sorted
 
 
 # antaresEditObject 0.5.1
