@@ -6,15 +6,21 @@
 * `createArea()` integrate "st-storage".
 * `removeArea()`  integrate "st-storage".
 * `writeInputTS()` integrate "mingen" data and dependency between "mod.txt" and "mingen.txt" data.
-* `createCluster()` / `editCluster()` have new parameter `list_polluants ` for list of pollutants.
+* `createCluster()` / `editCluster()` have new parameter `list_polluants` for list of pollutants.
 
 
 NEW FEATURES (Antares v8.6) :
 
 * New function `activateST()` Activate "st-storage" in an Antares study.
 * New functions `createClusterST()`, `editClusterST()`, `removeClusterST()` ("st-storage" family of functions for a study in "input" mode)
+* Add control of data consistency between `mingen.txt` and `mod.txt` based on values in `hydro.ini` file
+* Add control of data consistency between `mingen.txt` and `maxpower.txt` based on values in `hydro.ini` file
 * Add and edit the property `enable-first-step` in `adequacy patch` section in `settings/generaldata.ini`
 
+NEW FEATURES :
+
+* Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
+* Call writeIniHydro() in createArea() and removeArea()
 
 ### Breaking changes
 

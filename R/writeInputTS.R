@@ -38,6 +38,10 @@
 #'
 #' You cannot use `area` and `link` arguments at the same time.
 #'
+#' For an **Antares version >= 860**, control of data consistency between `mingen.txt` and `mod.txt` can be executed.
+#'
+#' These controls depend on the values you find in `hydro.ini` file.
+#'
 #' @importFrom antaresRead simOptions
 #' @importFrom assertthat assert_that
 #' @importFrom data.table fwrite
@@ -106,7 +110,7 @@ writeInputTS <- function(data,
                                                    file = path_mingen_file)
         
         #initialize the number of columns to the data input
-        dim_column = dim(data)[2]
+        dim_column <- dim(data)[2]
         
         #If mingen.txt has more than 1 column, mod must have either 1 or same width than mingen.txt 
         if (dim(mingen_data)[2] > 1) {
@@ -138,11 +142,11 @@ writeInputTS <- function(data,
                                             file = path_mod_file)
     
     #initialize the number of columns to the data input
-    dim_column = dim(data)[2]
+    dim_column <- dim(data)[2]
     
     #If mod.txt has more than 1 column, mingen must have either 1 or same width than mod.txt 
     if (dim(mod_data)[2] > 1) {
-      dim_column = c(1, dim(mod_data)[2])
+      dim_column <- c(1, dim(mod_data)[2])
       
       #If the dimensions does not match, we stop
       if (!(dim(data)[2] %in% dim_column)){
@@ -151,7 +155,7 @@ writeInputTS <- function(data,
         
       } else {
         #The data number of columns is correct
-        dim_column = dim(data)[2]
+        dim_column <- dim(data)[2]
       }
     }
   }
@@ -196,32 +200,22 @@ writeInputTS <- function(data,
   # API block
   if (is_api_study(opts)) {
     
-    data <- as.matrix(data)
+    l_area <- tolower(area)
+    
     if (type %in% c("load", "wind", "solar")) {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/%s/series/%s_%s", type, type, tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/%s/series/%s_%s", type, type, l_area)
     } else if (type == "hydroROR") {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/ror", tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/hydro/series/%s/ror", l_area)
     } else if (type == "hydroSTOR") {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/mod", tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/hydro/series/%s/mod", l_area)
     } else if (type == "mingen") {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/hydro/series/%s/mingen", tolower(area)),
-        matrix = data
-      )
+      target_type <- sprintf("input/hydro/series/%s/mingen", l_area)
     }
+    cmd <- api_command_generate(
+        action = "replace_matrix",
+        target = target_type,
+        matrix = as.matrix(data)
+    )
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
@@ -231,7 +225,7 @@ writeInputTS <- function(data,
     
     return(update_api_opts(opts))
   }
-
+  
   # File block
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
@@ -252,6 +246,19 @@ writeInputTS <- function(data,
       call. = FALSE
     )
   
+  # v860 - save the original data
+  if (opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")) {
+    filename <- switch(type,
+                       "mingen" = "mingen.txt",
+                       "hydroSTOR" = "mod.txt"
+                      )
+    if (!is.null(filename)) {
+      path_ori_file <- file.path(inputPath, "hydro", "series", area, filename)
+      data_ori <- antaresRead:::fread_antares(opts = opts,
+                                              file = path_ori_file)
+    }
+  }
+  
   #Writing or creation if file does not exist.
   fwrite(
     x = as.data.table(data),
@@ -260,6 +267,27 @@ writeInputTS <- function(data,
     sep = "\t",
     file = path
   )
+  
+  # v860 - rollback to original data if necessary
+  if (opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")) {
+    comp_mingen_vs_hydro_storage <- list("check" = TRUE, "msg" = "")
+    comp_mingen_vs_maxpower <- list("check" = TRUE, "msg" = "")
+    if (type == "mingen") {
+      comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
+      comp_mingen_vs_maxpower <- check_mingen_vs_maxpower(area, opts)
+    }
+    if (type == "hydroSTOR") {
+      comp_mingen_vs_hydro_storage <- check_mingen_vs_hydro_storage(area, opts)
+    }
+    if (!comp_mingen_vs_hydro_storage$check){
+      cat(comp_mingen_vs_hydro_storage$msg)
+      rollback_to_previous_data(area = area, prev_data = data_ori, rollback_type = type, opts = opts)
+    }
+    if (!comp_mingen_vs_maxpower$check){
+      cat(comp_mingen_vs_maxpower$msg)
+      rollback_to_previous_data(area = area, prev_data = data_ori, rollback_type = type, opts = opts)
+    }
+  }
   
   # Maj simulation
   suppressWarnings({
