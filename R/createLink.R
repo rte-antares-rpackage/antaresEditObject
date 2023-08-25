@@ -83,7 +83,8 @@ createLink <- function(from,
   check_area_name(to, opts)
   # areas' order
   areas <- c(from, to)
-  if (!identical(areas, sort(areas))) {
+  are_areas_sorted <- identical(areas, sort(areas))
+  if (!are_areas_sorted) {
     from <- areas[2]
     to <- areas[1]
   }
@@ -141,12 +142,19 @@ createLink <- function(from,
     tsLink <- matrix(data = rep(0, 8760*2), ncol = 2)
   }
   tsLink <- data.table::as.data.table(tsLink)
-  direct <- seq_len(NCOL(tsLink) / 2)
-  indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
+  first_cols <- seq_len(NCOL(tsLink) / 2)
+  last_cols <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
+  if (are_areas_sorted) {
+    direct <- first_cols
+    indirect <- last_cols
+  } else {
+    direct <- last_cols
+    indirect <- first_cols
+  }
   
   # correct column order for antares < 820
   if (!v820) {
-    if (!identical(areas, sort(areas))) {
+    if (!are_areas_sorted) {
       dataLink[, 1:2] <- dataLink[, 2:1]
       if (v7) {
         dataLink[, 3:4] <- dataLink[, 4:3]

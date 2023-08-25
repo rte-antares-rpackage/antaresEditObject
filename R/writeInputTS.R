@@ -61,7 +61,11 @@ writeInputTS <- function(data,
                          opts = antaresRead::simOptions()) {
   
   type <- match.arg(type)
-  check_area_name(area, opts)
+  # No control on area possible for area with type = "tsLink"
+  if (type != "tsLink") {
+    check_area_name(area, opts)
+  }
+  
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
