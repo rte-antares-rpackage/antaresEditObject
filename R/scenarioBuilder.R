@@ -9,6 +9,7 @@
 #' @param n_mc Number of Monte-Carlo years.
 #' @param areas Areas to use in scenario builder, if `NULL` (default) all areas in Antares study are used.
 #' @param areas_rand Areas for which to use `"rand"`.
+#' @param coef_hydro_levels Hydro levels coefficients.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()]
@@ -77,8 +78,9 @@ scenarioBuilder <- function(n_scenario,
                             n_mc = NULL,
                             areas = NULL,
                             areas_rand = NULL,
-														coef_hydro_levels = NULL,
+                            coef_hydro_levels = NULL,
                             opts = antaresRead::simOptions()) {
+  
   if (is_api_study(opts) && is_api_mocked(opts)) {
     stopifnot("In mocked API mode, n_mc cannot be NULL" = !is.null(n_mc))
     stopifnot("In mocked API mode, areas cannot be NULL" = !is.null(n_mc))
@@ -98,13 +100,13 @@ scenarioBuilder <- function(n_scenario,
       warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
     }
   }
-	
-	if (!is.null(coef_hydro_levels)) {
+  
+  if (!is.null(coef_hydro_levels)) {
     data_mat <- rep_len(coef_hydro_levels, length(areas) * n_mc)
-	} else {
-	  data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
-	}
-	
+  } else {
+    data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
+  }
+  
   sb <- matrix(
     data = data_mat,
     byrow = TRUE, 
@@ -112,6 +114,7 @@ scenarioBuilder <- function(n_scenario,
     dimnames = list(areas, NULL)
   )
   sb[areas %in% areas_rand, ] <- "rand"
+  
   return(sb)
 }
 
@@ -247,10 +250,12 @@ updateScenarioBuilder <- function(ldata,
                                   clusters_areas = NULL,
                                   links = NULL,
                                   opts = antaresRead::simOptions()) {
+  
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
-	ref_series <- create_referential_series_type()
-	
+  ref_series <- create_referential_series_type()
+  
   if (!is.list(ldata)) {
     if (!is.null(series)) {
       series <- ref_series[ref_series$series %in% series, "choices"]
@@ -271,8 +276,8 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc"))) {
-      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r' or 'ntc'", call. = FALSE)
+    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc", "hl"))) {
+      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl'", call. = FALSE)
     }
     if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
@@ -372,12 +377,22 @@ listify_sb <- function(mat,
                        clusters_areas = NULL, 
                        links = NULL,
                        opts = antaresRead::simOptions()) {
+  
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
-  dtsb[, value := as.integer(value)]
   
+  if (identical(series, "hl")) {
+    dtsb[, value := as.numeric(value)]
+    if(min(dtsb$value) < 0 | max(dtsb$value) > 1) {
+      stop("Every coefficient for hydro levels must be between 0 and 1.", call. = FALSE)
+    }
+  } else {
+    dtsb[, value := as.integer(value)]
+  }
+  
+  # Thermal
   if (identical(series, "t")) {
     if (is.null(clusters_areas))
       clusters_areas <- readClusterDesc(opts = opts)
@@ -389,6 +404,8 @@ listify_sb <- function(mat,
       allow.cartesian = TRUE
     )
   }
+  
+  # Renewables
   if (identical(series, "r")) {
     check_active_RES(opts)
     if (packageVersion("antaresRead") < "2.2.8")
@@ -406,6 +423,8 @@ listify_sb <- function(mat,
       allow.cartesian = TRUE
     )
   }
+  
+  # Links
   if (identical(series, "ntc")) {
     if (is.null(links))
       links <- getLinks(namesOnly = FALSE, opts = opts)
