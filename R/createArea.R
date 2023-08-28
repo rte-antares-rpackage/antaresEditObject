@@ -183,32 +183,10 @@ createArea <- function(name,
   
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    hydro <- readIniFile(file = file.path(inputPath, "hydro", "hydro.ini"))
-    if (!is.null(hydro$`inter-daily-breakdown`))
-      hydro$`inter-daily-breakdown`[[name]] <- 1
-    if (!is.null(hydro$`intra-daily-modulation`))
-      hydro$`intra-daily-modulation`[[name]] <- 24
-    if (!is.null(hydro$`inter-monthly-breakdown`))
-      hydro$`inter-monthly-breakdown`[[name]] <- 1
-    
-    if (v7) {
-      if (!is.null(hydro$`initialize reservoir date`))
-        hydro$`initialize reservoir date`[[name]] <- 0
-      if (!is.null(hydro$`leeway low`))
-        hydro$`leeway low`[[name]] <- 1
-      if (!is.null(hydro$`leeway up`))
-        hydro$`leeway up`[[name]] <- 1
-      if (!is.null(hydro$`pumping efficiency`))
-        hydro$`pumping efficiency`[[name]] <- 1
-    }
-    
-    writeIni(
-      listData = hydro,
-      pathIni = file.path(inputPath, "hydro", "hydro.ini"),
-      overwrite = TRUE
-    )
+    default_params <- get_default_hydro_ini_values()
+    # Check area is not possible at this step
+    writeIniHydro(area = name, params = default_params, mode = "createArea", opts = opts)
   }
-  
   
   # allocation
   allocation <- list(as.character(1))
@@ -305,7 +283,7 @@ createArea <- function(name,
   # dir
   dir.create(path = file.path(inputPath, "load", "prepro", name), showWarnings = FALSE)
   
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "load", "prepro", name, "conversion.txt")
@@ -361,7 +339,7 @@ createArea <- function(name,
   # dir
   dir.create(path = file.path(inputPath, "solar", "prepro", name), showWarnings = FALSE)
   
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "solar", "prepro", name, "conversion.txt")
@@ -462,7 +440,7 @@ createArea <- function(name,
   # dir
   dir.create(path = file.path(inputPath, "wind", "prepro", name), showWarnings = FALSE)
   
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "wind", "prepro", name, "conversion.txt")
