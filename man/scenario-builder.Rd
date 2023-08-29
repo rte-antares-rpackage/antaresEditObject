@@ -46,6 +46,8 @@ clearScenarioBuilder(
 
 \item{areas_rand}{Areas for which to use \code{"rand"}.}
 
+\item{coef_hydro_levels}{Hydro levels coefficients.}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 

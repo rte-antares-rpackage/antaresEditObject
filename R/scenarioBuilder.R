@@ -119,7 +119,8 @@ scenarioBuilder <- function(n_scenario,
 }
 
 
-
+#' @title Create the correspondence data frame between the symbol and the type in scenario builder
+#' @return a `data.frame`.
 create_referential_series_type <- function(){
 
   ref_series <- data.frame("series" = c("l", "h", "w", "s", "t", "r", "ntc", "hl"),
