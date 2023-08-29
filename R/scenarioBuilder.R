@@ -441,7 +441,7 @@ listify_sb <- function(mat,
   
   dtsb <- dtsb[order(rn, variable)]
   
-  lsb <- as.list(dtsb$value)
+  lsb <- as.list(as.character(dtsb$value))
   if (series %in% c("r", "t")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
   } else if (series %in% c("ntc")) {
