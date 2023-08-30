@@ -139,4 +139,70 @@ sapply(studies, function(study) {
 })
 
 
+test_that("updateScenarioBuilder() for hl with some values not between 0 and 1 (error expected)", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  updateGeneralSettings(nbyears = 10)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  ldata <- scenarioBuilder(n_scenario = 10,
+                          n_mc = opts$parameters$general$nbyears,
+                          areas = area,
+                          coef_hydro_levels = c(0.2, 1.3)
+  )
+  ruleset <- "Default Ruleset"
+  series <- "hl"
+  
+  expect_error(updateScenarioBuilder(ldata = ldata,
+                                     ruleset = ruleset,
+                                     series = series,
+                                     opts = opts
+                                     ),
+               regexp = "Every coefficient for hydro levels must be between 0 and 1."
+  )
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
 
+
+test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  updateGeneralSettings(nbyears = 10)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  my_coef <- c(0.234, 0.567)
+  ldata <- scenarioBuilder(n_scenario = 100,
+                           n_mc = opts$parameters$general$nbyears,
+                           areas = area,
+                           coef_hydro_levels = my_coef
+  )
+  ruleset <- "Default Ruleset"
+  
+  prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
+  
+  updateScenarioBuilder(ldata = ldata,
+                        ruleset = ruleset,
+                        series = "hl",
+                        opts = opts
+  )
+  
+  newSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
+  expect_true("hl" %in% names(newSB))
+  
+  values_newSB_hl <- unique(unlist(newSB[["hl"]], use.names = FALSE))
+  expect_true(length(setdiff(my_coef, values_newSB_hl)) == 0)
+  expect_true(length(setdiff(values_newSB_hl, my_coef)) == 0)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
