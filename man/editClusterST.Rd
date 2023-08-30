@@ -7,8 +7,8 @@
 editClusterST(
   area,
   cluster_name,
-  group = "Other",
-  ...,
+  group = NULL,
+  storage_parameters = NULL,
   PMAX_injection = NULL,
   PMAX_withdrawal = NULL,
   inflows = NULL,
@@ -25,9 +25,7 @@ editClusterST(
 
 \item{group}{Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.}
 
-\item{...}{Parameters to write in the Ini file. Careful!
-Some parameters must be set as \code{integers} to avoid warnings in Antares, for example,
-to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
+\item{storage_parameters}{Parameters to write in the Ini file.}
 
 \item{PMAX_injection}{modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.}
 
@@ -48,7 +46,7 @@ to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Edit parameters and time series of an existing \code{st-storage} cluster (Antares studies >= v8.6.0).
 }

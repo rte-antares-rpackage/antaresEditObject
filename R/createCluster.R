@@ -156,7 +156,7 @@ createCluster <- function(area,
                           cluster_name, 
                           group = "Other",
                           ...,
-                          list_polluants = NULL,
+                          list_polluants = list_polluants_values(),
                           time_series = NULL,
                           prepro_data = NULL,
                           prepro_modulation = NULL,
@@ -167,8 +167,7 @@ createCluster <- function(area,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   # static name of list parameters of pulluants
-  name_list_param_poll <- c("nh3", "nox", "pm2_5", "pm5", "pm10", 
-                            "nmvoc", "so2", "op1", "op2", "op3", "op4", "op5", "co2")
+  name_list_param_poll <- names(list_polluants_values())
   
   # check v860
     # check list pulluants parameters
@@ -179,6 +178,14 @@ createCluster <- function(area,
     if(!all(names(list_polluants) %in% name_list_param_poll))
       stop(append("Parameter 'list_polluants' must be named with the following elements: ", 
                   paste0(name_list_param_poll, collapse= ", ")))
+    
+    # check if all elements are NULL => replace by NULL 
+      # API (only) can't create with NULL values
+    all_null <- lapply(list_polluants, is.null)
+    all_null <- all(unlist(all_null))
+    
+    if(all_null)
+      list_polluants <- NULL
   }
     
   
@@ -456,3 +463,27 @@ createClusterRES <- function(area,
 # )
 
 
+#' Output polluants list for thermal clusters
+#'
+#' @param multi_values put values to init list values, default as `NULL`
+#'
+#' @return a named list
+#' @export
+#'
+#' @examples
+#' list_polluants_values()
+list_polluants_values <- function(multi_values = NULL) {
+  list("nh3"= multi_values, 
+       "nox"= multi_values, 
+       "pm2_5"= multi_values, 
+       "pm5"= multi_values, 
+       "pm10"= multi_values, 
+       "nmvoc"= multi_values, 
+       "so2"= multi_values, 
+       "op1"= multi_values, 
+       "op2"= multi_values, 
+       "op3"= multi_values, 
+       "op4"= multi_values, 
+       "op5"= multi_values, 
+       "co2"= multi_values)
+}
