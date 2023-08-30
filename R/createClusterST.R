@@ -246,7 +246,15 @@ createClusterST <- function(area,
         x = k, row.names = FALSE, col.names = FALSE, sep = "\t",
         file = file.path(inputPath, "st-storage", "series", tolower(area), tolower(cluster_name), paste0(storage_value[[name]]$string, ".txt"))
       )
-    } 
+    } else {
+      # write data 
+      fwrite(
+        x = get(name), row.names = FALSE, col.names = FALSE, sep = "\t",
+        file = file.path(inputPath, "st-storage", "series", tolower(area), 
+                         tolower(cluster_name), 
+                         paste0(storage_value[[name]]$string, ".txt"))
+      )
+    }
   }
   
   # Update simulation options object

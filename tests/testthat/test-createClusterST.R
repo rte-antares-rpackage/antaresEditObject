@@ -121,6 +121,41 @@ if (opts_test$antaresVersion >= 860){
     # check default values
     testthat::expect_equal(df_ref_default_value$mean, test_txt_value$mean)
   
+    
+    ## creation cluster (explicit data) ----
+    val <- 0.7
+    val_mat <- matrix(val, 8760)
+    
+    opts_test <- createClusterST(area = area_test, 
+                    cluster_name = "test_storage", 
+                    storage_parameters = storage_values_default()[1], 
+                    PMAX_injection = val_mat, 
+                    PMAX_withdrawal = val_mat, 
+                    inflows = val_mat, 
+                    lower_rule_curve = val_mat, 
+                    upper_rule_curve = val_mat, 
+                    overwrite = TRUE, 
+                    opts = opts_test)
+    
+    ## check name cluster created
+    namecluster_check <- paste(area_test, "test_storage", sep = "_")
+    testthat::expect_true(namecluster_check %in% 
+                            levels(readClusterSTDesc(opts = opts_test)$cluster))
+    
+    ## check data
+    
+    # read series (with readInputTS)
+    st_ts <- readInputTS(st_storage = "all", opts = opts_test)
+    
+    # check to find 5 names files created previously
+    filter_st_ts <- st_ts[cluster %in% namecluster_check, 
+                          list(mean=mean(`st-storage`)), 
+                          by=name_file]
+    
+    testthat::expect_true(all(filter_st_ts$name_file %in% 
+                            original_files_names))
+    testthat::expect_equal(val, unique(filter_st_ts$mean))
+    
   
   ## remove cluster----  
     # RemoveClusterST (if no cluster => function read return error => see readClusterDesc tests)
