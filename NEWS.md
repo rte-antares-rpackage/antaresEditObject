@@ -28,6 +28,7 @@ NEW FEATURES :
 * `api_command_execute()` displays an error message and causes the program to stop following an http error code. The error message is completed with the API error description
 * `getPlaylist()` is compatible with the new format returned by `readIniAPI()`
 * `removeLink()` delete properly data for an Antares version >= 820
+* `rollback_to_previous_data()` enable to rollback if original value is NULL
 
 
 BUGFIXES : 
