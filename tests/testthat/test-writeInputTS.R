@@ -497,3 +497,29 @@ test_that("Check if writeInputTS() writes time series link regardless alphabetic
                as.data.table(mat_multi_scen_inv[,seq((nb_cols/2)+1, nb_cols)]))
 
 })
+
+
+test_that("writeInputTS() in 8.6.0 : rollback to an empty file", {
+
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  path_mingen <- file.path(opts$inputPath, "hydro", "series", area, "mingen.txt")
+  mat_mingen <- matrix(6,8760,5)
+  expect_error(writeInputTS(area = area,
+                            data = mat_mingen,
+                            type = "mingen",
+                            opts = opts
+  )
+  ,regexp = "can not be updated"
+  )
+  expect_true(file.size(path_mingen) == 0)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+

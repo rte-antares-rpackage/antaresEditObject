@@ -252,10 +252,13 @@ writeInputTS <- function(data,
                        "mingen" = "mingen.txt",
                        "hydroSTOR" = "mod.txt"
                       )
+    data_ori <- NULL
     if (!is.null(filename)) {
       path_ori_file <- file.path(inputPath, "hydro", "series", area, filename)
-      data_ori <- antaresRead:::fread_antares(opts = opts,
-                                              file = path_ori_file)
+      if (file.size(path) > 0) {
+        data_ori <- antaresRead:::fread_antares(opts = opts,
+                                                file = path_ori_file) 
+      }
     }
   }
   
