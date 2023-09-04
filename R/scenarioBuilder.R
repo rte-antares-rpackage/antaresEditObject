@@ -1,9 +1,9 @@
-#' @title Read, create & update scenario builder
+#' @title Read, create, update & deduplicate scenario builder
 #' 
 #' @description 
 #' `r antaresEditObject:::badge_api_ok()`
 #' 
-#' Read, create & update scenario builder.
+#' Read, create, update & deduplicate scenario builder.
 #'
 #' @param n_scenario Number of scenario.
 #' @param n_mc Number of Monte-Carlo years.
@@ -72,6 +72,9 @@
 #'   s = solar_sb
 #' ))
 #' 
+#' # Deduplicate scenario builder
+#' 
+#' deduplicateScenarioBuilder()
 #' }
 scenarioBuilder <- function(n_scenario, 
                             n_mc = NULL,
@@ -432,3 +435,60 @@ linksAsDT <- function(x) {
   as.data.table(x)
 }
 
+
+#' @title Keep the last element of a named list
+#' 
+#' @param row of a data frame with 2 columns : key of the scenario builder and its frequency in the scenariobuilder.dat file
+#' @param prevldata a named list
+#'
+#' @noRd
+keep_last_element_from_named_list <- function(row, prevldata){
+  
+  newldata <- list()
+  
+  key <- as.character(row[1])
+  nb_values <- as.numeric(row[2])
+  
+  prevldata_key <- prevldata[which(names(prevldata) == key)]
+  newldata[[key]] <- prevldata_key[[nb_values]]
+  
+  if(nb_values > 1){
+    cat("The following lines will be removed from scenariobuilder.dat\n")
+    for(i in seq(1, nb_values-1)){
+      cat(key, "=", prevldata_key[[i]], "\n")
+    }
+  }
+  
+  return(newldata)
+}
+
+
+#' @title Deduplicate the scenariobuilder.dat file
+#' 
+#' @param ruleset Ruleset to read.
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   [antaresRead::setSimulationPath()]
+#'
+#' @export
+#' 
+#' @rdname scenario-builder
+deduplicateScenarioBuilder <- function(ruleset = "Default Ruleset", 
+                                       opts = antaresRead::simOptions()){
+  
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  prevSB <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+  lnewSB <- lapply(prevSB, FUN = function(x){
+    table_freq <- as.data.frame(table(names(x)))
+    newSBkey <- apply(table_freq, MARGIN = 1, FUN = keep_last_element_from_named_list, prevldata = x)
+    newSBkey <- do.call("c", newSBkey)
+  })
+  
+  res <- do.call("c", c(lnewSB, use.names = FALSE))
+  newSB <- list()
+  newSB[[ruleset]] <- res
+  pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+  writeIni(listData = newSB, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
+  cat("\u2713", "Scenario Builder deduplicated\n")
+}
