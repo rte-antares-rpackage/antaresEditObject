@@ -6,7 +6,7 @@
 \usage{
 writeInputTS(
   data,
-  type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink", "mingen"),
+  type = c("load", "hydroROR", "hydroSTOR", "mingen", "wind", "solar", "tsLink"),
   area = NULL,
   link = NULL,
   overwrite = TRUE,

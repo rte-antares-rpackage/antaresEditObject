@@ -414,13 +414,17 @@ rollback_to_previous_data <- function(area, prev_data, rollback_type, opts = ant
     writeIni(prev_data, pathIni = rollback_filepath, opts = opts, overwrite = TRUE)
   }
   if (rollback_type %in% c("hydroSTOR", "mingen", "maxpower")) {
-    fwrite(
-      x = as.data.table(prev_data),
-      row.names = FALSE, 
-      col.names = FALSE, 
-      sep = "\t",
-      file = rollback_filepath
-    )
+    if (!is.null(prev_data)) {
+      fwrite(
+        x = as.data.table(prev_data),
+        row.names = FALSE, 
+        col.names = FALSE, 
+        sep = "\t",
+        file = rollback_filepath
+      )
+    } else {
+      file.create(rollback_filepath)
+    }
   }
   stop(stop_message, call. = FALSE)
 }
