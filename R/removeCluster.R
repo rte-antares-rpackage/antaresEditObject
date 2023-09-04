@@ -93,23 +93,30 @@ removeClusterST <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   
   if (is_api_study(opts)) {
+    # format name for API 
+    cluster_name <- transform_name_to_id(cluster_name)
     
     if (identical(cluster_type, "renewables"))
       stop("RES clusters not implemented with the API yet.")
     
-    if (identical(cluster_type, "st-storage"))
-      stop("st-storage clusters not implemented with the API yet.")
-    
-    cmd <- api_command_generate(
-      action = "remove_cluster",
-      area_id = area,
-      cluster_id = cluster_name
-    )
+    if (identical(cluster_type, "st-storage")){
+      cmd <- api_command_generate(
+        action = "remove_st_storage",
+        area_id = area,
+        storage_id = cluster_name
+      )
+    }else{
+      cmd <- api_command_generate(
+        action = "remove_cluster",
+        area_id = area,
+        cluster_id = cluster_name
+      )
+    }
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_cluster}: {msg_api}"),
-      cli_command_registered("remove_cluster")
+      api_command_execute(cmd, opts = opts, text_alert = paste0("{.emph ", cmd$action, "}: {msg_api}")),
+      cli_command_registered(cmd$action)
     )
     
     return(invisible(opts))

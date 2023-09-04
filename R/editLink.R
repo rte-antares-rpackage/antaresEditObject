@@ -92,7 +92,8 @@ editLink <- function(from,
   
   # areas' order
   areas <- c(from, to)
-  if (!identical(areas, sort(areas))) {
+  are_areas_sorted <- identical(areas, sort(areas))
+  if (!are_areas_sorted) {
     from <- areas[2]
     to <- areas[1]
   }
@@ -106,8 +107,15 @@ editLink <- function(from,
       "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
     )
     if (v820) {
-      direct <- seq_len(NCOL(tsLink) / 2)
-      indirect <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
+      first_cols <- seq_len(NCOL(tsLink) / 2)
+      last_cols <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
+      if (are_areas_sorted) {
+        direct <- first_cols
+        indirect <- last_cols
+      } else {
+        direct <- last_cols
+        indirect <- first_cols
+      }
       tsLink <- data.table::as.data.table(tsLink)
     } else {
       warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
@@ -223,7 +231,7 @@ editLink <- function(from,
         file = file.path(inputPath, "links", from, paste0(to, "_parameters.txt"))
       )
     } else {
-      if (!identical(areas, sort(areas))) {
+      if (!are_areas_sorted) {
         dataLink[, 1:2] <- dataLink[, 2:1]
         dataLink[, 4:5] <- dataLink[, 5:4]
       }
@@ -269,6 +277,3 @@ editLink <- function(from,
   
   invisible(res)
 }
-
-
-
