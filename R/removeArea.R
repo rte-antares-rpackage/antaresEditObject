@@ -74,26 +74,9 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   # Hydro
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    hydro <- readIniFile(file = file.path(inputPath, "hydro", "hydro.ini"))
-    if (!is.null(hydro$`inter-daily-breakdown`))
-      hydro$`inter-daily-breakdown`[[name]] <- NULL
-    if (!is.null(hydro$`intra-daily-modulation`))
-      hydro$`intra-daily-modulation`[[name]] <- NULL
-    if (!is.null(hydro$`inter-monthly-breakdown`))
-      hydro$`inter-monthly-breakdown`[[name]] <- NULL
-    if (!is.null(hydro$`initialize reservoir date`))
-      hydro$`initialize reservoir date`[[name]] <- NULL
-    if (!is.null(hydro$`leeway low`))
-      hydro$`leeway low`[[name]] <- NULL
-    if (!is.null(hydro$`leeway up`))
-      hydro$`leeway up`[[name]] <- NULL
-    if (!is.null(hydro$`pumping efficiency`))
-      hydro$`pumping efficiency`[[name]] <- NULL
-    writeIni(
-      listData = hydro,
-      pathIni = file.path(inputPath, "hydro", "hydro.ini"),
-      overwrite = TRUE
-    )
+    default_params <- get_default_hydro_ini_values()
+    empty_params <- sapply(names(default_params), FUN = function(n) default_params[[n]] <- NULL)
+    writeIniHydro(area = name, params = empty_params, mode = "removeArea", opts = opts)
   }
   # allocation
   unlink(x = file.path(inputPath, "hydro", "allocation", paste0(name, ".ini")), recursive = TRUE)
@@ -197,10 +180,6 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 }
 
 
-
-
-
-
 #' @title Seek for a removed area
 #'
 #' @description Check if it remains trace of a deleted area in the input folder
@@ -256,9 +235,3 @@ checkRemovedArea <- function(area, all_files = TRUE, opts = antaresRead::simOpti
   )
   
 }
-
-
-
-
-
-

@@ -106,7 +106,7 @@ suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"
 test_that("create mingen file data v860", {
   
   #Initialize mingen data
-  M_mingen = matrix(6,8760,5)
+  M_mingen = matrix(0,8760,5)
   
   
   # [management rules] for mingen data : 
@@ -200,6 +200,300 @@ test_that("create mingen file data v860", {
 
 
 
+test_that("writeInputTS() in 8.6.0 : check if there is an error when control is enabled and data is inconsistent between mingen.txt and mod.txt", {
+
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  lst_yearly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
+  lst_monthly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
+  lst_weekly <- list("use heuristic" = TRUE, "follow load" = FALSE)
+  
+  nb_hours_per_day <- 24
+  nb_days_per_year <- 365
+  nb_hours_per_year <- nb_hours_per_day * nb_days_per_year
+  # Put more than 1 ts
+  nb_ts <- 5
+  
+  mat_maxpower_init <- matrix(data = rep(c(10000, 24, 0, 24), each = 365), ncol = 4)
+  
+  mat_mingen_false <- matrix(1,nb_hours_per_year,nb_ts)
+  mat_mingen_true <- matrix(-1,nb_hours_per_year,nb_ts)
+  mat_mingen_init <- matrix(0,nb_hours_per_year,nb_ts)
+  
+  mat_mod_false <- matrix(-1,nb_days_per_year,nb_ts)
+  mat_mod_true <- matrix(1,nb_days_per_year,nb_ts)
+  mat_mod_init <- matrix(0,nb_days_per_year,nb_ts)
+  
+  writeHydroValues(area= area, type = "maxpower", data = mat_maxpower_init, opts = opts)
+  
+  # YEARLY
+  writeIniHydro(area, params = lst_yearly, mode = "other", opts = opts)
+  # ref mod
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = mat_mingen_false,
+                            type = "mingen",
+                            opts = opts
+                            )
+  ,regexp = "can not be updated"
+  )
+  # ref mingen
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = mat_mod_false,
+                            type = "hydroSTOR",
+                            opts = opts
+  )
+  ,regexp = "can not be updated"
+  )
+  
+  # MONTHLY
+  writeIniHydro(area, params = lst_monthly, mode = "other", opts = opts)
+  # ref mod
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = mat_mingen_false,
+                            type = "mingen",
+                            opts = opts
+  )
+  ,regexp = "can not be updated"
+  )
+  # ref mingen
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = mat_mod_false,
+                            type = "hydroSTOR",
+                            opts = opts
+  )
+  ,regexp = "can not be updated"
+  )
+  
+  # WEEKLY
+  writeIniHydro(area, params = lst_weekly, mode = "other", opts = opts)
+  # ref mod
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = mat_mingen_false,
+                            type = "mingen",
+                            opts = opts
+  )
+  ,regexp = "can not be updated"
+  )
+  # ref mingen
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  expect_error(writeInputTS(area = area,
+                            data = mat_mod_false,
+                            type = "hydroSTOR",
+                            opts = opts
+  )
+  ,regexp = "can not be updated"
+  )
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+  
+})
 
 
+test_that("writeInputTS() in 8.6.0 : check if new data is written when control is enabled and data is consistent between mingen.txt and mod.txt", {
+  
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  path_mod_file <- file.path(opts$inputPath, "hydro", "series", area, "mod.txt")
+  path_mingen_file <- file.path(opts$inputPath, "hydro", "series", area, "mingen.txt")
+  
+  lst_yearly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = TRUE)
+  lst_monthly <- list("use heuristic" = TRUE, "follow load" = TRUE, "reservoir" = FALSE)
+  lst_weekly <- list("use heuristic" = TRUE, "follow load" = FALSE)
+  
+  nb_hours_per_day <- 24
+  nb_days_per_year <- 365
+  nb_hours_per_year <- nb_hours_per_day * nb_days_per_year
+  # Put more than 1 ts
+  nb_ts <- 5
+  
+  mat_maxpower_init <- matrix(data = rep(c(10000, 24, 0, 24), each = 365), ncol = 4)
+  
+  mat_mingen_false <- matrix(1,nb_hours_per_year,nb_ts)
+  mat_mingen_true <- matrix(-1,nb_hours_per_year,nb_ts)
+  mat_mingen_init <- matrix(0,nb_hours_per_year,nb_ts)
+  
+  mat_mod_false <- matrix(-1,nb_days_per_year,nb_ts)
+  mat_mod_true <- matrix(1,nb_days_per_year,nb_ts)
+  mat_mod_init <- matrix(0,nb_days_per_year,nb_ts)
+  
+  writeHydroValues(area= area, type = "maxpower", data = mat_maxpower_init, opts = opts)
+  
+  # YEARLY
+  writeIniHydro(area, params = lst_yearly, mode = "other", opts = opts)
+  # ref mod
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  writeInputTS(area = area, data = mat_mingen_true, type = "mingen", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mingen_file),
+               as.data.table(mat_mingen_true))
+  # ref mingen
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mod_file),
+               as.data.table(mat_mod_true))
+  
+  # MONTHLY
+  writeIniHydro(area, params = lst_monthly, mode = "other", opts = opts)
+  # ref mod
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  writeInputTS(area = area, data = mat_mingen_true, type = "mingen", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mingen_file),
+               as.data.table(mat_mingen_true))
+  # ref mingen
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mod_file),
+               as.data.table(mat_mod_true))
+  
+  # WEEKLY
+  writeIniHydro(area, params = lst_weekly, mode = "other", opts = opts)
+  # ref mod
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  writeInputTS(area = area, data = mat_mingen_true, type = "mingen", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mingen_file),
+               as.data.table(mat_mingen_true))
+  # ref mingen
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mod_file),
+               as.data.table(mat_mod_true))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+  
+})
 
+
+test_that("writeInputTS() in 8.6.0 : check if new data is written when control is disabled", {
+  
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  path_mod_file <- file.path(opts$inputPath, "hydro", "series", area, "mod.txt")
+  path_mingen_file <- file.path(opts$inputPath, "hydro", "series", area, "mingen.txt")
+  
+  lst_wo_control <- list("use heuristic" = FALSE)
+  
+  nb_hours_per_day <- 24
+  nb_days_per_year <- 365
+  nb_hours_per_year <- nb_hours_per_day * nb_days_per_year
+  # Put more than 1 ts
+  nb_ts <- 5
+  
+  mat_maxpower_init <- matrix(data = rep(c(10000, 24, 0, 24), each = 365), ncol = 4)
+  
+  mat_mingen_false <- matrix(1,nb_hours_per_year,nb_ts)
+  mat_mingen_true <- matrix(-1,nb_hours_per_year,nb_ts)
+  mat_mingen_init <- matrix(0,nb_hours_per_year,nb_ts)
+  
+  mat_mod_false <- matrix(-1,nb_days_per_year,nb_ts)
+  mat_mod_true <- matrix(1,nb_days_per_year,nb_ts)
+  mat_mod_init <- matrix(0,nb_days_per_year,nb_ts)
+  
+  writeIniHydro(area, params = lst_wo_control, mode = "other", opts = opts)
+  writeHydroValues(area= area, type = "maxpower", data = mat_maxpower_init, opts = opts)
+  
+  # ref mod
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  writeInputTS(area = area, data = mat_mingen_true, type = "mingen", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mingen_file),
+               as.data.table(mat_mingen_true))
+  writeInputTS(area = area, data = mat_mingen_false, type = "mingen", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mingen_file),
+               as.data.table(mat_mingen_false))
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mingen_file),
+               as.data.table(mat_mingen_init))
+  # ref mingen
+  writeInputTS(area = area, data = mat_mingen_init, type = "mingen", opts = opts)
+  writeInputTS(area = area, data = mat_mod_true, type = "hydroSTOR", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mod_file),
+               as.data.table(mat_mod_true))
+  writeInputTS(area = area, data = mat_mod_false, type = "hydroSTOR", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mod_file),
+               as.data.table(mat_mod_false))
+  writeInputTS(area = area, data = mat_mod_init, type = "hydroSTOR", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_mod_file),
+               as.data.table(mat_mod_init))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+test_that("Check if writeInputTS() writes time series link regardless alphabetical order", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "aa"
+  area2 <- "zz"
+  createArea(area)
+  createArea(area2)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+
+  createLink(from = area, to = area2, opts = opts)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+
+  path_direct_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_direct.txt"))
+  path_indirect_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_indirect.txt"))
+
+  dat_mat <- c(1,3,2,4)
+  dat_mat_inv <- c(4,2,3,1)
+  nb_cols <- length(dat_mat)
+  
+  ## Future developments will come because this is not the expected behaviour
+  ## Time series direct and indirect have to be reordered
+  # alphabetical order
+  mat_multi_scen <- matrix(data = rep(dat_mat, each = 8760), ncol = nb_cols)
+  writeInputTS(data = mat_multi_scen, link = paste0(area,"%",area2), type = "tsLink", opts = opts)
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_multi_scen[,seq(1, nb_cols/2)]))
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_multi_scen[,seq((nb_cols/2)+1, nb_cols)]))
+  
+  # no alphabetical order
+  mat_multi_scen_inv <- matrix(data = rep(dat_mat_inv, each = 8760), ncol = nb_cols)
+  writeInputTS(data = mat_multi_scen_inv, link = paste0(area2,"%",area), type = "tsLink", opts = opts)
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_multi_scen_inv[,seq(1, nb_cols/2)]))
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_multi_scen_inv[,seq((nb_cols/2)+1, nb_cols)]))
+
+})

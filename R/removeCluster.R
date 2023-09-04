@@ -93,40 +93,27 @@ removeClusterST <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   
   if (is_api_study(opts)) {
-    # Factorization with sprintf() once each type is implemented
-    # Renewables
-    if (identical(cluster_type, "renewables")) {
-      cmd <- api_command_generate(
-        action = "remove_renewables_cluster",
-        area_id = area,
-        cluster_id = cluster_name
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_renewables_cluster}: {msg_api}"),
-        cli_command_registered("remove_renewables_cluster")
-      )
-    }
+    # format name for API 
+    cluster_name <- transform_name_to_id(cluster_name)
     
-    # ST Storage
-    if (identical(cluster_type, "st-storage"))
-      stop("st-storage clusters not implemented with the API yet.")
+    remove_action <- switch(cluster_type,
+                            "thermal" = "remove_cluster",
+                            "renewables" = "remove_renewables_cluster",
+                             "st-storage" = "remove_st_storage"
+                           )
     
-    # Thermal
-    if (identical(cluster_type, "thermal")) {
-      cmd <- api_command_generate(
-        action = "remove_cluster",
-        area_id = area,
-        cluster_id = cluster_name
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "{.emph remove_cluster}: {msg_api}"),
-        cli_command_registered("remove_cluster")
-      )
-    }
+    cmd <- api_command_generate(
+            action = remove_action,
+            area_id = area,
+            cluster_id = cluster_name
+          )
+    
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = paste0("{.emph ", cmd$action, "}: {msg_api}")),
+      cli_command_registered(cmd$action)
+    )
     
     return(invisible(opts))
   }

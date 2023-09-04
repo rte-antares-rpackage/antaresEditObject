@@ -41,6 +41,14 @@ ascending day, ascending level.}
 
 Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulations data for a given area.
 }
+\section{Warning}{
+
+
+For an \strong{Antares version >= 860}, control of data consistency between \code{mingen.txt} and \verb{maxpower_<area>.txt} can be executed.
+
+This control depends on the values you find in \code{hydro.ini} file.
+}
+
 \examples{
 \dontrun{
 

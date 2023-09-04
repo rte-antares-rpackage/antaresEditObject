@@ -7,8 +7,8 @@
 createClusterST(
   area,
   cluster_name,
-  group = "Other",
-  ...,
+  group = "Other1",
+  storage_parameters = storage_values_default(),
   PMAX_injection = NULL,
   PMAX_withdrawal = NULL,
   inflows = NULL,
@@ -26,9 +26,7 @@ createClusterST(
 
 \item{group}{Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.}
 
-\item{...}{Parameters to write in the Ini file. Careful!
-Some parameters must be set as \code{integers} to avoid warnings in Antares, for example,
-to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
+\item{storage_parameters}{\code{list } Parameters to write in the Ini file (see \code{Note}).}
 
 \item{PMAX_injection}{modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.}
 
@@ -51,12 +49,16 @@ to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_no.svg}{options: alt='Antares API NO'}}{Antares API: \strong{NO}}
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
 Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 }
 \note{
-five files are written in output according to the input parameters
+To write parameters to the \code{list.ini} file. You have function \code{storage_values_default()} who is called by default.
+This function return \code{list} containing six parameters for cluster \code{st-storage}.
+See example section.
+
+To write data (.txt file), you have parameter for each output file :
 \itemize{
 \item PMAX-injection.txt
 \item PMAX-withdrawal.txt
@@ -68,23 +70,39 @@ five files are written in output according to the input parameters
 \examples{
 \dontrun{
 
-library(antaresRead)
-library(antaresEditObject)
+# list for cluster parameters : 
+storage_values_default()
 
-# Create a cluster :
-createClusterST(
-  area = "fr", 
-  cluster_name = "my_cluster",
-  group = "other", 
-  unitcount = 1L, # or as.integer(1)
-)
-# by default, cluster name is prefixed 
-# by the area name
+# create a cluster by default (with default parameters values + default data values):
+createClusterST(area = "my_area", 
+               "my_cluster") 
+  
+# Read cluster in study                            
+ # by default, cluster name is prefixed 
+ # by the area name
 levels(readClusterSTDesc()$cluster)
-# > "fr_my_cluster"
+# > "my_area_my_cluster"
+
+# create cluster with custom parameter and data
+my_parameters <- storage_values_default()
+my_parameters$efficiency <- 0.5
+my_parameters$reservoircapacity <- 10000
+
+
+inflow_data <- matrix(3, 8760)
+ratio_data <- matrix(0.7, 8760)
+createClusterST(area = "my_area", 
+                "my_cluster",
+                storage_parameters = my_parameters,
+                PMAX_withdrawal = ratio_data, 
+                inflows = inflow_data, 
+                PMAX_injection = ratio_data, 
+                lower_rule_curve = ratio_data, 
+                upper_rule_curve = ratio_data)
 }
 
 }
 \seealso{
-\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
+\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[=readClusterSTDesc]{readClusterSTDesc()}} to read cluster,
+\code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
 }
