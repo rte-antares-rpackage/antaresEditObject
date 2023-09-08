@@ -3,7 +3,7 @@
 #' @description 
 #' `r antaresEditObject:::badge_api_ok()` (thermal clusters only)
 #' 
-#' Remove a cluster, thermal or RES (renewable energy source), and all its data.
+#' Remove a cluster, thermal RES (renewable energy source) or short-term storage, and all its data.
 #' 
 #'
 #' @inheritParams createCluster
@@ -76,10 +76,41 @@ removeClusterST <- function(area,
 }
 
 
+.api_command_generate_remove_cluster <- function(area,
+                                                 cluster_name,
+                                                 cluster_type = c("thermal", "renewables", "st-storage")
+                                                ) {
+  
+  cluster_type <- match.arg(cluster_type)
+  
+  remove_action <- switch(cluster_type,
+                          "thermal" = "remove_cluster",
+                          "renewables" = "remove_renewables_cluster",
+                          "st-storage" = "remove_st_storage"
+                          )
+  
+  if (identical(cluster_type, "st-storage")) {
+    cmd <- api_command_generate(
+            action = remove_action,
+            area_id = area,
+            storage_id = cluster_name
+            )
+  } else {
+    cmd <- api_command_generate(
+            action = remove_action,
+            area_id = area,
+            cluster_id = cluster_name
+            )
+  }
+    
+  return(cmd)
+}
+
+
 .removeCluster <- function(area, 
                            cluster_name, 
                            add_prefix = TRUE,
-                           cluster_type = c("thermal", "renewables","st-storage"),
+                           cluster_type = c("thermal", "renewables", "st-storage"),
                            opts = antaresRead::simOptions()) {
   
   cluster_type <- match.arg(cluster_type)
@@ -96,22 +127,8 @@ removeClusterST <- function(area,
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
-    if (identical(cluster_type, "renewables"))
-      stop("RES clusters not implemented with the API yet.")
+    cmd <- .api_command_generate_remove_cluster(area, cluster_name, cluster_type)
     
-    if (identical(cluster_type, "st-storage")){
-      cmd <- api_command_generate(
-        action = "remove_st_storage",
-        area_id = area,
-        storage_id = cluster_name
-      )
-    }else{
-      cmd <- api_command_generate(
-        action = "remove_cluster",
-        area_id = area,
-        cluster_id = cluster_name
-      )
-    }
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
@@ -124,7 +141,7 @@ removeClusterST <- function(area,
   
   # Remove from Ini file
   # path to ini file
-  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", tolower(area), "list.ini")
+  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", area, "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
@@ -146,20 +163,19 @@ removeClusterST <- function(area,
   
   if (length(previous_params) > 0) {
     # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)), recursive = TRUE)
+    unlink(x = file.path(inputPath, cluster_type, "series", area, tolower(cluster_name)), recursive = TRUE)
     if (identical(cluster_type, "thermal")) {
       # remove prepro
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
   } else {
     # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", tolower(area)), recursive = TRUE)
+    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
     if (identical(cluster_type, "thermal")) {
       # remove prepro
       unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
     }
   }
-  
   
   # Maj simulation
   suppressWarnings({
