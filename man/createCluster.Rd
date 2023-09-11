@@ -10,7 +10,7 @@ createCluster(
   cluster_name,
   group = "Other",
   ...,
-  list_polluants = NULL,
+  list_polluants = list_polluants_values(),
   time_series = NULL,
   prepro_data = NULL,
   prepro_modulation = NULL,

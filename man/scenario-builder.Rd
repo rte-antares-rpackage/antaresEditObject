@@ -6,7 +6,8 @@
 \alias{readScenarioBuilder}
 \alias{updateScenarioBuilder}
 \alias{clearScenarioBuilder}
-\title{Read, create & update scenario builder}
+\alias{deduplicateScenarioBuilder}
+\title{Read, create, update & deduplicate scenario builder}
 \usage{
 scenarioBuilder(
   n_scenario,
@@ -33,6 +34,11 @@ updateScenarioBuilder(
 )
 
 clearScenarioBuilder(
+  ruleset = "Default Ruleset",
+  opts = antaresRead::simOptions()
+)
+
+deduplicateScenarioBuilder(
   ruleset = "Default Ruleset",
   opts = antaresRead::simOptions()
 )
@@ -77,7 +83,7 @@ Default is to read existing links and update them all.}
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
-Read, create & update scenario builder.
+Read, create, update & deduplicate scenario builder.
 }
 \note{
 \code{series = "ntc"} is only available with Antares >= 8.2.0.
@@ -134,5 +140,8 @@ updateScenarioBuilder(ldata = list(
   s = solar_sb
 ))
 
+# Deduplicate scenario builder
+
+deduplicateScenarioBuilder()
 }
 }

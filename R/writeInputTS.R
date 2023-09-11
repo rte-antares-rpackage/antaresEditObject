@@ -58,7 +58,7 @@
 #'
 #' }
 writeInputTS <- function(data, 
-                         type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink", "mingen"),
+                         type = c("load", "hydroROR", "hydroSTOR", "mingen", "wind", "solar", "tsLink"),
                          area = NULL, 
                          link = NULL,
                          overwrite = TRUE, 
@@ -246,16 +246,20 @@ writeInputTS <- function(data,
       call. = FALSE
     )
   
+  should_check_mingen_data <- opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")
   # v860 - save the original data
-  if (opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")) {
+  if (should_check_mingen_data) {
     filename <- switch(type,
                        "mingen" = "mingen.txt",
                        "hydroSTOR" = "mod.txt"
                       )
+    data_ori <- NULL
     if (!is.null(filename)) {
       path_ori_file <- file.path(inputPath, "hydro", "series", area, filename)
-      data_ori <- antaresRead:::fread_antares(opts = opts,
-                                              file = path_ori_file)
+      if (file.size(path) > 0) {
+        data_ori <- antaresRead:::fread_antares(opts = opts,
+                                                file = path_ori_file) 
+      }
     }
   }
   
@@ -269,7 +273,7 @@ writeInputTS <- function(data,
   )
   
   # v860 - rollback to original data if necessary
-  if (opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")) {
+  if (should_check_mingen_data) {
     comp_mingen_vs_hydro_storage <- list("check" = TRUE, "msg" = "")
     comp_mingen_vs_maxpower <- list("check" = TRUE, "msg" = "")
     if (type == "mingen") {

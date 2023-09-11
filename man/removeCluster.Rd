@@ -43,7 +43,7 @@ An updated list containing various information about the simulation.
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}} (thermal clusters only)
 
-Remove a cluster, thermal or RES (renewable energy source), and all its data.
+Remove a cluster, thermal RES (renewable energy source) or short-term storage, and all its data.
 }
 \examples{
 \dontrun{

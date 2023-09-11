@@ -7,7 +7,7 @@ sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
   opts <- antaresRead::setSimulationPath(studyPath, "input")
-  
+  original_scbuilder <- readScenarioBuilder(ruleset = "Default Ruleset", opts = opts, as_matrix = FALSE)
   
   test_that("scenarioBuilder works", {
     
@@ -131,6 +131,100 @@ sapply(studies, function(study) {
   test_that("clearScenarioBuilder works", {
     expect_true(clearScenarioBuilder())
     expect_length(readScenarioBuilder(), 0L)
+  })
+  
+  test_that("deduplicateScenarioBuilder keeps only one value by key", {
+    
+    added_list <- list()
+    final_sbuilder <- list()
+    original_scbuilder_to_write <- list()
+    ruleset <- "Default Ruleset"
+    nb_new_values <- 10
+    
+    pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+    original_scbuilder_to_write[[ruleset]] <- do.call("c", c(original_scbuilder, use.names = FALSE))
+    writeIni(listData = original_scbuilder_to_write, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
+    
+    sbuilder <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+    
+    series <- names(sbuilder)
+    serie <- series[1]
+    sbuilder_ftype <- sbuilder[[serie]]
+    fkey <- names(sbuilder_ftype)[1]
+    
+    for(i in seq(1,nb_new_values)){
+      added_list[i] <- i
+    }
+    names(added_list) <- rep(fkey,nb_new_values)
+    sbuilder_ftype <- append(sbuilder_ftype, added_list)
+    sbuilder[[serie]] <- sbuilder_ftype
+    final_sbuilder[[ruleset]] <- do.call("c", c(sbuilder, use.names = FALSE))
+    
+    writeIni(listData = final_sbuilder, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
+    
+    dupSB <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+    dupSB_serie <- dupSB[[serie]]
+    freq_dupSB_serie <- as.data.frame(table(names(dupSB_serie)))
+    nb_occur_dup_fkey <- freq_dupSB_serie[freq_dupSB_serie$Var1==fkey,"Freq"]
+    
+    deduplicateScenarioBuilder(ruleset = ruleset, opts = opts)
+    
+    dedupSB <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+    dedupSB_serie <- dedupSB[[serie]]
+    freq_dedupSB_serie <- as.data.frame(table(names(dedupSB_serie)))
+    nb_occur_dedup_fkey <- freq_dedupSB_serie[freq_dedupSB_serie$Var1==fkey,"Freq"]
+    
+    expect_equal(nb_occur_dup_fkey-nb_new_values,1)
+  })
+  
+  test_that("deduplicateScenarioBuilder keeps the last value from a duplicated key", {
+    
+    added_list <- list()
+    final_sbuilder <- list()
+    original_scbuilder_to_write <- list()
+    ruleset <- "Default Ruleset"
+    fixed_value <- "123456789"
+    nb_new_values <- 10
+    
+    pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+    original_scbuilder_to_write[[ruleset]] <- do.call("c", c(original_scbuilder, use.names = FALSE))
+    writeIni(listData = original_scbuilder_to_write, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
+    
+    sbuilder <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+    
+    series <- names(sbuilder)
+    serie <- series[1]
+    sbuilder_ftype <- sbuilder[[serie]]
+    fkey <- names(sbuilder_ftype)[1]
+    
+    for(i in seq(1,nb_new_values)){
+      added_list[i] <- i
+    }
+    added_list[nb_new_values+1] <- fixed_value
+    names(added_list) <- rep(fkey,nb_new_values+1)
+    sbuilder_ftype <- append(sbuilder_ftype, added_list)
+    sbuilder[[serie]] <- sbuilder_ftype
+    
+    final_sbuilder[[ruleset]] <- do.call("c", c(sbuilder, use.names = FALSE))
+    
+    writeIni(listData = final_sbuilder, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
+    
+    dupSB <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+    dupSB_serie <- dupSB[[serie]]
+    dupSB_fkey <- dupSB_serie[which(names(dupSB_serie)==fkey)]
+    dupSB_fkey <- unlist(dupSB_fkey, use.names = FALSE)
+    dupSB_fkey <- dupSB_fkey[length(dupSB_fkey)]
+    
+    deduplicateScenarioBuilder(ruleset = ruleset, opts = opts)
+    
+    dedupSB <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+    dedupSB_serie <- dedupSB[[serie]]
+    dedupSB_fkey <- dedupSB_serie[which(names(dedupSB_serie)==fkey)]
+    dedupSB_fkey <- unlist(dedupSB_fkey, use.names = FALSE)
+    dedupSB_fkey <- dedupSB_fkey[1]
+    
+    expect_equal(dupSB_fkey, dedupSB_fkey)
+    expect_equal(dupSB_fkey, as.numeric(fixed_value))
   })
   
   # remove temporary study

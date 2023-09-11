@@ -90,6 +90,25 @@ opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 test_that("Create cluster with polluants params (new feature v8.6)",{
   
+  test_that("Create cluster default call (new feature v8.6)",{
+    
+    createCluster(
+      area = getAreas()[1], 
+      cluster_name = "cluster_default",
+      opts = opts_test)
+    
+    res_cluster <- antaresRead::readClusterDesc()
+    res_cluster_default <- res_cluster[cluster %in% 
+                                         paste0(getAreas()[1], "_cluster_default"),]
+    
+    polluants_names <- names(antaresEditObject::list_polluants_values())
+    
+    values_default <- res_cluster_default[, .SD, .SDcols = polluants_names]
+    
+    # check default values 
+    testthat::expect_equal(all(is.na(values_default)), TRUE)
+  })
+  
   polluants_params <- list(
     "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
     "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,

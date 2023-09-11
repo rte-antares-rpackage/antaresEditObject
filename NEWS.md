@@ -19,17 +19,20 @@ NEW FEATURES (Antares v8.6) :
 
 NEW FEATURES :
 
+* Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
 * Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
 * Call writeIniHydro() in createArea() and removeArea()
 * Enable edition of hydro levels in `scenariobuilder.dat` by using scenarioBuilder() and updateScenarioBuilder()
+
 
 ### Breaking changes
 
 * `deleteStudy()` no longer requires user confirmation
 * `api_command_execute()` displays an error message and causes the program to stop following an http error code. The error message is completed with the API error description
 * `getPlaylist()` is compatible with the new format returned by `readIniAPI()`
+* `removeClusterRES()` in API mode
 * `removeLink()` delete properly data for an Antares version >= 820
-
+* `rollback_to_previous_data()` enable to rollback if original value is NULL
 
 BUGFIXES : 
 
