@@ -225,8 +225,9 @@ Full documentation is available with function `writeInputTS()`. We will see furt
 Checks depends of values of parameters in `hydro.ini` file.
 
 ```{r schema, echo=FALSE, fig.cap="", out.width = '65%', fig.align='center'}
-path_image <- sourcedir860 <- system.file("doc/schemas", package = "antaresEditObject")
-knitr::include_graphics(file.path(path_image,"mingen.png"))
+# path_image <- sourcedir860 <- system.file("doc/schemas", package = "antaresEditObject")
+# knitr::include_graphics(file.path(path_image,"mingen.png"))
+knitr::include_graphics("schemas/mingen.png")
 ```
 
 A start, just after creation study, `.txt` files containing time series are empty. We will see steps to write `mingen.txt`.
