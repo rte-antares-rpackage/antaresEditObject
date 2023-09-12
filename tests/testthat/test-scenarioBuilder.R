@@ -283,8 +283,6 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   )
   ruleset <- "Default Ruleset"
   
-  prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
-  
   updateScenarioBuilder(ldata = ldata,
                         ruleset = ruleset,
                         series = "hl",
