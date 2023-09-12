@@ -232,7 +232,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -244,6 +244,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #'  
 #' @note
 #' `series = "ntc"` is only available with Antares >= 8.2.0.
+#' `series = "hl"` each value must be between 0 and 1.
 #'
 #' @export
 #' 
@@ -258,11 +259,13 @@ updateScenarioBuilder <- function(ldata,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
+  
   ref_series <- create_referential_series_type()
+  possible_series <- ref_series$series
   
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- ref_series[ref_series$series %in% series, "choices"]
+      series <- ref_series[possible_series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
       series <- ref_series[ref_series$choices %in% series, "series"]
@@ -280,8 +283,8 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc", "hl"))) {
-      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl'", call. = FALSE)
+    if (!all(series %in% possible_series)) {
+      stop("'ldata' must be one of ", paste0(possible_series, collapse = ", "), call. = FALSE)
     }
     if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
@@ -366,7 +369,7 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' Converts a scenarioBuilder matrix to a list
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
-#' @param series Name of the series, among 'l', 'h', 'w', 's', 't' and 'r'.
+#' @param series Name of the series, among 'l', 'h', 'w', 's', 't', 'r', 'ntc' and 'hl'.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to use for thermal or renewable series.
 #' @param links Either a simple vector with links described as `"area01%area02` or a `data.table` with two columns `from` and `to`.
