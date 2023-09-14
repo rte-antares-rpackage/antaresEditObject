@@ -85,7 +85,7 @@ opts$areasWithSTClusters
 ```
 
 ## Read st-storages parameters
-After creating "st-storage" clusters, you can read all informations with specific function `readClusterSTDesc()`.
+After creating "st-storage" clusters, you can read all information with specific function `readClusterSTDesc()`.
 
 ```{r read st-storage param}
 tab <- readClusterSTDesc()
@@ -108,11 +108,11 @@ rmarkdown::paged_table(head(data_st_storage))
 ```
 
 As you can see, the last two columns (`st-storage`,  `name_file`) give you value for each name file.  
-**FI** : As default, reading option for hourly timestep is `r opts$timeIdMax` (see `opts$timeIdMax`).
+**FYI** : As default, reading option for hourly timestep is `r opts$timeIdMax` (see `opts$timeIdMax`).
 
 ## Edit st-storage
 
-It is possible to edit parameters values et data values like you want.   
+It is possible to edit parameters values and data values like you want.   
 
 ```{r edit st-storage}
 # edit parameters values 
@@ -169,44 +169,44 @@ unique(data_st_storage$area)
 
 Parameters and data concerning this cluster in this area are removed.
 
-## Thermal polluants parameters
+## Thermal pollutants parameters
 
-Antares version 8.6.0 now provide polluants parameters for thermal clusters. you can view the documentation on thermal clusters [here](https://rte-antares-rpackage.github.io/antaresEditObject/articles/antaresEditObject.html#create-a-new-cluster).  
+Antares version 8.6.0 now provide pollutants parameters for thermal clusters. You can see the documentation on thermal clusters [here](https://rte-antares-rpackage.github.io/antaresEditObject/articles/antaresEditObject.html#create-a-new-cluster).  
 
-You have global `list` of pulluants given by function `list_polluants_values()`. By default, parameters are NULL, you can initialise all parameters with value or customise parameters.
+You have global `list` of pollutants given by function `list_polluants_values()`. By default, parameters are set to NULL, you can initialize all parameters with value or customize parameters.
 
 ```{r}
-# create cluster with polluants
+# create cluster with pollutants
 
-# polluants
-all_param_polluants <- list_polluants_values(multi_values = 0.25)
+# pollutants
+all_param_pollutants <- list_polluants_values(multi_values = 0.25)
 
 createCluster(area = "fr", 
-              cluster_name = "test_polluant", 
+              cluster_name = "test_pollutant", 
               unitcount = 1L, 
               marginal_cost = 50,
-              list_polluants = all_param_polluants, 
+              list_polluants = all_param_pollutants, 
               time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
               prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4) 
               )
 ```
 
-```{r polluants param}
+```{r pollutants param}
 # read parameters
 param_th_cluster <- readClusterDesc()
 rmarkdown::paged_table(param_th_cluster)
 ```
 
-See how edit list of polluants parameters. Let's see how edit 3 parameters **`r names(list_polluants_values())[1:3]`**.  
+Let's see how to edit 3 parameters **`r names(list_polluants_values())[1:3]`**.  
 
-```{r edit polluants}
+```{r edit pollutants}
 # editing
-edit_param_polluants <- list_polluants_values(multi_values = 0.3)[1:3]
+edit_param_pollutants <- list_polluants_values(multi_values = 0.3)[1:3]
 
 editCluster(area = "fr", 
-            cluster_name = "test_polluant",
+            cluster_name = "test_pollutant",
             unitcount = 2L, 
-            list_polluants = edit_param_polluants)
+            list_polluants = edit_param_pollutants)
 
 # read parameters
 param_th_cluster <- readClusterDesc()
@@ -215,44 +215,81 @@ rmarkdown::paged_table(param_th_cluster)
 
 ## Hydro - MINGEN file
 
-Antares version 8.6.0 provide new file `mingen.txt`, this file is directly checked with file `mod.txt`.   
-You have 2 different type of check, dimension and values.  
+Antares version 8.6.0 provides new file `mingen.txt`, this file must respect some conditions.  
+The first condition to respect is the dimension with file `mod.txt`.   
+The second one is the consistency of the data between 3 files (`mingen.txt`, `mod.txt`, `maxpower_{area}.txt`).  
+
   
-Full documentation is available with function `writeInputTS()`. We will see further informations for values checks.   
+Full documentation is available in the function `writeInputTS()`. We will see further information for values checks.   
 
 **Values checks : **  
 
 Checks depends of values of parameters in `hydro.ini` file.
 
-```{r schema, echo=FALSE, fig.cap="", out.width = '65%', fig.align='center'}
-# path_image <- sourcedir860 <- system.file("doc/schemas", package = "antaresEditObject")
-# knitr::include_graphics(file.path(path_image,"mingen.png"))
-knitr::include_graphics("schemas/mingen.png")
+```{r schema combinatoire , echo=FALSE, fig.cap="", out.width = '50%', fig.align='center'}
+knitr::include_graphics("schemas/mingen_hydro_rules.png")
 ```
 
-A start, just after creation study, `.txt` files containing time series are empty. We will see steps to write `mingen.txt`.
+```{r schema, echo=FALSE, fig.cap="", out.width = '75%', fig.align='center'}
+# path_image <- sourcedir860 <- system.file("doc/schemas", package = "antaresEditObject")
+# knitr::include_graphics(file.path(path_image,"mingen.png"))
+knitr::include_graphics("schemas/mingen_draw.png")
+```
 
-```{r write mingen}
+After creating study, `.txt` files containing time series are empty. We will describe steps to edit `mingen.txt`.  
+  
+  
+**Initial values :**  
+
+
+```{r hydro ini}
+# see hydro parameters 
+path_file_hydro <- file.path("input", "hydro", "hydro.ini")
+hydro_ini_values <- readIni(pathIni = path_file_hydro)
+hydro_params <- c('follow load', 'use heuristic', "reservoir")
+hydro_ini_values[hydro_params]
+```
+
+
+**Steps to create mingen file :**
+
+```{r edit mod}
 # Initialize mingen data (time series)
 mingen_data = matrix(0.06,8760,5)
 
 # 1 - edit mod file (time series)
 mod_data = matrix(6,365,5)
-writeInputTS(area = "fr", type = "hydroSTOR", 
+suppressWarnings(
+  writeInputTS(area = "fr", type = "hydroSTOR", 
              data = mod_data, 
              overwrite = TRUE)
+)
 
-# 2 - edit maxpower (have to be > value mingen)
+```
+
+```{r edit maxpower}
+# 2 - edit maxpower 
 maxpower_data <- matrix(6,365,4)
-writeHydroValues(area = "fr", 
+suppressWarnings(
+  writeHydroValues(area = "fr", 
                  type = "maxpower", 
                  data = maxpower_data)
+)
 
-  # 4- edit mingen
-writeInputTS(area = "fr", type = "mingen", 
+```
+
+
+```{r edit mingen}
+# 3 - edit mingen
+suppressWarnings(
+  writeInputTS(area = "fr", type = "mingen", 
              data = mingen_data, 
              overwrite = TRUE)
+)
+
 ```
+
+
 
 Now we can read time series. 
 
@@ -264,7 +301,7 @@ rmarkdown::paged_table(head(read_ts_file))
 
 
 ```{r delete study, include=FALSE}
-#Delete study
+# Delete study
     unlink(opts$studyPath, 
            recursive = TRUE)
 # clean global options
