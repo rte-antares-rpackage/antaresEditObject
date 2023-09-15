@@ -18,7 +18,7 @@ Update adequacy parameters of an Antares study"><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@ Update adequacy parameters of an Antares study"><!-- mathjax --><script src="htt
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/Antares_new_features_v860.html">Antares new features v8.6.0</a>
+    </li>
+    <li>
       <a href="../articles/api-variant-management.html">Variant management with API</a>
     </li>
     <li>
@@ -78,9 +81,10 @@ Update adequacy parameters of an Antares study"><!-- mathjax --><script src="htt
 <span>  include_adq_patch <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  set_to_null_ntc_from_physical_out_to_physical_in_for_first_step <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  set_to_null_ntc_between_physical_out_for_first_step <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  price_taking_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  include_hurdle_cost_csr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  check_csr_cost_function <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  enable_first_step <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  price_taking_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  threshold_initiate_curtailment_sharing_rule <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  threshold_display_local_matching_rule_violations <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  threshold_csr_variable_bounds_relaxation <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -102,16 +106,20 @@ Update adequacy parameters of an Antares study"><!-- mathjax --><script src="htt
 <dd><p>Logical. default to TRUE</p></dd>
 
 
-<dt>price_taking_order</dt>
-<dd><p>Character. can take values DENS (default value) and Load.</p></dd>
-
-
 <dt>include_hurdle_cost_csr</dt>
 <dd><p>Logical. default to FALSE</p></dd>
 
 
 <dt>check_csr_cost_function</dt>
 <dd><p>Logical. default to FALSE</p></dd>
+
+
+<dt>enable_first_step</dt>
+<dd><p>Logical. default to TRUE</p></dd>
+
+
+<dt>price_taking_order</dt>
+<dd><p>Character. can take values DENS (default value) and Load.</p></dd>
 
 
 <dt>threshold_initiate_curtailment_sharing_rule</dt>
@@ -160,7 +168,7 @@ Update adequacy parameters of an Antares study"><!-- mathjax --><script src="htt
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
+  <p></p><p>Developed by Tatiana Vargas, Frederic Breant, Victor Perrier.</p>
 </div>
 
 <div class="pkgdown">

@@ -229,11 +229,11 @@ Full documentation is available in the function `writeInputTS()`. We will see fu
 
 Checks depends of values of parameters in `hydro.ini` file.
 
-```{r schema combinatoire , echo=FALSE, fig.cap="", out.width = '50%', fig.align='center'}
+```{r schema combinatoire , echo=FALSE, fig.cap="", out.width = '40%', fig.align='center'}
 knitr::include_graphics("schemas/mingen_hydro_rules.png")
 ```
 
-```{r schema, echo=FALSE, fig.cap="", out.width = '75%', fig.align='center'}
+```{r schema, echo=FALSE, fig.cap="", out.width = '80%', fig.align='center'}
 # path_image <- sourcedir860 <- system.file("doc/schemas", package = "antaresEditObject")
 # knitr::include_graphics(file.path(path_image,"mingen.png"))
 knitr::include_graphics("schemas/mingen_draw.png")
