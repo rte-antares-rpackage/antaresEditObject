@@ -55,8 +55,6 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
     }
   }
   unlink(x = file.path(inputPath, "links", name), recursive = TRUE)
-  alllinks <- list.files(path = file.path(inputPath, "links"), pattern = name, full.names = TRUE, recursive = TRUE)
-  lapply(alllinks, unlink, recursive = TRUE)
 
   # Update area list
   areas <- readLines(file.path(inputPath, "areas/list.txt"))
