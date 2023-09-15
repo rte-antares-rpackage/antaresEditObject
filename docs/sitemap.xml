@@ -7,6 +7,9 @@
     <loc>/articles/antaresEditObject.html</loc>
   </url>
   <url>
+    <loc>/articles/Antares_new_features_v860.html</loc>
+  </url>
+  <url>
     <loc>/articles/api-variant-management.html</loc>
   </url>
   <url>
@@ -34,6 +37,12 @@
     <loc>/reference/activateRES.html</loc>
   </url>
   <url>
+    <loc>/reference/activateST.html</loc>
+  </url>
+  <url>
+    <loc>/reference/add_week_number_column_to_ts.html</loc>
+  </url>
+  <url>
     <loc>/reference/adequacyOptions.html</loc>
   </url>
   <url>
@@ -47,6 +56,15 @@
   </url>
   <url>
     <loc>/reference/checkRemovedArea.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_consistency_reservoir_values.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_mingen_vs_hydro_storage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_mingen_vs_maxpower.html</loc>
   </url>
   <url>
     <loc>/reference/cleanUpOutput.html</loc>
@@ -73,22 +91,19 @@
     <loc>/reference/create-binding-constraint.html</loc>
   </url>
   <url>
-    <loc>/reference/create-cluster.html</loc>
-  </url>
-  <url>
     <loc>/reference/create-study.html</loc>
   </url>
   <url>
     <loc>/reference/createArea.html</loc>
   </url>
   <url>
-    <loc>/reference/createBindingConstraint.html</loc>
-  </url>
-  <url>
     <loc>/reference/createCluster.html</loc>
   </url>
   <url>
     <loc>/reference/createClusterBulk.html</loc>
+  </url>
+  <url>
+    <loc>/reference/createClusterST.html</loc>
   </url>
   <url>
     <loc>/reference/createDistrict.html</loc>
@@ -101,9 +116,6 @@
   </url>
   <url>
     <loc>/reference/createPSP.html</loc>
-  </url>
-  <url>
-    <loc>/reference/createStudy.html</loc>
   </url>
   <url>
     <loc>/reference/deleteStudy.html</loc>
@@ -121,9 +133,6 @@
     <loc>/reference/dot-hourlyToOther.html</loc>
   </url>
   <url>
-    <loc>/reference/edit-cluster.html</loc>
-  </url>
-  <url>
     <loc>/reference/editArea.html</loc>
   </url>
   <url>
@@ -133,7 +142,16 @@
     <loc>/reference/editCluster.html</loc>
   </url>
   <url>
+    <loc>/reference/editClusterST.html</loc>
+  </url>
+  <url>
     <loc>/reference/editLink.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fill_empty_hydro_ini_file.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fill_empty_hydro_ts_file.html</loc>
   </url>
   <url>
     <loc>/reference/filteringOptions.html</loc>
@@ -145,13 +163,22 @@
     <loc>/reference/getJobs.html</loc>
   </url>
   <url>
-    <loc>/reference/getPlaylist.html</loc>
+    <loc>/reference/get_default_hydro_ini_values.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_type_check_mingen_vs_hydrostorage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_type_check_mingen_vs_hydrostorage_to_trigger.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_type_check_mingen_vs_maxpower_to_trigger.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/is_antares_v7.html</loc>
+    <loc>/reference/list_polluants_values.html</loc>
   </url>
   <url>
     <loc>/reference/mockSimulationAPI.html</loc>
@@ -166,15 +193,6 @@
     <loc>/reference/propertiesLinkOptions.html</loc>
   </url>
   <url>
-    <loc>/reference/read-ini.html</loc>
-  </url>
-  <url>
-    <loc>/reference/readIniFile.html</loc>
-  </url>
-  <url>
-    <loc>/reference/remove-cluster.html</loc>
-  </url>
-  <url>
     <loc>/reference/removeArea.html</loc>
   </url>
   <url>
@@ -185,6 +203,12 @@
   </url>
   <url>
     <loc>/reference/removeLink.html</loc>
+  </url>
+  <url>
+    <loc>/reference/replicate_missing_ts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rollback_to_previous_data.html</loc>
   </url>
   <url>
     <loc>/reference/runSimulation.html</loc>
@@ -202,10 +226,10 @@
     <loc>/reference/setAPImode.html</loc>
   </url>
   <url>
-    <loc>/reference/setPlaylist.html</loc>
+    <loc>/reference/setSolverPath.html</loc>
   </url>
   <url>
-    <loc>/reference/setSolverPath.html</loc>
+    <loc>/reference/storage_values_default.html</loc>
   </url>
   <url>
     <loc>/reference/updateAdequacySettings.html</loc>
@@ -238,7 +262,7 @@
     <loc>/reference/writeHydroValues.html</loc>
   </url>
   <url>
-    <loc>/reference/writeIni.html</loc>
+    <loc>/reference/writeIniHydro.html</loc>
   </url>
   <url>
     <loc>/reference/writeInputTS.html</loc>

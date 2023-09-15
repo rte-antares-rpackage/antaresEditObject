@@ -18,7 +18,7 @@ This function writes input time series in an Antares project."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@ This function writes input time series in an Antares project."><!-- mathjax --><
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/Antares_new_features_v860.html">Antares new features v8.6.0</a>
+    </li>
+    <li>
       <a href="../articles/api-variant-management.html">Variant management with API</a>
     </li>
     <li>
@@ -76,7 +79,7 @@ This function writes input time series in an Antares project."><!-- mathjax --><
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeInputTS</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
-<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"hydroROR"</span>, <span class="st">"hydroSTOR"</span>, <span class="st">"wind"</span>, <span class="st">"solar"</span>, <span class="st">"tsLink"</span><span class="op">)</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"hydroROR"</span>, <span class="st">"hydroSTOR"</span>, <span class="st">"mingen"</span>, <span class="st">"wind"</span>, <span class="st">"solar"</span>, <span class="st">"tsLink"</span><span class="op">)</span>,</span>
 <span>  area <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  link <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -87,14 +90,17 @@ This function writes input time series in an Antares project."><!-- mathjax --><
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
-<dd><p>A 8760<em>N matrix of hourly time series, except when <code>type</code> is
-<code>"hydroSTOR"</code>. In this latter case, <code>data</code> must either be 365</em>N
-(Antares v7) or 12*N (v6 and earlier).</p></dd>
+<dd><p>A 8760*N matrix of hourly time series, except when <code>type</code> is
+<code>"hydroSTOR"</code>.
+In this latter case <code>"hydroSTOR"</code> data must have either be 365 rows
+(Antares v7) or 12 rows (v6 and earlier).</p></dd>
 
 
 <dt>type</dt>
 <dd><p>Serie to write: <code>"load"</code>, <code>"hydroROR"</code>, <code>"hydroSTOR"</code>,
-<code>"wind"</code>, <code>"solar"</code>, or <code>"tsLink"</code>.</p></dd>
+<code>"wind"</code>, <code>"solar"</code>, <code>"tsLink"</code> or <code>"mingen"</code>.</p>
+<p>If type == <code>"mingen"</code>, <code>"antaresVersion"</code> should be &gt;= 860.
+Refers to note section below.</p></dd>
 
 
 <dt>area</dt>
@@ -121,12 +127,20 @@ must like <code>"area01%area02"</code> or <code>c("area01", "area02")</code>.</p
 
 <p>An updated list containing various information about the simulation.</p>
     </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>For an <strong>Antares version &gt;= 860</strong>, the <code>mingen.txt</code> file is created.</p>
+<p>The <code>mingen.txt</code> file can be created under two conditions:</p><ul><li><p>The number of columns must be equal to either <code>1</code> or the number in <code>mod.txt</code></p></li>
+<li><p>If the <code>mod.txt</code> file is empty or has one column, then there is no dimension constraint</p></li>
+</ul></div>
     <div id="warning">
     <h2>Warning</h2>
     
 
 
 <p>You cannot use <code>area</code> and <code>link</code> arguments at the same time.</p>
+<p>For an <strong>Antares version &gt;= 860</strong>, control of data consistency between <code>mingen.txt</code> and <code>mod.txt</code> can be executed.</p>
+<p>These controls depend on the values you find in <code>hydro.ini</code> file.</p>
     </div>
 
     <div id="ref-examples">
@@ -151,7 +165,7 @@ must like <code>"area01%area02"</code> or <code>c("area01", "area02")</code>.</p
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
+  <p></p><p>Developed by Tatiana Vargas, Frederic Breant, Victor Perrier.</p>
 </div>
 
 <div class="pkgdown">

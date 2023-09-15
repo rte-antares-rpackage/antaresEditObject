@@ -39,6 +39,8 @@ BUGFIXES :
 * `writeInputTS()` works with argument `type = "tsLink"`
 * `createLink()` and `editLink()` write the appropriate time series in _direct.txt and _indirect.txt files even if the areas `from` and `to` given as arguments are not sorted
 
+### DOC : 
+* A new article presenting v8.6 features is available on the package's online documentation.
 
 # antaresEditObject 0.5.1
 
