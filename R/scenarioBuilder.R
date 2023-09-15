@@ -42,6 +42,21 @@
 #' sbuilder[, 1:6]
 #' dim(sbuilder)
 #' 
+#' # Create a scenario builder matrix for hydro levels (use case 1)
+#' sbuilder <- scenarioBuilder(
+#'   n_mc = opts$parameters$general$nbyears,
+#'   areas = c("fr", "be"),
+#'   coef_hydro_levels = c(0.1, 0.9)
+#' )
+#'
+#' # Create a scenario builder matrix for hydro levels (use case 2)
+#' sbuilder <- scenarioBuilder(
+#'   n_mc = opts$parameters$general$nbyears,
+#'   areas = c("fr", "be"),
+#'   coef_hydro_levels = c(runif(opts$parameters$general$nbyears)
+#'   , runif(opts$parameters$general$nbyears)
+#'   )
+#' )
 #' 
 #' # Read previous scenario builder
 #' # in a matrix format
@@ -105,7 +120,15 @@ scenarioBuilder <- function(n_scenario,
   }
   
   if (!is.null(coef_hydro_levels)) {
-    data_mat <- rep_len(coef_hydro_levels, length(areas) * n_mc)
+    nb_areas <- length(areas)
+    nb_coef_hydro_levels <- length(coef_hydro_levels)
+    if (nb_coef_hydro_levels == nb_areas) {
+      data_mat <- rep(coef_hydro_levels, each = n_mc)
+    } else if(nb_coef_hydro_levels == nb_areas * n_mc) {
+      data_mat <- coef_hydro_levels
+    } else {
+      stop("Please check the number of areas and the number of coefficients for hydro levels that you provided.")
+    }
   } else {
     data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
   }

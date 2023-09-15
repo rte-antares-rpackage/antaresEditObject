@@ -110,6 +110,21 @@ sbuilder <- scenarioBuilder(
 sbuilder[, 1:6]
 dim(sbuilder)
 
+# Create a scenario builder matrix for hydro levels (use case 1)
+sbuilder <- scenarioBuilder(
+  n_mc = opts$parameters$general$nbyears,
+  areas = c("fr", "be"),
+  coef_hydro_levels = c(0.1, 0.9)
+)
+
+# Create a scenario builder matrix for hydro levels (use case 2)
+sbuilder <- scenarioBuilder(
+  n_mc = opts$parameters$general$nbyears,
+  areas = c("fr", "be"),
+  coef_hydro_levels = c(runif(opts$parameters$general$nbyears)
+  , runif(opts$parameters$general$nbyears)
+  )
+)
 
 # Read previous scenario builder
 # in a matrix format
