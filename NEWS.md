@@ -6,7 +6,7 @@
 * `createArea()` integrate "st-storage".
 * `removeArea()`  integrate "st-storage".
 * `writeInputTS()` integrate "mingen" data and dependency between "mod.txt" and "mingen.txt" data.
-* `createCluster()` / `editCluster()` have new parameter `list_polluants` for list of pollutants.
+* `createCluster()` / `editCluster()` have new parameter `list_pollutants` for list of pollutants.
 
 
 NEW FEATURES (Antares v8.6) :

@@ -56,9 +56,9 @@ sapply(studies, function(study) {
 setup_study_860(sourcedir860)
 opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
-test_that("Edit cluster with polluants params (new feature v8.6)",{
+test_that("Edit cluster with pollutants params (new feature v8.6)",{
   
-  polluants_params <- list(
+  pollutants_params <- list(
     "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
     "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,
     "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, 
@@ -67,14 +67,14 @@ test_that("Edit cluster with polluants params (new feature v8.6)",{
   
   opts_test <- createCluster(
     area = getAreas()[1], 
-    cluster_name = "mycluster_polluant",
+    cluster_name = "mycluster_pollutant",
     group = "Other",
     unitcount = 1,
     nominalcapacity = 8000,
     `min-down-time` = 0,
     `marginal-cost` = 0.010000,
     `market-bid-cost` = 0.010000, 
-    list_polluants = polluants_params,
+    list_pollutants = pollutants_params,
     time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
     prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4), 
     opts = opts_test
@@ -85,7 +85,7 @@ test_that("Edit cluster with polluants params (new feature v8.6)",{
   # NULL as to effect to delete parameters
   opts_test <- editCluster(area = getAreas()[1], 
               cluster_name = levels(res_cluster$cluster)[1], 
-              list_polluants = list(
+              list_pollutants = list(
                 "nh3"= 0.07, 
                 "nox"= 0.07, 
                 "pm2_5"= 0.07, 

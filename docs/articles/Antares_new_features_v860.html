@@ -182,7 +182,7 @@
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span>
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span>
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span></code></pre></div>
-<p>Now you can see information in simulation options.</p>
+<p>Now you can see informations in simulation options.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">opts</span><span class="op">$</span><span class="va">areasWithSTClusters</span></span>
@@ -328,18 +328,18 @@
 <h2 id="thermal-pollutants-parameters">Thermal pollutants parameters<a class="anchor" aria-label="anchor" href="#thermal-pollutants-parameters"></a>
 </h2>
 <p>Antares version 8.6.0 now provide pollutants parameters for thermal clusters. You can see the documentation on thermal clusters <a href="https://rte-antares-rpackage.github.io/antaresEditObject/articles/antaresEditObject.html#create-a-new-cluster" class="external-link">here</a>.</p>
-<p>You have global <code>list</code> of pollutants given by function <code><a href="../reference/list_polluants_values.html">list_polluants_values()</a></code> (nh3, nox, pm2_5, pm5, pm10, nmvoc, so2, op1, op2, op3, op4, op5, co2). By default, parameters are set to NULL, you can initialize all parameters with value or customize parameters.</p>
+<p>You have global <code>list</code> of pollutants given by function <code><a href="../reference/list_pollutants_values.html">list_pollutants_values()</a></code>. By default, parameters are set to NULL, you can initialize all parameters with value or customize parameters.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create cluster with pollutants</span></span>
 <span></span>
 <span><span class="co"># pollutants</span></span>
-<span><span class="va">all_param_pollutants</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_polluants_values.html">list_polluants_values</a></span><span class="op">(</span>multi_values <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span><span class="va">all_param_pollutants</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_pollutants_values.html">list_pollutants_values</a></span><span class="op">(</span>multi_values <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/createCluster.html">createCluster</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, </span>
 <span>              cluster_name <span class="op">=</span> <span class="st">"test_pollutant"</span>, </span>
 <span>              unitcount <span class="op">=</span> <span class="fl">1L</span>, </span>
 <span>              marginal_cost <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>              list_polluants <span class="op">=</span> <span class="va">all_param_pollutants</span>, </span>
+<span>              list_pollutants <span class="op">=</span> <span class="va">all_param_pollutants</span>, </span>
 <span>              time_series <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">8000</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">24</span><span class="op">*</span><span class="fl">364</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>              prepro_modulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">24</span><span class="op">*</span><span class="fl">365</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> </span>
 <span>              <span class="op">)</span></span></code></pre></div>
@@ -355,22 +355,19 @@
 <p>Let’s see how to edit 3 parameters <strong>nh3, nox, pm2_5</strong>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># editing</span></span>
-<span><span class="va">edit_param_pollutants</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_polluants_values.html">list_polluants_values</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nh3"</span>, <span class="st">"nox"</span>, <span class="st">"pm2_5"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">edit_param_pollutants</span><span class="op">$</span><span class="va">nh3</span> <span class="op">&lt;-</span> <span class="fl">0.3</span></span>
-<span><span class="va">edit_param_pollutants</span><span class="op">$</span><span class="va">nox</span> <span class="op">&lt;-</span> <span class="fl">0.4</span></span>
-<span><span class="va">edit_param_pollutants</span><span class="op">$</span><span class="va">pm2_5</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
+<span><span class="va">edit_param_pollutants</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_pollutants_values.html">list_pollutants_values</a></span><span class="op">(</span>multi_values <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/editCluster.html">editCluster</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, </span>
 <span>            cluster_name <span class="op">=</span> <span class="st">"test_pollutant"</span>,</span>
 <span>            unitcount <span class="op">=</span> <span class="fl">2L</span>, </span>
-<span>            list_polluants <span class="op">=</span> <span class="va">edit_param_pollutants</span><span class="op">)</span></span>
+<span>            list_pollutants <span class="op">=</span> <span class="va">edit_param_pollutants</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># read parameters</span></span>
 <span><span class="va">param_th_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">param_th_cluster</span><span class="op">)</span></span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["group"],"name":[2],"type":["chr"],"align":["left"]},{"label":["unitcount"],"name":[3],"type":["int"],"align":["right"]},{"label":["marginal.cost"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["cluster"],"name":[5],"type":["fct"],"align":["left"]},{"label":["nh3"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["nox"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["pm2_5"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["pm5"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["pm10"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["nmvoc"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["so2"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["op1"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["op2"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["op3"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["op4"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["op5"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["co2"],"name":[18],"type":["dbl"],"align":["right"]}],"data":[{"1":"fr","2":"Other","3":"2","4":"50","5":"fr_test_pollutant","6":"0.3","7":"0.4","8":"0.5","9":"0.25","10":"0.25","11":"0.25","12":"0.25","13":"0.25","14":"0.25","15":"0.25","16":"0.25","17":"0.25","18":"0.25"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["group"],"name":[2],"type":["chr"],"align":["left"]},{"label":["unitcount"],"name":[3],"type":["int"],"align":["right"]},{"label":["marginal.cost"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["cluster"],"name":[5],"type":["fct"],"align":["left"]},{"label":["nh3"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["nox"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["pm2_5"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["pm5"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["pm10"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["nmvoc"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["so2"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["op1"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["op2"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["op3"],"name":[15],"type":["dbl"],"align":["right"]},{"label":["op4"],"name":[16],"type":["dbl"],"align":["right"]},{"label":["op5"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["co2"],"name":[18],"type":["dbl"],"align":["right"]}],"data":[{"1":"fr","2":"Other","3":"2","4":"50","5":"fr_test_pollutant","6":"0.3","7":"0.3","8":"0.3","9":"0.25","10":"0.25","11":"0.25","12":"0.25","13":"0.25","14":"0.25","15":"0.25","16":"0.25","17":"0.25","18":"0.25"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -383,8 +380,8 @@ The second one is the consistency of the data between 3 files (<code>mingen.txt<
 <p>Full documentation is available in the function <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code>. We will see further information for values checks.</p>
 <p><strong>Values checks : </strong></p>
 <p>Checks depends of values of parameters in <code>hydro.ini</code> file.</p>
-<p><img src="schemas/mingen_hydro_rules.png" width="40%" style="display: block; margin: auto;"></p>
-<p><img src="schemas/mingen_draw.png" width="80%" style="display: block; margin: auto;"></p>
+<p><img src="schemas/mingen_hydro_rules.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="schemas/mingen_draw.png" width="75%" style="display: block; margin: auto;"></p>
 <p>After creating study, <code>.txt</code> files containing time series are empty. We will describe steps to edit <code>mingen.txt</code>.</p>
 <p><strong>Initial values :</strong></p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">

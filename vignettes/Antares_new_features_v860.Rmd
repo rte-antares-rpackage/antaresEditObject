@@ -76,7 +76,7 @@ createClusterST(area = "it",
 ```
 
 
-Now you can see information in simulation options. 
+Now you can see informations in simulation options. 
 
 ```{r study options}
 opts <- simOptions()
@@ -173,19 +173,19 @@ Parameters and data concerning this cluster in this area are removed.
 
 Antares version 8.6.0 now provide pollutants parameters for thermal clusters. You can see the documentation on thermal clusters [here](https://rte-antares-rpackage.github.io/antaresEditObject/articles/antaresEditObject.html#create-a-new-cluster).  
 
-You have global `list` of pollutants given by function `list_polluants_values()` (`r names(list_polluants_values())`). By default, parameters are set to NULL, you can initialize all parameters with value or customize parameters.
+You have global `list` of pollutants given by function `list_pollutants_values()`. By default, parameters are set to NULL, you can initialize all parameters with value or customize parameters.
 
 ```{r}
 # create cluster with pollutants
 
 # pollutants
-all_param_pollutants <- list_polluants_values(multi_values = 0.25)
+all_param_pollutants <- list_pollutants_values(multi_values = 0.25)
 
 createCluster(area = "fr", 
               cluster_name = "test_pollutant", 
               unitcount = 1L, 
               marginal_cost = 50,
-              list_polluants = all_param_pollutants, 
+              list_pollutants = all_param_pollutants, 
               time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
               prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4) 
               )
@@ -197,19 +197,16 @@ param_th_cluster <- readClusterDesc()
 rmarkdown::paged_table(param_th_cluster)
 ```
 
-Let's see how to edit 3 parameters **`r names(list_polluants_values())[1:3]`**.  
+Let's see how to edit 3 parameters **`r names(list_pollutants_values())[1:3]`**.  
 
 ```{r edit pollutants}
 # editing
-edit_param_pollutants <- list_polluants_values()[c("nh3", "nox", "pm2_5")]
-edit_param_pollutants$nh3 <- 0.3
-edit_param_pollutants$nox <- 0.4
-edit_param_pollutants$pm2_5 <- 0.5
+edit_param_pollutants <- list_pollutants_values(multi_values = 0.3)[1:3]
 
 editCluster(area = "fr", 
             cluster_name = "test_pollutant",
             unitcount = 2L, 
-            list_polluants = edit_param_pollutants)
+            list_pollutants = edit_param_pollutants)
 
 # read parameters
 param_th_cluster <- readClusterDesc()
@@ -229,11 +226,11 @@ Full documentation is available in the function `writeInputTS()`. We will see fu
 
 Checks depends of values of parameters in `hydro.ini` file.
 
-```{r schema combinatoire , echo=FALSE, fig.cap="", out.width = '40%', fig.align='center'}
+```{r schema combinatoire , echo=FALSE, fig.cap="", out.width = '50%', fig.align='center'}
 knitr::include_graphics("schemas/mingen_hydro_rules.png")
 ```
 
-```{r schema, echo=FALSE, fig.cap="", out.width = '80%', fig.align='center'}
+```{r schema, echo=FALSE, fig.cap="", out.width = '75%', fig.align='center'}
 # path_image <- sourcedir860 <- system.file("doc/schemas", package = "antaresEditObject")
 # knitr::include_graphics(file.path(path_image,"mingen.png"))
 knitr::include_graphics("schemas/mingen_draw.png")

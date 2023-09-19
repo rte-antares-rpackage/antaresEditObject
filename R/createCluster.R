@@ -13,7 +13,7 @@
 #' @param ... Parameters to write in the Ini file. Careful!
 #'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
 #'  to set `unitcount`, you'll have to use `unitcount = 1L`.
-#' @param list_polluants `list` named with specific polluants (only for Antares version >= 860)  
+#' @param list_pollutants `list` named with specific pollutants (only for Antares version >= 860)  
 #' @param time_series the "ready-made" 8760-hour time-series available for simulation purposes.
 #' @param prepro_data Pre-process data, a `data.frame` or `matrix`, 
 #'  default is a matrix with 365 rows and 6 columns.
@@ -36,7 +36,7 @@
 #' @importFrom data.table setcolorder year yday month setnames
 #' 
 #' @note 
-#' Parameter `list_polluants` is only available for Antares studies >= v8.6.0.  
+#' Parameter `list_pollutants` is only available for Antares studies >= v8.6.0.  
 #' 
 #' You must provide named `list` (numerical values or NULL ) :    
 #' 
@@ -156,7 +156,7 @@ createCluster <- function(area,
                           cluster_name, 
                           group = "Other",
                           ...,
-                          list_polluants = list_polluants_values(),
+                          list_pollutants = list_pollutants_values(),
                           time_series = NULL,
                           prepro_data = NULL,
                           prepro_modulation = NULL,
@@ -167,25 +167,25 @@ createCluster <- function(area,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   # static name of list parameters of pulluants
-  name_list_param_poll <- names(list_polluants_values())
+  name_list_param_poll <- names(list_pollutants_values())
   
   # check v860
     # check list pulluants parameters
   if(opts$antaresVersion >= 860){
-    if(!is.null(list_polluants) & !assert_that(inherits(list_polluants, "list")))
-      stop("Parameter 'list_polluants' must be a 'list'")
+    if(!is.null(list_pollutants) & !assert_that(inherits(list_pollutants, "list")))
+      stop("Parameter 'list_pollutants' must be a 'list'")
     
-    if(!all(names(list_polluants) %in% name_list_param_poll))
-      stop(append("Parameter 'list_polluants' must be named with the following elements: ", 
+    if(!all(names(list_pollutants) %in% name_list_param_poll))
+      stop(append("Parameter 'list_pollutants' must be named with the following elements: ", 
                   paste0(name_list_param_poll, collapse= ", ")))
     
     # check if all elements are NULL => replace by NULL 
       # API (only) can't create with NULL values
-    all_null <- lapply(list_polluants, is.null)
+    all_null <- lapply(list_pollutants, is.null)
     all_null <- all(unlist(all_null))
     
     if(all_null)
-      list_polluants <- NULL
+      list_pollutants <- NULL
   }
     
   
@@ -212,7 +212,7 @@ createCluster <- function(area,
     cluster_name = cluster_name, 
     group = group,
     ...,
-    list_polluants = list_polluants,
+    list_pollutants = list_pollutants,
     time_series = time_series,
     prepro_data = prepro_data,
     prepro_modulation = prepro_modulation,
@@ -270,7 +270,7 @@ createClusterRES <- function(area,
 .createCluster <- function(area, 
                            cluster_name, 
                            ...,
-                           list_polluants = NULL,
+                           list_pollutants = NULL,
                            time_series = NULL,
                            prepro_data = NULL,
                            prepro_modulation = NULL,
@@ -302,9 +302,9 @@ createClusterRES <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
   
-  # v860 polluants
+  # v860 pollutants
   if(opts$antaresVersion >= 860)
-    params_cluster <- append(params_cluster, list_polluants)
+    params_cluster <- append(params_cluster, list_pollutants)
   
   # API block
   if (is_api_study(opts)) {
@@ -463,7 +463,7 @@ createClusterRES <- function(area,
 # )
 
 
-#' Output polluants list for thermal clusters
+#' Output pollutants list for thermal clusters
 #'
 #' @param multi_values put values to init list values, default as `NULL`
 #'
@@ -471,8 +471,8 @@ createClusterRES <- function(area,
 #' @export
 #'
 #' @examples
-#' list_polluants_values()
-list_polluants_values <- function(multi_values = NULL) {
+#' list_pollutants_values()
+list_pollutants_values <- function(multi_values = NULL) {
   list("nh3"= multi_values, 
        "nox"= multi_values, 
        "pm2_5"= multi_values, 

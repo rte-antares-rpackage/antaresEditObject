@@ -88,7 +88,7 @@ sapply(studies, function(study) {
 setup_study_860(sourcedir860)
 opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
-test_that("Create cluster with polluants params (new feature v8.6)",{
+test_that("Create cluster with pollutants params (new feature v8.6)",{
   
   test_that("Create cluster default call (new feature v8.6)",{
     
@@ -101,15 +101,15 @@ test_that("Create cluster with polluants params (new feature v8.6)",{
     res_cluster_default <- res_cluster[cluster %in% 
                                          paste0(getAreas()[1], "_cluster_default"),]
     
-    polluants_names <- names(antaresEditObject::list_polluants_values())
+    pollutants_names <- names(antaresEditObject::list_pollutants_values())
     
-    values_default <- res_cluster_default[, .SD, .SDcols = polluants_names]
+    values_default <- res_cluster_default[, .SD, .SDcols = pollutants_names]
     
     # check default values 
     testthat::expect_equal(all(is.na(values_default)), TRUE)
   })
   
-  polluants_params <- list(
+  pollutants_params <- list(
     "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
     "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,
     "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, 
@@ -118,14 +118,14 @@ test_that("Create cluster with polluants params (new feature v8.6)",{
   
   createCluster(
     area = getAreas()[1], 
-    cluster_name = "mycluster_polluant",
+    cluster_name = "mycluster_pollutant",
     group = "Other",
     unitcount = 1,
     nominalcapacity = 8000,
     `min-down-time` = 0,
     `marginal-cost` = 0.010000,
     `market-bid-cost` = 0.010000, 
-    list_polluants = polluants_params,
+    list_pollutants = pollutants_params,
     time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
     prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4), 
     opts = opts_test
@@ -134,13 +134,13 @@ test_that("Create cluster with polluants params (new feature v8.6)",{
   res_cluster <- antaresRead::readClusterDesc()
   
   # check if cluster is created
-  testthat::expect_true(paste(getAreas()[1], "mycluster_polluant", sep = "_") %in% 
+  testthat::expect_true(paste(getAreas()[1], "mycluster_pollutant", sep = "_") %in% 
                 levels(res_cluster$cluster))
   
-  names_polluants <- names(polluants_params)
+  names_pollutants <- names(pollutants_params)
   
-  # check if polluants is read well
-  testthat::expect_true(all(names_polluants %in% 
+  # check if pollutants is read well
+  testthat::expect_true(all(names_pollutants %in% 
                               names(res_cluster)))
   
   # remove temporary study
