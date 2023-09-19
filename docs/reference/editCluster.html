@@ -81,7 +81,7 @@ Edit parameters, pre-process data and time series of an existing cluster, therma
 <span>  <span class="va">area</span>,</span>
 <span>  <span class="va">cluster_name</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  list_polluants <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  list_pollutants <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  time_series <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prepro_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prepro_modulation <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -115,8 +115,8 @@ Some parameters must be set as <code>integers</code> to avoid warnings in Antare
 to set <code>unitcount</code>, you'll have to use <code>unitcount = 1L</code>.</p></dd>
 
 
-<dt>list_polluants</dt>
-<dd><p><code>list</code> named with specific polluants (only for Antares version &gt;= 860)</p></dd>
+<dt>list_pollutants</dt>
+<dd><p><code>list</code> named with specific pollutants (only for Antares version &gt;= 860)</p></dd>
 
 
 <dt>time_series</dt>
@@ -150,7 +150,7 @@ if specified, must have 8760 rows and 1 or 4 columns.</p></dd>
     </div>
     <div id="note">
     <h2>Note</h2>
-    <p>Parameter <code>list_polluants</code> is only available for Antares studies &gt;= v8.6.0.</p>
+    <p>Parameter <code>list_pollutants</code> is only available for Antares studies &gt;= v8.6.0.</p>
 <p>You must provide named <code>list</code> (numerical values or NULL ) :</p>
 <p><code>list( "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25,   "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,  "op1"= 0.25, "op2"= 0.25, "op3"= 0.25,   "op4"= 0.25, "op5"= NULL, "co2"= NULL)</code></p>
     </div>

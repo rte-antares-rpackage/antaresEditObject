@@ -12,7 +12,7 @@
 #' @seealso [createCluster()] or [createClusterRES()] to create new clusters, [removeCluster()] or [removeClusterRES()] to remove clusters.
 #' 
 #' @note 
-#' Parameter `list_polluants` is only available for Antares studies >= v8.6.0.  
+#' Parameter `list_pollutants` is only available for Antares studies >= v8.6.0.  
 #' 
 #' You must provide named `list` (numerical values or NULL ) :    
 #' 
@@ -44,7 +44,7 @@
 editCluster <- function(area,
                         cluster_name, 
                         ..., 
-                        list_polluants = NULL,
+                        list_pollutants = NULL,
                         time_series = NULL,
                         prepro_data = NULL,
                         prepro_modulation = NULL,
@@ -54,7 +54,7 @@ editCluster <- function(area,
     area = area,
     cluster_name = cluster_name, 
     ..., 
-    list_polluants = list_polluants,
+    list_pollutants = list_pollutants,
     time_series = time_series,
     prepro_data = prepro_data,
     prepro_modulation = prepro_modulation,
@@ -90,7 +90,7 @@ editClusterRES <- function(area,
 .editCluster <- function(area,
                          cluster_name, 
                          ..., 
-                         list_polluants = NULL,
+                         list_pollutants = NULL,
                          time_series = NULL,
                          prepro_data = NULL,
                          prepro_modulation = NULL,
@@ -108,9 +108,9 @@ editClusterRES <- function(area,
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   
-  # v860 polluants
+  # v860 pollutants
   if(opts$antaresVersion >= 860)
-    params_cluster <- append(params_cluster, list_polluants)
+    params_cluster <- append(params_cluster, list_pollutants)
   
   # Handle case sensitivity in name of clusters API 
   clusters <- names(readIni(file.path("input", cluster_type, "clusters", area, "list"), 
