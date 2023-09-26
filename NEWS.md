@@ -19,10 +19,10 @@ NEW FEATURES (Antares v8.6) :
 
 NEW FEATURES :
 
-* Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
-* Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
-* Call writeIniHydro() in createArea() and removeArea()
-* Enable edition of hydro levels in `scenariobuilder.dat` by using `scenarioBuilder()` and `updateScenarioBuilder()`
+* Add `deduplicateScenarioBuilder()` function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
+* Add `writeIniHydro()` function to make easier the edition of the `input/hydro/hydro.ini` file
+* Call `writeIniHydro()` in `createArea()` and `removeArea()`
+* Enable edition of hydro levels in `settings/scenariobuilder.dat` by using `scenarioBuilder()` and `updateScenarioBuilder()`
 
 
 ### Breaking changes
