@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/Antares_new_features_v860.html">Antares new features v8.6.0</a>
+    </li>
+    <li>
       <a href="../articles/api-variant-management.html">Variant management with API</a>
     </li>
     <li>
@@ -67,6 +70,60 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.0" id="antareseditobject-060">antaresEditObject 0.6.0<a class="anchor" aria-label="anchor" href="#antareseditobject-060"></a></h2>
+<div class="section level4">
+<h4 id="breaking-changes-antares-v86-cf-antares-v86-changelog--0-6-0">Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :<a class="anchor" aria-label="anchor" href="#breaking-changes-antares-v86-cf-antares-v86-changelog--0-6-0"></a></h4>
+<ul><li>
+<code><a href="../reference/create-study.html">createStudy()</a></code> integrate “st-storage”.</li>
+<li>
+<code><a href="../reference/createArea.html">createArea()</a></code> integrate “st-storage”.</li>
+<li>
+<code><a href="../reference/removeArea.html">removeArea()</a></code> integrate “st-storage”.</li>
+<li>
+<code><a href="../reference/writeInputTS.html">writeInputTS()</a></code> integrate “mingen” data and dependency between “mod.txt” and “mingen.txt” data.</li>
+<li>
+<code><a href="../reference/createCluster.html">createCluster()</a></code> / <code><a href="../reference/editCluster.html">editCluster()</a></code> have new parameter <code>list_pollutants</code> for list of pollutants.</li>
+</ul><p>NEW FEATURES (Antares v8.6) :</p>
+<ul><li>New function <code><a href="../reference/activateST.html">activateST()</a></code> Activate “st-storage” in an Antares study.</li>
+<li>New functions <code><a href="../reference/createClusterST.html">createClusterST()</a></code>, <code><a href="../reference/editClusterST.html">editClusterST()</a></code>, <code><a href="../reference/removeCluster.html">removeClusterST()</a></code> (“st-storage” family of functions for a study in “input” mode)</li>
+<li>Add control of data consistency between <code>mingen.txt</code> and <code>mod.txt</code> based on values in <code>hydro.ini</code> file</li>
+<li>Add control of data consistency between <code>mingen.txt</code> and <code>maxpower.txt</code> based on values in <code>hydro.ini</code> file</li>
+<li>Add and edit the property <code>enable-first-step</code> in <code>adequacy patch</code> section in <code>settings/generaldata.ini</code>
+</li>
+</ul><p>NEW FEATURES :</p>
+<ul><li>Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat</li>
+<li>Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file</li>
+<li>Call writeIniHydro() in createArea() and removeArea()</li>
+</ul></div>
+<div class="section level4">
+<h4 id="breaking-changes-0-6-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-0"></a></h4>
+<ul><li>
+<code><a href="../reference/deleteStudy.html">deleteStudy()</a></code> no longer requires user confirmation</li>
+<li>
+<code>api_command_execute()</code> displays an error message and causes the program to stop following an http error code. The error message is completed with the API error description</li>
+<li>
+<code><a href="../reference/playlist.html">getPlaylist()</a></code> is compatible with the new format returned by <code><a href="../reference/antaresRead-reexports.html">readIniAPI()</a></code>
+</li>
+<li>
+<code><a href="../reference/removeCluster.html">removeClusterRES()</a></code> in API mode</li>
+<li>
+<code><a href="../reference/removeLink.html">removeLink()</a></code> delete properly data for an Antares version &gt;= 820</li>
+<li>
+<code><a href="../reference/rollback_to_previous_data.html">rollback_to_previous_data()</a></code> enable to rollback if original value is NULL</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>
+<code>api_command_execute()</code> add timer to request api</li>
+<li>
+<code><a href="../reference/writeInputTS.html">writeInputTS()</a></code> works with argument <code>type = "tsLink"</code>
+</li>
+<li>
+<code><a href="../reference/createLink.html">createLink()</a></code> and <code><a href="../reference/editLink.html">editLink()</a></code> write the appropriate time series in _direct.txt and _indirect.txt files even if the areas <code>from</code> and <code>to</code> given as arguments are not sorted</li>
+</ul></div>
+<div class="section level4">
+<h4 id="doc--0-6-0">DOC :<a class="anchor" aria-label="anchor" href="#doc--0-6-0"></a></h4>
+<ul><li>A new article presenting v8.6 features is available on the package’s online documentation.</li></ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.5.1" id="antareseditobject-051">antaresEditObject 0.5.1<a class="anchor" aria-label="anchor" href="#antareseditobject-051"></a></h2>
 <p>NEW FEATURES :</p>
 <ul><li>New function <code><a href="../reference/deleteStudy.html">deleteStudy()</a></code> (API compatible)<br></li>
@@ -90,19 +147,19 @@
 <li>New functions <code><a href="../reference/computeOtherFromHourlyMulti.html">computeOtherFromHourlyMulti()</a></code> and <code><a href="../reference/computeOtherFromHourlyYear.html">computeOtherFromHourlyYear()</a></code> for mc-ind aggregation. <code><a href="../reference/computeTimeStampFromHourly.html">computeTimeStampFromHourly()</a></code> is now deprecated.</li>
 </ul><p>BUGFIXES :</p>
 <ul><li>Major corrections to <code>writeOutput()</code> and <code>writeAntaresOutput()</code> (support V8)</li>
-<li>Added support of API mode for <code><a href="../reference/edit-cluster.html">editClusterRES()</a></code>
+<li>Added support of API mode for <code><a href="../reference/editCluster.html">editClusterRES()</a></code>
 </li>
-<li>Fixed ts write in API mode for <code><a href="../reference/create-cluster.html">createClusterRES()</a></code>
+<li>Fixed ts write in API mode for <code><a href="../reference/createCluster.html">createClusterRES()</a></code>
 </li>
 <li>Fixed <code><a href="../reference/playlist.html">getPlaylist()</a></code> and <code><a href="../reference/playlist.html">setPlaylist()</a></code> in API mode</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.4.1" id="antareseditobject-041">antaresEditObject 0.4.1<a class="anchor" aria-label="anchor" href="#antareseditobject-041"></a></h2>
 <p>BUGFIXES :</p>
-<ul><li>Fix case sensitivity for <code><a href="../reference/edit-cluster.html">editCluster()</a></code> in API mode</li>
+<ul><li>Fix case sensitivity for <code><a href="../reference/editCluster.html">editCluster()</a></code> in API mode</li>
 <li>Fix opts returned (proper new study_id) when using <code><a href="../reference/variant.html">createVariant()</a></code>
 </li>
-<li>Fix case sensitivity for groups in <code><a href="../reference/create-cluster.html">createCluster()</a></code> and <code><a href="../reference/create-cluster.html">createClusterRES()</a></code>
+<li>Fix case sensitivity for groups in <code><a href="../reference/createCluster.html">createCluster()</a></code> and <code><a href="../reference/createCluster.html">createClusterRES()</a></code>
 </li>
 </ul></div>
     <div class="section level2">
@@ -122,7 +179,7 @@
 <div class="section level4">
 <h4 id="variant-management-with-api-0-4-0">Variant management with API<a class="anchor" aria-label="anchor" href="#variant-management-with-api-0-4-0"></a></h4>
 <p>This release include some new features to interact with Antares Web.</p>
-<ul><li>Main functions are now compatible to interact with a variant through the API: <code><a href="../reference/createArea.html">createArea()</a></code>, <code><a href="../reference/editArea.html">editArea()</a></code>, <code><a href="../reference/removeArea.html">removeArea()</a></code>, <code><a href="../reference/createLink.html">createLink()</a></code>, <code><a href="../reference/editLink.html">editLink()</a></code>, <code><a href="../reference/removeLink.html">removeLink()</a></code>, <code><a href="../reference/create-cluster.html">createCluster()</a></code>, <code><a href="../reference/edit-cluster.html">editCluster()</a></code>, <code><a href="../reference/remove-cluster.html">removeCluster()</a></code>, <code><a href="../reference/create-binding-constraint.html">createBindingConstraint()</a></code>, <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code>, <code><a href="../reference/removeBindingConstraint.html">removeBindingConstraint()</a></code>, <code><a href="../reference/createDistrict.html">createDistrict()</a></code>, <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>, <code><a href="../reference/updateInputSettings.html">updateInputSettings()</a></code>, <code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code>, <code><a href="../reference/updateOutputSettings.html">updateOutputSettings()</a></code>, <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code>, <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code>, <code><a href="../reference/scenario-builder.html">readScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">clearScenarioBuilder()</a></code>, <code><a href="../reference/writeWaterValues.html">writeWaterValues()</a></code>, <code><a href="../reference/createDSR.html">createDSR()</a></code>, <code><a href="../reference/createPSP.html">createPSP()</a></code>.</li>
+<ul><li>Main functions are now compatible to interact with a variant through the API: <code><a href="../reference/createArea.html">createArea()</a></code>, <code><a href="../reference/editArea.html">editArea()</a></code>, <code><a href="../reference/removeArea.html">removeArea()</a></code>, <code><a href="../reference/createLink.html">createLink()</a></code>, <code><a href="../reference/editLink.html">editLink()</a></code>, <code><a href="../reference/removeLink.html">removeLink()</a></code>, <code><a href="../reference/createCluster.html">createCluster()</a></code>, <code><a href="../reference/editCluster.html">editCluster()</a></code>, <code><a href="../reference/removeCluster.html">removeCluster()</a></code>, <code><a href="../reference/create-binding-constraint.html">createBindingConstraint()</a></code>, <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code>, <code><a href="../reference/removeBindingConstraint.html">removeBindingConstraint()</a></code>, <code><a href="../reference/createDistrict.html">createDistrict()</a></code>, <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>, <code><a href="../reference/updateInputSettings.html">updateInputSettings()</a></code>, <code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code>, <code><a href="../reference/updateOutputSettings.html">updateOutputSettings()</a></code>, <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code>, <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code>, <code><a href="../reference/scenario-builder.html">readScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">clearScenarioBuilder()</a></code>, <code><a href="../reference/writeWaterValues.html">writeWaterValues()</a></code>, <code><a href="../reference/createDSR.html">createDSR()</a></code>, <code><a href="../reference/createPSP.html">createPSP()</a></code>.</li>
 <li>New functions to use or create variants: <code><a href="../reference/variant.html">useVariant()</a></code>, <code><a href="../reference/variant.html">createVariant()</a></code>.</li>
 <li>New function to create studies on AntaREST server: <code><a href="../reference/create-study.html">createStudyAPI()</a></code>.</li>
 <li>New function to search studies on AntaREST server: <code><a href="../reference/searchStudy.html">searchStudy()</a></code>.</li>
@@ -141,9 +198,9 @@
 <ul><li>New function <code><a href="../reference/activateRES.html">activateRES()</a></code> to use new RES features in an Antares study.</li>
 <li>
 <code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code> has a new argument <code>renewable.generation.modelling</code> that can take as value: <code>NULL</code>|<code>aggregated</code>|<code>cluster</code>.</li>
-<li>New function <code><a href="../reference/create-cluster.html">createClusterRES()</a></code> to create a new renewable cluster.</li>
-<li>New function <code><a href="../reference/edit-cluster.html">editClusterRES()</a></code> to edit an existing renewable cluster.</li>
-<li>New function <code><a href="../reference/remove-cluster.html">removeClusterRES()</a></code> to remove a renewable cluster.</li>
+<li>New function <code><a href="../reference/createCluster.html">createClusterRES()</a></code> to create a new renewable cluster.</li>
+<li>New function <code><a href="../reference/editCluster.html">editClusterRES()</a></code> to edit an existing renewable cluster.</li>
+<li>New function <code><a href="../reference/removeCluster.html">removeClusterRES()</a></code> to remove a renewable cluster.</li>
 <li>
 <code><a href="../reference/scenario-builder.html">readScenarioBuilder()</a></code>: there can be a new field <code>r</code> if a scenario is completed for renewables</li>
 <li>
@@ -215,7 +272,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
+  <p></p><p>Developed by Tatiana Vargas, Frederic Breant, Victor Perrier.</p>
 </div>
 
 <div class="pkgdown">

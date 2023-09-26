@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/Antares_new_features_v860.html">Antares new features v8.6.0</a>
+    </li>
+    <li>
       <a href="../articles/api-variant-management.html">Variant management with API</a>
     </li>
     <li>
@@ -74,6 +77,14 @@
         </td>
         <td><p>Activate RES in an Antares study</p></td>
       </tr><tr><td>
+          <p><code><a href="activateST.html">activateST()</a></code> </p>
+        </td>
+        <td><p>Activate st-storage in an Antares study</p></td>
+      </tr><tr><td>
+          <p><code><a href="add_week_number_column_to_ts.html">add_week_number_column_to_ts()</a></code> </p>
+        </td>
+        <td><p>Add week number column to a data.time of time series type</p></td>
+      </tr><tr><td>
           <p><code><a href="adequacyOptions.html">adequacyOptions()</a></code> </p>
         </td>
         <td><p>Adequacy patch parameters for creating an area</p></td>
@@ -89,6 +100,18 @@
           <p><code><a href="checkRemovedArea.html">checkRemovedArea()</a></code> </p>
         </td>
         <td><p>Seek for a removed area</p></td>
+      </tr><tr><td>
+          <p><code><a href="check_consistency_reservoir_values.html">check_consistency_reservoir_values()</a></code> </p>
+        </td>
+        <td><p>For a given area, check consistency between reservoir and reservoir capacity values</p></td>
+      </tr><tr><td>
+          <p><code><a href="check_mingen_vs_hydro_storage.html">check_mingen_vs_hydro_storage()</a></code> </p>
+        </td>
+        <td><p>Check if mingen data and hydro storage data are consistent</p></td>
+      </tr><tr><td>
+          <p><code><a href="check_mingen_vs_maxpower.html">check_mingen_vs_maxpower()</a></code> </p>
+        </td>
+        <td><p>Check if mingen data and maxpower data are consistent</p></td>
       </tr><tr><td>
           <p><code><a href="cleanUpOutput.html">cleanUpOutput()</a></code> </p>
         </td>
@@ -122,10 +145,6 @@
         </td>
         <td><p>Create a binding constraint</p></td>
       </tr><tr><td>
-          <p><code><a href="create-cluster.html">createCluster()</a></code> <code><a href="create-cluster.html">createClusterRES()</a></code> </p>
-        </td>
-        <td><p>Create a cluster</p></td>
-      </tr><tr><td>
           <p><code><a href="create-study.html">createStudy()</a></code> <code><a href="create-study.html">createStudyAPI()</a></code> </p>
         </td>
         <td><p>Create an empty Antares study</p></td>
@@ -134,9 +153,17 @@
         </td>
         <td><p>Create an area in an Antares study</p></td>
       </tr><tr><td>
+          <p><code><a href="createCluster.html">createCluster()</a></code> <code><a href="createCluster.html">createClusterRES()</a></code> </p>
+        </td>
+        <td><p>Create a cluster</p></td>
+      </tr><tr><td>
           <p><code><a href="createClusterBulk.html">createClusterBulk()</a></code> </p>
         </td>
         <td><p>Create serial thermal cluster</p></td>
+      </tr><tr><td>
+          <p><code><a href="createClusterST.html">createClusterST()</a></code> </p>
+        </td>
+        <td><p>Create a short-term storage cluster</p></td>
       </tr><tr><td>
           <p><code><a href="createDistrict.html">createDistrict()</a></code> </p>
         </td>
@@ -166,10 +193,6 @@
         </td>
         <td><p>Correspondence between arguments of <code>updateOptimizationSettings</code> and actual Antares parameters.</p></td>
       </tr><tr><td>
-          <p><code><a href="edit-cluster.html">editCluster()</a></code> <code><a href="edit-cluster.html">editClusterRES()</a></code> </p>
-        </td>
-        <td><p>Edit an existing cluster</p></td>
-      </tr><tr><td>
           <p><code><a href="editArea.html">editArea()</a></code> </p>
         </td>
         <td><p>Edit an area in an Antares study</p></td>
@@ -178,9 +201,25 @@
         </td>
         <td><p>Update an existing binding constraint</p></td>
       </tr><tr><td>
+          <p><code><a href="editCluster.html">editCluster()</a></code> <code><a href="editCluster.html">editClusterRES()</a></code> </p>
+        </td>
+        <td><p>Edit an existing cluster</p></td>
+      </tr><tr><td>
+          <p><code><a href="editClusterST.html">editClusterST()</a></code> </p>
+        </td>
+        <td><p>Edit a short-term storage cluster</p></td>
+      </tr><tr><td>
           <p><code><a href="editLink.html">editLink()</a></code> </p>
         </td>
         <td><p>Edit a link between two areas</p></td>
+      </tr><tr><td>
+          <p><code><a href="fill_empty_hydro_ini_file.html">fill_empty_hydro_ini_file()</a></code> </p>
+        </td>
+        <td><p>Write default values in hydro.ini file if the section is empty</p></td>
+      </tr><tr><td>
+          <p><code><a href="fill_empty_hydro_ts_file.html">fill_empty_hydro_ts_file()</a></code> </p>
+        </td>
+        <td><p>Write default input time series if <code>mingen.txt</code> or/and <code>mod.txt</code> is empty</p></td>
       </tr><tr><td>
           <p><code><a href="filteringOptions.html">filteringOptions()</a></code> </p>
         </td>
@@ -193,6 +232,26 @@
           <p><code><a href="getJobs.html">getJobs()</a></code> </p>
         </td>
         <td><p>Retrieve API jobs</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_default_hydro_ini_values.html">get_default_hydro_ini_values()</a></code> </p>
+        </td>
+        <td><p>Get default hydro.ini values</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_type_check_mingen_vs_hydrostorage.html">get_type_check_mingen_vs_hydrostorage()</a></code> </p>
+        </td>
+        <td><p>Get the type of control to execute using the 3 necessary booleans</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_type_check_mingen_vs_hydrostorage_to_trigger.html">get_type_check_mingen_vs_hydrostorage_to_trigger()</a></code> </p>
+        </td>
+        <td><p>Get the type of control to execute between mingen data and hydro storage data</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_type_check_mingen_vs_maxpower_to_trigger.html">get_type_check_mingen_vs_maxpower_to_trigger()</a></code> </p>
+        </td>
+        <td><p>Get the type of control to execute between mingen data and maxpower data</p></td>
+      </tr><tr><td>
+          <p><code><a href="list_pollutants_values.html">list_pollutants_values()</a></code> </p>
+        </td>
+        <td><p>Output pollutants list for thermal clusters</p></td>
       </tr><tr><td>
           <p><code><a href="mockSimulationAPI.html">mockSimulationAPI()</a></code> </p>
         </td>
@@ -211,10 +270,6 @@
         </td>
         <td><p>Properties for creating a link</p></td>
       </tr><tr><td>
-          <p><code><a href="remove-cluster.html">removeCluster()</a></code> <code><a href="remove-cluster.html">removeClusterRES()</a></code> </p>
-        </td>
-        <td><p>Remove a cluster</p></td>
-      </tr><tr><td>
           <p><code><a href="removeArea.html">removeArea()</a></code> </p>
         </td>
         <td><p>Remove an area from an Antares study</p></td>
@@ -223,9 +278,21 @@
         </td>
         <td><p>Remove a Binding Constraint</p></td>
       </tr><tr><td>
+          <p><code><a href="removeCluster.html">removeCluster()</a></code> <code><a href="removeCluster.html">removeClusterRES()</a></code> <code><a href="removeCluster.html">removeClusterST()</a></code> </p>
+        </td>
+        <td><p>Remove a cluster</p></td>
+      </tr><tr><td>
           <p><code><a href="removeLink.html">removeLink()</a></code> </p>
         </td>
         <td><p>Remove a link between two areas</p></td>
+      </tr><tr><td>
+          <p><code><a href="replicate_missing_ts.html">replicate_missing_ts()</a></code> </p>
+        </td>
+        <td><p>Replicate a data.table as many times as needed to get the same number of time series between 2 data.tables</p></td>
+      </tr><tr><td>
+          <p><code><a href="rollback_to_previous_data.html">rollback_to_previous_data()</a></code> </p>
+        </td>
+        <td><p>Rollback to previous hydro data if the data is not consistent</p></td>
       </tr><tr><td>
           <p><code><a href="runSimulation.html">runSimulation()</a></code> </p>
         </td>
@@ -235,9 +302,9 @@
         </td>
         <td><p>Run Time-Series Generator</p></td>
       </tr><tr><td>
-          <p><code><a href="scenario-builder.html">scenarioBuilder()</a></code> <code><a href="scenario-builder.html">readScenarioBuilder()</a></code> <code><a href="scenario-builder.html">updateScenarioBuilder()</a></code> <code><a href="scenario-builder.html">clearScenarioBuilder()</a></code> </p>
+          <p><code><a href="scenario-builder.html">scenarioBuilder()</a></code> <code><a href="scenario-builder.html">readScenarioBuilder()</a></code> <code><a href="scenario-builder.html">updateScenarioBuilder()</a></code> <code><a href="scenario-builder.html">clearScenarioBuilder()</a></code> <code><a href="scenario-builder.html">deduplicateScenarioBuilder()</a></code> </p>
         </td>
-        <td><p>Read, create &amp; update scenario builder</p></td>
+        <td><p>Read, create, update &amp; deduplicate scenario builder</p></td>
       </tr><tr><td>
           <p><code><a href="searchStudy.html">searchStudy()</a></code> </p>
         </td>
@@ -250,6 +317,10 @@
           <p><code><a href="setSolverPath.html">setSolverPath()</a></code> </p>
         </td>
         <td><p>Set path to Antares Solver</p></td>
+      </tr><tr><td>
+          <p><code><a href="storage_values_default.html">storage_values_default()</a></code> </p>
+        </td>
+        <td><p>Output pollutants list for thermal clusters</p></td>
       </tr><tr><td>
           <p><code><a href="updateAdequacySettings.html">updateAdequacySettings()</a></code> </p>
         </td>
@@ -291,6 +362,10 @@
         </td>
         <td><p>Write Hydro Values</p></td>
       </tr><tr><td>
+          <p><code><a href="writeIniHydro.html">writeIniHydro()</a></code> </p>
+        </td>
+        <td><p>Edit hydro.ini values</p></td>
+      </tr><tr><td>
           <p><code><a href="writeInputTS.html">writeInputTS()</a></code> </p>
         </td>
         <td><p>Write input time series</p></td>
@@ -319,7 +394,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
+  <p></p><p>Developed by Tatiana Vargas, Frederic Breant, Victor Perrier.</p>
 </div>
 
 <div class="pkgdown">
