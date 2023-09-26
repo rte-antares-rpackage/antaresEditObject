@@ -10,7 +10,7 @@ createCluster(
   cluster_name,
   group = "Other",
   ...,
-  list_polluants = list_polluants_values(),
+  list_pollutants = list_pollutants_values(),
   time_series = NULL,
   prepro_data = NULL,
   prepro_modulation = NULL,
@@ -45,7 +45,7 @@ createClusterRES(
 Some parameters must be set as \code{integers} to avoid warnings in Antares, for example,
 to set \code{unitcount}, you'll have to use \code{unitcount = 1L}.}
 
-\item{list_polluants}{\code{list} named with specific polluants (only for Antares version >= 860)}
+\item{list_pollutants}{\code{list} named with specific pollutants (only for Antares version >= 860)}
 
 \item{time_series}{the "ready-made" 8760-hour time-series available for simulation purposes.}
 
@@ -71,7 +71,7 @@ An updated list containing various information about the simulation.
 Create a new thermal or RES (renewable energy source) cluster.
 }
 \note{
-Parameter \code{list_polluants} is only available for Antares studies >= v8.6.0.
+Parameter \code{list_pollutants} is only available for Antares studies >= v8.6.0.
 
 You must provide named \code{list} (numerical values or NULL ) :
 

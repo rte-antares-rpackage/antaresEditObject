@@ -2,7 +2,7 @@
 % Please edit documentation in R/createClusterST.R
 \name{storage_values_default}
 \alias{storage_values_default}
-\title{Output polluants list for thermal clusters}
+\title{Output pollutants list for thermal clusters}
 \usage{
 storage_values_default()
 }
@@ -10,7 +10,7 @@ storage_values_default()
 a named list
 }
 \description{
-Output polluants list for thermal clusters
+Output pollutants list for thermal clusters
 }
 \examples{
 storage_values_default()
