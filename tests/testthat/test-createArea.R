@@ -200,3 +200,76 @@ test_that("create area / st-storage in 8.6.0", {
   unlink(tmp, recursive = TRUE)
 })
 
+
+test_that("removeArea() in 8.2.0 : check that properties.ini are all there", {
+  
+  ## V8
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  # prop is taken cause it is a substring included in the char properties.ini
+  area <- "prop"
+  area2 <- "zone51"
+  area3 <- "zone52"
+  
+  createArea(name = area, opts = opts)
+  createArea(name = area2, opts = opts)
+  createArea(name = area3, opts = opts)
+  
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  createLink(from = area, to = area2, opts = opts)
+  createLink(from = area, to = area3, opts = opts)
+  createLink(from = area2, to = area3, opts = opts)
+  
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  removeArea(name = area, opts = opts)
+  
+  links_path <- file.path(opts$inputPath, "links")
+  dirs_links <- list.dirs(path = links_path, full.names = TRUE, recursive = FALSE)
+  files_properties <- list.files(path = links_path, full.names = TRUE, recursive = TRUE, pattern = "properties.ini$")
+  
+  expect_true(length(dirs_links) == length(files_properties))
+  expect_true(all(file.exists(file.path(dirs_links, "properties.ini"))))
+  
+  unlink(opts$studyPath, recursive = TRUE)
+  
+  ## V7
+  ant_version <- "7.1.0"
+  st_test <- paste0("my_study_710_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  # prop is taken cause it is a substring included in the char properties.ini
+  area <- "prop"
+  area2 <- "zone51"
+  area3 <- "zone52"
+  
+  createArea(name = area, opts = opts)
+  createArea(name = area2, opts = opts)
+  createArea(name = area3, opts = opts)
+  
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  createLink(from = area, to = area2, opts = opts)
+  createLink(from = area, to = area3, opts = opts)
+  createLink(from = area2, to = area3, opts = opts)
+  
+  opts <- setSimulationPath(opts$studyPath, simulation = "input")
+  
+  removeArea(name = area, opts = opts)
+  
+  links_path <- file.path(opts$inputPath, "links")
+  dirs_links <- list.dirs(path = links_path, full.names = TRUE, recursive = FALSE)
+  files_properties <- list.files(path = links_path, full.names = TRUE, recursive = TRUE, pattern = "properties.ini$")
+  
+  expect_true(length(dirs_links) == length(files_properties))
+  expect_true(all(file.exists(file.path(dirs_links, "properties.ini"))))
+  
+  unlink(opts$studyPath, recursive = TRUE)
+})
+
+
+
+
