@@ -233,4 +233,115 @@ sapply(studies, function(study) {
 })
 
 
+test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro levels coefficients (error expected)", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  area2 <- "zone52"
+  createArea(name = area, opts = opts)
+  createArea(name = area2, opts = opts)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  updateGeneralSettings(nbyears = 10)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  # 1 area vs 2 coefs
+  expect_error(scenarioBuilder(n_mc = opts$parameters$general$nbyears,
+                               areas = area,
+                               coef_hydro_levels = c(0.1, 0.2)
+  ),
+  regexp = "Please check the number of areas and the number of coefficients for hydro levels that you provided."
+  )
+  
+  # 2 areas vs 1 coef
+  expect_error(scenarioBuilder(n_mc = opts$parameters$general$nbyears,
+                               areas = c(area,area2),
+                               coef_hydro_levels = c(0.1)
+  ),
+  regexp = "Please check the number of areas and the number of coefficients for hydro levels that you provided."
+  )
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
 
+
+test_that("scenarioBuilder() for hl with right number of areas and hydro levels coefficients", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  area2 <- "zone52"
+  createArea(name = area, opts = opts)
+  createArea(name = area2, opts = opts)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  updateGeneralSettings(nbyears = 10)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  # number of areas * n_mc = number of coefs
+  nbyears <- opts$parameters$general$nbyears
+  my_area <- c(area, area2)
+  my_coef <- c(runif(nbyears), runif(nbyears))
+  
+  ldata <- scenarioBuilder(areas = my_area,
+                           coef_hydro_levels = my_coef,
+                           opts = opts
+  )
+  
+  expect_true(nrow(ldata) == length(my_area))
+  expect_true(identical(sort(rownames(ldata)),sort(my_area)))
+  expect_true(identical(ldata[row.names(ldata) == area,], as.character(my_coef[seq(1,nbyears)])))
+  expect_true(identical(ldata[row.names(ldata) == area2,], as.character(my_coef[seq(nbyears + 1, length(my_coef))])))
+  
+  # number of areas = number of coefs
+  my_coef <- c(0.1, 0.2)
+  my_area <- c(area, area2)
+  ldata <- scenarioBuilder(areas = my_area,
+                           coef_hydro_levels = my_coef,
+                           opts = opts
+  )
+  
+  expect_true(nrow(ldata) == length(my_area))
+  expect_true(identical(sort(rownames(ldata)),sort(my_area)))
+  expect_true(unique(ldata[row.names(ldata) == area,]) == as.character(my_coef[1]))
+  expect_true(unique(ldata[row.names(ldata) == area2,]) == as.character(my_coef[2]))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  updateGeneralSettings(nbyears = 10)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  my_coef <- c(0.234, 0.567)
+  ldata <- scenarioBuilder(n_scenario = 100,
+                           n_mc = opts$parameters$general$nbyears,
+                           areas = area,
+                           coef_hydro_levels = rep(my_coef, opts$parameters$general$nbyears/length(my_coef))
+  )
+  ruleset <- "Default Ruleset"
+  
+  updateScenarioBuilder(ldata = ldata,
+                        ruleset = ruleset,
+                        series = "hl",
+                        opts = opts
+  )
+  
+  newSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts)
+  expect_true("hl" %in% names(newSB))
+  
+  values_newSB_hl <- unique(unlist(newSB[["hl"]], use.names = FALSE))
+  expect_true(length(setdiff(my_coef, values_newSB_hl)) == 0)
+  expect_true(length(setdiff(values_newSB_hl, my_coef)) == 0)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})

@@ -9,6 +9,7 @@
 #' @param n_mc Number of Monte-Carlo years.
 #' @param areas Areas to use in scenario builder, if `NULL` (default) all areas in Antares study are used.
 #' @param areas_rand Areas for which to use `"rand"`.
+#' @param coef_hydro_levels Hydro levels coefficients.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()]
@@ -41,6 +42,21 @@
 #' sbuilder[, 1:6]
 #' dim(sbuilder)
 #' 
+#' # Create a scenario builder matrix for hydro levels (use case 1)
+#' sbuilder <- scenarioBuilder(
+#'   n_mc = opts$parameters$general$nbyears,
+#'   areas = c("fr", "be"),
+#'   coef_hydro_levels = c(0.1, 0.9)
+#' )
+#'
+#' # Create a scenario builder matrix for hydro levels (use case 2)
+#' sbuilder <- scenarioBuilder(
+#'   n_mc = opts$parameters$general$nbyears,
+#'   areas = c("fr", "be"),
+#'   coef_hydro_levels = c(runif(opts$parameters$general$nbyears)
+#'   , runif(opts$parameters$general$nbyears)
+#'   )
+#' )
 #' 
 #' # Read previous scenario builder
 #' # in a matrix format
@@ -80,7 +96,9 @@ scenarioBuilder <- function(n_scenario,
                             n_mc = NULL,
                             areas = NULL,
                             areas_rand = NULL,
+                            coef_hydro_levels = NULL,
                             opts = antaresRead::simOptions()) {
+  
   if (is_api_study(opts) && is_api_mocked(opts)) {
     stopifnot("In mocked API mode, n_mc cannot be NULL" = !is.null(n_mc))
     stopifnot("In mocked API mode, areas cannot be NULL" = !is.null(n_mc))
@@ -100,17 +118,43 @@ scenarioBuilder <- function(n_scenario,
       warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
     }
   }
+  
+  if (!is.null(coef_hydro_levels)) {
+    nb_areas <- length(areas)
+    nb_coef_hydro_levels <- length(coef_hydro_levels)
+    if (nb_coef_hydro_levels == nb_areas) {
+      data_mat <- rep(coef_hydro_levels, each = n_mc)
+    } else if(nb_coef_hydro_levels == nb_areas * n_mc) {
+      data_mat <- coef_hydro_levels
+    } else {
+      stop("Please check the number of areas and the number of coefficients for hydro levels that you provided.")
+    }
+  } else {
+    data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
+  }
+  
   sb <- matrix(
-    data = rep_len(seq_len(n_scenario), length(areas) * n_mc),
+    data = data_mat,
     byrow = TRUE, 
     nrow = length(areas),
     dimnames = list(areas, NULL)
   )
   sb[areas %in% areas_rand, ] <- "rand"
+  
   return(sb)
 }
 
 
+#' @title Create the correspondence data frame between the symbol and the type in scenario builder
+#' @return a `data.frame`.
+create_referential_series_type <- function(){
+
+  ref_series <- data.frame("series" = c("l", "h", "w", "s", "t", "r", "ntc", "hl"),
+                           "choices" = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels")
+                         )
+
+  return(ref_series)
+}
 
 
 #' @param ruleset Ruleset to read.
@@ -211,7 +255,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -223,6 +267,7 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #'  
 #' @note
 #' `series = "ntc"` is only available with Antares >= 8.2.0.
+#' `series = "hl"` each value must be between 0 and 1.
 #'
 #' @export
 #' 
@@ -233,20 +278,20 @@ updateScenarioBuilder <- function(ldata,
                                   clusters_areas = NULL,
                                   links = NULL,
                                   opts = antaresRead::simOptions()) {
+  
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
+  
+  ref_series <- create_referential_series_type()
+  possible_series <- ref_series$series
+  
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- match.arg(
-        arg = series,
-        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc"),
-        several.ok = TRUE
-      )
+      series <- ref_series[possible_series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
-      ind_ntc <- which(series == "ntc")
-      series <- substr(series, 1, 1)
-      series[ind_ntc] <- "ntc"
+      series <- ref_series[ref_series$choices %in% series, "series"]
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
@@ -261,8 +306,8 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc"))) {
-      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r' or 'ntc'", call. = FALSE)
+    if (!all(series %in% possible_series)) {
+      stop("'ldata' must be one of ", paste0(possible_series, collapse = ", "), call. = FALSE)
     }
     if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
@@ -347,14 +392,14 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' Converts a scenarioBuilder matrix to a list
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
-#' @param series Name of the series, among 'l', 'h', 'w', 's', 't' and 'r'.
+#' @param series Name of the series, among 'l', 'h', 'w', 's', 't', 'r', 'ntc' and 'hl'.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to use for thermal or renewable series.
 #' @param links Either a simple vector with links described as `"area01%area02` or a `data.table` with two columns `from` and `to`.
 #' @param opts Simulation options.
 #'
 #' @importFrom data.table as.data.table melt := .SD
-#' @importFrom antaresRead readClusterDesc
+#' @importFrom antaresRead readClusterDesc getLinks
 #' @importFrom utils packageVersion getFromNamespace
 #' @noRd
 listify_sb <- function(mat,
@@ -362,12 +407,22 @@ listify_sb <- function(mat,
                        clusters_areas = NULL, 
                        links = NULL,
                        opts = antaresRead::simOptions()) {
+  
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
-  dtsb[, value := as.integer(value)]
   
+  if (identical(series, "hl")) {
+    dtsb[, value := as.numeric(value)]
+    if(min(dtsb$value) < 0 | max(dtsb$value) > 1) {
+      stop("Every coefficient for hydro levels must be between 0 and 1.", call. = FALSE)
+    }
+  } else {
+    dtsb[, value := as.integer(value)]
+  }
+  
+  # Thermal
   if (identical(series, "t")) {
     if (is.null(clusters_areas))
       clusters_areas <- readClusterDesc(opts = opts)
@@ -379,6 +434,8 @@ listify_sb <- function(mat,
       allow.cartesian = TRUE
     )
   }
+  
+  # Renewables
   if (identical(series, "r")) {
     check_active_RES(opts)
     if (packageVersion("antaresRead") < "2.2.8")
@@ -396,6 +453,8 @@ listify_sb <- function(mat,
       allow.cartesian = TRUE
     )
   }
+  
+  # Links
   if (identical(series, "ntc")) {
     if (is.null(links))
       links <- getLinks(namesOnly = FALSE, opts = opts)
@@ -411,7 +470,7 @@ listify_sb <- function(mat,
   
   dtsb <- dtsb[order(rn, variable)]
   
-  lsb <- as.list(dtsb$value)
+  lsb <- as.list(as.character(dtsb$value))
   if (series %in% c("r", "t")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
   } else if (series %in% c("ntc")) {
