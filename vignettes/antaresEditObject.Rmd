@@ -20,6 +20,8 @@ knitr::opts_chunk$set(
 First it's necessary to load the package:
 
 ```{r eval=FALSE}
+ # CRAN limite CPU usage
+data.table::setDTthreads(2)
 library(antaresEditObject)
 ```
 
