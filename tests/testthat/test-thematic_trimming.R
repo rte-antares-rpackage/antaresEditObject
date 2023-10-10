@@ -129,6 +129,67 @@ test_that("set thematic trimming version >= 800 (SUPPR VAR)", {
   # test status values
   testthat::expect_equal(object = unique(res_read$status_selection), 
                          expected = "skip")
+  
+  ##
+  # set few variables
+  ##
+  setThematicTrimming(selection_variables = vect_select_vars$variable[1:10], 
+                      type_select = "suppr")
+  
+  # read
+  res_read <- getThematicTrimming()
+  
+  # test if vars are activated
+  res_read_active <- res_read[res_read$status_selection %in% "skip",]
+  testthat::expect_true(all(
+    vect_select_vars$variable[1:10]%in%res_read_active$variables
+  ))
+  
+  # test opts updated
+  opts_study <- simOptions()
+  thematic_values <- opts_study$parameters$`variables selection`
+  testthat::expect_true(!is.null(thematic_values))
+  testthat::expect_true(all(
+    c("selected_vars_reset", "select_var -") %in% 
+      names(thematic_values)
+  ))
+  
+  thematic_values <- unlist(thematic_values, use.names = FALSE)
+  testthat::expect_true(all(
+    c("TRUE", vect_select_vars$variable[1:10])%in%
+      thematic_values
+  ))
+  
+  # set more than 50% of variables
+  # Opposite case with "suppr" columns but write "add" columns
+  nb_vars <- length(vect_select_vars$variable)
+  setThematicTrimming(selection_variables = vect_select_vars$variable[1:(nb_vars-10)], 
+                      type_select = "suppr")
+  
+  res_read <- getThematicTrimming()
+  
+  # test if vars are skiped
+  res_read_skip <- res_read[res_read$status_selection %in% "skip",]
+  testthat::expect_true(all(
+    vect_select_vars$variable[1:(nb_vars-10)]%in%
+      res_read_skip$variables
+  ))
+  
+  # test opts updated
+  opts_study <- simOptions()
+  thematic_values <- opts_study$parameters$`variables selection`
+  testthat::expect_true(!is.null(thematic_values))
+  testthat::expect_true(all(
+    c("selected_vars_reset", "select_var +") %in% 
+      names(thematic_values)
+  ))
+  # control values
+  thematic_values <- unlist(thematic_values, use.names = FALSE)
+  res_read_active <- res_read[res_read$status_selection %in% "active",]
+  testthat::expect_true(all(
+    c("FALSE", res_read_active$variables)%in%
+      thematic_values
+  ))
 })
 
 # delete study ----

@@ -1,8 +1,36 @@
 
 #' @title Set the thematic trimming of an Antares Study
 #'
-#' @description Put only variables names you want to keep in study output
+#' @description Put only variables names you want to keep in study output.  
+#' 
+#' you can add or remove variables.
 #'
+#' @param selection_variables `character` of variables to add or remove.
+#' @param type_select `character` select mode to add or remove (default add mode).
+#' @template opts
+#' 
+#' @note You can put only variables according to version of study
+#' 
+#' @export
+#' 
+#' @examples 
+#' \dontrun{
+#' 
+#' # list of variables (from version v8.0 to v8.6)
+#' vect_select_vars <- antaresRead:::pkgEnv$thematic
+#' 
+#' ##
+#' # add all variables
+#' ##
+#' setThematicTrimming(selection_variables = vect_select_vars$variable)
+#' 
+#' ##
+#' # remove all variables
+#' ##
+#' setThematicTrimming(selection_variables = vect_select_vars$variable, 
+#'                     type_select = "suppr")
+#' 
+#' }
 setThematicTrimming <- function(selection_variables, 
                                 type_select = c("add", "suppr"),
                                 opts = simOptions()){
@@ -64,6 +92,7 @@ setThematicTrimming <- function(selection_variables,
   
 }
 
+
 # according to UI or API 
   # write in generaldata file only the fewest variables 
   # Ex : you want ADD 90% of variables => write to SUPPR 10% 
@@ -100,6 +129,12 @@ setThematicTrimming <- function(selection_variables,
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection)
       general_data$`variables selection` <- var_select_bloc
       return(general_data)
+    }else{
+      var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
+                                             pattern_list = "select_var -", 
+                                             type_select = "suppr")
+      general_data$`variables selection` <- var_select_bloc
+      return(general_data)
     }
     # write the opposite 
   }else{ 
@@ -109,6 +144,14 @@ setThematicTrimming <- function(selection_variables,
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
                                              pattern_list = "select_var -", 
                                              type_select = "suppr")
+      general_data$`variables selection` <- var_select_bloc
+      return(general_data)
+    }else{
+      # diff 
+      list_var_selection <- setdiff(pkg_var_version, list_var_selection)
+      var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
+                                             pattern_list = "select_var +", 
+                                             type_select = "add")
       general_data$`variables selection` <- var_select_bloc
       return(general_data)
     }
@@ -121,6 +164,9 @@ setThematicTrimming <- function(selection_variables,
 }
 
 
+
+# list construction (section [variables selection]
+  # build list with pattern and type 
 .make_thematic_list <- function(pattern_list = "select_var +", 
                                 type_select = "add",
                                 var_selection){
@@ -148,7 +194,4 @@ setThematicTrimming <- function(selection_variables,
                         bloc_list)
     
     return(bloc_list)
-  
-  
-  
 }
