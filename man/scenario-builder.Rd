@@ -6,13 +6,15 @@
 \alias{readScenarioBuilder}
 \alias{updateScenarioBuilder}
 \alias{clearScenarioBuilder}
-\title{Read, create & update scenario builder}
+\alias{deduplicateScenarioBuilder}
+\title{Read, create, update & deduplicate scenario builder}
 \usage{
 scenarioBuilder(
   n_scenario,
   n_mc = NULL,
   areas = NULL,
   areas_rand = NULL,
+  coef_hydro_levels = NULL,
   opts = antaresRead::simOptions()
 )
 
@@ -35,6 +37,11 @@ clearScenarioBuilder(
   ruleset = "Default Ruleset",
   opts = antaresRead::simOptions()
 )
+
+deduplicateScenarioBuilder(
+  ruleset = "Default Ruleset",
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{n_scenario}{Number of scenario.}
@@ -45,6 +52,8 @@ clearScenarioBuilder(
 
 \item{areas_rand}{Areas for which to use \code{"rand"}.}
 
+\item{coef_hydro_levels}{Hydro levels coefficients.}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 
@@ -54,7 +63,7 @@ clearScenarioBuilder(
 
 \item{ldata}{A \code{matrix} obtained with \code{scenarioBuilder},
 or a named list of matrices obtained with \code{scenarioBuilder}, names must be
-'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.}
+'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.}
 
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
 
@@ -74,11 +83,12 @@ Default is to read existing links and update them all.}
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
-Read, create & update scenario builder.
+Read, create, update & deduplicate scenario builder.
 }
 \note{
 \code{series = "ntc"} is only available with Antares >= 8.2.0.
 \code{series = "binding"} is only available with Antares >= 8.7.0.
+\code{series = "hl"} each value must be between 0 and 1.
 }
 \examples{
 \dontrun{
@@ -101,6 +111,21 @@ sbuilder <- scenarioBuilder(
 sbuilder[, 1:6]
 dim(sbuilder)
 
+# Create a scenario builder matrix for hydro levels (use case 1)
+sbuilder <- scenarioBuilder(
+  n_mc = opts$parameters$general$nbyears,
+  areas = c("fr", "be"),
+  coef_hydro_levels = c(0.1, 0.9)
+)
+
+# Create a scenario builder matrix for hydro levels (use case 2)
+sbuilder <- scenarioBuilder(
+  n_mc = opts$parameters$general$nbyears,
+  areas = c("fr", "be"),
+  coef_hydro_levels = c(runif(opts$parameters$general$nbyears)
+  , runif(opts$parameters$general$nbyears)
+  )
+)
 
 # Read previous scenario builder
 # in a matrix format
@@ -132,5 +157,8 @@ updateScenarioBuilder(ldata = list(
   s = solar_sb
 ))
 
+# Deduplicate scenario builder
+
+deduplicateScenarioBuilder()
 }
 }

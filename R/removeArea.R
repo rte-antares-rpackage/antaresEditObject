@@ -55,8 +55,6 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
     }
   }
   unlink(x = file.path(inputPath, "links", name), recursive = TRUE)
-  alllinks <- list.files(path = file.path(inputPath, "links"), pattern = name, full.names = TRUE, recursive = TRUE)
-  lapply(alllinks, unlink, recursive = TRUE)
 
   # Update area list
   areas <- readLines(file.path(inputPath, "areas/list.txt"))
@@ -74,26 +72,9 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   # Hydro
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    hydro <- readIniFile(file = file.path(inputPath, "hydro", "hydro.ini"))
-    if (!is.null(hydro$`inter-daily-breakdown`))
-      hydro$`inter-daily-breakdown`[[name]] <- NULL
-    if (!is.null(hydro$`intra-daily-modulation`))
-      hydro$`intra-daily-modulation`[[name]] <- NULL
-    if (!is.null(hydro$`inter-monthly-breakdown`))
-      hydro$`inter-monthly-breakdown`[[name]] <- NULL
-    if (!is.null(hydro$`initialize reservoir date`))
-      hydro$`initialize reservoir date`[[name]] <- NULL
-    if (!is.null(hydro$`leeway low`))
-      hydro$`leeway low`[[name]] <- NULL
-    if (!is.null(hydro$`leeway up`))
-      hydro$`leeway up`[[name]] <- NULL
-    if (!is.null(hydro$`pumping efficiency`))
-      hydro$`pumping efficiency`[[name]] <- NULL
-    writeIni(
-      listData = hydro,
-      pathIni = file.path(inputPath, "hydro", "hydro.ini"),
-      overwrite = TRUE
-    )
+    default_params <- get_default_hydro_ini_values()
+    empty_params <- sapply(names(default_params), FUN = function(n) default_params[[n]] <- NULL)
+    writeIniHydro(area = name, params = empty_params, mode = "removeArea", opts = opts)
   }
   # allocation
   unlink(x = file.path(inputPath, "hydro", "allocation", paste0(name, ".ini")), recursive = TRUE)
@@ -179,7 +160,14 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
     text = paste(bindingconstraints[ind1 | ind2], collapse = "\n"), 
     con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
   )
-
+  
+  # st-storage
+  unlink(x = file.path(inputPath, "st-storage", "clusters", name), recursive = TRUE)
+  unlink(x = file.path(inputPath, "st-storage", "series", name), recursive = TRUE)
+  
+  # renewables
+  unlink(x = file.path(inputPath, "renewables", "clusters", name), recursive = TRUE)
+  unlink(x = file.path(inputPath, "renewables", "series", name), recursive = TRUE)
 
   # Maj simulation
   suppressWarnings({
@@ -188,10 +176,6 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
   invisible(res)
 }
-
-
-
-
 
 
 #' @title Seek for a removed area
@@ -249,9 +233,3 @@ checkRemovedArea <- function(area, all_files = TRUE, opts = antaresRead::simOpti
   )
   
 }
-
-
-
-
-
-

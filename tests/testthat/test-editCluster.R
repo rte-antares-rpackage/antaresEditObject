@@ -48,3 +48,65 @@ sapply(studies, function(study) {
   unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
 })
+
+
+
+# v860 ----
+# global params for structure v8.6 
+setup_study_860(sourcedir860)
+opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+
+test_that("Edit cluster with pollutants params (new feature v8.6)",{
+  
+  pollutants_params <- list(
+    "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
+    "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,
+    "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, 
+    "op4"= 0.25, "op5"= 0.25, "co2"= NULL
+  )
+  
+  opts_test <- createCluster(
+    area = getAreas()[1], 
+    cluster_name = "mycluster_pollutant",
+    group = "Other",
+    unitcount = 1,
+    nominalcapacity = 8000,
+    `min-down-time` = 0,
+    `marginal-cost` = 0.010000,
+    `market-bid-cost` = 0.010000, 
+    list_pollutants = pollutants_params,
+    time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
+    prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4), 
+    opts = opts_test
+  )
+  
+  res_cluster <- antaresRead::readClusterDesc(opts = opts_test)
+  
+  # NULL as to effect to delete parameters
+  opts_test <- editCluster(area = getAreas()[1], 
+              cluster_name = levels(res_cluster$cluster)[1], 
+              list_pollutants = list(
+                "nh3"= 0.07, 
+                "nox"= 0.07, 
+                "pm2_5"= 0.07, 
+                "pm5"= NULL), 
+              add_prefix = FALSE,
+              opts = opts_test)
+  
+  res_cluster <- antaresRead::readClusterDesc(opts = opts_test)
+  
+  res_cluster <- res_cluster[cluster %in% levels(res_cluster$cluster)[1]]
+  
+  vect_params <- as.vector(res_cluster[, c("nh3", 
+                  "nox", 
+                  "pm2_5")])
+  
+  # check values edited
+  testthat::expect_true(all(c("nh3"= 0.07, 
+                          "nox"= 0.07, 
+                          "pm2_5"= 0.07) %in%
+                          vect_params))
+  
+  # remove temporary study
+  unlink(x = opts_test$studyPath, recursive = TRUE)
+})

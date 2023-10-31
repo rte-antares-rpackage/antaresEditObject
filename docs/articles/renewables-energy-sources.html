@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
       </span>
     </div>
 
@@ -53,6 +53,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Antares_new_features_v860.html">Antares new features v8.6.0</a>
+    </li>
+    <li>
       <a href="../articles/api-variant-management.html">Variant management with API</a>
     </li>
     <li>
@@ -125,14 +128,14 @@
 <span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area51"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create a renewable cluster</span></span>
-<span><span class="fu"><a href="../reference/create-cluster.html">createClusterRES</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="../reference/createCluster.html">createClusterRES</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area51"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"ren01"</span>, </span>
 <span>  add_prefix <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use an other group and some parameters</span></span>
-<span><span class="fu"><a href="../reference/create-cluster.html">createClusterRES</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="../reference/createCluster.html">createClusterRES</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area51"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"ren02"</span>, </span>
 <span>  group <span class="op">=</span> <span class="st">"Wind Offshore"</span>,</span>
@@ -142,7 +145,7 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p>Edit an existing cluster with:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/edit-cluster.html">editClusterRES</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/editCluster.html">editClusterRES</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area51"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"ren02"</span>, </span>
 <span>  group <span class="op">=</span> <span class="st">"Solar Rooftop"</span>, <span class="co"># new group</span></span>
@@ -150,7 +153,7 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p>And remove a cluster with:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/remove-cluster.html">removeClusterRES</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"area51"</span>, cluster_name <span class="op">=</span> <span class="st">"ren01"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/removeCluster.html">removeClusterRES</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"area51"</span>, cluster_name <span class="op">=</span> <span class="st">"ren01"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="scenario-builder">Scenario builder<a class="anchor" aria-label="anchor" href="#scenario-builder"></a>
@@ -185,7 +188,7 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Veronique Bachelier, Frederic Breant, Victor Perrier.</p>
+<p>Developed by Tatiana Vargas, Frederic Breant, Victor Perrier.</p>
 </div>
 
 <div class="pkgdown">

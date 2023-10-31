@@ -45,7 +45,7 @@ createArea <- function(name,
                        adequacy = adequacyOptions(),
                        overwrite = FALSE,
                        opts = antaresRead::simOptions()) {
-
+  
   assertthat::assert_that(inherits(opts, "simOptions"))
   validate_area_name(name)
   # name of the area can contain upper case in areas/list.txt (and use in graphics)
@@ -118,19 +118,17 @@ createArea <- function(name,
   
   if (name %in% opts$areaList & overwrite)
     opts <- removeArea(name = name, opts = opts)
-
+  
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
-
+  
   # Update area list
   areas <- readLines(file.path(inputPath, "areas/list.txt"))
   areas <- c(areas, list_name)
   areas <- areas[!duplicated(areas)]
   areas <- paste(sort(areas), collapse = "\n")
   writeLines(text = areas, con = file.path(inputPath, "areas/list.txt"))
-
-
   
   ## Create area ----
   # dir
@@ -179,39 +177,17 @@ createArea <- function(name,
       overwrite = overwrite
     )
   }
-
-
+  
+  
   ## Hydro ----
-
+  
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    hydro <- readIniFile(file = file.path(inputPath, "hydro", "hydro.ini"))
-    if (!is.null(hydro$`inter-daily-breakdown`))
-      hydro$`inter-daily-breakdown`[[name]] <- 1
-    if (!is.null(hydro$`intra-daily-modulation`))
-      hydro$`intra-daily-modulation`[[name]] <- 24
-    if (!is.null(hydro$`inter-monthly-breakdown`))
-      hydro$`inter-monthly-breakdown`[[name]] <- 1
-
-    if (v7) {
-      if (!is.null(hydro$`initialize reservoir date`))
-        hydro$`initialize reservoir date`[[name]] <- 0
-      if (!is.null(hydro$`leeway low`))
-        hydro$`leeway low`[[name]] <- 1
-      if (!is.null(hydro$`leeway up`))
-        hydro$`leeway up`[[name]] <- 1
-      if (!is.null(hydro$`pumping efficiency`))
-        hydro$`pumping efficiency`[[name]] <- 1
-    }
-
-    writeIni(
-      listData = hydro,
-      pathIni = file.path(inputPath, "hydro", "hydro.ini"),
-      overwrite = TRUE
-    )
+    default_params <- get_default_hydro_ini_values()
+    # Check area is not possible at this step
+    writeIniHydro(area = name, params = default_params, mode = "createArea", opts = opts)
   }
-
-
+  
   # allocation
   allocation <- list(as.character(1))
   names(allocation) <- name
@@ -220,76 +196,76 @@ createArea <- function(name,
     pathIni = file.path(inputPath, "hydro", "allocation", paste0(name, ".ini")),
     overwrite = overwrite
   )
-
+  
   # capacity
   con <- file(description = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", name, ".txt")), open = "wt")
   writeLines(text = character(0), con = con)
   close(con)
-
+  
   reservoir <- matrix(data = rep(c(0, 0.5, 1), each = 12), ncol = 3)
   utils::write.table(
     x = reservoir, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt"))
   )
-
+  
   if (v7) {
     creditmodulations <- matrix(data = rep(1, 202), nrow = 2)
     utils::write.table(
       x = creditmodulations, row.names = FALSE, col.names = FALSE, sep = "\t",
       file = file.path(inputPath, "hydro", "common", "capacity", paste0("creditmodulations_", name, ".txt"))
     )
-
+    
     inflowPattern <- matrix(data = rep(1, 365), ncol = 1)
     utils::write.table(
       x = inflowPattern, row.names = FALSE, col.names = FALSE, sep = "\t",
       file = file.path(inputPath, "hydro", "common", "capacity", paste0("inflowPattern_", name, ".txt"))
     )
-
+    
     maxpower <- matrix(data = rep(c(0, 24, 0, 24), each = 365), ncol = 4)
     utils::write.table(
       x = maxpower, row.names = FALSE, col.names = FALSE, sep = "\t",
       file = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", name, ".txt"))
     )
-
+    
     reservoir <- matrix(data = rep(c("0", "0.500", "1"), each = 365), ncol = 3)
     utils::write.table(
       x = reservoir, row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE,
       file = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt"))
     )
-
+    
     con <- file(description = file.path(inputPath, "hydro", "common", "capacity", paste0("waterValues_", name, ".txt")), open = "wt")
     writeLines(text = character(0), con = con)
     close(con)
   }
-
+  
   # prepro
   # dir
   dir.create(path = file.path(inputPath, "hydro", "prepro", name), showWarnings = FALSE)
-
+  
   con <- file(description = file.path(inputPath, "hydro", "prepro", name, "energy.txt"), open = "wt")
   writeLines(text = character(0), con = con)
   close(con)
-
+  
   writeIni(
     listData = list(`prepro` = list(`intermonthly-correlation` = 0.5)),
     pathIni = file.path(inputPath, "hydro", "prepro", name, "prepro.ini"),
     overwrite = overwrite
   )
-
+  
   # series
   # dir
   dir.create(path = file.path(inputPath, "hydro", "series", name), showWarnings = FALSE)
-
+  
   con <- file(description = file.path(inputPath, "hydro", "series", name, "mod.txt"), open = "wt")
   writeLines(text = character(0), con = con)
   close(con)
-
+  
   con <- file(description = file.path(inputPath, "hydro", "series", name, "ror.txt"), open = "wt")
   writeLines(text = character(0), con = con)
   close(con)
-
-
-
+  
+  
+  
   ## Links ----
   # dir
   dir.create(path = file.path(inputPath, "links", name), showWarnings = FALSE)
@@ -298,117 +274,117 @@ createArea <- function(name,
     pathIni = file.path(inputPath, "links", name, "properties.ini"),
     overwrite = overwrite
   )
-
-
-
+  
+  
+  
   ## Load ----
-
+  
   # prepro
   # dir
   dir.create(path = file.path(inputPath, "load", "prepro", name), showWarnings = FALSE)
-
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "load", "prepro", name, "conversion.txt")
   )
-
+  
   data <- matrix(data = c(rep(1, 2*12), rep(0, 12), rep(1, 3*12)), nrow = 12)
   utils::write.table(
     x = data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "load", "prepro", name, "data.txt")
   )
-
+  
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "load", "prepro", name, "k.txt")
   )
-
+  
   writeIni(
     listData = list(),
     pathIni = file.path(inputPath, "load", "prepro", name, "settings.ini"),
     overwrite = overwrite
   )
-
+  
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "load", "prepro", name, "translation.txt")
   )
-
+  
   # series
   write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "load", "series", paste0("load_", name, ".txt"))
   )
-
-
-
+  
+  
+  
   ## Misc-gen ----
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "misc-gen", paste0("miscgen-", name, ".txt"))
   )
-
-
+  
+  
   ## Reserves ----
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "reserves", paste0(name, ".txt"))
   )
-
-
+  
+  
   ## Solar ----
-
+  
   # prepro
   # dir
   dir.create(path = file.path(inputPath, "solar", "prepro", name), showWarnings = FALSE)
-
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "solar", "prepro", name, "conversion.txt")
   )
-
+  
   data <- matrix(data = c(rep(1, 2*12), rep(0, 12), rep(1, 3*12)), nrow = 12)
   utils::write.table(
     x = data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "solar", "prepro", name, "data.txt")
   )
-
+  
   write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "solar", "prepro", name, "k.txt")
   )
-
+  
   writeIni(
     listData = list(),
     pathIni = file.path(inputPath, "solar", "prepro", name, "settings.ini"),
     overwrite = overwrite
   )
-
+  
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "solar", "prepro", name, "translation.txt")
   )
-
+  
   # series
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "solar", "series", paste0("solar_", name, ".txt"))
   )
-
-
+  
+  
   ## Thermal ----
-
+  
   # dir
   dir.create(path = file.path(inputPath, "thermal", "clusters", name), showWarnings = FALSE)
-
+  
   writeIni(
     listData = list(),
     pathIni = file.path(inputPath, "thermal", "clusters", name, "list.ini"),
     overwrite = overwrite
   )
-
+  
   # thermal/areas ini file
   thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
   if (file.exists(thermal_areas_path)) {
@@ -424,64 +400,87 @@ createArea <- function(name,
   ## Renewables ----
   
   if (is_active_RES(opts)) {
-    # dir
+    # INIT dir
     dir.create(path = file.path(inputPath, "renewables", "clusters", name), showWarnings = FALSE)
     
+    # INIT list.ini file
     writeIni(
       listData = list(),
       pathIni = file.path(inputPath, "renewables", "clusters", name, "list.ini"),
       overwrite = overwrite
     )
+    
+    
   }
-
-
+  
+  
+  ## st-storage ----
+  
+  # INIT dir
+  if (opts$antaresVersion >= 860 ){
+    dir.create(path = file.path(inputPath, "st-storage", "clusters", name), showWarnings = FALSE)
+    
+  # INIT list.ini file  
+    writeIni(
+      listData = list(),
+      pathIni = file.path(inputPath, "st-storage", "clusters", name, "list.ini"),
+      overwrite = overwrite
+    )
+    
+    # INIT mingen.txt
+      # /series
+    con <- file(description = file.path(inputPath, "hydro", "series", name, "mingen.txt"), open = "wt")
+    writeLines(text = character(0), con = con)
+    close(con)
+  }
+  
   ## Wind ----
-
+  
   # prepro
   # dir
   dir.create(path = file.path(inputPath, "wind", "prepro", name), showWarnings = FALSE)
-
-  conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+  
+  conversion <- matrix(data = c(-9999999980506447872, 0, 9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
   utils::write.table(
     x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "wind", "prepro", name, "conversion.txt")
   )
-
+  
   data <- matrix(data = c(rep(1, 2*12), rep(0, 12), rep(1, 3*12)), nrow = 12)
   write.table(
     x = data, row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "wind", "prepro", name, "data.txt")
   )
-
+  
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "wind", "prepro", name, "k.txt")
   )
-
+  
   writeIni(
     listData = list(),
     pathIni = file.path(inputPath, "wind", "prepro", name, "settings.ini"),
     overwrite = overwrite
   )
-
+  
   write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "wind", "prepro", name, "translation.txt")
   )
-
+  
   # series
   utils::write.table(
     x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, "wind", "series", paste0("wind_", name, ".txt"))
   )
-
-
-
+  
+  
+  
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   })
-
+  
   invisible(res)
 }
 

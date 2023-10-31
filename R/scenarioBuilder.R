@@ -1,14 +1,15 @@
-#' @title Read, create & update scenario builder
+#' @title Read, create, update & deduplicate scenario builder
 #' 
 #' @description 
 #' `r antaresEditObject:::badge_api_ok()`
 #' 
-#' Read, create & update scenario builder.
+#' Read, create, update & deduplicate scenario builder.
 #'
 #' @param n_scenario Number of scenario.
 #' @param n_mc Number of Monte-Carlo years.
 #' @param areas Areas to use in scenario builder, if `NULL` (default) all areas in Antares study are used.
 #' @param areas_rand Areas for which to use `"rand"`.
+#' @param coef_hydro_levels Hydro levels coefficients.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()]
@@ -41,6 +42,21 @@
 #' sbuilder[, 1:6]
 #' dim(sbuilder)
 #' 
+#' # Create a scenario builder matrix for hydro levels (use case 1)
+#' sbuilder <- scenarioBuilder(
+#'   n_mc = opts$parameters$general$nbyears,
+#'   areas = c("fr", "be"),
+#'   coef_hydro_levels = c(0.1, 0.9)
+#' )
+#'
+#' # Create a scenario builder matrix for hydro levels (use case 2)
+#' sbuilder <- scenarioBuilder(
+#'   n_mc = opts$parameters$general$nbyears,
+#'   areas = c("fr", "be"),
+#'   coef_hydro_levels = c(runif(opts$parameters$general$nbyears)
+#'   , runif(opts$parameters$general$nbyears)
+#'   )
+#' )
 #' 
 #' # Read previous scenario builder
 #' # in a matrix format
@@ -72,12 +88,17 @@
 #'   s = solar_sb
 #' ))
 #' 
+#' # Deduplicate scenario builder
+#' 
+#' deduplicateScenarioBuilder()
 #' }
 scenarioBuilder <- function(n_scenario, 
                             n_mc = NULL,
                             areas = NULL,
                             areas_rand = NULL,
+                            coef_hydro_levels = NULL,
                             opts = antaresRead::simOptions()) {
+  
   if (is_api_study(opts) && is_api_mocked(opts)) {
     stopifnot("In mocked API mode, n_mc cannot be NULL" = !is.null(n_mc))
     stopifnot("In mocked API mode, areas cannot be NULL" = !is.null(n_mc))
@@ -97,17 +118,43 @@ scenarioBuilder <- function(n_scenario,
       warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
     }
   }
+  
+  if (!is.null(coef_hydro_levels)) {
+    nb_areas <- length(areas)
+    nb_coef_hydro_levels <- length(coef_hydro_levels)
+    if (nb_coef_hydro_levels == nb_areas) {
+      data_mat <- rep(coef_hydro_levels, each = n_mc)
+    } else if(nb_coef_hydro_levels == nb_areas * n_mc) {
+      data_mat <- coef_hydro_levels
+    } else {
+      stop("Please check the number of areas and the number of coefficients for hydro levels that you provided.")
+    }
+  } else {
+    data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
+  }
+  
   sb <- matrix(
-    data = rep_len(seq_len(n_scenario), length(areas) * n_mc),
+    data = data_mat,
     byrow = TRUE, 
     nrow = length(areas),
     dimnames = list(areas, NULL)
   )
   sb[areas %in% areas_rand, ] <- "rand"
+  
   return(sb)
 }
 
 
+#' @title Create the correspondence data frame between the symbol and the type in scenario builder
+#' @return a `data.frame`.
+create_referential_series_type <- function(){
+
+  ref_series <- data.frame("series" = c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc"),
+                           "choices" = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels", "binding")
+                         )
+
+  return(ref_series)
+}
 
 
 #' @param ruleset Ruleset to read.
@@ -218,7 +265,7 @@ extract_el <- function(l, indice) {
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -231,6 +278,7 @@ extract_el <- function(l, indice) {
 #' @note
 #' `series = "ntc"` is only available with Antares >= 8.2.0.  
 #' `series = "binding"` is only available with Antares >= 8.7.0. 
+#' `series = "hl"` each value must be between 0 and 1.
 #'
 #' @export
 #' 
@@ -241,23 +289,20 @@ updateScenarioBuilder <- function(ldata,
                                   clusters_areas = NULL,
                                   links = NULL,
                                   opts = antaresRead::simOptions()) {
+  
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
+  
+  ref_series <- create_referential_series_type()
+  possible_series <- ref_series$series
   
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- match.arg(
-        arg = series,
-        choices = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "binding"),
-        several.ok = TRUE
-      )
+      series <- ref_series[possible_series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
-      ind_ntc <- which(series == "ntc")
-      ind_bc <- which(series == "binding")
-      series <- substr(series, 1, 1)
-      series[ind_ntc] <- "ntc"
-      series[ind_bc] <- "bc"
+      series <- ref_series[ref_series$choices %in% series, "series"]
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
@@ -272,8 +317,8 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% c("l", "h", "w", "s", "t", "r", "ntc", "bc"))) {
-      stop("'ldata' must be 'l', 'h', 'w', 's', 't', 'r' , 'bc' or 'ntc'", call. = FALSE)
+    if (!all(series %in% possible_series)) {
+      stop("'ldata' must be one of ", paste0(possible_series, collapse = ", "), call. = FALSE)
     }
     if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
@@ -358,14 +403,14 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' Converts a scenarioBuilder matrix to a list
 #' 
 #' @param mat A matrix obtained from scenarioBuilder().
-#' @param series Name of the series, among 'l', 'h', 'w', 's', 't' 'bc' and 'r'.
+#' @param series Name of the series, among 'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc'.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to use for thermal or renewable series.
 #' @param links Either a simple vector with links described as `"area01%area02` or a `data.table` with two columns `from` and `to`.
 #' @param opts Simulation options.
 #'
 #' @importFrom data.table as.data.table melt := .SD
-#' @importFrom antaresRead readClusterDesc
+#' @importFrom antaresRead readClusterDesc getLinks
 #' @importFrom utils packageVersion getFromNamespace
 #' @noRd
 listify_sb <- function(mat,
@@ -373,12 +418,22 @@ listify_sb <- function(mat,
                        clusters_areas = NULL, 
                        links = NULL,
                        opts = antaresRead::simOptions()) {
+  
   dtsb <- as.data.table(mat, keep.rownames = TRUE)
   dtsb <- melt(data = dtsb, id.vars = "rn")
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
-  dtsb[, value := as.integer(value)]
   
+  if (identical(series, "hl")) {
+    dtsb[, value := as.numeric(value)]
+    if(min(dtsb$value) < 0 | max(dtsb$value) > 1) {
+      stop("Every coefficient for hydro levels must be between 0 and 1.", call. = FALSE)
+    }
+  } else {
+    dtsb[, value := as.integer(value)]
+  }
+  
+  # Thermal
   if (identical(series, "t")) {
     if (is.null(clusters_areas))
       clusters_areas <- readClusterDesc(opts = opts)
@@ -390,6 +445,8 @@ listify_sb <- function(mat,
       allow.cartesian = TRUE
     )
   }
+  
+  # Renewables
   if (identical(series, "r")) {
     check_active_RES(opts)
     if (packageVersion("antaresRead") < "2.2.8")
@@ -407,6 +464,8 @@ listify_sb <- function(mat,
       allow.cartesian = TRUE
     )
   }
+  
+  # Links
   if (identical(series, "ntc")) {
     if (is.null(links))
       links <- getLinks(namesOnly = FALSE, opts = opts)
@@ -422,7 +481,7 @@ listify_sb <- function(mat,
   
   dtsb <- dtsb[order(rn, variable)]
   
-  lsb <- as.list(dtsb$value)
+  lsb <- as.list(as.character(dtsb$value))
   if (series %in% c("r", "t")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
   } else if (series %in% c("ntc")) {
@@ -446,3 +505,60 @@ linksAsDT <- function(x) {
   as.data.table(x)
 }
 
+
+#' @title Keep the last element of a named list
+#' 
+#' @param row of a data frame with 2 columns : key of the scenario builder and its frequency in the scenariobuilder.dat file
+#' @param prevldata a named list
+#'
+#' @noRd
+keep_last_element_from_named_list <- function(row, prevldata){
+  
+  newldata <- list()
+  
+  key <- as.character(row[1])
+  nb_values <- as.numeric(row[2])
+  
+  prevldata_key <- prevldata[which(names(prevldata) == key)]
+  newldata[[key]] <- prevldata_key[[nb_values]]
+  
+  if(nb_values > 1){
+    cat("The following lines will be removed from scenariobuilder.dat\n")
+    for(i in seq(1, nb_values-1)){
+      cat(key, "=", prevldata_key[[i]], "\n")
+    }
+  }
+  
+  return(newldata)
+}
+
+
+#' @title Deduplicate the scenariobuilder.dat file
+#' 
+#' @param ruleset Ruleset to read.
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   [antaresRead::setSimulationPath()]
+#'
+#' @export
+#' 
+#' @rdname scenario-builder
+deduplicateScenarioBuilder <- function(ruleset = "Default Ruleset", 
+                                       opts = antaresRead::simOptions()){
+  
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  prevSB <- readScenarioBuilder(ruleset = ruleset, opts = opts, as_matrix = FALSE)
+  lnewSB <- lapply(prevSB, FUN = function(x){
+    table_freq <- as.data.frame(table(names(x)))
+    newSBkey <- apply(table_freq, MARGIN = 1, FUN = keep_last_element_from_named_list, prevldata = x)
+    newSBkey <- do.call("c", newSBkey)
+  })
+  
+  res <- do.call("c", c(lnewSB, use.names = FALSE))
+  newSB <- list()
+  newSB[[ruleset]] <- res
+  pathSB <- file.path(opts$studyPath, "settings", "scenariobuilder.dat")
+  writeIni(listData = newSB, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
+  cat("\u2713", "Scenario Builder deduplicated\n")
+}

@@ -73,8 +73,14 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
   if (antares_version >= as.numeric_version("8.1.0")) {
     activateRES(opts = opts)
   }
+  
+  if (antares_version >= as.numeric_version("8.6.0")) {
+    activateST(opts = opts)
+  }
   return(invisible(opts))
 }
+
+
 
 
 #' @param host Host of AntaREST server API.
@@ -135,5 +141,3 @@ deleteStudy <- function(opts = simOptions(), prompt_validation= FALSE){
   } 
   cat("\nStudy successfully deleted")
 }
-
-

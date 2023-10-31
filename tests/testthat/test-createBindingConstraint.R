@@ -179,15 +179,15 @@ sapply(studies, function(study) {
 
 ## Global data 
 # read / open template study
-setup_study_850(dir_path = sourcedir850)
+setup_study_860(dir_path = sourcedir860)
 
-opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
+opts_v860 <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 # areas list
-antaresRead::getAreas(opts = opts_v850)
+antaresRead::getAreas(opts = opts_v860)
 
 # remove BC none v870
-names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
+names_bc_to_remove <- names(readBindingConstraints(opts = opts_v860))
 
 lapply(names_bc_to_remove, 
        removeBindingConstraint,
@@ -195,7 +195,7 @@ lapply(names_bc_to_remove,
 
 # temporary to test with "870"
 # force version
-opts_v850$antaresVersion <- 870
+opts_v860$antaresVersion <- 870
 
 # scenarized data hourly
 n <- 10
@@ -227,10 +227,10 @@ test_that("createBindingConstraint (default group value) v8.7", {
     timeStep = "hourly",
     operator = "both",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
-  bc <- readBindingConstraints(opts = opts_v850)
+  bc <- readBindingConstraints(opts = opts_v860)
   
   # tests
   testthat::expect_true("myconstraint" %in% 
@@ -263,13 +263,13 @@ test_that("createBindingConstraintBulk v8.7", {
     }
   )
   # create all constraints
-  createBindingConstraintBulk(bindings_constraints, opts = opts_v850)
+  createBindingConstraintBulk(bindings_constraints, opts = opts_v860)
   
   # tests
   testthat::expect_true("constraints1" %in% 
-                          names(readBindingConstraints(opts = opts_v850)))
+                          names(readBindingConstraints(opts = opts_v860)))
   testthat::expect_true("constraints10" %in% 
-                          names(readBindingConstraints(opts = opts_v850)))
+                          names(readBindingConstraints(opts = opts_v860)))
   
 })
 
@@ -284,7 +284,7 @@ test_that("createBindingConstraint check group values v8.7", {
     timeStep = "hourly",
     operator = "both",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
   # ADD binding constraint still (default group value)  
@@ -295,7 +295,7 @@ test_that("createBindingConstraint check group values v8.7", {
     timeStep = "hourly",
     operator = "both",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
   # ADD binding constraint with named group
@@ -307,14 +307,14 @@ test_that("createBindingConstraint check group values v8.7", {
     operator = "both", 
     group = "group_test",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
   # tests
   testthat::expect_true(
     all(
       c("myconstraint_group", "myconstraint_group_bis", "myconstraint_group1") %in% 
-                          names(readBindingConstraints(opts = opts_v850))
+                          names(readBindingConstraints(opts = opts_v860))
     )
     )
   
@@ -327,7 +327,7 @@ test_that("createBindingConstraint check group values v8.7", {
       timeStep = "daily",
       operator = "both",
       coefficients = c("al%gr" = 1), 
-      opts = opts_v850
+      opts = opts_v860
     )
   )
   
@@ -340,7 +340,7 @@ test_that("createBindingConstraint check group values v8.7", {
       timeStep = "daily",
       operator = "both",
       coefficients = c("al%gr" = 1), 
-      opts = opts_v850
+      opts = opts_v860
     )
   )
   
@@ -354,7 +354,7 @@ test_that("createBindingConstraint check group values v8.7", {
       operator = "both", 
       group = "group_test",
       coefficients = c("al%gr" = 1), 
-      opts = opts_v850)
+      opts = opts_v860)
   )
   
   # ADD binding constraint with existing group
@@ -366,12 +366,12 @@ test_that("createBindingConstraint check group values v8.7", {
     operator = "both", 
     group = "group_test",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850)
+    opts = opts_v860)
   
-  bc <- readBindingConstraints(opts = opts_v850)
+  bc <- readBindingConstraints(opts = opts_v860)
   
   testthat::expect_true("myconstraint_group2" %in% 
-                          names(readBindingConstraints(opts = opts_v850)))
+                          names(readBindingConstraints(opts = opts_v860)))
   
   testthat::expect_equal(bc[["myconstraint_group2"]]$group, "group_test")
  
@@ -387,10 +387,10 @@ test_that("createBindingConstraint check values (NULL) group v8.7", {
     operator = "both", 
     group = "null_values",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
-  bc <- readBindingConstraints(opts = opts_v850)
+  bc <- readBindingConstraints(opts = opts_v860)
   
   # check name
   testthat::expect_true("myconstraint_group_NULL" %in% 
@@ -411,10 +411,10 @@ test_that("createBindingConstraint check values (NULL) group v8.7", {
     timeStep = "hourly",
     group = "null_values",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
     
-  bc <- readBindingConstraints(opts = opts_v850)
+  bc <- readBindingConstraints(opts = opts_v860)
   
   # check name
   testthat::expect_true("myconstraint_group_3" %in% 

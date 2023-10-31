@@ -3,14 +3,14 @@
 
 ## Global data 
 # read / open template study
-setup_study_850(dir_path = sourcedir850)
-opts_v850 <- antaresRead::setSimulationPath(study_temp_path, "input")
+setup_study_860(dir_path = sourcedir860)
+opts_v860 <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 # areas list
-antaresRead::getAreas(opts = opts_v850)
+antaresRead::getAreas(opts = opts_v860)
 
 # remove BC none v870
-names_bc_to_remove <- names(readBindingConstraints(opts = opts_v850))
+names_bc_to_remove <- names(readBindingConstraints(opts = opts_v860))
 
 lapply(names_bc_to_remove, 
        removeBindingConstraint,
@@ -18,7 +18,7 @@ lapply(names_bc_to_remove,
 
 # temporary to test with "870"
 # force version
-opts_v850$antaresVersion <- 870
+opts_v860$antaresVersion <- 870
 
 # scenarized data 
 # hourly
@@ -49,7 +49,7 @@ test_that("removeBindingConstraint v8.6", {
     timeStep = "hourly",
     operator = "both",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
   createBindingConstraint(
@@ -60,7 +60,7 @@ test_that("removeBindingConstraint v8.6", {
     operator = "both", 
     group = "group_test",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
   createBindingConstraint(
@@ -71,22 +71,22 @@ test_that("removeBindingConstraint v8.6", {
     operator = "both", 
     group = "group_test",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v850
+    opts = opts_v860
   )
   
-  bc_names_v870 <- names(readBindingConstraints(opts = opts_v850))
+  bc_names_v870 <- names(readBindingConstraints(opts = opts_v860))
   
   removeBindingConstraint(bc_names_v870[1], 
-                          opts = opts_v850)
+                          opts = opts_v860)
   
-  bc_in_study <- readBindingConstraints(opts = opts_v850)
+  bc_in_study <- readBindingConstraints(opts = opts_v860)
   
   # test
   if(is.null(bc_in_study))
     testthat::expect_null(names(bc_in_study))
   else
     testthat::expect_false("myconstraint" %in% 
-                   names(readBindingConstraints(opts = opts_v850)))
+                   names(readBindingConstraints(opts = opts_v860)))
   
   # remove temporary study
   unlink(x = study_temp_path, recursive = TRUE)

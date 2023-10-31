@@ -9,3 +9,7 @@
 
 New release, no revdep, all OK (https://cran.r-project.org/web/checks/check_results_antaresEditObject.html)
 Thanks!
+
+
+## Fix CRAN NOTE for release 0.6.0
+"Running R code in ‘testthat.R’ had CPU time 8.1 times elapsed time"

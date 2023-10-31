@@ -6,7 +6,7 @@
 \usage{
 writeInputTS(
   data,
-  type = c("load", "hydroROR", "hydroSTOR", "wind", "solar", "tsLink"),
+  type = c("load", "hydroROR", "hydroSTOR", "mingen", "wind", "solar", "tsLink"),
   area = NULL,
   link = NULL,
   overwrite = TRUE,
@@ -14,12 +14,16 @@ writeInputTS(
 )
 }
 \arguments{
-\item{data}{A 8760\emph{N matrix of hourly time series, except when \code{type} is
-\code{"hydroSTOR"}. In this latter case, \code{data} must either be 365}N
-(Antares v7) or 12*N (v6 and earlier).}
+\item{data}{A 8760*N matrix of hourly time series, except when \code{type} is
+\code{"hydroSTOR"}.
+In this latter case \code{"hydroSTOR"} data must have either be 365 rows
+(Antares v7) or 12 rows (v6 and earlier).}
 
 \item{type}{Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
-\code{"wind"}, \code{"solar"}, or \code{"tsLink"}.}
+\code{"wind"}, \code{"solar"}, \code{"tsLink"} or \code{"mingen"}.
+
+If type == \code{"mingen"}, \code{"antaresVersion"} should be >= 860.
+Refers to note section below.}
 
 \item{area}{The area where to write the input time series.}
 
@@ -39,10 +43,23 @@ An updated list containing various information about the simulation.
 
 This function writes input time series in an Antares project.
 }
+\note{
+For an \strong{Antares version >= 860}, the \code{mingen.txt} file is created.
+
+The \code{mingen.txt} file can be created under two conditions:
+\itemize{
+\item The number of columns must be equal to either \code{1} or the number in \code{mod.txt}
+\item If the \code{mod.txt} file is empty or has one column, then there is no dimension constraint
+}
+}
 \section{Warning}{
 
 
 You cannot use \code{area} and \code{link} arguments at the same time.
+
+For an \strong{Antares version >= 860}, control of data consistency between \code{mingen.txt} and \code{mod.txt} can be executed.
+
+These controls depend on the values you find in \code{hydro.ini} file.
 }
 
 \examples{

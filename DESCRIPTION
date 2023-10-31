@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.5.2
+Version: 0.7.0
 Authors@R: c(
     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
@@ -13,6 +13,7 @@ Authors@R: c(
     person("Etienne", "Sanchez", role = "ctb"),
     person("Janus", "De Bondt", role = "ctb"),
     person("Assil", "Mansouri", role = "ctb"),
+    person("Abdallah", "Mahoudi", role = "ctb"),
     person("Clement", "Berthet", role = "ctb"),
     person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
