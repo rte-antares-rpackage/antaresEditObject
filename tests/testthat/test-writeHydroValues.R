@@ -3,7 +3,7 @@ context("Function writeHydroValues")
 #WriteHydroValues does not depend on antaresVersion.
 # waterValues ----
 # global params for structure v8.6
-setup_study_860(sourcedir860)
+setup_study_last(sourcedir_last_study)
 
 #Avoid warning related to code writed outside test_that.
 suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))

@@ -98,7 +98,7 @@ sapply(studies, function(study) {
 
 # v860 ----
 
-setup_study_860(sourcedir860)
+setup_study_last(sourcedir_last_study)
 
 #Avoid warning related to code writed outside test_that.
 suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))

@@ -39,14 +39,14 @@ test_that("editBindingConstraint v710", {
 
 ## Global data 
 # read / open template study
-setup_study_860(dir_path = sourcedir860)
-opts_v860 <- antaresRead::setSimulationPath(study_temp_path, "input")
+setup_study_last(dir_path = sourcedir_last_study)
+opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 # areas list
-antaresRead::getAreas(opts = opts_v860)
+antaresRead::getAreas(opts = opts_test)
 
 # remove BC none v870
-names_bc_to_remove <- names(readBindingConstraints(opts = opts_v860))
+names_bc_to_remove <- names(readBindingConstraints(opts = opts_test))
 
 lapply(names_bc_to_remove, 
        removeBindingConstraint,
@@ -54,7 +54,7 @@ lapply(names_bc_to_remove,
 
 # temporary to test with "870"
 # force version
-opts_v860$antaresVersion <- 870
+opts_test$antaresVersion <- 870
 
 # scenarized data 
   # hourly
@@ -86,10 +86,10 @@ test_that("editBindingConstraint v8.6", {
     timeStep = "hourly",
     operator = "both",
     coefficients = c("al%gr" = 1), 
-    opts = opts_v860
+    opts = opts_test
   )
   
-  bc_names_v870 <- names(readBindingConstraints(opts = opts_v860))
+  bc_names_v870 <- names(readBindingConstraints(opts = opts_test))
     
   # edit BC with NULL values (edit only .ini file)
   editBindingConstraint(name = bc_names_v870, 
@@ -97,9 +97,9 @@ test_that("editBindingConstraint v8.6", {
                         timeStep = "daily",
                         operator = "both", 
                         coefficients = c("al%gr"= 7.45),
-                        opts = opts_v860)
+                        opts = opts_test)
   
-  bc_modified <- readBindingConstraints(opts = opts_v860)
+  bc_modified <- readBindingConstraints(opts = opts_test)
   new_coef <- bc_modified[[bc_names_v870[1]]]$coefs
   
   # test
@@ -114,9 +114,9 @@ test_that("editBindingConstraint v8.6", {
                         coefficients = c("00_pump_d%gr" = 12, 
                                          "gr%00_turb_d" = 0, 
                                          "al%gr"= 0.5),
-                        opts = opts_v860)
+                        opts = opts_test)
   
-  bc_modified <- readBindingConstraints(opts = opts_v860)
+  bc_modified <- readBindingConstraints(opts = opts_test)
   new_coef <- bc_modified[[bc_names_v870[1]]]$coefs
   
   # test coefs
@@ -136,7 +136,7 @@ test_that("editBindingConstraint v8.6", {
                                                   ncol = 9)), 
                           timeStep = "daily",
                           operator = "both",
-                          opts = opts_v860), 
+                          opts = opts_test), 
     regexp = "Put right columns dimension : 10 for existing 'group' : default group" 
   ) 
   
@@ -158,23 +158,23 @@ test_that("editBindingConstraint v8.6", {
     operator = "both",
     coefficients = c("al%gr" = 1), 
     group = "new",
-    opts = opts_v860
+    opts = opts_test
   )
   
   # edit group of last bindingConstraint with bad dimension
   testthat::expect_error(
     editBindingConstraint(name = "myconstraint_new", 
                           group = "default group",
-                          opts = opts_v860), 
+                          opts = opts_test), 
     regexp = "Put right columns dimension : 10 for existing 'group' : default group"
     )
   
   # edit param 
   editBindingConstraint(name = "myconstraint_new", 
                         operator = "less",
-                        opts = opts_v860)
+                        opts = opts_test)
   
-  bc_modified <- readBindingConstraints(opts = opts_v860)
+  bc_modified <- readBindingConstraints(opts = opts_test)
   new_param <- bc_modified[["myconstraint_new"]]$operator
   
   # test coefs

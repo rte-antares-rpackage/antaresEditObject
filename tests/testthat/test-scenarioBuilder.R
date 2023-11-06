@@ -352,35 +352,35 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
 
 ## Global data 
 # read / open template study
-setup_study_860(dir_path = sourcedir860)
-opts_v860 <- antaresRead::setSimulationPath(study_temp_path, "input")
+setup_study_last(dir_path = sourcedir_last_study)
+opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 # areas list
-antaresRead::getAreas(opts = opts_v860)
+antaresRead::getAreas(opts = opts_test)
 
 # temporary to test with "870"
 # force version
-opts_v860$antaresVersion <- 870
+opts_test$antaresVersion <- 870
 
 test_that("scenarioBuilder works with binding constraint (v870)", {
   
   # Read, create & update scenario builder
   
   sbuilder <- scenarioBuilder(
-    n_scenario = opts_v860$parameters$general$nbyears,
-    n_mc = opts_v860$parameters$general$nbyears,
+    n_scenario = opts_test$parameters$general$nbyears,
+    n_mc = opts_test$parameters$general$nbyears,
     areas = getAreas()[1:3],
     areas_rand = getAreas()[1:2], 
-    opts = opts_v860
+    opts = opts_test
   )
   
   # Read previous scenario builder
   # in a matrix format
-  prev_sb <- readScenarioBuilder(opts = opts_v860, as_matrix = TRUE)
+  prev_sb <- readScenarioBuilder(opts = opts_test, as_matrix = TRUE)
   
   # Update scenario builder
   # for binding constraints series
-  updateScenarioBuilder(ldata = sbuilder, series = "binding")
+  updateScenarioBuilder(ldata = sbuilder, series = "bc", opts = opts_test)
   
   # remove temporary study
   unlink(x = study_temp_path, recursive = TRUE)

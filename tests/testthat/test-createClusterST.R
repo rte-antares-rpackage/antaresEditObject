@@ -1,6 +1,6 @@
 
 # global params for structure v8.6 ----
-setup_study_860(sourcedir860)
+setup_study_last(sourcedir_last_study)
 opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 path_master <- file.path(opts_test$inputPath, "st-storage")
