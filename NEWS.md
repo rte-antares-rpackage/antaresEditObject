@@ -1,3 +1,10 @@
+# antaresEditObject 0.6.1
+
+### Breaking changes
+
+* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
+
+
 # antaresEditObject 0.6.0
 
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
@@ -24,10 +31,10 @@ NEW FEATURES :
 * Add `writeIniHydro()` function to make easier the edition of the `input/hydro/hydro.ini` file
 * Call `writeIniHydro()` in `createArea()` and `removeArea()`
 * Enable edition of hydro levels in `settings/scenariobuilder.dat` by using `scenarioBuilder()` and `updateScenarioBuilder()`
-* Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
-* Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
-* Call writeIniHydro() in createArea() and removeArea()
-* removeArea() removes only expected files in links directory
+* Add `deduplicateScenarioBuilder()` function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
+* Add `writeIniHydro()` function to make easier the edition of the input/hydro/hydro.ini file
+* Call `writeIniHydro()` in `createArea()` and `removeArea()`
+* `removeArea()` removes only expected files in links directory
 
 
 
@@ -39,6 +46,7 @@ NEW FEATURES :
 * `removeClusterRES()` in API mode
 * `removeLink()` delete properly data for an Antares version >= 820
 * `rollback_to_previous_data()` enable to rollback if original value is NULL
+* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
 
 BUGFIXES : 
 

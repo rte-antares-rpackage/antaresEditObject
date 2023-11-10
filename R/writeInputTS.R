@@ -163,13 +163,19 @@ writeInputTS <- function(data,
   # tsLink block (file & API)
   if (!is.null(link)) {
     stopifnot(
-      "link must be a character, like 'area01%area02' or c('area01', 'area02')" = is.character(link)
+      "link must be a character, like 'area01%area02' or 'area01 - area02' or c('area01', 'area02')" = is.character(link)
     )
-    if (length(link) == 1)
-      link <- strsplit(x = link, split = "%")[[1]]
+    if (length(link) == 1) {
+      sep_hyphen <- " - "
+      sep_expected <- "%"
+      if (grepl(pattern = sep_hyphen, x = link)) {
+        link <- gsub(pattern = sep_hyphen, replacement = sep_expected, x = link)
+      }
+      link <- strsplit(x = link, split = sep_expected)[[1]]
+    }
     
     stopifnot(
-      "Invalid link specification, must be 'area01%area02' or c('area01', 'area02')" = length(link) == 2
+      "Invalid link specification, must be 'area01%area02' or 'area01 - area02' or c('area01', 'area02')" = length(link) == 2
     )
     
     from <- tolower(as.character(link[1]))

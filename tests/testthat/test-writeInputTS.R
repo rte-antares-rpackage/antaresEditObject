@@ -470,8 +470,6 @@ test_that("Check if writeInputTS() writes time series link regardless alphabetic
   dat_mat_inv <- c(4,2,3,1)
   nb_cols <- length(dat_mat)
   
-  ## Future developments will come because this is not the expected behaviour
-  ## Time series direct and indirect have to be reordered
   # alphabetical order
   mat_multi_scen <- matrix(data = rep(dat_mat, each = 8760), ncol = nb_cols)
   writeInputTS(data = mat_multi_scen, link = paste0(area,"%",area2), type = "tsLink", opts = opts)
@@ -499,6 +497,56 @@ test_that("Check if writeInputTS() writes time series link regardless alphabetic
 })
 
 
+test_that("Check if writeInputTS() writes links time series with argument link 'area1 - area2' or 'area1%area2'", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "aa"
+  area2 <- "zz"
+  createArea(area)
+  createArea(area2)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+
+  createLink(from = area, to = area2, opts = opts)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+
+  path_direct_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_direct.txt"))
+  path_indirect_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_indirect.txt"))
+
+  dat_mat_sep_1 <- c(1,3,2,4)
+  nb_cols <- length(dat_mat_sep_1)
+  mat_ts_sep_1 <- matrix(data = rep(dat_mat_sep_1, each = 8760), ncol = nb_cols)
+  
+  dat_mat_sep_2 <- c(5,7,6,8)
+  nb_cols <- length(dat_mat_sep_2)
+  mat_ts_sep_2 <- matrix(data = rep(dat_mat_sep_2, each = 8760), ncol = nb_cols)
+  
+  # link separator '%'
+  writeInputTS(data = mat_ts_sep_1, link = paste0(area,"%",area2), type = "tsLink", opts = opts)
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_ts_sep_1[,seq(1, nb_cols/2)]))
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_ts_sep_1[,seq((nb_cols/2)+1, nb_cols)]))
+  
+  # link separator ' - '
+  writeInputTS(data = mat_ts_sep_2, link = paste0(area," - ",area2), type = "tsLink", opts = opts)
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_ts_sep_2[,seq(1, nb_cols/2)]))
+
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_ts_sep_2[,seq((nb_cols/2)+1, nb_cols)]))
+
+})
+
+
 test_that("writeInputTS() in 8.6.0 : rollback to an empty file", {
 
   ant_version <- "8.6.0"
@@ -521,5 +569,3 @@ test_that("writeInputTS() in 8.6.0 : rollback to an empty file", {
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
-
-
