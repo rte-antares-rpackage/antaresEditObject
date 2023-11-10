@@ -16,7 +16,7 @@
 #' @examples 
 #' \dontrun{
 #' 
-#' # list of variables (from version v8.0 to v8.6)
+#' # list of variables (from version v8.0 to version >= v8.6)
 #' vect_select_vars <- antaresRead:::pkgEnv$thematic
 #' 
 #' ##
@@ -34,7 +34,7 @@
 setThematicTrimming <- function(selection_variables, 
                                 type_select = c("add", "suppr"),
                                 opts = simOptions()){
-  
+
   # available only for study version >= 800
   if(opts$antaresVersion<800)
     stop("'setThematicTrimming()' calls is only available for study version >= v8.0", 
@@ -74,7 +74,8 @@ setThematicTrimming <- function(selection_variables,
   generaldata_updated <- .set_thematic(type_select = type_select, 
                 pkg_var_version = variables_package_list, 
                 list_var_selection = selection_variables, 
-                general_data = generaldata)
+                general_data = generaldata, 
+                api_mode = antaresRead:::is_api_study(opts = opts))
   
   # write updated file
   writeIni(listData = generaldata_updated, 
@@ -83,11 +84,20 @@ setThematicTrimming <- function(selection_variables,
            opts = opts)
   
   # Update simulation options object
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, 
-                                          simulation = "input")
-  })
-  
+  if(antaresRead:::is_api_study(opts = opts)){
+    suppressWarnings(
+      res <- antaresRead::setSimulationPathAPI(host = opts$host,
+                                               study_id = opts$study_id, 
+                                               token = opts$token, 
+                                               simulation = "input")
+    )
+    }else{
+    suppressWarnings(
+      res <- antaresRead::setSimulationPath(path = opts$studyPath, 
+                                            simulation = "input")
+    )
+  }
+
   invisible(res)
   
 }
@@ -99,7 +109,8 @@ setThematicTrimming <- function(selection_variables,
 .set_thematic <- function(type_select, 
                           pkg_var_version, 
                           list_var_selection,
-                          general_data){
+                          general_data,
+                          api_mode = FALSE){
   # reset [variables selection]
   general_data$`variables selection` <- NULL
   
@@ -126,32 +137,34 @@ setThematicTrimming <- function(selection_variables,
   # write your selection
   if(nb_right_var_selection<as.integer(nb_var_version/2)){
     if(type_select %in% "add"){
-      var_select_bloc <- .make_thematic_list(var_selection = list_var_selection)
+      var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
+                                             api_mode = api_mode)
       general_data$`variables selection` <- var_select_bloc
       return(general_data)
     }else{
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
                                              pattern_list = "select_var -", 
-                                             type_select = "suppr")
+                                             type_select = "suppr",
+                                             api_mode = api_mode)
       general_data$`variables selection` <- var_select_bloc
       return(general_data)
     }
     # write the opposite 
   }else{ 
+    # diff 
+    list_var_selection <- setdiff(pkg_var_version, list_var_selection)
     if(type_select %in% "add"){
-      # diff 
-      list_var_selection <- setdiff(pkg_var_version, list_var_selection)
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
                                              pattern_list = "select_var -", 
-                                             type_select = "suppr")
+                                             type_select = "suppr",
+                                             api_mode = api_mode)
       general_data$`variables selection` <- var_select_bloc
       return(general_data)
     }else{
-      # diff 
-      list_var_selection <- setdiff(pkg_var_version, list_var_selection)
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
                                              pattern_list = "select_var +", 
-                                             type_select = "add")
+                                             type_select = "add",
+                                             api_mode = api_mode)
       general_data$`variables selection` <- var_select_bloc
       return(general_data)
     }
@@ -169,7 +182,8 @@ setThematicTrimming <- function(selection_variables,
   # build list with pattern and type 
 .make_thematic_list <- function(pattern_list = "select_var +", 
                                 type_select = "add",
-                                var_selection){
+                                var_selection, 
+                                api_mode = FALSE){
   # "add"
   if(type_select %in% "add")
     # init list
@@ -181,17 +195,25 @@ setThematicTrimming <- function(selection_variables,
     ll_init <- list(
       selected_vars_reset = TRUE
     )
-    
-    # update list
+  
+  # update list
+  if(api_mode){
+    element_list <- paste("\'", var_selection, "\'", 
+                          collapse  = ",", sep = "")
+    element_list <- paste("[", element_list, "]", sep = "")
+    bloc_list <- list(element_list)
+    names(bloc_list) <- pattern_list
+    }else{
     bloc_list <- lapply(var_selection, function(x){
       x
     })
     names(bloc_list) <- rep(pattern_list, 
                             length(var_selection))
+  }
     
-    # add to init list
-    bloc_list <- append(ll_init, 
-                        bloc_list)
-    
-    return(bloc_list)
+  # add to init list
+  bloc_list <- append(ll_init, 
+                      bloc_list)
+  
+  return(bloc_list)
 }

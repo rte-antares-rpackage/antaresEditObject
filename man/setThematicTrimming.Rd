@@ -32,7 +32,7 @@ You can put only variables according to version of study
 \examples{
 \dontrun{
 
-# list of variables (from version v8.0 to v8.6)
+# list of variables (from version v8.0 to version >= v8.6)
 vect_select_vars <- antaresRead:::pkgEnv$thematic
 
 ##
