@@ -19,7 +19,7 @@
 #'  
 #' @param area The area where to write the input time series.
 #' @param link Link for which writing transmission capacities time series, 
-#'  must like `"area01%area02"` or `c("area01", "area02")`.
+#'  must like `"area01%area02"` or `"area01 - area02"` or `c("area01", "area02")`.
 #' @param overwrite Logical. Overwrite the values if a file already exists.
 #' 
 #' 
