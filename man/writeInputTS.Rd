@@ -28,7 +28,7 @@ Refers to note section below.}
 \item{area}{The area where to write the input time series.}
 
 \item{link}{Link for which writing transmission capacities time series,
-must like \code{"area01\%area02"} or \code{c("area01", "area02")}.}
+must like \code{"area01\%area02"} or \code{"area01 - area02"} or \code{c("area01", "area02")}.}
 
 \item{overwrite}{Logical. Overwrite the values if a file already exists.}
 

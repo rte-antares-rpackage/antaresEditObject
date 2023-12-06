@@ -220,3 +220,84 @@ runSimulation(
 )
 ```
 
+## Read a time series, update it and write it
+
+To update an existing time series and write it, you can use the following commands :
+
+```r
+# Filepath of the study, version >= 820
+my_study <- file.path("", "", "")
+opts <- setSimulationPath(my_study, simulation ="input")
+opts$timeIdMax <- 8760
+
+# Links, use only one link
+my_link <- as.character(getLinks()[1])
+ts_input <- readInputTS(linkCapacity = my_link, opts = opts)
+
+# Sort the data to ensure its reliability
+data.table::setorder(ts_input, cols = "tsId", "timeId") 
+
+# Reshape to wide format : writeInputTS expects a 8760 * N matrix 
+metrics <- c("transCapacityDirect", "transCapacityIndirect")
+ts_input_reformatted <- data.table::dcast(ts_input,
+                                          timeId ~ tsId,
+                                          value.var = metrics
+                                          )
+# Add a value my_param to your matrix
+my_param <- 123
+writeInputTS(data = ts_input_reformatted[,2:ncol(ts_input_reformatted)] + my_param,
+             type = "tsLink",
+             link = my_link,
+             overwrite = TRUE,
+             opts = opts
+             )
+
+
+# Thermal, use only one area and one cluster
+my_area <- "zone"
+my_cluster <- "mon_cluster"
+ts_input <- readInputTS(thermalAvailabilities = my_area, opts = opts)
+ts_input <- ts_input[cluster == paste0(my_area,"_",my_cluster)]
+
+# Sort the data to ensure its reliability
+data.table::setorder(ts_input, cols = "tsId", "timeId")
+
+# Reshape to wide format : writeInputTS expects a 8760 * N matrix 
+metrics <- c("ThermalAvailabilities")
+ts_input_reformatted <- data.table::dcast(ts_input,
+                                          timeId ~ tsId,
+                                          value.var = metrics
+                                          )
+
+# Add a value my_param to your matrix
+my_param <- 1000
+editCluster(area = my_area,
+            cluster_name = my_cluster,
+            time_series = ts_input_reformatted[,2:ncol(ts_input_reformatted)] + my_param,
+            opts = opts
+            )
+
+
+# Run of River, use only one area
+my_area <- "zone"
+ts_input <- readInputTS(ror = my_area, opts = opts)
+
+# Sort the data to ensure its reliability
+data.table::setorder(ts_input, cols = "tsId", "timeId")
+
+# Reshape to wide format : writeInputTS expects a 8760 * N matrix 
+metrics <- c("ror")
+ts_input_reformatted <- data.table::dcast(ts_input,
+                                          timeId ~ tsId,
+                                          value.var = metrics
+)
+
+# Add a value my_param to your matrix
+my_param <- 1000
+writeInputTS(area = my_area,
+            type = "hydroROR",
+            data = ts_input_reformatted[,2:ncol(ts_input_reformatted)] + my_param,
+            overwrite = TRUE,
+            opts = opts
+)
+```
