@@ -13,3 +13,6 @@ Thanks!
 
 ## Fix CRAN NOTE for release 0.6.0
 "Running R code in ‘testthat.R’ had CPU time 8.1 times elapsed time"
+
+## Fix CRAN CHECKS on version 0.6.0 
+* Fix ERROR on `r-devel-linux-x86_64-debian-gcc` cause function `base::NCOL()` is updated
