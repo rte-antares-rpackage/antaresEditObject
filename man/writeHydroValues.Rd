@@ -19,16 +19,16 @@ writeHydroValues(
 
 \item{data}{The data must have specific dimension depending on the type of file :
 \itemize{
-\item{waterValues}{: a 365x101 numeric matrix:
+\item \code{waterValues}: a 365x101 numeric matrix:
 marginal values for the stored energy based on date (365 days)
 and on the reservoir level (101 round percentage values ranging from
 0\% to 100\%). OR a 3-column matrix with 365x101 rows. In this latter case the 3 columns must
 be 'date', 'level' and 'value' (in this order), and the rows must be sorted by:
-ascending day, ascending level.}
-\item{reservoir}{: a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.}
-\item{maxpower}{: a 365x4 numeric matrix.}
-\item{inflowPattern}{: a 365x1 numeric matrix.}
-\item{creditmodulations}{: a 2x101 numeric matrix.}
+ascending day, ascending level.
+\item \code{reservoir}: a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.
+\item \code{maxpower}: a 365x4 numeric matrix.
+\item \code{inflowPattern}: a 365x1 numeric matrix.
+\item \code{creditmodulations}: a 2x101 numeric matrix.
 }}
 
 \item{overwrite}{Logical. Overwrite the values if a file already exists.}
