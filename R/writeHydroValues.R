@@ -234,21 +234,21 @@ check_consistency_reservoir_values <- function(area, new_data, prev_data){
 #' @param area The area where to edit the values.
 #' @param params The list data must have specific names and specific types :
 #' \itemize{
-#'      \item{follow load}{ : logical or NULL}
-#'      \item{use heuristic}{ : logical or NULL}
-#'      \item{use water}{ : logical or NULL}
-#'      \item{hard bounds}{ : logical or NULL}
-#'      \item{use leeway}{ : logical or NULL}
-#'      \item{power to level}{ : logical or NULL}
-#'      \item{reservoir}{ : logical or NULL}
-#'      \item{inter-daily-breakdown}{ : numeric, integer or NULL}
-#'      \item{intra-daily-modulation}{ : numeric, integer or NULL}
-#'      \item{inter-monthly-breakdown}{ : numeric, integer or NULL}
-#'      \item{leeway low}{ : numeric, integer or NULL}
-#'      \item{leeway up}{ : numeric, integer or NULL}
-#'      \item{pumping efficiency}{ : numeric, integer or NULL}
-#'      \item{initialize reservoir date}{ : numeric, integer or NULL}
-#'      \item{reservoir capacity}{ : numeric, integer or NULL}
+#'      \item \code{follow load} : logical or NULL
+#'      \item \code{use heuristic} : logical or NULL
+#'      \item \code{use water} : logical or NULL
+#'      \item \code{hard bounds} : logical or NULL
+#'      \item \code{use leeway} : logical or NULL
+#'      \item \code{power to level} : logical or NULL
+#'      \item \code{reservoir} : logical or NULL
+#'      \item \code{inter-daily-breakdown} : numeric, integer or NULL
+#'      \item \code{intra-daily-modulation} : numeric, integer or NULL
+#'      \item \code{inter-monthly-breakdown} : numeric, integer or NULL
+#'      \item \code{leeway low} : numeric, integer or NULL
+#'      \item \code{leeway up} : numeric, integer or NULL
+#'      \item \code{pumping efficiency} : numeric, integer or NULL
+#'      \item \code{initialize reservoir date} : numeric, integer or NULL
+#'      \item \code{reservoir capacity} : numeric, integer or NULL
 #'   }
 #' @param mode Execution mode. Useful when you create a new area or remove an existing area to avoid control on hydro data.
 #' @param opts List of simulation parameters returned by the function
@@ -557,8 +557,8 @@ get_type_check_mingen_vs_hydrostorage <- function(hydro_params){
 #'
 #' Compute the type of control to make between :
 #' \itemize{
-#'      \item{`input/hydro/series/<area>/mingen.txt`}
-#'      \item{`input/hydro/series/<area>/mod.txt`}
+#'      \item \code{input/hydro/series/<area>/mingen.txt}
+#'      \item \code{input/hydro/series/<area>/mod.txt}
 #' }
 #' This control is implemented in Antares too.
 #' 
@@ -728,8 +728,8 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
 #'
 #' Compute the type of control to make between :
 #' \itemize{
-#'      \item{`input/hydro/series/<area>/mingen.txt`}
-#'      \item{`input/hydro/common/capacity/maxpower_<area>.txt`}
+#'      \item \code{input/hydro/series/<area>/mingen.txt}
+#'      \item \code{input/hydro/common/capacity/maxpower_<area>.txt}
 #' }
 #' This control is implemented in Antares too.
 #' No control to execute if `reservoir` section in hydro.ini for the area is set to TRUE. 
