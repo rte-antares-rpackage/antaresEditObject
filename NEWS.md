@@ -4,6 +4,9 @@
 
 * `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
 
+BUGFIXES : 
+
+* Error CRAN CHECKS (fix issue #115)
 
 # antaresEditObject 0.6.0
 

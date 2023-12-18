@@ -11,21 +11,21 @@ writeIniHydro(area, params, mode = "other", opts = antaresRead::simOptions())
 
 \item{params}{The list data must have specific names and specific types :
 \itemize{
-\item{follow load}{ : logical or NULL}
-\item{use heuristic}{ : logical or NULL}
-\item{use water}{ : logical or NULL}
-\item{hard bounds}{ : logical or NULL}
-\item{use leeway}{ : logical or NULL}
-\item{power to level}{ : logical or NULL}
-\item{reservoir}{ : logical or NULL}
-\item{inter-daily-breakdown}{ : numeric, integer or NULL}
-\item{intra-daily-modulation}{ : numeric, integer or NULL}
-\item{inter-monthly-breakdown}{ : numeric, integer or NULL}
-\item{leeway low}{ : numeric, integer or NULL}
-\item{leeway up}{ : numeric, integer or NULL}
-\item{pumping efficiency}{ : numeric, integer or NULL}
-\item{initialize reservoir date}{ : numeric, integer or NULL}
-\item{reservoir capacity}{ : numeric, integer or NULL}
+\item \code{follow load} : logical or NULL
+\item \code{use heuristic} : logical or NULL
+\item \code{use water} : logical or NULL
+\item \code{hard bounds} : logical or NULL
+\item \code{use leeway} : logical or NULL
+\item \code{power to level} : logical or NULL
+\item \code{reservoir} : logical or NULL
+\item \code{inter-daily-breakdown} : numeric, integer or NULL
+\item \code{intra-daily-modulation} : numeric, integer or NULL
+\item \code{inter-monthly-breakdown} : numeric, integer or NULL
+\item \code{leeway low} : numeric, integer or NULL
+\item \code{leeway up} : numeric, integer or NULL
+\item \code{pumping efficiency} : numeric, integer or NULL
+\item \code{initialize reservoir date} : numeric, integer or NULL
+\item \code{reservoir capacity} : numeric, integer or NULL
 }}
 
 \item{mode}{Execution mode. Useful when you create a new area or remove an existing area to avoid control on hydro data.}
