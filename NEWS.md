@@ -1,3 +1,9 @@
+# antaresEditObject 0.6.2
+
+NEW FEATURES :
+
+* New function `removeOutput()` Delete a simulation in an Antares study.
+
 # antaresEditObject 0.6.1
 
 ### Breaking changes
