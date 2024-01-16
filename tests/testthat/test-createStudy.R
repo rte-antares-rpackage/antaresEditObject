@@ -53,7 +53,9 @@ test_that("delete v8.1.0 study", {
   properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
   expect_identical(properties$antares$version, 810L)
   expect_true(is_active_RES(opts))
+  testthat::expect_true(file.exists(opts$studyPath))
   deleteStudy(opts = simOptions())
+  testthat::expect_true(!file.exists(opts$studyPath))
 })
 
 
@@ -64,7 +66,8 @@ test_that("delete v8.6.0 simulation", {
   )
   split_simPath <- strsplit(opts_test$simPath,"/")[[1]]
   simulation <- split_simPath[length(split_simPath)]
-  opts_test <- deleteStudy(opts = opts_test,simulation = simulation)
-  testthat::expect_true(is.null(opts_test$simPath))
+  testthat::expect_true(file.exists(opts_test$simPath))
+  deleteStudy(opts = opts_test,simulation = simulation)
+  testthat::expect_true(!file.exists(opts_test$simPath))
 })
 

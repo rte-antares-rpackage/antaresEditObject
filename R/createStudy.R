@@ -121,11 +121,11 @@ createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_
 #' @export
 deleteStudy <- function(opts = simOptions(), prompt_validation = FALSE, simulation = NULL){
   
-  res <- NULL
   delete_simulation <- !is.null(simulation)
   is_api_study <- is_api_study(opts)
   
-  if(!is_api_study && !file.exists(opts$studyPath)){ stop("Study not found.") }
+  if(!is_api_study && !file.exists(opts$studyPath))
+    stop("Study not found.") 
   
   if(prompt_validation){
     if(delete_simulation){
@@ -140,37 +140,31 @@ deleteStudy <- function(opts = simOptions(), prompt_validation = FALSE, simulati
     }
     
     prompt_answer <- menu(c("Yes", "No"),title=prompt_question)
-    if (prompt_answer == 2){ 
-      res <- opts
-      return(res)
-    }
+    if(prompt_answer == 2)
+      return(NULL)
   }
   
-  if(is_api_study & delete_simulation){
-    study_path <- gsub(pattern = "\\/raw\\?path=",replacement = "",x = opts$studyPath)
-    url <- I(file.path(study_path,"outputs",simulation))
+  if(is_api_study){
+    if(delete_simulation){
+      study_path <- gsub(pattern = "\\/raw\\?path=",
+                         replacement = "",
+                         x = opts$studyPath)
+      url <- I(file.path(study_path,"outputs",simulation))
+    } else {
+      url <- opts$study_id
+    }
     api_delete(opts = opts, endpoint = url)
     
-  } else if(is_api_study & !delete_simulation){
-    url <- opts$study_id
-    api_delete(opts = opts, endpoint = url)
-    
-  } else if(!is_api_study & delete_simulation){ 
-    path <- file.path(opts$studyPath,"output",simulation)
-    unlink(path, recursive = TRUE) 
-    
-  } else if(!is_api_study & !delete_simulation){ 
+  } else {
     path <- opts$studyPath
+    if(delete_simulation)
+      path <- file.path(path,"output",simulation)
     unlink(path, recursive = TRUE) 
-  } 
-  
-  if(is_api_study(opts)){ res <- update_opts(opts) }
+  }
   
   cat(sprintf("\n%s successfully deleted", 
               ifelse(delete_simulation, 
                      "Simulation",
                      "Study")))
-  
-  return(invisible(res))
 }
 

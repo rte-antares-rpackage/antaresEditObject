@@ -2,7 +2,7 @@
 
 NEW FEATURES :
 
-* New function `removeOutput()` Delete a simulation in an Antares study.
+* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study
 
 # antaresEditObject 0.6.1
 
