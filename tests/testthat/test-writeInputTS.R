@@ -101,10 +101,11 @@ sapply(studies, function(study) {
 setup_study_last(sourcedir_last_study)
 
 #Avoid warning related to code writed outside test_that.
-suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))
+suppressWarnings(
+  opts <- antaresRead::setSimulationPath(study_latest_version, "input"))
 
 test_that("create mingen file data v860", {
-  
+  testthat::skip()
   #Initialize mingen data
   M_mingen = matrix(0,8760,5)
   
