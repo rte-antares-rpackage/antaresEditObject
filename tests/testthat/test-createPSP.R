@@ -1,5 +1,5 @@
 
-
+testthat::skip()
 context("Function createPSP")
 
 

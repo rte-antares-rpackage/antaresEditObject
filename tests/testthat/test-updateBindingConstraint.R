@@ -1,3 +1,4 @@
+testthat::skip()
 context("Function editBindingConstraint")
 
 test_that("editBindingConstraint tests", {

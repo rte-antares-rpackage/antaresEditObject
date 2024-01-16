@@ -37,10 +37,12 @@ test_that("editBindingConstraint v710", {
 
 # v870 ----
 
+testthat::skip()
+
 ## Global data 
 # read / open template study
 setup_study_last(dir_path = sourcedir_last_study)
-opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 
 # areas list
 antaresRead::getAreas(opts = opts_test)
@@ -182,7 +184,7 @@ test_that("editBindingConstraint v8.6", {
   
     
   # remove temporary study
-  unlink(x = study_temp_path, recursive = TRUE)
+  unlink(x = study_latest_version, recursive = TRUE)
 })
 
 

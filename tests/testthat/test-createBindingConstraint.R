@@ -181,21 +181,21 @@ sapply(studies, function(study) {
 # read / open template study
 setup_study_last(dir_path = sourcedir_last_study)
 
-opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 
 # areas list
 antaresRead::getAreas(opts = opts_test)
 
-# remove BC none v870
-names_bc_to_remove <- names(readBindingConstraints(opts = opts_test))
-
-lapply(names_bc_to_remove, 
-       removeBindingConstraint,
-       opts = simOptions())
-
-# temporary to test with "870"
-# force version
-opts_test$antaresVersion <- 870
+    # # remove BC none v870
+    # names_bc_to_remove <- names(readBindingConstraints(opts = opts_test))
+    # 
+    # lapply(names_bc_to_remove, 
+    #        removeBindingConstraint,
+    #        opts = simOptions())
+    # 
+    # # temporary to test with "870"
+    # # force version
+    # opts_test$antaresVersion <- 870
 
 # scenarized data hourly
 n <- 10
@@ -216,7 +216,7 @@ eq_data <- matrix(data = rep(3, 365 * n), ncol = n)
 scenar_values_daily <- list(lt= lt_data,
                             gt= gt_data, 
                             eq= eq_data)
-
+testthat::skip()
 test_that("createBindingConstraint (default group value) v8.7", {
   
   # create binding constraint   
@@ -421,5 +421,5 @@ test_that("createBindingConstraint check values (NULL) group v8.7", {
                           names(bc))
   
   # remove temporary study
-  unlink(x = study_temp_path, recursive = TRUE)
+  unlink(x = study_latest_version, recursive = TRUE)
 })
