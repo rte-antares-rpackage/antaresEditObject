@@ -120,11 +120,12 @@ createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_
 #' @importFrom antaresRead api_delete
 #' @export
 deleteStudy <- function(opts = simOptions(), prompt_validation = FALSE, simulation = NULL){
-
+  
+  res <- NULL
   delete_simulation <- !is.null(simulation)
   is_api_study <- is_api_study(opts)
   
-  if(!file.exists(opts$studyPath)){ stop("Study not found.") }
+  if(!is_api_study && !file.exists(opts$studyPath)){ stop("Study not found.") }
   
   if(prompt_validation){
     if(delete_simulation){
@@ -139,7 +140,10 @@ deleteStudy <- function(opts = simOptions(), prompt_validation = FALSE, simulati
     }
     
     prompt_answer <- menu(c("Yes", "No"),title=prompt_question)
-    if (prompt_answer == 2){ return() }
+    if (prompt_answer == 2){ 
+      res <- opts
+      return(res)
+    }
   }
   
   if(is_api_study & delete_simulation){
@@ -160,7 +164,6 @@ deleteStudy <- function(opts = simOptions(), prompt_validation = FALSE, simulati
     unlink(path, recursive = TRUE) 
   } 
   
-  res <- NULL
   if(is_api_study(opts)){ res <- update_opts(opts) }
   
   cat(sprintf("\n%s successfully deleted", 
