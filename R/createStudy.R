@@ -112,32 +112,62 @@ createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_
   invisible(opts)
 }
 
-
-#' @title Delete a study
+#' @title Delete a study or a simulation
 #' 
 #' @param opts List. study options
 #' @param prompt_validation `logical` to put validation message to delete study (default `FALSE`)
-#'
+#' @param simulation simulation to be deleted (default `NULL`)
+#' @importFrom antaresRead api_delete
 #' @export
-deleteStudy <- function(opts = simOptions(), prompt_validation= FALSE){
+deleteStudy <- function(opts = simOptions(), prompt_validation = FALSE, simulation = NULL){
+
+  delete_simulation <- !is.null(simulation)
+  is_api_study <- is_api_study(opts)
+  
+  if(!file.exists(opts$studyPath)){ stop("Study not found.") }
+  
   if(prompt_validation){
-    prompt_question <- sprintf("Are you sure you want to delete the study : %s (%s)?", 
-                               ifelse(opts$typeLoad == "api", 
-                                      opts$study_id, 
-                                      opts$studyPath), 
-                               opts$studyName)
-    prompt_answer <- menu(c("Yes", "No"), 
-                          title=prompt_question)
-    if (prompt_answer == 2) 
-      return()
+    if(delete_simulation){
+      prompt_question <- sprintf("Are you sure you want to delete the simulation : %s ?", 
+                                 simulation)
+    } else {
+      prompt_question <- sprintf("Are you sure you want to delete the study : %s (%s)?", 
+                                 ifelse(opts$typeLoad == "api", 
+                                        opts$study_id, 
+                                        opts$studyPath), 
+                                 opts$studyName)
+    }
+    
+    prompt_answer <- menu(c("Yes", "No"),title=prompt_question)
+    if (prompt_answer == 2){ return() }
   }
-  if(opts$typeLoad == "api") 
-    api_delete(opts = opts, endpoint = opts$study_id) 
-  else{
-    if(file.exists(opts$studyPath)) 
-      unlink(opts$studyPath, recursive = TRUE) 
-    else 
-      stop("Study not found.")
+  
+  if(is_api_study & delete_simulation){
+    study_path <- gsub(pattern = "\\/raw\\?path=",replacement = "",x = opts$studyPath)
+    url <- I(file.path(study_path,"outputs",simulation))
+    api_delete(opts = opts, endpoint = url)
+    
+  } else if(is_api_study & !delete_simulation){
+    url <- opts$study_id
+    api_delete(opts = opts, endpoint = url)
+    
+  } else if(!is_api_study & delete_simulation){ 
+    path <- file.path(opts$studyPath,"output",simulation)
+    unlink(path, recursive = TRUE) 
+    
+  } else if(!is_api_study & !delete_simulation){ 
+    path <- opts$studyPath
+    unlink(path, recursive = TRUE) 
   } 
-  cat("\nStudy successfully deleted")
+  
+  res <- NULL
+  if(is_api_study(opts)){ res <- update_opts(opts) }
+  
+  cat(sprintf("\n%s successfully deleted", 
+              ifelse(delete_simulation, 
+                     "Simulation",
+                     "Study")))
+  
+  return(invisible(res))
 }
+

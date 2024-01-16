@@ -57,3 +57,14 @@ test_that("delete v8.1.0 study", {
 })
 
 
+test_that("delete v8.6.0 simulation", {
+  setup_study_860(sourcedir860)
+  suppressWarnings(
+    opts_test <- setSimulationPath(study_temp_path)
+  )
+  split_simPath <- strsplit(opts_test$simPath,"/")[[1]]
+  simulation <- split_simPath[length(split_simPath)]
+  opts_test <- deleteStudy(opts = opts_test,simulation = simulation)
+  testthat::expect_true(is.null(opts_test$simPath))
+})
+
