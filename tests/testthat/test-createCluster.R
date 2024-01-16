@@ -86,7 +86,7 @@ sapply(studies, function(study) {
 # v860 ----
 # global params for structure v8.6 
 setup_study_last(sourcedir_last_study)
-opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 
 test_that("Create cluster with pollutants params (new feature v8.6)",{
   

@@ -353,7 +353,7 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
 ## Global data 
 # read / open template study
 setup_study_last(dir_path = sourcedir_last_study)
-opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 
 # areas list
 antaresRead::getAreas(opts = opts_test)
@@ -383,5 +383,5 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   updateScenarioBuilder(ldata = sbuilder, series = "bc", opts = opts_test)
   
   # remove temporary study
-  unlink(x = study_temp_path, recursive = TRUE)
+  unlink(x = study_latest_version, recursive = TRUE)
 })

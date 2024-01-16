@@ -1,7 +1,7 @@
 
 # global params for structure v8.6 ----
 setup_study_last(sourcedir_last_study)
-opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 
 path_master <- file.path(opts_test$inputPath, "st-storage")
 
@@ -10,7 +10,7 @@ if (opts_test$antaresVersion >= 860){
     ## basics errors cases ----
     
     # default area with st cluster
-    area_test_clust = "al" 
+    area_test_clust = antaresRead::getAreas()[1] 
     
     # study parameters
     # version ? == is ST study compatibility
@@ -21,13 +21,14 @@ if (opts_test$antaresVersion >= 860){
                            regexp = "is not a valid area name")
     
     # bad dimension of data parameters
-    testthat::expect_error(createClusterST(area_test_clust, "cluster1", 
+    testthat::expect_error(createClusterST(area_test_clust, 
+                                           "cluster1", 
                                            PMAX_injection = matrix(1, 2, 2),
                                            opts = opts_test),
                            regexp = "Input data for")
     
     # cluster already exist
-    name_st_clust <-levels(readClusterSTDesc(opts = opts_test)$cluster)
+    name_st_clust <-levels(readClusterSTDesc(opts = opts_test)$cluster)[1]
     testthat::expect_error(createClusterST(area_test_clust, 
                                            name_st_clust, 
                                            add_prefix = FALSE,
