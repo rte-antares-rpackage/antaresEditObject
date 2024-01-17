@@ -15,6 +15,7 @@ Authors@R: c(
     person("Assil", "Mansouri", role = "ctb"),
     person("Abdallah", "Mahoudi", role = "ctb"),
     person("Clement", "Berthet", role = "ctb"),
+    person("Kamel", "Kemiha", role = "ctb"),
     person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.
