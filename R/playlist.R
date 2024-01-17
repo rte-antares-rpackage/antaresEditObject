@@ -151,6 +151,8 @@ setPlaylist <- function(playlist,
                         weights = NULL,
                         opts = antaresRead::simOptions()) {
   
+  api_study <- is_api_study(opts)
+  
   version_study <- substr(opts$antaresVersion, 1, 1)
   version_study <- as.numeric(version_study)
   
@@ -181,9 +183,11 @@ setPlaylist <- function(playlist,
   if (length(playlist) == length(mc_years)) {
     # update line to disable the playlist
     generaldata$general$`user-playlist` <- FALSE
-    # write updated file
-    writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
-    
+    if (api_study) {
+      # To minimize the number of queries, we reduce the list to the updated items
+      generaldata <- generaldata[which(names(generaldata) == "general")]
+      generaldata$general[which(names(generaldata$general) != "user-playlist")] <- NULL
+    }
   } else { # otherwise, set the playlist
     # update line to enable the playlist
     generaldata$general$`user-playlist` <- TRUE
@@ -193,7 +197,7 @@ setPlaylist <- function(playlist,
     
     # create new playlist (+ patch double to integer)
     new_playlist <- setNames(as.list(sort(as.integer(playlist - 1))), rep("playlist_year +", length(playlist)))
-    if (opts$typeLoad == "api"){
+    if (api_study){
       new_playlist$sep <- ", "
       new_playlist <- list("playlist_year +" = paste0("[", do.call(paste, new_playlist), "]"))
     }
@@ -215,11 +219,15 @@ setPlaylist <- function(playlist,
         ), rep("playlist_year_weight", length(weights)))
       )
     }
-    
+    if (api_study) {
+      # To minimize the number of queries, we reduce the list to the updated items
+      generaldata <- generaldata[which(names(generaldata) == "general")]
+      generaldata$general[which(names(generaldata$general) != "user-playlist")] <- NULL
+    }
     # add new playlist to the parameters description
     generaldata$playlist <- new_playlist
-    
-    # write updated file
-    writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
   }
+  
+  # write updated file
+  writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
 }
