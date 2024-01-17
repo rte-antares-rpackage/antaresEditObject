@@ -47,11 +47,13 @@ test_that("Check if setPlaylist() is disabled when playlist = mcYear and enabled
   
   # With custom playlist - user-playlist is enabled
   playlist_to_write <- sort(sample(mc_years, size = nbyears/2, replace = FALSE))
-  setPlaylist(playlist = playlist_to_write, opts = opts)
-  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  opts <- setPlaylist(playlist = playlist_to_write, opts = opts)
   playlist_in_file <- getPlaylist(opts = opts)
   
   expect_true(opts$parameters$general$`user-playlist`)
+  playlist_opts <- opts$parameters$playlist
+  playlist_opts <- playlist_opts[which(names(playlist_opts) == "playlist_year +")]
+  expect_true(all(unlist(playlist_opts) %in% (playlist_to_write - 1)))
   expect_equal(playlist_to_write, playlist_in_file)
   
   # No playlist if length(playlist) == length(mcYear) - user-playlist is disabled
