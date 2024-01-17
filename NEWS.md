@@ -1,3 +1,9 @@
+# antaresEditObject 0.6.2
+
+NEW FEATURES :
+
+* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study
+
 # antaresEditObject 0.6.1
 
 ### Breaking changes
