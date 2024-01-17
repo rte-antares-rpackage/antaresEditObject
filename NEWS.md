@@ -3,6 +3,7 @@
 ### Breaking changes
 
 * `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
+* `setPlaylist()` optimized for the API mode
 
 BUGFIXES : 
 
