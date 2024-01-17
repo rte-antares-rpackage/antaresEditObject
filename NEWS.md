@@ -4,12 +4,15 @@ NEW FEATURES :
 
 * Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study
 
-# antaresEditObject 0.6.1
-
 ### Breaking changes
 
-* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
 * `setPlaylist()` optimized for the API mode
+
+# antaresEditObject 0.6.1
+
+
+* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
+
 
 BUGFIXES : 
 
