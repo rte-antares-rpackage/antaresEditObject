@@ -230,4 +230,21 @@ setPlaylist <- function(playlist,
   
   # write updated file
   writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
+  
+  # Update simulation options object
+  if(api_study){
+    suppressWarnings(
+      res <- antaresRead::setSimulationPathAPI(host = opts$host,
+                                               study_id = opts$study_id, 
+                                               token = opts$token, 
+                                               simulation = "input")
+    )
+  }else{
+    suppressWarnings(
+      res <- antaresRead::setSimulationPath(path = opts$studyPath, 
+                                            simulation = "input")
+    )
+  }
+  
+  return(invisible(res))
 }
