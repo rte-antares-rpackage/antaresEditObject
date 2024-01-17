@@ -7,6 +7,7 @@ NEW FEATURES :
 ### Breaking changes
 
 * `setPlaylist()` optimized for the API mode
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()` 
 
 # antaresEditObject 0.6.1
 
