@@ -310,15 +310,17 @@ my_study <- file.path("", "", "")
 opts <- setSimulationPath(my_study, simulation ="input")
 
 # choose geographic trimming when creating new Antares areas
-initial_filtering_synthesis <- c("hourly")
-initial_filtering_year_by_year <- c("daily")
+# default filtering : c("hourly","daily","weekly","monthly","annual")
+initial_filtering_synthesis <- c("weekly","monthly")
+initial_filtering_year_by_year <- c("monthly","annual")
 
-opts <- createArea("area1",
+
+opts <- createArea(name = "area1",
                    filtering = filteringOptions(
                      filter_synthesis = initial_filtering_synthesis,
                      filter_year_by_year = initial_filtering_year_by_year),
                    opts = opts)
-opts <- createArea("area2",opts = opts)
+opts <- createArea(name = "area2",opts = opts)
 opts <- createLink(from = "area1", 
                    to = "area2", 
                    propertiesLink = propertiesLinkOptions(
@@ -332,19 +334,19 @@ print(initial_GT$areas[["area1"]])
 print(initial_GT$links[["area1 - area2"]])
 
 # edit geographic trimming of an existing area or link
-new_filtering_synthesis <- c("weekly")
-new_filtering_year_by_year <- c("monthly")
+new_filtering_synthesis <- c("monthly")
+new_filtering_year_by_year <- c("annual")
 
-editArea("area1", 
-         filtering = filteringOptions(
-           filter_synthesis = new_filtering_synthesis,
-           filter_year_by_year = new_filtering_year_by_year),
-         opts = opts)
-editLink(from = "area1",
-         to = "area2",
-         filter_year_by_year = new_filtering_year_by_year,
-         filter_synthesis = new_filtering_synthesis,
-         opts = opts) 
+opts <- editArea(name = "area1", 
+                 filtering = filteringOptions(
+                   filter_synthesis = new_filtering_synthesis,
+                   filter_year_by_year = new_filtering_year_by_year),
+                 opts = opts)
+opts <- editLink(from = "area1",
+                 to = "area2",
+                 filter_year_by_year = new_filtering_year_by_year,
+                 filter_synthesis = new_filtering_synthesis,
+                 opts = opts) 
 
 # check the new filters
 new_GT <- antaresRead::getGeographicTrimming(areas="area1",links=TRUE,opts=opts)
@@ -352,6 +354,6 @@ print(new_GT$areas[["area1"]])
 print(new_GT$links[["area1 - area2"]])
 
 # important : make sure that `geographic-trimming` parameter is activated in general settings
-opts <- updateGeneralSettings(geographic.trimming = TRUE)
+opts <- updateGeneralSettings(geographic.trimming = TRUE,opts = opts)
 ```
 

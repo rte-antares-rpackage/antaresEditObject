@@ -255,7 +255,7 @@ dicoGeneralSettings <- function(arg) {
       "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
       "nbtimeseriessolar", "refreshtimeseries", "intra-modal", "inter-modal", 
       "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-      "refreshintervalthermal", "refreshintervalsolar", "readonly","geographic-trimming")
+      "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic-trimming")
   )
   names(antares_params) <- c("mode", "horizon", "nbyears", "simulation.start", "simulation.end", 
                              "january.1st", "first.month.in.year", "first.weekday", "leapyear", 
@@ -264,7 +264,7 @@ dicoGeneralSettings <- function(arg) {
                              "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
                              "nbtimeseriessolar", "refreshtimeseries", "intra.modal", "inter.modal", 
                              "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-                             "refreshintervalthermal", "refreshintervalsolar", "readonly","geographic.trimming")
+                             "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic.trimming")
   antares_params[[arg]]
 }
 
