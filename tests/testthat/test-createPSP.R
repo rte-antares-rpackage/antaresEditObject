@@ -1,8 +1,7 @@
 
-testthat::skip()
 context("Function createPSP")
 
-
+# >=v710 ----
 sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
@@ -35,9 +34,9 @@ sapply(studies, function(study) {
     }
     
     expect_equal(efficiencyTest, 0.8)
-    expect_equal(binding$a_psp_weekly$operator, "equal")
-    expect_equal(binding$a_psp_weekly$timeStep, "weekly")
-    expect_equal(binding$a_psp_weekly$enabled, TRUE)
+    expect_equal(binding$a_psp_weekly$properties$operator, "equal")
+    expect_equal(binding$a_psp_weekly$properties$timeStep, "weekly")
+    expect_equal(binding$a_psp_weekly$properties$enabled, TRUE)
     
   })
   
@@ -84,9 +83,9 @@ sapply(studies, function(study) {
       efficiencyTest<-as.double(binding$b_psp_daily$coefs["b%psp_in_d"])
     }
     expect_equal(efficiencyTest, 0.66)
-    expect_equal(binding$b_psp_daily$operator, "equal")
-    expect_equal(binding$b_psp_daily$timeStep, "daily")
-    expect_equal(binding$b_psp_daily$enabled, TRUE)
+    expect_equal(binding$b_psp_daily$properties$operator, "equal")
+    expect_equal(binding$b_psp_daily$properties$timeStep, "daily")
+    expect_equal(binding$b_psp_daily$properties$enabled, TRUE)
     
   })
   
@@ -146,9 +145,9 @@ sapply(studies, function(study) {
     
     binding<-readBindingConstraints()
     expect_equal(as.double(binding$suisse_psp_daily$coefs["psp_in_d%suisse"]), 0.5)
-    expect_equal(binding$suisse_psp_daily$operator, "equal")
-    expect_equal(binding$suisse_psp_daily$timeStep, "daily")
-    expect_equal(binding$suisse_psp_daily$enabled, TRUE)
+    expect_equal(binding$suisse_psp_daily$properties$operator, "equal")
+    expect_equal(binding$suisse_psp_daily$properties$timeStep, "daily")
+    expect_equal(binding$suisse_psp_daily$properties$enabled, TRUE)
   })
   
   test_that("Get and set the PSP ", {
