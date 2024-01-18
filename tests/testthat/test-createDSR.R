@@ -1,5 +1,4 @@
 
-testthat::skip()
 context("Function createDSR")
 
 
@@ -30,9 +29,9 @@ sapply(studies, function(study) {
     bindingList<-antaresRead::readBindingConstraints(opts = optsRes)
     expect_true("a_dsr_3h" %in% names(bindingList))
     expect_true("b_dsr_7h" %in% names(bindingList))
-    expect_equal(bindingList$a_dsr_3h$enabled, TRUE)
-    expect_equal(bindingList$a_dsr_3h$timeStep, "daily")
-    expect_equal(bindingList$a_dsr_3h$operator, "less")
+    expect_equal(bindingList$a_dsr_3h$properties$enabled, TRUE)
+    expect_equal(bindingList$a_dsr_3h$properties$timeStep, "daily")
+    expect_equal(bindingList$a_dsr_3h$properties$operator, "less")
     expect_equal(as.double(bindingList$a_dsr_3h$coefs["a%a_dsr_3h"]), -1)
     expect_equal(as.double(bindingList$b_dsr_7h$coefs["b%b_dsr_7h"]), -1)
     
