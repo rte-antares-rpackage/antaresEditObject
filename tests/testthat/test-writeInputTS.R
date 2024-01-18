@@ -98,14 +98,96 @@ sapply(studies, function(study) {
 
 # v860 ----
 
-setup_study_last(sourcedir_last_study)
+## write mingen file ----
+  # write mingen file depend of dimension of mod.txt file
 
-#Avoid warning related to code writed outside test_that.
-suppressWarnings(
-  opts <- antaresRead::setSimulationPath(study_latest_version, "input"))
+test_that("create mingen file with one or empty column dimension of mod.txt file", {
+  # create study to have mod empty and mod with one column
+  createStudy(path = tempdir(), antares_version = "8.6.0")
+  area <- "zone51"
+  createArea(area)
+  
+  #Initialize mingen data
+  M_mingen = matrix(0,8760,5)
+  
+  # [management rules] for mingen data : 
+    # file mod.txt (in /series) have to be same column dimension 
+    # or column dimension of 1 or NULL (empty file)
+  
+  opts <- simOptions()
+  # check dimensions of mod.txt for every areas
+  path_file_mod <- file.path(opts$inputPath, "hydro", "series", 
+                             getAreas(), 
+                             "mod.txt")
+  
+  list_dim <- lapply(path_file_mod, function(x){
+    # read
+    file <- fread(file = x)
+    dim_file <- dim(file)[2]
+  })
+  
+  names(list_dim) <- getAreas()
+  
+  ## trivial case 
+  
+  # mod.txt column dimension == 0 (empty file)
+  area_0 <- getAreas()[list_dim==0][1]
+  
+  # write for an area with file mod.txt empty columns == 0
+  writeInputTS(area = area_0, 
+               type = "mingen", 
+               data = M_mingen , 
+               overwrite = TRUE, 
+               opts = opts)
+  
+  # use antaresRead to test
+  read_ts_file <- readInputTS(mingen = "all", opts = opts)
+  
+  # check your area
+  testthat::expect_true(area_0 %in% unique(read_ts_file$area))
+  
+  
+  # mod.txt column dimension == 1
+  
+  list_dim <- lapply(path_file_mod, function(x){
+    # read
+    file <- fread(file = x)
+    dim_file <- dim(file)[2]
+  })
+  
+  names(list_dim) <- getAreas()
+  
+  area_1 <- getAreas()[list_dim==1][1]
+  
+  # write for an area with file mod.txt NULL or nb columns == 1
+  writeInputTS(area = area_1, type = "mingen", 
+               data = M_mingen , overwrite = TRUE, opts = opts)
+  
+  # use antaresRead to test
+  read_ts_file <- readInputTS(mingen = "all", opts = opts)
+  
+  # tests correct reading data
+  # check col name "mingen"
+  testthat::expect_true("mingen" %in% names(read_ts_file))
+  # check your area
+  testthat::expect_true(area_1 %in% unique(read_ts_file$area))
+  # check dimension data for your area
+  testthat::expect_equal(dim(M_mingen)[2], max(read_ts_file[area %in% area_1, tsId]))
+  
+  
+  unlink(x = opts, recursive = TRUE)
+})
 
-test_that("create mingen file data v860", {
-  testthat::skip()
+
+test_that("create mingen file with multi dimension mod.txt file", {
+  
+  setup_study_last(sourcedir_last_study)
+  
+  #Avoid warning related to code writed outside test_that.
+  suppressWarnings(
+    opts <- antaresRead::setSimulationPath(study_latest_version, "input"))
+  
+  
   #Initialize mingen data
   M_mingen = matrix(0,8760,5)
   
@@ -127,49 +209,26 @@ test_that("create mingen file data v860", {
   
   names(list_dim) <- getAreas()
   
-  ## trivial case 
-    # mod.txt column dimension == 1
-  area_1 <- getAreas()[list_dim==1][1]
-  
-  # write for an area with file mod.txt NULL or nb columns == 1
-  writeInputTS(area = area_1, type = "mingen", 
-               data = M_mingen , overwrite = TRUE, opts = opts)
-  
-  # use antaresRead to test
-  read_ts_file <- readInputTS(mingen = "all", opts = opts)
-  
-  # tests correct reading data
-    # check col name "mingen"
-  testthat::expect_true("mingen" %in% names(read_ts_file))
-    # check your area
-  testthat::expect_true(area_1 %in% unique(read_ts_file$area))
-    # check dimension data for your area
-  testthat::expect_equal(dim(M_mingen)[2], max(read_ts_file[area %in% area_1, tsId]))
-  
-  
-    # mod.txt column dimension == 0 (empty file)
-  area_0 <- getAreas()[list_dim==0][1]
-  
-  # write for an area with file mod.txt empty columns == 0
-  writeInputTS(area = area_0, type = "mingen", 
-               data = M_mingen , overwrite = TRUE, opts = opts)
-  
-  # use antaresRead to test
-  read_ts_file <- readInputTS(mingen = "all", opts = opts)
-  
-  # check your area
-  testthat::expect_true(area_0 %in% unique(read_ts_file$area))
+  # PS : study v8.7.0 have only mod files with 5 columns dimension
   
   
   ## multi columns cas for mod.txt file
     # mod.txt column dimension >= 1 
   area_mult <- getAreas()[list_dim>1][1]
   
+  # rewrite with less columns
+  mod_data = matrix(60,365,4)
+  
+  writeInputTS(area = area_mult, 
+               type = "hydroSTOR", 
+               data = mod_data, 
+               overwrite = TRUE)
+  
   # write for an area with file mod.txt >1 columns
     # error case cause mod.txt dimension
   testthat::expect_error(writeInputTS(area = area_mult, type = "mingen", 
                data = M_mingen , overwrite = TRUE, opts = opts), 
-               regexp = 'mingen \'data\' must be either a 8760\\*1 or 8760\\*3 matrix.')
+               regexp = 'mingen \'data\' must be either a 8760\\*1 or 8760\\*4 matrix.')
   
   # you can write only mingen file with dimension 1 
   writeInputTS(area = area_mult, type = "mingen", 
@@ -191,12 +250,16 @@ test_that("create mingen file data v860", {
   ## display warning message with type= "hydroSTOR" (minor update function v860)
   
   # Wrong format of data, here it must be either 1 or 5 columns.
-  M_hydrostor <- matrix(c(rep(8, 365), rep(5.1, 365)), nrow = 365)
+  M_hydrostor <- matrix(c(rep(60, 365), rep(60, 365)), nrow = 365)
   
   # warning about the file format
-  expect_warning(writeInputTS(area = area_1, type = "hydroSTOR", data = M_hydrostor, opts = opts),
+  expect_warning(writeInputTS(area = getAreas()[2], 
+                              type = "hydroSTOR", 
+                              data = M_hydrostor, 
+                              opts = opts),
                  regexp = "mod 'data' must be")
   
+  unlink(x = opts$studyPath, recursive = TRUE)
 })
 
 
