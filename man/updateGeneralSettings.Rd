@@ -35,6 +35,7 @@ updateGeneralSettings(
   refreshintervalthermal = NULL,
   refreshintervalsolar = NULL,
   readonly = NULL,
+  geographic.trimming = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -101,6 +102,8 @@ Study_name/OUTPUT/simu_tag/Economy /mc-i-number}
 \item{refreshintervalsolar}{See Antares General Reference Guide.}
 
 \item{readonly}{See Antares General Reference Guide.}
+
+\item{geographic.trimming}{See Antares General Reference Guide.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}

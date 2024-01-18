@@ -38,6 +38,7 @@
 #' @param refreshintervalthermal See Antares General Reference Guide.
 #' @param refreshintervalsolar See Antares General Reference Guide.
 #' @param readonly See Antares General Reference Guide.
+#' @param geographic.trimming See Antares General Reference Guide.
 #' 
 #' @template opts
 #' 
@@ -88,6 +89,7 @@ updateGeneralSettings <- function(mode = NULL,
                                   refreshintervalthermal = NULL, 
                                   refreshintervalsolar = NULL, 
                                   readonly = NULL,
+                                  geographic.trimming = NULL,
                                   opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -132,7 +134,8 @@ updateGeneralSettings <- function(mode = NULL,
     refreshintervalwind = refreshintervalwind,
     refreshintervalthermal = refreshintervalthermal,
     refreshintervalsolar = refreshintervalsolar,
-    readonly = readonly
+    readonly = readonly,
+    geographic.trimming = geographic.trimming
   )
   new_params <- dropNulls(new_params)
   for (i in seq_along(new_params)) {
@@ -252,7 +255,7 @@ dicoGeneralSettings <- function(arg) {
       "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
       "nbtimeseriessolar", "refreshtimeseries", "intra-modal", "inter-modal", 
       "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-      "refreshintervalthermal", "refreshintervalsolar", "readonly")
+      "refreshintervalthermal", "refreshintervalsolar", "readonly","geographic-trimming")
   )
   names(antares_params) <- c("mode", "horizon", "nbyears", "simulation.start", "simulation.end", 
                              "january.1st", "first.month.in.year", "first.weekday", "leapyear", 
@@ -261,7 +264,7 @@ dicoGeneralSettings <- function(arg) {
                              "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
                              "nbtimeseriessolar", "refreshtimeseries", "intra.modal", "inter.modal", 
                              "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-                             "refreshintervalthermal", "refreshintervalsolar", "readonly")
+                             "refreshintervalthermal", "refreshintervalsolar", "readonly","geographic.trimming")
   antares_params[[arg]]
 }
 
