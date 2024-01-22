@@ -2,7 +2,8 @@
 
 NEW FEATURES :
 
-* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study
+* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
+* New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
 
 ### Breaking changes
 
