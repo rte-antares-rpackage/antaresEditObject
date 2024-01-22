@@ -38,8 +38,7 @@
 #' @param refreshintervalthermal See Antares General Reference Guide.
 #' @param refreshintervalsolar See Antares General Reference Guide.
 #' @param readonly See Antares General Reference Guide.
-#' @param geographic.trimming (TRUE/FALSE) indicates whether to store all variables defined in Output Files, for the geographic selection defined for Areas and Links
-#' 
+#' @param geographic.trimming \code{logical} indicates whether to store the results for all time spans (FALSE) or for custom time spans (TRUE)
 #' @template opts
 #' 
 #' @export
