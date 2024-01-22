@@ -103,7 +103,7 @@ Study_name/OUTPUT/simu_tag/Economy /mc-i-number}
 
 \item{readonly}{See Antares General Reference Guide.}
 
-\item{geographic.trimming}{See Antares General Reference Guide.}
+\item{geographic.trimming}{(TRUE/FALSE) indicates whether to store all variables defined in Output Files, for the geographic selection defined for Areas and Links}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
