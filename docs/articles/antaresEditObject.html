@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
       </span>
     </div>
 
@@ -110,7 +110,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span></code></pre></div>
 <p>You need to set the path to an Antares study in “input” mode:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"path/to/study"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"path/to/study"</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></code></pre></div>
 <p>Or you can simply create a new study:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/create-study.html">createStudy</a></span><span class="op">(</span><span class="st">"path/to/study"</span><span class="op">)</span></span></code></pre></div>
@@ -131,7 +131,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"myarea"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The new area should appear here:</span></span>
-<span><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>You can specify the localization of the area on the map, and also its color.</p>
 <p>There are two helper functions for area parameters:</p>
 <ul>
@@ -273,12 +273,12 @@
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Filepath of the study, version &gt;= 820</span></span>
 <span><span class="va">my_study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span><span class="op">)</span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">my_study</span>, simulation <span class="op">=</span><span class="st">"input"</span><span class="op">)</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">my_study</span>, simulation <span class="op">=</span><span class="st">"input"</span><span class="op">)</span></span>
 <span><span class="va">opts</span><span class="op">$</span><span class="va">timeIdMax</span> <span class="op">&lt;-</span> <span class="fl">8760</span></span>
 <span></span>
 <span><span class="co"># Links, use only one link</span></span>
-<span><span class="va">my_link</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getLinks.html" class="external-link">getLinks</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>linkCapacity <span class="op">=</span> <span class="va">my_link</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
+<span><span class="va">my_link</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getLinks.html" class="external-link">getLinks</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>linkCapacity <span class="op">=</span> <span class="va">my_link</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Sort the data to ensure its reliability</span></span>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span> </span>
@@ -302,7 +302,7 @@
 <span><span class="co"># Thermal, use only one area and one cluster</span></span>
 <span><span class="va">my_area</span> <span class="op">&lt;-</span> <span class="st">"zone"</span></span>
 <span><span class="va">my_cluster</span> <span class="op">&lt;-</span> <span class="st">"mon_cluster"</span></span>
-<span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>thermalAvailabilities <span class="op">=</span> <span class="va">my_area</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
+<span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>thermalAvailabilities <span class="op">=</span> <span class="va">my_area</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
 <span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="va">ts_input</span><span class="op">[</span><span class="va">cluster</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">my_area</span>,<span class="st">"_"</span>,<span class="va">my_cluster</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Sort the data to ensure its reliability</span></span>
@@ -326,7 +326,7 @@
 <span></span>
 <span><span class="co"># Run of River, use only one area</span></span>
 <span><span class="va">my_area</span> <span class="op">&lt;-</span> <span class="st">"zone"</span></span>
-<span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>ror <span class="op">=</span> <span class="va">my_area</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
+<span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>ror <span class="op">=</span> <span class="va">my_area</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Sort the data to ensure its reliability</span></span>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span></span>
@@ -346,6 +346,61 @@
 <span>            overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>            opts <span class="op">=</span> <span class="va">opts</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="edit-geographic-trimming">Edit geographic trimming<a class="anchor" aria-label="anchor" href="#edit-geographic-trimming"></a>
+</h2>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># set the path to an Antares study</span></span>
+<span><span class="va">my_study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span><span class="op">)</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">my_study</span>, simulation <span class="op">=</span><span class="st">"input"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># choose geographic trimming when creating new Antares areas</span></span>
+<span><span class="co"># default filtering : c("hourly","daily","weekly","monthly","annual")</span></span>
+<span><span class="va">initial_filtering_synthesis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weekly"</span>,<span class="st">"monthly"</span><span class="op">)</span></span>
+<span><span class="va">initial_filtering_year_by_year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monthly"</span>,<span class="st">"annual"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area1"</span>,</span>
+<span>                   filtering <span class="op">=</span> <span class="fu"><a href="../reference/filteringOptions.html">filteringOptions</a></span><span class="op">(</span></span>
+<span>                     filter_synthesis <span class="op">=</span> <span class="va">initial_filtering_synthesis</span>,</span>
+<span>                     filter_year_by_year <span class="op">=</span> <span class="va">initial_filtering_year_by_year</span><span class="op">)</span>,</span>
+<span>                   opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area2"</span>,opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area1"</span>, </span>
+<span>                   to <span class="op">=</span> <span class="st">"area2"</span>, </span>
+<span>                   propertiesLink <span class="op">=</span> <span class="fu"><a href="../reference/propertiesLinkOptions.html">propertiesLinkOptions</a></span><span class="op">(</span></span>
+<span>                     filter_synthesis <span class="op">=</span> <span class="va">initial_filtering_synthesis</span>,</span>
+<span>                     filter_year_by_year <span class="op">=</span> <span class="va">initial_filtering_year_by_year</span><span class="op">)</span>,</span>
+<span>                   opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># check the initial filters</span></span>
+<span><span class="va">initial_GT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getGeographicTrimming.html" class="external-link">getGeographicTrimming</a></span><span class="op">(</span>areas<span class="op">=</span><span class="st">"area1"</span>,links<span class="op">=</span><span class="cn">TRUE</span>,opts<span class="op">=</span><span class="va">opts</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">initial_GT</span><span class="op">$</span><span class="va">areas</span><span class="op">[[</span><span class="st">"area1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">initial_GT</span><span class="op">$</span><span class="va">links</span><span class="op">[[</span><span class="st">"area1 - area2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># edit geographic trimming of an existing area or link</span></span>
+<span><span class="va">new_filtering_synthesis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monthly"</span><span class="op">)</span></span>
+<span><span class="va">new_filtering_year_by_year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"annual"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/editArea.html">editArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area1"</span>, </span>
+<span>                 filtering <span class="op">=</span> <span class="fu"><a href="../reference/filteringOptions.html">filteringOptions</a></span><span class="op">(</span></span>
+<span>                   filter_synthesis <span class="op">=</span> <span class="va">new_filtering_synthesis</span>,</span>
+<span>                   filter_year_by_year <span class="op">=</span> <span class="va">new_filtering_year_by_year</span><span class="op">)</span>,</span>
+<span>                 opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/editLink.html">editLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area1"</span>,</span>
+<span>                 to <span class="op">=</span> <span class="st">"area2"</span>,</span>
+<span>                 filter_year_by_year <span class="op">=</span> <span class="va">new_filtering_year_by_year</span>,</span>
+<span>                 filter_synthesis <span class="op">=</span> <span class="va">new_filtering_synthesis</span>,</span>
+<span>                 opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co"># check the new filters</span></span>
+<span><span class="va">new_GT</span> <span class="op">&lt;-</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getGeographicTrimming.html" class="external-link">getGeographicTrimming</a></span><span class="op">(</span>areas<span class="op">=</span><span class="st">"area1"</span>,links<span class="op">=</span><span class="cn">TRUE</span>,opts<span class="op">=</span><span class="va">opts</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">new_GT</span><span class="op">$</span><span class="va">areas</span><span class="op">[[</span><span class="st">"area1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">new_GT</span><span class="op">$</span><span class="va">links</span><span class="op">[[</span><span class="st">"area1 - area2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># important : make sure that `geographic-trimming` parameter is activated in general settings</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/updateGeneralSettings.html">updateGeneralSettings</a></span><span class="op">(</span>geographic.trimming <span class="op">=</span> <span class="cn">TRUE</span>,opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
