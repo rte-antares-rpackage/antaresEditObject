@@ -18,7 +18,7 @@ Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulation
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@ Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulation
 <span>  <span class="va">type</span>,</span>
 <span>  <span class="va">data</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -97,16 +97,16 @@ Write waterValues, reservoirLevels, maxpower, inflowPattern and creditModulation
 
 
 <dt>data</dt>
-<dd><p>The data must have specific dimension depending on the type of file :</p><ul><li><p>waterValues: a 365x101 numeric matrix:
+<dd><p>The data must have specific dimension depending on the type of file :</p><ul><li><p><code>waterValues</code>: a 365x101 numeric matrix:
 marginal values for the stored energy based on date (365 days)
 and on the reservoir level (101 round percentage values ranging from
 0% to 100%). OR a 3-column matrix with 365x101 rows. In this latter case the 3 columns must
 be 'date', 'level' and 'value' (in this order), and the rows must be sorted by:
 ascending day, ascending level.</p></li>
-<li><p>reservoir: a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.</p></li>
-<li><p>maxpower: a 365x4 numeric matrix.</p></li>
-<li><p>inflowPattern: a 365x1 numeric matrix.</p></li>
-<li><p>creditmodulations: a 2x101 numeric matrix.</p></li>
+<li><p><code>reservoir</code>: a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.</p></li>
+<li><p><code>maxpower</code>: a 365x4 numeric matrix.</p></li>
+<li><p><code>inflowPattern</code>: a 365x1 numeric matrix.</p></li>
+<li><p><code>creditmodulations</code>: a 2x101 numeric matrix.</p></li>
 </ul></dd>
 
 
@@ -116,7 +116,7 @@ ascending day, ascending level.</p></li>
 
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
-<code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</p></dd>
+<code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</p></dd>
 
 </dl></div>
     <div id="warning">
