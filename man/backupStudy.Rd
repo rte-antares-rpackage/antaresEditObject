@@ -21,7 +21,7 @@ or \code{study} for the whole study.}
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}
 
-\item{extension}{Defaut is {.zip}.}
+\item{extension}{Defaut is \code{.zip}.}
 }
 \value{
 The path of the backup

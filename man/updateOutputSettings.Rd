@@ -40,7 +40,7 @@ Update output parameters of an Antares study
 updateOutputSettings(
   synthesis = TRUE,
   storenewset = FALSE,
-  archives = c("load", "wind")
+  archives = c("load", "wind"),
   result.format = "zip"
 )
 

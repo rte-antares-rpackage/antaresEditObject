@@ -18,7 +18,7 @@ For a given area, write its data in the hydro.ini file."><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
       </span>
     </div>
 
@@ -77,7 +77,7 @@ For a given area, write its data in the hydro.ini file."><!-- mathjax --><script
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeIniHydro</span><span class="op">(</span><span class="va">area</span>, <span class="va">params</span>, mode <span class="op">=</span> <span class="st">"other"</span>, opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writeIniHydro</span><span class="op">(</span><span class="va">area</span>, <span class="va">params</span>, mode <span class="op">=</span> <span class="st">"other"</span>, opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,21 +87,21 @@ For a given area, write its data in the hydro.ini file."><!-- mathjax --><script
 
 
 <dt>params</dt>
-<dd><p>The list data must have specific names and specific types :</p><ul><li><p>follow load : logical or NULL</p></li>
-<li><p>use heuristic : logical or NULL</p></li>
-<li><p>use water : logical or NULL</p></li>
-<li><p>hard bounds : logical or NULL</p></li>
-<li><p>use leeway : logical or NULL</p></li>
-<li><p>power to level : logical or NULL</p></li>
-<li><p>reservoir : logical or NULL</p></li>
-<li><p>inter-daily-breakdown : numeric, integer or NULL</p></li>
-<li><p>intra-daily-modulation : numeric, integer or NULL</p></li>
-<li><p>inter-monthly-breakdown : numeric, integer or NULL</p></li>
-<li><p>leeway low : numeric, integer or NULL</p></li>
-<li><p>leeway up : numeric, integer or NULL</p></li>
-<li><p>pumping efficiency : numeric, integer or NULL</p></li>
-<li><p>initialize reservoir date : numeric, integer or NULL</p></li>
-<li><p>reservoir capacity : numeric, integer or NULL</p></li>
+<dd><p>The list data must have specific names and specific types :</p><ul><li><p><code>follow load</code> : logical or NULL</p></li>
+<li><p><code>use heuristic</code> : logical or NULL</p></li>
+<li><p><code>use water</code> : logical or NULL</p></li>
+<li><p><code>hard bounds</code> : logical or NULL</p></li>
+<li><p><code>use leeway</code> : logical or NULL</p></li>
+<li><p><code>power to level</code> : logical or NULL</p></li>
+<li><p><code>reservoir</code> : logical or NULL</p></li>
+<li><p><code>inter-daily-breakdown</code> : numeric, integer or NULL</p></li>
+<li><p><code>intra-daily-modulation</code> : numeric, integer or NULL</p></li>
+<li><p><code>inter-monthly-breakdown</code> : numeric, integer or NULL</p></li>
+<li><p><code>leeway low</code> : numeric, integer or NULL</p></li>
+<li><p><code>leeway up</code> : numeric, integer or NULL</p></li>
+<li><p><code>pumping efficiency</code> : numeric, integer or NULL</p></li>
+<li><p><code>initialize reservoir date</code> : numeric, integer or NULL</p></li>
+<li><p><code>reservoir capacity</code> : numeric, integer or NULL</p></li>
 </ul></dd>
 
 
@@ -111,7 +111,7 @@ For a given area, write its data in the hydro.ini file."><!-- mathjax --><script
 
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
-<code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</p></dd>
+<code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</p></dd>
 
 </dl></div>
     <div id="warning">
@@ -126,7 +126,7 @@ For a given area, write its data in the hydro.ini file."><!-- mathjax --><script
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">studypath</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">studypath</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="createArea.html">createArea</a></span><span class="op">(</span><span class="st">"fictive_area"</span><span class="op">)</span> </span></span>
 <span class="r-in"><span><span class="fu">writeIniHydro</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fictive_area"</span></span></span>
 <span class="r-in"><span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"leeway low"</span> <span class="op">=</span> <span class="fl">2.5</span>, <span class="st">"leeway up"</span> <span class="op">=</span> <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></span>

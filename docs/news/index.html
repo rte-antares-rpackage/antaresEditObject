@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
       </span>
     </div>
 
@@ -70,6 +70,22 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.2" id="antareseditobject-062">antaresEditObject 0.6.2<a class="anchor" aria-label="anchor" href="#antareseditobject-062"></a></h2>
+<p>NEW FEATURES :</p>
+<ul><li>Complete function <code><a href="../reference/deleteStudy.html">deleteStudy()</a></code> with new parameter <code>simulation</code> to delete a simulation in an Antares study.</li>
+<li>New parameter <code>geographic.trimming</code> in <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>to activate or deactivate this general parameter.</li>
+</ul><div class="section level4">
+<h4 id="breaking-changes-0-6-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-2"></a></h4>
+<ul><li>
+<code><a href="../reference/playlist.html">setPlaylist()</a></code> optimized for the API mode<ul><li>returned an updated list of simulation parameters returned by the function <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath()</a></code> and <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPathAPI()</a></code>
+</li></ul></li></ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.1" id="antareseditobject-061">antaresEditObject 0.6.1<a class="anchor" aria-label="anchor" href="#antareseditobject-061"></a></h2>
+<ul><li>
+<code><a href="../reference/writeInputTS.html">writeInputTS()</a></code> allows the user to set a link with the separator ’ - ’ (ex: ‘area1 - area2’)</li></ul><p>BUGFIXES :</p>
+<ul><li>Error CRAN CHECKS (fix issue <a href="https://github.com/rte-antares-rpackage/antaresEditObject/issues/115" class="external-link">#115</a>)</li></ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.0" id="antareseditobject-060">antaresEditObject 0.6.0<a class="anchor" aria-label="anchor" href="#antareseditobject-060"></a></h2>
 <div class="section level4">
 <h4 id="breaking-changes-antares-v86-cf-antares-v86-changelog--0-6-0">Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :<a class="anchor" aria-label="anchor" href="#breaking-changes-antares-v86-cf-antares-v86-changelog--0-6-0"></a></h4>
@@ -91,9 +107,19 @@
 <li>Add and edit the property <code>enable-first-step</code> in <code>adequacy patch</code> section in <code>settings/generaldata.ini</code>
 </li>
 </ul><p>NEW FEATURES :</p>
-<ul><li>Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat</li>
-<li>Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file</li>
-<li>Call writeIniHydro() in createArea() and removeArea()</li>
+<ul><li>Add <code><a href="../reference/scenario-builder.html">deduplicateScenarioBuilder()</a></code> function to keep the last value if a key is duplicated in <code>settings/scenariobuilder.dat</code>
+</li>
+<li>Add <code><a href="../reference/writeIniHydro.html">writeIniHydro()</a></code> function to make easier the edition of the <code>input/hydro/hydro.ini</code> file</li>
+<li>Call <code><a href="../reference/writeIniHydro.html">writeIniHydro()</a></code> in <code><a href="../reference/createArea.html">createArea()</a></code> and <code><a href="../reference/removeArea.html">removeArea()</a></code>
+</li>
+<li>Enable edition of hydro levels in <code>settings/scenariobuilder.dat</code> by using <code><a href="../reference/scenario-builder.html">scenarioBuilder()</a></code> and <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>
+</li>
+<li>Add <code><a href="../reference/scenario-builder.html">deduplicateScenarioBuilder()</a></code> function to keep the last value if a key is duplicated in settings/scenariobuilder.dat</li>
+<li>Add <code><a href="../reference/writeIniHydro.html">writeIniHydro()</a></code> function to make easier the edition of the input/hydro/hydro.ini file</li>
+<li>Call <code><a href="../reference/writeIniHydro.html">writeIniHydro()</a></code> in <code><a href="../reference/createArea.html">createArea()</a></code> and <code><a href="../reference/removeArea.html">removeArea()</a></code>
+</li>
+<li>
+<code><a href="../reference/removeArea.html">removeArea()</a></code> removes only expected files in links directory</li>
 </ul></div>
 <div class="section level4">
 <h4 id="breaking-changes-0-6-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-0"></a></h4>
@@ -110,6 +136,8 @@
 <code><a href="../reference/removeLink.html">removeLink()</a></code> delete properly data for an Antares version &gt;= 820</li>
 <li>
 <code><a href="../reference/rollback_to_previous_data.html">rollback_to_previous_data()</a></code> enable to rollback if original value is NULL</li>
+<li>
+<code><a href="../reference/writeInputTS.html">writeInputTS()</a></code> allows the user to set a link with the separator ’ - ’ (ex: ‘area1 - area2’)</li>
 </ul><p>BUGFIXES :</p>
 <ul><li>
 <code>api_command_execute()</code> add timer to request api</li>
@@ -191,7 +219,7 @@
 <div class="section level4">
 <h4 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h4>
 <ul><li>
-<code><a href="../reference/create-study.html">createStudy()</a></code> no longer return <code>TRUE</code> / <code>FALSE</code>, but simulation options list returned by <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</li></ul></div>
+<code><a href="../reference/create-study.html">createStudy()</a></code> no longer return <code>TRUE</code> / <code>FALSE</code>, but simulation options list returned by <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</li></ul></div>
 <div class="section level4">
 <h4 id="renewable-energy-sources-0-3-0">Renewable Energy Sources<a class="anchor" aria-label="anchor" href="#renewable-energy-sources-0-3-0"></a></h4>
 <p>This release include some new features to interact with renewable energy sources (new in Antares v8.0.3):</p>

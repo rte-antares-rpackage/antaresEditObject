@@ -12,7 +12,7 @@
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
-#' @param extension Defaut is {.zip}.
+#' @param extension Defaut is \code{.zip}.
 #'
 #' @return The path of the backup
 #' @export

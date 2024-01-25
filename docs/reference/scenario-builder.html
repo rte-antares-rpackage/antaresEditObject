@@ -18,7 +18,7 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
       </span>
     </div>
 
@@ -82,13 +82,14 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
 <span>  n_mc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  areas <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  areas_rand <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  coef_hydro_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">readScenarioBuilder</span><span class="op">(</span></span>
 <span>  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,</span>
 <span>  as_matrix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">updateScenarioBuilder</span><span class="op">(</span></span>
@@ -97,17 +98,17 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
 <span>  series <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  clusters_areas <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  links <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">clearScenarioBuilder</span><span class="op">(</span></span>
 <span>  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">deduplicateScenarioBuilder</span><span class="op">(</span></span>
 <span>  ruleset <span class="op">=</span> <span class="st">"Default Ruleset"</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -129,9 +130,13 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
 <dd><p>Areas for which to use <code>"rand"</code>.</p></dd>
 
 
+<dt>coef_hydro_levels</dt>
+<dd><p>Hydro levels coefficients.</p></dd>
+
+
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
-<code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+<code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
 
 
 <dt>ruleset</dt>
@@ -145,7 +150,7 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
 <dt>ldata</dt>
 <dd><p>A <code>matrix</code> obtained with <code>scenarioBuilder</code>,
 or a named list of matrices obtained with <code>scenarioBuilder</code>, names must be
-'l', 'h', 'w', 's', 't', 'r' or 'ntc', depending on the series to update.</p></dd>
+'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.</p></dd>
 
 
 <dt>series</dt>
@@ -176,7 +181,8 @@ Default is to read existing links and update them all.</p></dd>
     </div>
     <div id="note">
     <h2>Note</h2>
-    <p><code>series = "ntc"</code> is only available with Antares &gt;= 8.2.0.</p>
+    <p><code>series = "ntc"</code> is only available with Antares &gt;= 8.2.0.
+<code>series = "hl"</code> each value must be between 0 and 1.</p>
     </div>
 
     <div id="ref-examples">
@@ -187,7 +193,7 @@ Default is to read existing links and update them all.</p></dd>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># simulation path</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  path <span class="op">=</span> <span class="st">"pat/to/simulation"</span>,</span></span>
 <span class="r-in"><span>  simulation <span class="op">=</span> <span class="st">"input"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -201,6 +207,21 @@ Default is to read existing links and update them all.</p></dd>
 <span class="r-in"><span><span class="va">sbuilder</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sbuilder</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a scenario builder matrix for hydro levels (use case 1)</span></span></span>
+<span class="r-in"><span><span class="va">sbuilder</span> <span class="op">&lt;-</span> <span class="fu">scenarioBuilder</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_mc <span class="op">=</span> <span class="va">opts</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">general</span><span class="op">$</span><span class="va">nbyears</span>,</span></span>
+<span class="r-in"><span>  areas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr"</span>, <span class="st">"be"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  coef_hydro_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a scenario builder matrix for hydro levels (use case 2)</span></span></span>
+<span class="r-in"><span><span class="va">sbuilder</span> <span class="op">&lt;-</span> <span class="fu">scenarioBuilder</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_mc <span class="op">=</span> <span class="va">opts</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">general</span><span class="op">$</span><span class="va">nbyears</span>,</span></span>
+<span class="r-in"><span>  areas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fr"</span>, <span class="st">"be"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  coef_hydro_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">opts</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">general</span><span class="op">$</span><span class="va">nbyears</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  , <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">opts</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">general</span><span class="op">$</span><span class="va">nbyears</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Read previous scenario builder</span></span></span>
 <span class="r-in"><span><span class="co"># in a matrix format</span></span></span>

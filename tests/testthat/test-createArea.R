@@ -22,6 +22,7 @@ sapply(studies, function(study) {
   
   
   test_that("Backup study/input", {
+    skip_on_cran() # issue 115
     backupStudy(what = "study", extension = ".zip")
     backupStudy(what = "input", extension = ".tar.gz")
     expect_true(file.exists(paste0(opts$studyPath, ".zip")))
