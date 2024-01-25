@@ -27,7 +27,8 @@ BugReports: https://github.com/rte-antares-rpackage/antaresEditObject/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
-Depends: antaresRead (>= 2.4.2)
+Depends: 
+    antaresRead (>= 2.4.2)
 Imports: 
     assertthat,
     cli,
@@ -51,3 +52,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Remotes:  
+    rte-antares-rpackage/antaresRead@release/v8.7.0
