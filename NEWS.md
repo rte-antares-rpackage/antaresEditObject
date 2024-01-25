@@ -7,6 +7,29 @@
   * Integration of the scenario of the coupling constraints of second member 
 
 
+# antaresEditObject 0.6.2
+
+NEW FEATURES :
+
+* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
+* New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
+
+### Breaking changes
+
+* `setPlaylist()` optimized for the API mode
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()` 
+
+# antaresEditObject 0.6.1
+
+
+* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
+
+
+BUGFIXES : 
+
+* Error CRAN CHECKS (fix issue #115)
+
+
 # antaresEditObject 0.6.0
 
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
@@ -33,10 +56,10 @@ NEW FEATURES :
 * Add `writeIniHydro()` function to make easier the edition of the `input/hydro/hydro.ini` file
 * Call `writeIniHydro()` in `createArea()` and `removeArea()`
 * Enable edition of hydro levels in `settings/scenariobuilder.dat` by using `scenarioBuilder()` and `updateScenarioBuilder()`
-* Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
-* Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
-* Call writeIniHydro() in createArea() and removeArea()
-* removeArea() removes only expected files in links directory
+* Add `deduplicateScenarioBuilder()` function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
+* Add `writeIniHydro()` function to make easier the edition of the input/hydro/hydro.ini file
+* Call `writeIniHydro()` in `createArea()` and `removeArea()`
+* `removeArea()` removes only expected files in links directory
 
 
 ### Breaking changes
@@ -47,6 +70,7 @@ NEW FEATURES :
 * `removeClusterRES()` in API mode
 * `removeLink()` delete properly data for an Antares version >= 820
 * `rollback_to_previous_data()` enable to rollback if original value is NULL
+* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
 
 BUGFIXES : 
 
