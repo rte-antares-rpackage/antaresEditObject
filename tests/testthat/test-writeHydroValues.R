@@ -6,7 +6,7 @@ context("Function writeHydroValues")
 setup_study_last(sourcedir_last_study)
 
 #Avoid warning related to code writed outside test_that.
-suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))
+suppressWarnings(opts <- antaresRead::setSimulationPath(study_latest_version, "input"))
 
 test_that("Write hydro values, 'waterValues' case", {
 
@@ -22,7 +22,7 @@ test_that("Write hydro values, 'waterValues' case", {
                    data = m_water ,
                    overwrite = FALSE)
 
-  values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity",
+  values_file <- file.path(study_latest_version, "input", "hydro", "common", "capacity",
                            paste0("waterValues_", tolower(area), ".txt"))
 
   expect_equal(antaresRead:::fread_antares(opts = opts,
@@ -105,7 +105,7 @@ test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations 
                      data = m_data ,
                      overwrite = TRUE)
 
-    values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity",
+    values_file <- file.path(study_latest_version, "input", "hydro", "common", "capacity",
                              paste0(file_type, "_", tolower(area), ".txt"))
 
     #Test that the created file respect the matrix.

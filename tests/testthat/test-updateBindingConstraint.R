@@ -21,8 +21,8 @@ test_that("editBindingConstraint tests", {
     editBindingConstraint("myconstraint", enabled = TRUE)
     bc2 <- antaresRead::readBindingConstraints()
     bc2 <- bc2[["myconstraint"]]
-    expect_true(bc2$enabled)
-    bc2$enabled <- FALSE
+    expect_true(bc2$properties$enabled)
+    bc2$properties$enabled <- FALSE
     bc$values <- data.frame(bc$values)
     bc2$values <- data.frame(bc2$values)
     expect_true(identical(bc, bc2))
@@ -42,7 +42,7 @@ test_that("editBindingConstraint tests", {
     ##Write values
     
     expect_true(sum(bc$myconstraint$values) == 0)
-    bc$myconstraint$timeStep
+    bc$myconstraint$properties$timeStep
     editBindingConstraint("myconstraint", values = matrix(data = rep(1, 8760 * 3), ncol = 3))
     bc <- antaresRead::readBindingConstraints()
     expect_true(sum(bc$myconstraint$values) > 0 )
