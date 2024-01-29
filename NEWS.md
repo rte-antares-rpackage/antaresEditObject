@@ -1,4 +1,4 @@
-# antaresRead 0.7.0
+# antaresRead 0.7.0 (devlopment)
 
 ### Breaking changes (Antares v8.7, cf. Antares v8.7 changelog) : 
 
