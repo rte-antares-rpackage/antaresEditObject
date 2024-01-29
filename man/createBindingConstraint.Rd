@@ -57,6 +57,7 @@ An updated list containing various information about the simulation.
 }
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Create a new binding constraint in an Antares study.
 \code{createBindingConstraintBulk()} allow to create multiple constraints at once.

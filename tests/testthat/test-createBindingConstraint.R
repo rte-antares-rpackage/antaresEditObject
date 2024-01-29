@@ -216,17 +216,21 @@ eq_data <- matrix(data = rep(3, 365 * n), ncol = n)
 scenar_values_daily <- list(lt= lt_data,
                             gt= gt_data, 
                             eq= eq_data)
-testthat::skip()
+
+## parameter group ----
+
+## parameter values ----
+
+## add default bc ----
 test_that("createBindingConstraint (default group value) v8.7", {
-  
-  # create binding constraint   
+  ### with no values ----
   createBindingConstraint(
     name = "myconstraint",
-    values = scenar_values,
+    values = NULL,
     enabled = FALSE,
     timeStep = "hourly",
     operator = "both",
-    coefficients = c("al%gr" = 1), 
+    coefficients = c("at%fr" = 1), 
     opts = opts_test
   )
   
@@ -234,15 +238,105 @@ test_that("createBindingConstraint (default group value) v8.7", {
   
   # tests
   testthat::expect_true("myconstraint" %in% 
+                          names(bc))
+  testthat::expect_equal(bc$myconstraint$properties$group, "default")
+  
+  ### with values ----
+  createBindingConstraint(
+    name = "myconstraint2",
+    values = scenar_values,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = c("at%fr" = 1), 
+    opts = opts_test
+  )
+  
+  bc <- readBindingConstraints(opts = opts_test)
+  
+  # tests
+  testthat::expect_true("myconstraint2" %in% 
                 names(bc))
+  testthat::expect_equal(bc$myconstraint2$properties$group, "default")
   
-  testthat::expect_equal(bc$myconstraint$group, "default group")
-  
+  ### error dim ----
+  # add BC with daily values (different columns dimension ERROR) 
+  testthat::expect_error(
+    createBindingConstraint(
+      name = "myconstraint_daily",
+      values = scenar_values_daily,
+      enabled = FALSE,
+      timeStep = "daily",
+      operator = "both",
+      coefficients = c("at%fr" = 1), 
+      opts = opts_test
+    ), regexp = "Put right columns dimension"
+  )
   
 })
 
+## existing named group ----
+  # study provide BC with group "group_test"
+test_that("createBindingConstraint with existing group v8.7", {
+  testthat::skip()
+  
+  # read to have dimension
+  bc <- readBindingConstraints()
+  
+  # dimension according BC/group
+  dim_bc <- lapply(bc, function(x){
+    if(x$properties$operator %in% "both")
+      list(group = x$properties$group,
+           dim_values = dim(x$values$less)[2])
+    else
+      list(group = x$properties$group,
+         dim_values = dim(x$values)[2])
+  })
+  
+  existing_name_group <- dim_bc$bc_1$group
+  dim_existing_group <- dim_bc$bc_1$dim_values
+  
+  # ADD binding constraint with bad dimension
+  testthat::expect_error(
+    createBindingConstraint(
+      name = "myconstraint_group1",
+      values = scenar_values_daily,
+      enabled = FALSE,
+      timeStep = "daily",
+      operator = "both", 
+      group = existing_name_group,
+      coefficients = c("at%fr" = 1), 
+      opts = opts_test
+    ), regexp = "Put right columns dimension"
+  )
+  
+  # put right dimension
+  data_ok <- list(lt=NULL,
+                  gt=NULL,
+                  eq=NULL)
+  data_ok$lt <- scenar_values_daily$lt[,1:dim_existing_group]
+  data_ok$gt <- scenar_values_daily$gt[,1:dim_existing_group]
+  
+  # ADD binding constraint with bad dimension
+  createBindingConstraint(
+    name = "bc_existing_group",
+    values = data_ok,
+    enabled = FALSE,
+    timeStep = "daily",
+    operator = "both", 
+    group = existing_name_group,
+    coefficients = c("at%fr" = 1), 
+    opts = opts_test
+  )
+  
 
+ 
+})
+
+
+## bulk ----
 test_that("createBindingConstraintBulk v8.7", {
+  testthat::skip()
   # Prepare data for constraints 
   bindings_constraints <- lapply(
     X = seq_len(10),
@@ -274,152 +368,5 @@ test_that("createBindingConstraintBulk v8.7", {
 })
 
 
-test_that("createBindingConstraint check group values v8.7", {
-  
-  # create binding constraint (default group value)  
-  createBindingConstraint(
-    name = "myconstraint_group",
-    values = scenar_values,
-    enabled = FALSE,
-    timeStep = "hourly",
-    operator = "both",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_test
-  )
-  
-  # ADD binding constraint still (default group value)  
-  createBindingConstraint(
-    name = "myconstraint_group_bis",
-    values = scenar_values,
-    enabled = FALSE,
-    timeStep = "hourly",
-    operator = "both",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_test
-  )
-  
-  # ADD binding constraint with named group
-  createBindingConstraint(
-    name = "myconstraint_group1",
-    values = scenar_values_daily,
-    enabled = FALSE,
-    timeStep = "daily",
-    operator = "both", 
-    group = "group_test",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_test
-  )
-  
-  # tests
-  testthat::expect_true(
-    all(
-      c("myconstraint_group", "myconstraint_group_bis", "myconstraint_group1") %in% 
-                          names(readBindingConstraints(opts = opts_test))
-    )
-    )
-  
-  # create binding constraint with bad values of existing group (default group) [ERROR] 
-  testthat::expect_error(
-    createBindingConstraint(
-      name = "myconstraint_group_err",
-      values = scenar_values_daily,
-      enabled = FALSE,
-      timeStep = "daily",
-      operator = "both",
-      coefficients = c("al%gr" = 1), 
-      opts = opts_test
-    )
-  )
-  
-  # create binding constraint with bad values (NULL) of existing group (default group) [ERROR] 
-  testthat::expect_error(
-    createBindingConstraint(
-      name = "myconstraint_group_err",
-      values = NULL,
-      enabled = FALSE,
-      timeStep = "daily",
-      operator = "both",
-      coefficients = c("al%gr" = 1), 
-      opts = opts_test
-    )
-  )
-  
-  # create binding constraint with bad values of existing group [ERROR] 
-  testthat::expect_error(
-    createBindingConstraint(
-      name = "myconstraint_group2",
-      values = scenar_values,
-      enabled = FALSE,
-      timeStep = "hourly",
-      operator = "both", 
-      group = "group_test",
-      coefficients = c("al%gr" = 1), 
-      opts = opts_test)
-  )
-  
-  # ADD binding constraint with existing group
-  createBindingConstraint(
-    name = "myconstraint_group2",
-    values = scenar_values_daily,
-    enabled = FALSE,
-    timeStep = "daily",
-    operator = "both", 
-    group = "group_test",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_test)
-  
-  bc <- readBindingConstraints(opts = opts_test)
-  
-  testthat::expect_true("myconstraint_group2" %in% 
-                          names(readBindingConstraints(opts = opts_test)))
-  
-  testthat::expect_equal(bc[["myconstraint_group2"]]$group, "group_test")
- 
-})
-
-
-test_that("createBindingConstraint check values (NULL) group v8.7", {
-  # create binding constraint (NULL value)  
-  createBindingConstraint(
-    name = "myconstraint_group_NULL",
-    values = NULL,
-    enabled = FALSE,
-    operator = "both", 
-    group = "null_values",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_test
-  )
-  
-  bc <- readBindingConstraints(opts = opts_test)
-  
-  # check name
-  testthat::expect_true("myconstraint_group_NULL" %in% 
-                          names(bc))
-  
-  # check dim
-  dim_values <- unlist(lapply(bc$myconstraint_group_NULL$values, 
-         function(x) dim(x)[2]))
-  
-  testthat::expect_equal(sum(dim_values), 0)
-  
-  # ADD binding constraint (existing group with NULL value) 
-  createBindingConstraint(
-    name = "myconstraint_group_3",
-    values = NULL,
-    enabled = FALSE,
-    operator = "both", 
-    timeStep = "hourly",
-    group = "null_values",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_test
-  )
-    
-  bc <- readBindingConstraints(opts = opts_test)
-  
-  # check name
-  testthat::expect_true("myconstraint_group_3" %in% 
-                          names(bc))
-  
-  # remove temporary study
-  unlink(x = study_latest_version, recursive = TRUE)
-})
+# remove temporary study ----
+unlink(x = study_latest_version, recursive = TRUE)

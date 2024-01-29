@@ -1,7 +1,8 @@
 #' @title Create a binding constraint
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`  
+#' `r lifecycle::badge("experimental")` 
 #' 
 #' Create a new binding constraint in an Antares study.
 #' `createBindingConstraintBulk()` allow to create multiple constraints at once.
@@ -122,19 +123,25 @@ createBindingConstraint <- function(name,
   # v870
   if(opts$antaresVersion>=870){
     if(is.null(group))
-      group <- "default group"
+      group <- "default"
     
     if(!is.null(values)){
       assertthat::assert_that(inherits(values, "list"))
-      if(!all(names(values)%in%c("lt", "gt", "eq")))
+      if(!all(c("lt", "gt", "eq")%in%names(values)))
         stop("Put for 'values' argument, named 'list' => see Doc `?createBindingConstraint`")
+      
+      # v870 : check group and values
+      # no check for add BC with NULL values
+      group_values_check(group_value = group, 
+                         values_data = values,
+                         operator_check = operator,
+                         opts = opts)
     }
-    
-    # v870 : check group and values
-    group_values_check(group_value = group, 
-                       values_data = values,
-                       opts = opts)
   }
+  
+  ##
+  # build properties + write values
+  ##
   
   bindingConstraints <- createBindingConstraint_(
     bindingConstraints,
@@ -292,37 +299,108 @@ createBindingConstraint_ <- function(bindingConstraints,
 #' @description Only needed for study version >= 870
 #' @param group_value `character` name of group
 #' @param values_data `list` values used by the constraint
+#' @param operator_check `character` parameter "operator"
+#' @return NULL if it's new group to add or error exceptions with dimension control
 #' @template opts
 #' @export
 #' @keywords internal
 group_values_check <- function(group_value, 
                                values_data,
+                               operator_check,
                                opts = antaresRead::simOptions()){
-
+  ##
+  # check "values" according to "operator"
+  ##
+  values_operator <- switch(operator_check,
+                  less = "lt",
+                  equal = "eq",
+                  greater = "gt",
+                  both = c("lt", "gt"))
+  
+  if(!all(values_operator %in% names(values_data)))
+    stop(paste(
+      "you must provide a list named according your parameter 'operator'  : ",
+      "'",
+      operator_check, 
+      "'",
+      " with "), 
+      paste(values_operator, collapse = " "),
+      call. = FALSE)
+  
   # read existing binding constraint
+    # /!\/!\ function return "default values" (vector of 0)
   existing_bc <- readBindingConstraints(opts = opts)
   
   # study with no BC or virgin study
   if(is.null(existing_bc))
     return()
   
-  # check existing group Versus new group to create
-  existing_groups <- unlist(lapply(existing_bc, `[[`, "group"))
-  search_group <- grep(pattern = group_value, x = existing_groups)
-  index_group <- search_group[length(search_group)]
+  ##
+  # group creation
+  ##
+  
+  # check existing group Versus new group 
+  existing_groups <- unlist(
+    lapply(existing_bc, 
+           function(x){
+             x[["properties"]][["group"]]})
+    )
+  search_group_index <- grep(pattern = group_value, 
+                             x = existing_groups)
+  
+  # new group ? 
+  new_group <- identical(search_group_index, 
+                         integer(0))
+  if(new_group)
+    message("New group ", "'", group_value, "'", " will be created")
   
   # check dimension values existing group Versus new group 
-  if( !identical(index_group, integer(0)) ){
-   p_col <- dim(existing_bc[[index_group]]$values[[1]])[2]
-   p_col_new <- dim(values_data[[1]])[2]
-   
-   if(is.null(p_col_new))
-     p_col_new <- 0
+  if(!new_group){
+    # check dimension of existing group
+    p_col <- sapply(existing_bc[search_group_index], 
+                    function(x){
+                      op <- x[["properties"]][["operator"]]
+                      if(!op %in%"both")
+                        dim(x[["values"]])[2]
+                      else{
+                        lt_dim <- dim(x[["values"]][["less"]])[2]
+                        gt_dim <- dim(x[["values"]][["greater"]])[2]
+                        if(lt_dim!=gt_dim)
+                          stop("dimension of values are not similar for constraint : ", 
+                               x$properties$id, call. = FALSE)
+                        lt_dim
+                      }
+                      })
+    
+    # keep dimension >1 
+    names(p_col) <- NULL
+    if(identical(p_col[p_col>1], 
+                 integer(0))){
+      message("actual dimension of group : ", group_value, " is NULL or 1")
+      return(NULL) # continue process to write data
+    }else
+      p_col <- unique(p_col[p_col>1])
+    message("actual dimension of group : ", group_value, " is ", p_col)
+ 
+    # check dimension of new group
+    if(operator_check%in%"both"){
+      lt_dim <- dim(values_data$lt)[2]
+      gt_dim <- dim(values_data$gt)[2]
+      if(lt_dim!=gt_dim)
+        stop("dimension of values are not similar ",
+             call. = FALSE)
+      p_col_new <- lt_dim
+    }else
+      p_col_new <- dim(values_data[[values_operator]])[2]
+    
+    # # no values provided
+    # if(is.null(p_col_new))
+    #  p_col_new <- 0
    
    if(p_col!=p_col_new) # & p_col!=0
      stop(paste0("Put right columns dimension : ", 
                  p_col, " for existing 'group' : ", 
-                 group_value))
+                 group_value), call. = FALSE)
   }
 }
 
@@ -446,6 +524,25 @@ createBindingConstraintBulk <- function(constraints,
 
 
 
+constructor_binding_values <- function(lt = NULL, gt = NULL, eq = NULL){
+  # # check args
+  # args <- sapply(match.call()[-1], 
+  #                FUN = is.null)
+  # 
+  # if(!any(args)){
+  #   args <- sapply(match.call()[-1], 
+  #                  FUN = is.numeric)
+  #   
+  #   values <- sapply(match.call()[-1], 
+  #                    FUN = as.data.frame)
+  # }
+    
+  list(lt = lt,
+       gt = gt, 
+       eq = eq)
+  
+  
+}
 
 
 
