@@ -8,6 +8,7 @@ group_values_check(
   group_value,
   values_data,
   operator_check,
+  output_operator,
   opts = antaresRead::simOptions()
 )
 }
@@ -17,6 +18,8 @@ group_values_check(
 \item{values_data}{\code{list} values used by the constraint}
 
 \item{operator_check}{\code{character} parameter "operator"}
+
+\item{output_operator}{\code{character} for}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
