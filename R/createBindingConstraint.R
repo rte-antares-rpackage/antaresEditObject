@@ -1,7 +1,8 @@
 #' @title Create a binding constraint
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_ok()`
+#' `r antaresEditObject:::badge_api_ok()`  
+#' `r lifecycle::badge("experimental")` 
 #' 
 #' Create a new binding constraint in an Antares study.
 #' `createBindingConstraintBulk()` allow to create multiple constraints at once.
@@ -31,7 +32,8 @@
 #' **< v8.7.0** : For each constraint name, a .txt file containing 3 time series `"less", "greater", "equal"`
 #' 
 #' **>= v8.7.0** : For each constraint name, one file .txt containing `<id>_lt.txt, <id>_gt.txt, <id>_eq.txt`  
-#' Parameter `values` must be named `list` ("lt", "gt", "eq") containing `data.frame` scenarized
+#' Parameter `values` must be named `list` ("lt", "gt", "eq") containing `data.frame` scenarized.  
+#' see example section below.
 #' 
 #' @export
 #' 
@@ -42,6 +44,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' # < v8.7.0 :
 #' createBindingConstraint(
 #'   name = "myconstraint", 
 #'   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
@@ -73,6 +76,53 @@
 #' )
 #' # create all constraints
 #' createBindingConstraintBulk(bindings_constraints)
+#' 
+#' # >= v8.7.0 :
+#' 
+#' # values are now named list containing `data.frame` according to   
+#'  # `operator` parameter (for "less", build a list with at least "lt" floor in list)
+#'  
+#' # data values (daily)
+#' df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
+#' values_data <- list(lt=df)
+#'  
+#' # create bc with minimum value
+#' createBindingConstraint(name = "bc_example", 
+#'                         operator = "less", 
+#'                         values = values_data, 
+#'                         overwrite = TRUE)
+#'                         
+#' # or you can provide list data with all value
+#' values_data <- list(lt=df, 
+#'                    gt= df, 
+#'                    eq= df)   
+#'                    
+#' createBindingConstraint(name = "bc_example", 
+#'                         operator = "less", 
+#'                         values = values_data, 
+#'                         overwrite = TRUE)      
+#'                         
+#' # create multiple constraints
+#' bindings_constraints <- lapply(
+#'   X = seq_len(10),
+#'   FUN = function(i) {
+#'     # use arguments of createBindingConstraint()
+#'     # all arguments must be provided !
+#'     list(
+#'       name = paste0("constraints_bulk", i), 
+#'       id = paste0("constraints_bulk", i), 
+#'       values = values_data, 
+#'       enabled = FALSE, 
+#'       timeStep = "hourly",
+#'       operator = "both",
+#'       coefficients = c("at%fr" = 1),
+#'       group= "group_bulk",
+#'      overwrite = TRUE
+#'    )
+#'   }
+#' )
+#'  
+#' createBindingConstraintBulk(bindings_constraints)  
 #' }
 createBindingConstraint <- function(name, 
                                     id = tolower(name),
@@ -122,19 +172,44 @@ createBindingConstraint <- function(name,
   # v870
   if(opts$antaresVersion>=870){
     if(is.null(group))
-      group <- "default group"
+      group <- "default"
+    
+    values_operator <- switch(operator,
+                              less = "lt",
+                              equal = "eq",
+                              greater = "gt",
+                              both = c("lt", "gt"))
     
     if(!is.null(values)){
       assertthat::assert_that(inherits(values, "list"))
-      if(!all(names(values)%in%c("lt", "gt", "eq")))
-        stop("Put for 'values' argument, named 'list' => see Doc `?createBindingConstraint`")
+      # if(!all(c("lt", "gt", "eq")%in%names(values)))
+      #   stop("Put for 'values' argument, 
+      #        named 'list' => see Doc `?createBindingConstraint`")
+      
+      ##
+      # check "values" according to "operator"
+      ##
+      if(!all(values_operator %in% names(values)))
+        stop(paste0(
+          "you must provide a list named according your parameter 'operator'  : ",
+          "'", operator, "'",
+          " with "), 
+          paste0("'", values_operator, "'", collapse = " "),
+          call. = FALSE)
+      
+      # v870 : check group and values
+        # no check for add BC with NULL values
+      group_values_check(group_value = group, 
+                         values_data = values,
+                         operator_check = operator,
+                         output_operator = values_operator,
+                         opts = opts)
     }
-    
-    # v870 : check group and values
-    group_values_check(group_value = group, 
-                       values_data = values,
-                       opts = opts)
   }
+  
+  ##
+  # build properties + write values
+  ##
   
   bindingConstraints <- createBindingConstraint_(
     bindingConstraints,
@@ -150,6 +225,7 @@ createBindingConstraint <- function(name,
     group,
     overwrite,
     links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
+    output_operator = values_operator,
     opts = opts
   )
   
@@ -179,6 +255,7 @@ createBindingConstraint_ <- function(bindingConstraints,
                                      group,
                                      overwrite,
                                      links,
+                                     output_operator = NULL,
                                      opts) {
   
   # Get ids and check if not already exist
@@ -238,11 +315,15 @@ createBindingConstraint_ <- function(bindingConstraints,
       }
     }
   }
-  
+ 
+  # check when overwrite element in list 
+    # names of bindingConstraints are provided by R automatically
   indexBC <- as.character(length(bindingConstraints))
   if (indexBC %in% names(bindingConstraints)) {
     indexBC <- as.character(max(as.numeric(names(bindingConstraints))) + 1)
   }
+  
+  # add new bc to write then in .ini file
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
   ## Values
@@ -254,8 +335,8 @@ createBindingConstraint_ <- function(bindingConstraints,
   # Write values
   # v870
   if(opts$antaresVersion>=870){
-    names_order_ts <- c("lt", "gt", "eq")
-    name_file <- paste0(id, "_", names_order_ts, ".txt")
+    # names_order_ts <- c("lt", "gt", "eq")
+    name_file <- paste0(id, "_", output_operator, ".txt")
     
     up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
     
@@ -292,37 +373,102 @@ createBindingConstraint_ <- function(bindingConstraints,
 #' @description Only needed for study version >= 870
 #' @param group_value `character` name of group
 #' @param values_data `list` values used by the constraint
+#' @param operator_check `character` parameter "operator"
+#' @param output_operator `character` for 
+#' @return NULL if it's new group to add or error exceptions with dimension control
 #' @template opts
-#' @export
+#' @export 
 #' @keywords internal
 group_values_check <- function(group_value, 
                                values_data,
+                               operator_check,
+                               output_operator,
                                opts = antaresRead::simOptions()){
-
+  
+  # no check if col dim ==1
+  if(operator_check%in%"both"){
+    if(dim(values_data$lt)[2] <= 1)
+      return()
+  }else{
+    if(dim(values_data[[output_operator]])[2] <= 1)
+      return()
+  }
+    
+  
   # read existing binding constraint
+    # /!\/!\ function return "default values" (vector of 0)
   existing_bc <- readBindingConstraints(opts = opts)
   
   # study with no BC or virgin study
   if(is.null(existing_bc))
     return()
   
-  # check existing group Versus new group to create
-  existing_groups <- unlist(lapply(existing_bc, `[[`, "group"))
-  search_group <- grep(pattern = group_value, x = existing_groups)
-  index_group <- search_group[length(search_group)]
+  ##
+  # group creation
+  ##
+  
+  # check existing group Versus new group 
+  existing_groups <- unlist(
+    lapply(existing_bc, 
+           function(x){
+             x[["properties"]][["group"]]})
+    )
+  search_group_index <- grep(pattern = group_value, 
+                             x = existing_groups)
+  
+  # new group ? 
+  new_group <- identical(search_group_index, 
+                         integer(0))
+  if(new_group)
+    message("New group ", "'", group_value, "'", " will be created")
   
   # check dimension values existing group Versus new group 
-  if( !identical(index_group, integer(0)) ){
-   p_col <- dim(existing_bc[[index_group]]$values[[1]])[2]
-   p_col_new <- dim(values_data[[1]])[2]
-   
-   if(is.null(p_col_new))
-     p_col_new <- 0
+  if(!new_group){
+    # check dimension of existing group
+    p_col <- sapply(existing_bc[search_group_index], 
+                    function(x){
+                      op <- x[["properties"]][["operator"]]
+                      if(!op %in%"both")
+                        dim(x[["values"]])[2]
+                      else{
+                        lt_dim <- dim(x[["values"]][["less"]])[2]
+                        gt_dim <- dim(x[["values"]][["greater"]])[2]
+                        if(lt_dim!=gt_dim)
+                          stop("dimension of values are not similar for constraint : ", 
+                               x$properties$id, call. = FALSE)
+                        lt_dim
+                      }
+                      })
+    
+    # keep dimension >1 
+    names(p_col) <- NULL
+    if(identical(p_col[p_col>1], 
+                 integer(0))){
+      message("actual dimension of group : ", group_value, " is NULL or 1")
+      return(NULL) # continue process to write data
+    }else
+      p_col <- unique(p_col[p_col>1])
+    message("actual dimension of group : ", group_value, " is ", p_col)
+ 
+    # check dimension of new group
+    if(operator_check%in%"both"){
+      lt_dim <- dim(values_data$lt)[2]
+      gt_dim <- dim(values_data$gt)[2]
+      if(lt_dim!=gt_dim)
+        stop("dimension of values are not similar ",
+             call. = FALSE)
+      p_col_new <- lt_dim
+    }else
+      p_col_new <- dim(values_data[[output_operator]])[2]
+    
+    # # no values provided
+    # if(is.null(p_col_new))
+    #  p_col_new <- 0
    
    if(p_col!=p_col_new) # & p_col!=0
      stop(paste0("Put right columns dimension : ", 
                  p_col, " for existing 'group' : ", 
-                 group_value))
+                 group_value), call. = FALSE)
   }
 }
 
@@ -412,7 +558,7 @@ group_values_check <- function(group_value,
 }
 
 
-
+#' `r lifecycle::badge("experimental")` 
 #' @param constraints A `list` of several named `list` containing data to create binding constraints.
 #'  **Warning** all arguments for creating a binding constraints must be provided, see examples.
 #' @export
@@ -425,13 +571,22 @@ createBindingConstraintBulk <- function(constraints,
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
+  
+  
   for (i in seq_along(constraints)) {
+    values_operator <- switch(constraints[[i]]$operator,
+                              less = "lt",
+                              equal = "eq",
+                              greater = "gt",
+                              both = c("lt", "gt"))
+    
     bindingConstraints <- do.call("createBindingConstraint_", c(
       constraints[[i]],
       list(
         opts = opts, 
         bindingConstraints = bindingConstraints,
-        links = antaresRead::getLinks(opts = opts, namesOnly = TRUE)
+        links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
+        output_operator = values_operator
       )
     ))
   }
@@ -446,6 +601,25 @@ createBindingConstraintBulk <- function(constraints,
 
 
 
+constructor_binding_values <- function(lt = NULL, gt = NULL, eq = NULL){
+  # # check args
+  # args <- sapply(match.call()[-1], 
+  #                FUN = is.null)
+  # 
+  # if(!any(args)){
+  #   args <- sapply(match.call()[-1], 
+  #                  FUN = is.numeric)
+  #   
+  #   values <- sapply(match.call()[-1], 
+  #                    FUN = as.data.frame)
+  # }
+    
+  list(lt = lt,
+       gt = gt, 
+       eq = eq)
+  
+  
+}
 
 
 

@@ -4,17 +4,29 @@
 \alias{group_values_check}
 \title{Check dimension of time series for binding constraints}
 \usage{
-group_values_check(group_value, values_data, opts = antaresRead::simOptions())
+group_values_check(
+  group_value,
+  values_data,
+  operator_check,
+  output_operator,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{group_value}{\code{character} name of group}
 
 \item{values_data}{\code{list} values used by the constraint}
 
+\item{operator_check}{\code{character} parameter "operator"}
+
+\item{output_operator}{\code{character} for}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
+NULL if it's new group to add or error exceptions with dimension control
+
 An updated list containing various information about the simulation.
 }
 \description{

@@ -57,6 +57,7 @@ An updated list containing various information about the simulation.
 }
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Create a new binding constraint in an Antares study.
 \code{createBindingConstraintBulk()} allow to create multiple constraints at once.
@@ -67,10 +68,12 @@ According to Antares version, usage may vary :
 \strong{< v8.7.0} : For each constraint name, a .txt file containing 3 time series \verb{"less", "greater", "equal"}
 
 \strong{>= v8.7.0} : For each constraint name, one file .txt containing \verb{<id>_lt.txt, <id>_gt.txt, <id>_eq.txt}
-Parameter \code{values} must be named \code{list} ("lt", "gt", "eq") containing \code{data.frame} scenarized
+Parameter \code{values} must be named \code{list} ("lt", "gt", "eq") containing \code{data.frame} scenarized.
+see example section below.
 }
 \examples{
 \dontrun{
+# < v8.7.0 :
 createBindingConstraint(
   name = "myconstraint", 
   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
@@ -102,6 +105,53 @@ bindings_constraints <- lapply(
 )
 # create all constraints
 createBindingConstraintBulk(bindings_constraints)
+
+# >= v8.7.0 :
+
+# values are now named list containing `data.frame` according to   
+ # `operator` parameter (for "less", build a list with at least "lt" floor in list)
+ 
+# data values (daily)
+df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
+values_data <- list(lt=df)
+ 
+# create bc with minimum value
+createBindingConstraint(name = "bc_example", 
+                        operator = "less", 
+                        values = values_data, 
+                        overwrite = TRUE)
+                        
+# or you can provide list data with all value
+values_data <- list(lt=df, 
+                   gt= df, 
+                   eq= df)   
+                   
+createBindingConstraint(name = "bc_example", 
+                        operator = "less", 
+                        values = values_data, 
+                        overwrite = TRUE)      
+                        
+# create multiple constraints
+bindings_constraints <- lapply(
+  X = seq_len(10),
+  FUN = function(i) {
+    # use arguments of createBindingConstraint()
+    # all arguments must be provided !
+    list(
+      name = paste0("constraints_bulk", i), 
+      id = paste0("constraints_bulk", i), 
+      values = values_data, 
+      enabled = FALSE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = c("at\%fr" = 1),
+      group= "group_bulk",
+     overwrite = TRUE
+   )
+  }
+)
+ 
+createBindingConstraintBulk(bindings_constraints)  
 }
 }
 \seealso{

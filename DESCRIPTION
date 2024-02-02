@@ -45,12 +45,13 @@ Imports:
     parallel,
     future,
     plyr,
-    yaml
+    yaml,
+    lifecycle
 Suggests: 
     testthat,
     covr,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Remotes:  
+Remotes: 
     rte-antares-rpackage/antaresRead@release/v8.7.0
