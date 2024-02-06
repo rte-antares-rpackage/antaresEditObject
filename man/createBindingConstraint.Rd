@@ -111,7 +111,7 @@ createBindingConstraintBulk(bindings_constraints)
 # values are now named list containing `data.frame` according to   
  # `operator` parameter (for "less", build a list with at least "lt" floor in list)
  
-# data values (daily)
+# data values (hourly)
 df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
 values_data <- list(lt=df)
  
