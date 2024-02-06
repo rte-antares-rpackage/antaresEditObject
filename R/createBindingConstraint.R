@@ -154,6 +154,7 @@ createBindingConstraint <- function(name,
       operator = operator,
       filter_year_by_year = filter_year_by_year,
       filter_synthesis = filter_synthesis,
+      group = group,
       values = values,
       coeffs = lapply(as.list(coefficients), as.list)
     )
