@@ -82,7 +82,7 @@
 #' # values are now named list containing `data.frame` according to   
 #'  # `operator` parameter (for "less", build a list with at least "lt" floor in list)
 #'  
-#' # data values (daily)
+#' # data values (hourly)
 #' df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
 #' values_data <- list(lt=df)
 #'  
@@ -137,6 +137,7 @@ createBindingConstraint <- function(name,
                                     overwrite = FALSE,
                                     opts = antaresRead::simOptions()) {
   
+  # check input parameters
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   timeStep <- match.arg(arg = timeStep)
@@ -151,6 +152,8 @@ createBindingConstraint <- function(name,
       enabled = enabled,
       time_step = timeStep,
       operator = operator,
+      filter_year_by_year = filter_year_by_year,
+      filter_synthesis = filter_synthesis,
       values = values,
       coeffs = lapply(as.list(coefficients), as.list)
     )
@@ -182,10 +185,6 @@ createBindingConstraint <- function(name,
     
     if(!is.null(values)){
       assertthat::assert_that(inherits(values, "list"))
-      # if(!all(c("lt", "gt", "eq")%in%names(values)))
-      #   stop("Put for 'values' argument, 
-      #        named 'list' => see Doc `?createBindingConstraint`")
-      
       ##
       # check "values" according to "operator"
       ##
