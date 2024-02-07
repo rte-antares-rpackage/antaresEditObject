@@ -2,12 +2,13 @@
 #' 
 #' @description 
 #' `r antaresEditObject:::badge_api_ok()`
+#' `r lifecycle::badge("experimental")`
 #' 
 #' Update an existing binding constraint in an Antares study.  
 #' The key search value of the constraint is the `id` field
 #' 
 #' @inheritParams createBindingConstraint
-#' @param group "character" group of the constraint, default value : "default group"
+#' @param group "character" group of the constraint, default value : "default"
 #' @template opts
 #' 
 #' @seealso [createBindingConstraint()] to create new binding constraints, [removeBindingConstraint()] to remove binding constraints.

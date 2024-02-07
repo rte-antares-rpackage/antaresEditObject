@@ -47,17 +47,6 @@ opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 # areas list
 antaresRead::getAreas(opts = opts_test)
 
-# remove BC none v870
-names_bc_to_remove <- names(readBindingConstraints(opts = opts_test))
-
-lapply(names_bc_to_remove, 
-       removeBindingConstraint,
-       opts = simOptions())
-
-# temporary to test with "870"
-# force version
-opts_test$antaresVersion <- 870
-
 # scenarized data 
   # hourly
 n <- 10
@@ -77,21 +66,10 @@ scenar_values_daily <- list(lt= lt_data,
                              gt= gt_data, 
                              eq= eq_data)
 
+## default group ----
+test_that("editBindingConstraint with 'default group' v8.7.0", {
 
-test_that("editBindingConstraint v8.6", {
-  
-  # create binding constraint (default group value)  
-  createBindingConstraint(
-    name = "myconstraint",
-    values = scenar_values_hourly,
-    enabled = FALSE,
-    timeStep = "hourly",
-    operator = "both",
-    coefficients = c("al%gr" = 1), 
-    opts = opts_test
-  )
-  
-  bc_names_v870 <- names(readBindingConstraints(opts = opts_test))
+  bc <- readBindingConstraints(opts = opts_test)
     
   # edit BC with NULL values (edit only .ini file)
   editBindingConstraint(name = bc_names_v870, 
