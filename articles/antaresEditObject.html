@@ -358,57 +358,56 @@ following commands :</p>
 <div class="section level2">
 <h2 id="edit-geographic-trimming">Edit geographic trimming<a class="anchor" aria-label="anchor" href="#edit-geographic-trimming"></a>
 </h2>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># set the path to an Antares study</span></span>
-<span><span class="va">my_study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span><span class="op">)</span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">my_study</span>, simulation <span class="op">=</span><span class="st">"input"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># choose geographic trimming when creating new Antares areas</span></span>
-<span><span class="co"># default filtering : c("hourly","daily","weekly","monthly","annual")</span></span>
-<span><span class="va">initial_filtering_synthesis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weekly"</span>,<span class="st">"monthly"</span><span class="op">)</span></span>
-<span><span class="va">initial_filtering_year_by_year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monthly"</span>,<span class="st">"annual"</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area1"</span>,</span>
-<span>                   filtering <span class="op">=</span> <span class="fu"><a href="../reference/filteringOptions.html">filteringOptions</a></span><span class="op">(</span></span>
-<span>                     filter_synthesis <span class="op">=</span> <span class="va">initial_filtering_synthesis</span>,</span>
-<span>                     filter_year_by_year <span class="op">=</span> <span class="va">initial_filtering_year_by_year</span><span class="op">)</span>,</span>
-<span>                   opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area2"</span>,opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area1"</span>, </span>
-<span>                   to <span class="op">=</span> <span class="st">"area2"</span>, </span>
-<span>                   propertiesLink <span class="op">=</span> <span class="fu"><a href="../reference/propertiesLinkOptions.html">propertiesLinkOptions</a></span><span class="op">(</span></span>
-<span>                     filter_synthesis <span class="op">=</span> <span class="va">initial_filtering_synthesis</span>,</span>
-<span>                     filter_year_by_year <span class="op">=</span> <span class="va">initial_filtering_year_by_year</span><span class="op">)</span>,</span>
-<span>                   opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># check the initial filters</span></span>
-<span><span class="va">initial_GT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getGeographicTrimming.html" class="external-link">getGeographicTrimming</a></span><span class="op">(</span>areas<span class="op">=</span><span class="st">"area1"</span>,links<span class="op">=</span><span class="cn">TRUE</span>,opts<span class="op">=</span><span class="va">opts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">initial_GT</span><span class="op">$</span><span class="va">areas</span><span class="op">[[</span><span class="st">"area1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">initial_GT</span><span class="op">$</span><span class="va">links</span><span class="op">[[</span><span class="st">"area1 - area2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># edit geographic trimming of an existing area or link</span></span>
-<span><span class="va">new_filtering_synthesis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monthly"</span><span class="op">)</span></span>
-<span><span class="va">new_filtering_year_by_year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"annual"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/editArea.html">editArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area1"</span>, </span>
-<span>                 filtering <span class="op">=</span> <span class="fu"><a href="../reference/filteringOptions.html">filteringOptions</a></span><span class="op">(</span></span>
-<span>                   filter_synthesis <span class="op">=</span> <span class="va">new_filtering_synthesis</span>,</span>
-<span>                   filter_year_by_year <span class="op">=</span> <span class="va">new_filtering_year_by_year</span><span class="op">)</span>,</span>
-<span>                 opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/editLink.html">editLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area1"</span>,</span>
-<span>                 to <span class="op">=</span> <span class="st">"area2"</span>,</span>
-<span>                 filter_year_by_year <span class="op">=</span> <span class="va">new_filtering_year_by_year</span>,</span>
-<span>                 filter_synthesis <span class="op">=</span> <span class="va">new_filtering_synthesis</span>,</span>
-<span>                 opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="co"># check the new filters</span></span>
-<span><span class="va">new_GT</span> <span class="op">&lt;-</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getGeographicTrimming.html" class="external-link">getGeographicTrimming</a></span><span class="op">(</span>areas<span class="op">=</span><span class="st">"area1"</span>,links<span class="op">=</span><span class="cn">TRUE</span>,opts<span class="op">=</span><span class="va">opts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">new_GT</span><span class="op">$</span><span class="va">areas</span><span class="op">[[</span><span class="st">"area1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">new_GT</span><span class="op">$</span><span class="va">links</span><span class="op">[[</span><span class="st">"area1 - area2"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># important : make sure that `geographic-trimming` parameter is activated in general settings</span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/updateGeneralSettings.html">updateGeneralSettings</a></span><span class="op">(</span>geographic.trimming <span class="op">=</span> <span class="cn">TRUE</span>,opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set the path to an Antares study</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>my_study <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">""</span>, <span class="st">""</span>, <span class="st">""</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>opts <span class="ot">&lt;-</span> <span class="fu">setSimulationPath</span>(my_study, <span class="at">simulation =</span><span class="st">"input"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># choose geographic trimming when creating new Antares areas</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># default filtering : c("hourly","daily","weekly","monthly","annual")</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>initial_filtering_synthesis <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"weekly"</span>,<span class="st">"monthly"</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>initial_filtering_year_by_year <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"monthly"</span>,<span class="st">"annual"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>opts <span class="ot">&lt;-</span> <span class="fu">createArea</span>(<span class="at">name =</span> <span class="st">"area1"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">filtering =</span> <span class="fu">filteringOptions</span>(</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">filter_synthesis =</span> initial_filtering_synthesis,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">filter_year_by_year =</span> initial_filtering_year_by_year),</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">opts =</span> opts)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>opts <span class="ot">&lt;-</span> <span class="fu">createArea</span>(<span class="at">name =</span> <span class="st">"area2"</span>,<span class="at">opts =</span> opts)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>opts <span class="ot">&lt;-</span> <span class="fu">createLink</span>(<span class="at">from =</span> <span class="st">"area1"</span>, </span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                   <span class="at">to =</span> <span class="st">"area2"</span>, </span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>                   <span class="at">propertiesLink =</span> <span class="fu">propertiesLinkOptions</span>(</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">filter_synthesis =</span> initial_filtering_synthesis,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">filter_year_by_year =</span> initial_filtering_year_by_year),</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>                   <span class="at">opts =</span> opts)</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="co"># check the initial filters</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>initial_GT <span class="ot">&lt;-</span> <span class="fu">getGeographicTrimming</span>(<span class="at">areas=</span><span class="st">"area1"</span>,<span class="at">links=</span><span class="cn">TRUE</span>,<span class="at">opts=</span>opts)</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(initial_GT<span class="sc">$</span>areas[[<span class="st">"area1"</span>]])</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(initial_GT<span class="sc">$</span>links[[<span class="st">"area1 - area2"</span>]])</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="co"># edit geographic trimming of an existing area or link</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>new_filtering_synthesis <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"monthly"</span>)</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>new_filtering_year_by_year <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"annual"</span>)</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>opts <span class="ot">&lt;-</span> <span class="fu">editArea</span>(<span class="at">name =</span> <span class="st">"area1"</span>, </span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>                 <span class="at">filtering =</span> <span class="fu">list</span>(</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"filter_synthesis"</span> <span class="ot">=</span> <span class="fu">paste</span>(new_filtering_synthesis,<span class="at">collapse =</span> <span class="st">", "</span>)</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"filter_year_by_year"</span> <span class="ot">=</span> <span class="fu">paste</span>(new_filtering_year_by_year,<span class="at">collapse =</span> <span class="st">", "</span>)),</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>                 <span class="at">opts =</span> opts)</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>opts <span class="ot">&lt;-</span> <span class="fu">editLink</span>(<span class="at">from =</span> <span class="st">"area1"</span>,</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>                 <span class="at">to =</span> <span class="st">"area2"</span>,</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>                 <span class="at">filter_year_by_year =</span> new_filtering_year_by_year,</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>                 <span class="at">filter_synthesis =</span> new_filtering_synthesis,</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>                 <span class="at">opts =</span> opts) </span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a><span class="co"># check the new filters</span></span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>new_GT <span class="ot">&lt;-</span> antaresRead<span class="sc">::</span><span class="fu">getGeographicTrimming</span>(<span class="at">areas=</span><span class="st">"area1"</span>,<span class="at">links=</span><span class="cn">TRUE</span>,<span class="at">opts=</span>opts)</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(new_GT<span class="sc">$</span>areas[[<span class="st">"area1"</span>]])</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(new_GT<span class="sc">$</span>links[[<span class="st">"area1 - area2"</span>]])</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a><span class="co"># important : make sure that `geographic-trimming` parameter is activated in general settings</span></span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>opts <span class="ot">&lt;-</span> <span class="fu">updateGeneralSettings</span>(<span class="at">geographic.trimming =</span> <span class="cn">TRUE</span>,<span class="at">opts =</span> opts)</span></code></pre></div>
 </div>
   </div>
 

@@ -120,11 +120,11 @@ or another type of asset.</p></dd>
 
 
 <dt>filter_synthesis</dt>
-<dd><p>Output synthesis.</p></dd>
+<dd><p>Character, vector of time steps used in the output synthesis, among <code>hourly</code>, <code>daily</code>, <code>weekly</code>, <code>monthly</code>, and <code>annual</code></p></dd>
 
 
 <dt>filter_year_by_year</dt>
-<dd><p>Output year-by-year.</p></dd>
+<dd><p>Character, vector of time steps used in the output year-by-year, among <code>hourly</code>, <code>daily</code>, <code>weekly</code>, <code>monthly</code>, and <code>annual</code></p></dd>
 
 
 <dt>dataLink</dt>
@@ -161,7 +161,9 @@ or another type of asset.</p></dd>
 <span class="r-in"><span><span class="fu">editLink</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  from <span class="op">=</span> <span class="st">"area1"</span>,</span></span>
 <span class="r-in"><span>  to <span class="op">=</span> <span class="st">"area2"</span>,</span></span>
-<span class="r-in"><span>  transmission_capacities <span class="op">=</span> <span class="st">"infinite"</span></span></span>
+<span class="r-in"><span>  transmission_capacities <span class="op">=</span> <span class="st">"infinite"</span>,</span></span>
+<span class="r-in"><span>  filter_synthesis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>,<span class="st">"daily"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  filter_year_by_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"weekly"</span>,<span class="st">"monthly"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
