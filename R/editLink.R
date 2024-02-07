@@ -26,7 +26,9 @@
 #' editLink(
 #'   from = "area1",
 #'   to = "area2",
-#'   transmission_capacities = "infinite"
+#'   transmission_capacities = "infinite",
+#'   filter_synthesis = c("hourly","daily"),
+#'   filter_year_by_year = c("weekly","monthly")
 #' )
 #' }
 editLink <- function(from, 
@@ -42,7 +44,7 @@ editLink <- function(from,
                      opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
-  
+
   propertiesLink <- dropNulls(list(
     `hurdles-cost` = hurdles_cost,
     `transmission-capacities` = transmission_capacities,
