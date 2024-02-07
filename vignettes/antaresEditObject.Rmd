@@ -338,9 +338,9 @@ new_filtering_synthesis <- c("monthly")
 new_filtering_year_by_year <- c("annual")
 
 opts <- editArea(name = "area1", 
-                 filtering = filteringOptions(
-                   filter_synthesis = new_filtering_synthesis,
-                   filter_year_by_year = new_filtering_year_by_year),
+                 filtering = list(
+                   "filter_synthesis" = paste(new_filtering_synthesis,collapse = ", ")
+                   "filter_year_by_year" = paste(new_filtering_year_by_year,collapse = ", ")),
                  opts = opts)
 opts <- editLink(from = "area1",
                  to = "area2",
