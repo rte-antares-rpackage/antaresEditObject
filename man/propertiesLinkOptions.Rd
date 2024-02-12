@@ -27,9 +27,9 @@ or another type of asset.}
 
 \item{display_comments}{Logical, display comments or not.}
 
-\item{filter_synthesis}{Output synthesis.}
+\item{filter_synthesis}{Character, vector of time steps used in the output synthesis, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
 
-\item{filter_year_by_year}{Output year-by-year.}
+\item{filter_year_by_year}{Character, vector of time steps used in the output year-by-year, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
 }
 \value{
 A named list that can be used in \code{\link[=createLink]{createLink()}}.
@@ -38,5 +38,11 @@ A named list that can be used in \code{\link[=createLink]{createLink()}}.
 Properties for creating a link
 }
 \examples{
-propertiesLinkOptions(hurdles_cost = TRUE)
+\dontrun{
+propertiesLinkOptions(
+  hurdles_cost = TRUE,
+  filter_synthesis=c("hourly","daily"),
+  filter_year_by_year=c("weekly","monthly")
+)
+}
 }
