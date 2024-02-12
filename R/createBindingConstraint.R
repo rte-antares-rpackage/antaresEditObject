@@ -11,7 +11,8 @@
 #' @param name The name for the binding constraint.
 #' @param id An id, default is to use the name.
 #' @param values Values used by the constraint.
-#'  It contains one line per time step and three columns "less", "greater" and "equal".
+#'  It contains one line per time step and three columns "less", "greater" and "equal" 
+#'  (see documentation below if you're using version study >= v8.7.0)
 #' @param enabled Logical, is the constraint enabled ?
 #' @param timeStep Time step the constraint applies to : `hourly`, `daily` or `weekly`.
 #' @param operator Type of constraint: equality, inequality on one side or both sides.
@@ -23,8 +24,7 @@
 #' 
 #' @template opts
 #' 
-#' @seealso [editBindingConstraint()] to edit existing binding constraints, 
-#' [removeBindingConstraint()] to remove binding constraints.
+#' @family binding constraints functions
 #' 
 #' @details 
 #' According to Antares version, usage may vary :
@@ -348,7 +348,7 @@ createBindingConstraint_ <- function(bindingConstraints,
                row.names = FALSE, 
                sep = "\t")
       else{
-        index <- grep(x = up_path, pattern = x)
+        index <- grep(x = vect_path, pattern = x)
         fwrite(x = data.table::as.data.table(df_ts[[index]]), 
                file = x, 
                col.names = FALSE, 

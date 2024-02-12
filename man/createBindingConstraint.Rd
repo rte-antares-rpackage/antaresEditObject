@@ -28,7 +28,8 @@ createBindingConstraintBulk(constraints, opts = antaresRead::simOptions())
 \item{id}{An id, default is to use the name.}
 
 \item{values}{Values used by the constraint.
-It contains one line per time step and three columns "less", "greater" and "equal".}
+It contains one line per time step and three columns "less", "greater" and "equal"
+(see documentation below if you're using version study >= v8.7.0)}
 
 \item{enabled}{Logical, is the constraint enabled ?}
 
@@ -155,6 +156,8 @@ createBindingConstraintBulk(bindings_constraints)
 }
 }
 \seealso{
-\code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints,
-\code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
+Other binding constraints functions: 
+\code{\link{editBindingConstraint}()},
+\code{\link{removeBindingConstraint}()}
 }
+\concept{binding constraints functions}
