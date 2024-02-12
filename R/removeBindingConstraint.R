@@ -10,7 +10,7 @@
 #' 
 #' @template opts
 #' 
-#' @seealso [createBindingConstraint()] to create new binding constraints, [editBindingConstraint()] to edit existing binding constraints.
+#' @family binding constraints functions
 #' 
 #' @export
 #'

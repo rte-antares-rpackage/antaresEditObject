@@ -24,7 +24,8 @@ editBindingConstraint(
 \item{id}{An id, default is to use the name.}
 
 \item{values}{Values used by the constraint.
-It contains one line per time step and three columns "less", "greater" and "equal".}
+It contains one line per time step and three columns "less", "greater" and "equal"
+(see documentation below if you're using version study >= v8.7.0)}
 
 \item{enabled}{Logical, is the constraint enabled ?}
 
@@ -38,7 +39,7 @@ It contains one line per time step and three columns "less", "greater" and "equa
 
 \item{coefficients}{A named vector containing the coefficients used by the constraint.}
 
-\item{group}{"character" group of the constraint, default value : "default group"}
+\item{group}{"character" group of the constraint, default value : "default"}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -48,12 +49,21 @@ An updated list containing various information about the simulation.
 }
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Update an existing binding constraint in an Antares study.
 The key search value of the constraint is the \code{id} field
 }
+\section{Warning}{
+
+\strong{>= v8.7.0} : For each constraint name, one file .txt containing \verb{<id>_lt.txt, <id>_gt.txt, <id>_eq.txt}
+Parameter \code{values} must be named \code{list} ("lt", "gt", "eq") containing \code{data.frame} scenarized.
+see example section below.
+}
+
 \examples{
 \dontrun{
+ # < v8.7.0 :
 editBindingConstraint(
   name = "myconstraint", 
   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
@@ -62,8 +72,32 @@ editBindingConstraint(
   operator = "both",
   coefficients = c("fr\%de" = 1)
 )
+
+ # >= v8.7.0 :
+ 
+# data values scenarized (hourly)
+df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
+ 
+# you can provide list data with all value 
+# or just according with 'operator' (ex : 'lt' for 'less)
+values_data <- list(lt=df, 
+                   gt= df, 
+                   eq= df)  
+                     
+editBindingConstraint(name = "myconstraint", 
+                      values = values_data, 
+                      enabled = TRUE, 
+                      timeStep = "hourly", 
+                      operator = "both", 
+                      filter_year_by_year = "hourly", 
+                      filter_synthesis = "hourly", 
+                      coefficients = c("fr\%de" = 1), 
+                      group = "myconstraint_group")                   
 }
 }
 \seealso{
-\code{\link[=createBindingConstraint]{createBindingConstraint()}} to create new binding constraints, \code{\link[=removeBindingConstraint]{removeBindingConstraint()}} to remove binding constraints.
+Other binding constraints functions: 
+\code{\link{createBindingConstraint}()},
+\code{\link{removeBindingConstraint}()}
 }
+\concept{binding constraints functions}
