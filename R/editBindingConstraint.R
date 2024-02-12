@@ -9,9 +9,17 @@
 #' 
 #' @inheritParams createBindingConstraint
 #' @param group "character" group of the constraint, default value : "default"
+#' @param values Values used by the constraint.
+#'  It contains one line per time step and three columns "less", "greater" and "equal"
+#'  (see documentation below if you're using version study >= v8.7.0)
 #' @template opts
 #' 
-#' @seealso [createBindingConstraint()] to create new binding constraints, [removeBindingConstraint()] to remove binding constraints.
+#' @family binding constraints functions
+#' 
+#' @section Warning: 
+#' **>= v8.7.0** : For each constraint name, one file .txt containing `<id>_lt.txt, <id>_gt.txt, <id>_eq.txt`  
+#' Parameter `values` must be named `list` ("lt", "gt", "eq") containing `data.frame` scenarized.  
+#' see example section below.
 #' 
 #' @export
 #' 
@@ -20,6 +28,7 @@
 #'
 #' @examples
 #' \dontrun{
+#'  # < v8.7.0 :
 #' editBindingConstraint(
 #'   name = "myconstraint", 
 #'   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
@@ -28,6 +37,27 @@
 #'   operator = "both",
 #'   coefficients = c("fr%de" = 1)
 #' )
+#' 
+#'  # >= v8.7.0 :
+#'  
+#' # data values scenarized (hourly)
+#' df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
+#'  
+#' # you can provide list data with all value 
+#' # or just according with 'operator' (ex : 'lt' for 'less)
+#' values_data <- list(lt=df, 
+#'                    gt= df, 
+#'                    eq= df)  
+#'                      
+#' editBindingConstraint(name = "myconstraint", 
+#'                       values = values_data, 
+#'                       enabled = TRUE, 
+#'                       timeStep = "hourly", 
+#'                       operator = "both", 
+#'                       filter_year_by_year = "hourly", 
+#'                       filter_synthesis = "hourly", 
+#'                       coefficients = c("fr%de" = 1), 
+#'                       group = "myconstraint_group")                   
 #' }
 editBindingConstraint <- function(name,
                                   id = tolower(name),
@@ -56,6 +86,8 @@ editBindingConstraint <- function(name,
       enabled = enabled,
       time_step = timeStep,
       operator = operator,
+      filter_year_by_year = filter_year_by_year,
+      filter_synthesis = filter_synthesis,
       values = values,
       coeffs = lapply(as.list(coefficients), as.list)
     )
@@ -123,18 +155,26 @@ editBindingConstraint <- function(name,
     if(!is.null(group)){
       iniParams$group <- group
       
-      # edit group with check group values
-      if(is.null(values))
-        group_values_check(group_value = group, 
-                           values_data = values,
-                           opts = opts)
+      # # edit group with check group values
+      # if(is.null(values))
+      #   group_values_check(group_value = group, 
+      #                      values_data = values,
+      #                      opts = opts)
     }else
-      group <- "default group"
+      group <- "default"
+    
+    values_operator <- switch(operator,
+                              less = "lt",
+                              equal = "eq",
+                              greater = "gt",
+                              both = c("lt", "gt"))
     
     # check group values
     if(!is.null(values))
       group_values_check(group_value = group, 
                        values_data = values,
+                       operator_check = operator,
+                       output_operator = values_operator,
                        opts = opts)
     
   }
@@ -145,6 +185,8 @@ editBindingConstraint <- function(name,
   bindingConstraints[[bc_update_pos]]$enabled <- iniParams$enabled
   bindingConstraints[[bc_update_pos]]$type <- iniParams$type
   bindingConstraints[[bc_update_pos]]$operator <- iniParams$operator
+  bindingConstraints[[bc_update_pos]]$`filter-year-by-year` <- iniParams$`filter-year-by-year`
+  bindingConstraints[[bc_update_pos]]$`filter-synthesis` <- iniParams$`filter-synthesis`
   
   if(!is.null(coefficients)){
     
@@ -186,13 +228,12 @@ editBindingConstraint <- function(name,
   # v870
   if(opts$antaresVersion>=870){
     if(!identical(values, character(0))){
-      names_order_ts <- c("lt", "gt", "eq")
-      name_file <- paste0(id, "_", names_order_ts, ".txt")
+      name_file <- paste0(id, "_", values_operator, ".txt")
       
       up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
       
       lapply(up_path, function(x, df_ts= values, vect_path= up_path){
-        index <- grep(x = up_path, pattern = x)
+        index <- grep(x = vect_path, pattern = x)
         fwrite(x = data.table::as.data.table(df_ts[[index]]), 
                file = x, 
                col.names = FALSE, 
