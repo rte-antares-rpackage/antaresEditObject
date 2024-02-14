@@ -13,6 +13,8 @@ NEW FEATURES :
 BUGFIXES : 
 
 * Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
+* Fix `setPlaylist()` works in API and local mode with weights.
+* Fix `getPlaylist()` works in API and local mode with weights.
 
 
 # antaresEditObject 0.6.1
