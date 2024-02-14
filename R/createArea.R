@@ -490,14 +490,17 @@ createArea <- function(name,
 
 #' Output profile options for creating an area
 #'
-#' @param filter_synthesis Output synthesis
-#' @param filter_year_by_year Output Year-by-year
+#' @param filter_synthesis Character, vector of time steps used in the output synthesis, among `hourly`, `daily`, `weekly`, `monthly`, and `annual`
+#' @param filter_year_by_year Character, vector of time steps used in the output year-by-year, among `hourly`, `daily`, `weekly`, `monthly`, and `annual`
 #'
 #' @return a named list
 #' @export
 #'
 #' @examples
-#' filteringOptions()
+#' filteringOptions(
+#'   filter_synthesis=c("hourly","daily"),
+#'   filter_year_by_year=c("weekly","monthly")
+#' )
 filteringOptions <- function(filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
                              filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
   list(

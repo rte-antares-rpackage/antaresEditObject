@@ -37,6 +37,11 @@
 #' editArea("de",  nodalOptimization = nodalOptimizationOptions(),
 #' opts = antaresRead::simOptions())
 #' 
+#' editArea(
+#'   "de",
+#'   filtering = list("filter_synthesis"=paste(c("hourly","daily"),collapse = ", "))
+#' )
+#' 
 #' }
 editArea <- function(name, 
                      color = NULL,

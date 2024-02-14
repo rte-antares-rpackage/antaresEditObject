@@ -9,6 +9,11 @@ NEW FEATURES :
 
 * `setPlaylist()` optimized for the API mode
   - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()` 
+  
+BUGFIXES : 
+
+* Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
+
 
 # antaresEditObject 0.6.1
 
