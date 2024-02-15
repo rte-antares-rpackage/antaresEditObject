@@ -13,6 +13,7 @@ NEW FEATURES :
 BUGFIXES : 
 
 * Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
+* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows 
 
 
 # antaresEditObject 0.6.1
