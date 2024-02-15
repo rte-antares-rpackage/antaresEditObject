@@ -64,13 +64,22 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
     for (type in playlist_update_type){
       no_uptdate <- grepl(pattern = "reset", type)
       if (!no_uptdate){
-        transform_values <- gsub(pattern = "\\[|\\]",
-                                 x = playlist_update_value[[type]],
-                                 replacement = "")
-        transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+        if (type == "playlist_year +"){
+          transform_values <- gsub(pattern = "\\[|\\]", 
+                                   x = playlist_update_value[[type]],
+                                   replacement = "")
+          transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+        }
+        else if (type == "playlist_year_weight"){
+          transform_values <- gsub(pattern = "\\['|'|'\\]", 
+                                   x = playlist_update_value[[type]],
+                                   replacement = "")
+          transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+        }
+        
         
         playlist_update_value[[type]] <- as.numeric(transform_values)
-      }
+      } 
       
     }
   }
@@ -121,12 +130,12 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
         mat_play_list <- data.table(mcYears, weights)
       }
       else {
-        mat_play_list <- data.table(t(cbind.data.frame(strsplit(vect_value_weigth, ","))))
+        mat_play_list <- data.table(t(cbind.data.frame(
+          strsplit(vect_value_weigth, ","))))
         mat_play_list$V1 <- as.numeric(mat_play_list$V1) + 1
         mat_play_list$V2 <- as.numeric(mat_play_list$V2)
         setnames(mat_play_list, "V1", "mcYears")
         setnames(mat_play_list, "V2", "weights")
-        
       }
       return(list(activate_mc = activate_mc, weights = mat_play_list))
     }
@@ -158,6 +167,7 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
 setPlaylist <- function(playlist,
                         weights = NULL,
                         opts = antaresRead::simOptions()) {
+  
   api_study <- is_api_study(opts)
   
   version_study <- substr(opts$antaresVersion, 1, 1)
@@ -205,17 +215,16 @@ setPlaylist <- function(playlist,
     # create new playlist (+ patch double to integer)
     new_playlist <- setNames(as.list(sort(as.integer(playlist - 1))), rep("playlist_year +", length(playlist)))
     if (api_study){
+      
       new_playlist$sep <- ", "
       new_playlist <- list("playlist_year +" = paste0("[", do.call(paste, new_playlist), "]"))
-      
       
       couple_value <- paste(weights$mcYears - 1, weights$weights, sep = ",")
       element_list <- paste("\'", couple_value, "\'", 
                             collapse  = ",", sep = "")
       element_list <- paste("[", element_list, "]", sep = "")
       new_playlist$playlist_year_weight <- element_list
-      
-    }
+      }
     else if (!is.null(weights)) {
       
       new_playlist <- c(
