@@ -317,7 +317,7 @@ createClusterST <- function(area,
   }
 }
 
-#' Output pollutants list for thermal clusters
+#' Short Term Storage Cluster Property List
 #'
 #'
 #' @return a named list
