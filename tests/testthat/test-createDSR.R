@@ -35,7 +35,9 @@ sapply(studies, function(study) {
     expect_equal(bindingList$a_dsr_3h$operator, "less")
     expect_equal(as.double(bindingList$a_dsr_3h$coefs["a%a_dsr_3h"]), -1)
     expect_equal(as.double(bindingList$b_dsr_7h$coefs["b%b_dsr_7h"]), -1)
-    
+    expect_equal(nrow(bindingList$a_dsr_3h$values), 366)
+		expect_equal(nrow(bindingList$b_dsr_7h$values), 366)
+		
     expect_equal(unique(bindingList$a_dsr_3h$values$less)[1], dsrData[dsrData$area=="a",]$unit*dsrData[dsrData$area=="a",]$nominalCapacity*dsrData[dsrData$area=="a",]$hour)
     expect_equal(unique(bindingList$b_dsr_7h$values$less)[1], dsrData[dsrData$area=="b",]$unit*dsrData[dsrData$area=="b",]$nominalCapacity*dsrData[dsrData$area=="b",]$hour)
     
@@ -136,4 +138,3 @@ sapply(studies, function(study) {
   unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
   
 })
-
