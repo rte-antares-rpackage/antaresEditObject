@@ -39,8 +39,9 @@
 #' setPlaylist(c(3, 5, 7))
 #' }
 getPlaylist <- function(opts = antaresRead::simOptions()) {
-  assertthat::assert_that(inherits(opts, "simOptions"))
   
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  api_study <- is_api_study(opts)
   # read general parameters
   parameters <- readIni("settings/generaldata", opts = opts)
   
@@ -58,18 +59,29 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
   # otherwise, update the vector of mc_years by removing disabled years
   playlist_update_type <- names(parameters$playlist)
   playlist_update_value <- parameters$playlist
-  
-  for (type in playlist_update_type){
-    no_uptdate <- grepl(pattern = "reset", type)
-    if (!no_uptdate){
-      transform_values <- gsub(pattern = "\\[|\\]", 
-                               x = playlist_update_value[[type]],
-                               replacement = "")
-      transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+  if (api_study){
+    
+    for (type in playlist_update_type){
+      no_uptdate <- grepl(pattern = "reset", type)
+      if (!no_uptdate){
+        if (type == "playlist_year +"){
+          transform_values <- gsub(pattern = "\\[|\\]", 
+                                   x = playlist_update_value[[type]],
+                                   replacement = "")
+          transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+        }
+        else if (type == "playlist_year_weight"){
+          transform_values <- gsub(pattern = "\\['|'|'\\]", 
+                                   x = playlist_update_value[[type]],
+                                   replacement = "")
+          transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+        }
+        
+        
+        playlist_update_value[[type]] <- as.numeric(transform_values)
+      } 
       
-      playlist_update_value[[type]] <- as.integer(transform_values)
-    } 
-      
+    }
   }
   
   # untouched playlist - no modification have been made
@@ -112,14 +124,19 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
       return(activate_mc)
     } else{
       vect_value_weigth = unlist(playlist_update_value[names(playlist_update_value) == "playlist_year_weight"])
-      mat_play_list <-
-        data.table(t(cbind.data.frame(strsplit(
-          vect_value_weigth, ","
-        ))))
-      mat_play_list$V1 <- as.numeric(mat_play_list$V1) + 1
-      mat_play_list$V2 <- as.numeric(mat_play_list$V2)
-      setnames(mat_play_list, "V1", "mcYears")
-      setnames(mat_play_list, "V2", "weights")
+      if(api_study){
+        mcYears <- vect_value_weigth[seq(1, length(vect_value_weigth), by = 2)] + 1
+        weights <- vect_value_weigth[seq(2, length(vect_value_weigth), by = 2)]
+        mat_play_list <- data.table(mcYears, weights)
+      }
+      else {
+        mat_play_list <- data.table(t(cbind.data.frame(
+          strsplit(vect_value_weigth, ","))))
+        mat_play_list$V1 <- as.numeric(mat_play_list$V1) + 1
+        mat_play_list$V2 <- as.numeric(mat_play_list$V2)
+        setnames(mat_play_list, "V1", "mcYears")
+        setnames(mat_play_list, "V2", "weights")
+      }
       return(list(activate_mc = activate_mc, weights = mat_play_list))
     }
   }
@@ -198,16 +215,22 @@ setPlaylist <- function(playlist,
     # create new playlist (+ patch double to integer)
     new_playlist <- setNames(as.list(sort(as.integer(playlist - 1))), rep("playlist_year +", length(playlist)))
     if (api_study){
+      
       new_playlist$sep <- ", "
       new_playlist <- list("playlist_year +" = paste0("[", do.call(paste, new_playlist), "]"))
-    }
-    new_playlist <- c(list(playlist_reset = FALSE), new_playlist)
-    
-    if (!is.null(weights)) {
+      
+      couple_value <- paste(weights$mcYears - 1, weights$weights, sep = ",")
+      element_list <- paste("\'", couple_value, "\'", 
+                            collapse  = ",", sep = "")
+      element_list <- paste("[", element_list, "]", sep = "")
+      new_playlist$playlist_year_weight <- element_list
+      }
+    else if (!is.null(weights)) {
+      
       new_playlist <- c(
-        new_playlist, 
+        new_playlist,
         setNames(apply(
-          X = weights, 
+          X = weights,
           MARGIN = 1,
           FUN = function(X) {
             paste0(
@@ -216,9 +239,10 @@ setPlaylist <- function(playlist,
               format(round(X[2], 6), nsmall = 6)
             )
           }
-        ), rep("playlist_year_weight", length(weights)))
+        ), rep("playlist_year_weight", length(weights$weights)))
       )
     }
+    new_playlist <- c(list(playlist_reset = FALSE), new_playlist)
     if (api_study) {
       # To minimize the number of queries, we reduce the list to the updated items
       generaldata <- generaldata[which(names(generaldata) == "general")]

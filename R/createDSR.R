@@ -262,10 +262,10 @@ createDSR <- function(areasAndDSRParam = NULL,
     
     #coef binding
     coefficientsDSR <- .getCoefDsr(areaName, nameDsr)
-    
+    # A binding constraint at a daily timestep expects 366 rows
     createBindingConstraint(
       nameBindDSR, 
-      values = matrix(data = c(rep(installedCapacityLink * as.double(numberHour), 365), rep(0, 365 * 2)), ncol = 3),
+      values = matrix(data = c(rep(installedCapacityLink * as.double(numberHour), 366), rep(0, 366 * 2)), ncol = 3),
       enabled = TRUE, 
       timeStep = "daily",
       operator = c("less"),
@@ -440,9 +440,10 @@ editDSR <- function(area = NULL,
   #coef binding
   coefficientsDSR <- .getCoefDsr(area, previousNameDsr)
   
+  # A binding constraint at a daily timestep expects 366 rows
   createBindingConstraint(
     previousNameDsr,
-    values = matrix(data = c(rep(newCapacityLink * as.double(previousNumberHour), 365), rep(0, 365 * 2)), ncol = 3),
+    values = matrix(data = c(rep(newCapacityLink * as.double(previousNumberHour), 366), rep(0, 366 * 2)), ncol = 3),
     enabled = TRUE, 
     timeStep = "daily",
     operator = c("less"), 
