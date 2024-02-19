@@ -81,6 +81,8 @@ createBindingConstraint <- function(name,
   timeStep <- match.arg(arg = timeStep)
   operator <- match.arg(arg = operator)
   
+  ## Values
+  values <- .valueCheck(values, timeStep)
 
   # API block
   if (is_api_study(opts)) {
@@ -219,8 +221,6 @@ createBindingConstraint_ <- function(bindingConstraints,
   }
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
-  ## Values
-  values <- .valueCheck(values, timeStep)
   
   # Write values
   pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
