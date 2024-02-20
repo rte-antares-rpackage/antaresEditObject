@@ -171,6 +171,12 @@ createCluster <- function(area,
   
   # check v860
   # check list pollutants parameters
+  
+  # check if all elements are NULL => replace by NULL 
+  # API (only) can't create with NULL values
+  all_null <- lapply(list_pollutants, is.null)
+  all_null <- all(unlist(all_null))
+  
   if(opts$antaresVersion >= 860){
     if(!is.null(list_pollutants) & !assert_that(inherits(list_pollutants, "list")))
       stop("Parameter 'list_pollutants' must be a 'list'")
@@ -179,16 +185,11 @@ createCluster <- function(area,
       stop(append("Parameter 'list_pollutants' must be named with the following elements: ", 
                   paste0(name_list_param_poll, collapse= ", ")))
     
-    # check if all elements are NULL => replace by NULL 
-    # API (only) can't create with NULL values
-    all_null <- lapply(list_pollutants, is.null)
-    all_null <- all(unlist(all_null))
-    
     if(all_null)
       list_pollutants <- NULL
   }
   else{
-    if(!is.null(list_pollutants))
+    if(!all_null)
       stop("antaresVersion should be >= v8.6.0 to use parameter 'list_pollutants'.")
   }
   
