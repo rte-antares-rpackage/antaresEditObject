@@ -317,7 +317,7 @@ createClusterST <- function(area,
   }
 }
 
-#' Short Term Storage Cluster Property List
+#' Short Term Storage Property List
 #'
 #'
 #' @return a named list
