@@ -87,6 +87,7 @@ createBindingConstraint <- function(name,
   # API block
   if (is_api_study(opts)) {
     
+    #In API mode, there is an impact if coefficients is not alphabetically ordered.
     names_coef <- names(coefficients)
     splitted_names <- strsplit(names_coef, "%")
     areas <- splitted_names[[1]]
