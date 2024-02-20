@@ -2,7 +2,7 @@
 % Please edit documentation in R/createClusterST.R
 \name{storage_values_default}
 \alias{storage_values_default}
-\title{Short Term Storage Cluster Property List}
+\title{Short Term Storage Property List}
 \usage{
 storage_values_default()
 }
@@ -10,7 +10,7 @@ storage_values_default()
 a named list
 }
 \description{
-Short Term Storage Cluster Property List
+Short Term Storage Property List
 }
 \examples{
 storage_values_default()
