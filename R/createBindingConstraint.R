@@ -83,18 +83,17 @@ createBindingConstraint <- function(name,
   
   ## Values
   values <- .valueCheck(values, timeStep)
+  
+  names_coef <- names(coefficients)
+  splitted_names <- strsplit(names_coef, "%")
+  areas <- splitted_names[[1]]
+  are_areas_sorted <- identical(areas, sort(areas))
+  if (!are_areas_sorted) {
+    stop("The areas are not sorted alphabetically.", call. = FALSE)
+  }
 
   # API block
   if (is_api_study(opts)) {
-    
-    #In API mode, there is an impact if coefficients is not alphabetically ordered.
-    names_coef <- names(coefficients)
-    splitted_names <- strsplit(names_coef, "%")
-    areas <- splitted_names[[1]]
-    are_areas_sorted <- identical(areas, sort(areas))
-    if (!are_areas_sorted) {
-      stop("The areas are not sorted alphabetically.", call. = FALSE)
-    }
     
     cmd <- api_command_generate(
       "create_binding_constraint", 
