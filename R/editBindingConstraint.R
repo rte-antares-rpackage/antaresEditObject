@@ -76,9 +76,11 @@ editBindingConstraint <- function(name,
   if (is_api_study(opts)) {
     
     if (is.null(timeStep))
-      stop("You must provide `timeStep` argument with API.", call. = FALSE)
+      stop("You must provide `timeStep` argument with API.", 
+           call. = FALSE)
     if (is.null(operator))
-      stop("You must provide `operator` argument with API.", call. = FALSE)
+      stop("You must provide `operator` argument with API.", 
+           call. = FALSE)
     
     cmd <- api_command_generate(
       "update_binding_constraint", 
@@ -95,7 +97,8 @@ editBindingConstraint <- function(name,
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "update_binding_constraint: {msg_api}"),
+      api_command_execute(cmd, opts = opts, 
+                          text_alert = "update_binding_constraint: {msg_api}"),
       cli_command_registered("update_binding_constraint")
     )
     
@@ -104,16 +107,21 @@ editBindingConstraint <- function(name,
   
   # valuesIn <- values
   # check Ini file names constraints
-  pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
+  pathIni <- file.path(opts$inputPath, 
+                       "bindingconstraints/bindingconstraints.ini")
   
   # initial parameter list
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
-  previds <- lapply(bindingConstraints, `[[`, "id")
+  previds <- lapply(bindingConstraints, 
+                    `[[`, 
+                    "id")
   previds <- unlist(previds, use.names = FALSE)
-  if(!id %in% previds){
-    stop("Binding constraint with id '", id, "' doesn't exist in current study.")
-  }
+  if(!id %in% previds)
+    stop("Binding constraint with id '", 
+         id, 
+         "' doesn't exist in current study.")
+  
   
   # Update general params
   bc_update_pos <- which(previds %in% id)
@@ -127,9 +135,6 @@ editBindingConstraint <- function(name,
     type = bc_update$type,
     operator = bc_update$operator
   )
-  
-  # if(!is.null(name)) iniParams$name <- name
-  # if(!is.null(id)) iniParams$id <- id
   
   # update parameters
     # name can be different of id
@@ -152,15 +157,9 @@ editBindingConstraint <- function(name,
   
   # v870
   if(opts$antaresVersion>=870){
-    if(!is.null(group)){
+    if(!is.null(group))
       iniParams$group <- group
-      
-      # # edit group with check group values
-      # if(is.null(values))
-      #   group_values_check(group_value = group, 
-      #                      values_data = values,
-      #                      opts = opts)
-    }else
+    else
       group <- "default"
     
     values_operator <- switch(operator,
@@ -217,28 +216,39 @@ editBindingConstraint <- function(name,
   # write txt files
     # v870
   if(opts$antaresVersion>=870 & !is.null(values))
-    values <- .valueCheck870(values, bindingConstraints[[bc_update_pos]]$type)
+    values <- .valueCheck870(values, 
+                             bindingConstraints[[bc_update_pos]]$type)
   else
-    values <- .valueCheck(values, bindingConstraints[[bc_update_pos]]$type)
+    values <- .valueCheck(values, 
+                          bindingConstraints[[bc_update_pos]]$type)
   
   # Write Ini
-  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
+  writeIni(listData = bindingConstraints, 
+           pathIni = pathIni, 
+           overwrite = TRUE)
   
   # Write values
   # v870
   if(opts$antaresVersion>=870){
     if(!identical(values, character(0))){
-      name_file <- paste0(id, "_", values_operator, ".txt")
+      name_file <- paste0(id, "_", 
+                          values_operator, 
+                          ".txt")
       
-      up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
+      up_path <- file.path(opts$inputPath, 
+                           "bindingconstraints", 
+                           name_file)
       
-      lapply(up_path, function(x, df_ts= values, vect_path= up_path){
-        index <- grep(x = vect_path, pattern = x)
-        fwrite(x = data.table::as.data.table(df_ts[[index]]), 
-               file = x, 
-               col.names = FALSE, 
-               row.names = FALSE, 
-               sep = "\t")
+      lapply(up_path, 
+             function(x, 
+                      df_ts= values, 
+                      vect_path= up_path){
+               index <- grep(x = vect_path, pattern = x)
+               fwrite(x = data.table::as.data.table(df_ts[[index]]), 
+                      file = x, 
+                      col.names = FALSE, 
+                      row.names = FALSE, 
+                      sep = "\t")
       })
     }
     
@@ -251,19 +261,6 @@ editBindingConstraint <- function(name,
     suppressWarnings(
       file_r <- fread(pathValues)
     )
-    
-    # # check nrow Vs timeStep
-    # nrows <- switch(timeStep,
-    #                 hourly = 24*366,
-    #                 daily = 366,
-    #                 weekly = 366,
-    #                 monthly = 12,
-    #                 annual = 1)
-    # 
-    # # check existing values 
-    # if(!is.null(timeStep) & nrow(file_r)>0)
-    #   if(!nrow(file_r) %in% nrows)
-    #     stop("Incorrect number of rows according to the timeStep")
 
     if(!identical(values, character(0)))
       write.table(x = values, 
@@ -274,7 +271,8 @@ editBindingConstraint <- function(name,
   
   # Maj simulation
   suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+    res <- antaresRead::setSimulationPath(path = opts$studyPath, 
+                                          simulation = "input")
   })
   
 }
