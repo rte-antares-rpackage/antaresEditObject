@@ -266,7 +266,7 @@ createClusterRES <- function(area,
   )
 }
 
-#' @importFrom data.table fwrite
+#' @importFrom data.table fwrite as.data.table
 .createCluster <- function(area, 
                            cluster_name, 
                            ...,
@@ -403,7 +403,7 @@ createClusterRES <- function(area,
   }
   
   fwrite(
-    x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
+    x = as.data.table(time_series), row.names = FALSE, col.names = FALSE, sep = "\t",
     file = file.path(inputPath, cluster_type, "series", area, lower_cluster_name, "series.txt")
   )
   
@@ -418,7 +418,7 @@ createClusterRES <- function(area,
     if (is.null(prepro_data))
       prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 6)
     fwrite(
-      x = prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
+      x = as.data.table(prepro_data), row.names = FALSE, col.names = FALSE, sep = "\t",
       file = file.path(inputPath, cluster_type, "prepro", area, lower_cluster_name, "data.txt")
     )
     
@@ -427,7 +427,7 @@ createClusterRES <- function(area,
       prepro_modulation <- matrix(data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)), ncol = 4)
     
     fwrite(
-      x = prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
+      x = as.data.table(prepro_modulation), row.names = FALSE, col.names = FALSE, sep = "\t",
       file = file.path(inputPath, cluster_type, "prepro", area, lower_cluster_name, "modulation.txt")
     )
   }
