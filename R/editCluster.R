@@ -109,9 +109,13 @@ editClusterRES <- function(area,
     cluster_name <- paste(area, cluster_name, sep = "_")
   
   # v860 pollutants
-  if(opts$antaresVersion >= 860)
+  if(opts$antaresVersion >= 860){
     params_cluster <- append(params_cluster, list_pollutants)
-  
+  }
+  else{
+    if(!is.null(list_pollutants))
+      stop("antaresVersion should be >= v8.6.0 to use parameter 'list_pollutants'.")
+  }
   # Handle case sensitivity in name of clusters API 
   clusters <- names(readIni(file.path("input", cluster_type, "clusters", area, "list"), 
                             opts= opts))
