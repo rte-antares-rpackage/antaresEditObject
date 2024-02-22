@@ -8,7 +8,8 @@ NEW FEATURES :
 ### Breaking changes
 
 * `setPlaylist()` optimized for the API mode
-  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()` 
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()`
+* `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
   
 BUGFIXES : 
 
