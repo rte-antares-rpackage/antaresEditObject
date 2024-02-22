@@ -16,7 +16,10 @@ BUGFIXES :
 * Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
 * Fix `setPlaylist()` works in API and local mode with weights.
 * Fix `getPlaylist()` works in API and local mode with weights.
-* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows 
+* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
+* Fix `createCluster()` parameter `list_pollutants` stop for Antares Version < 860.
+
+
 
 
 # antaresEditObject 0.6.1
