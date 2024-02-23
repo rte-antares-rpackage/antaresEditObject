@@ -13,7 +13,7 @@ getJobs(job_id = NULL, opts = antaresRead::simOptions())
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
-A \code{data.table} with information about jobs.
+A \code{data.frame} with information about jobs.
 }
 \description{
 Retrieve API jobs

@@ -202,7 +202,7 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
 #' @param job_id The job identifier, if `NULL` (default), retrieve all jobs.
 #' @template opts-arg 
 #'
-#' @return A `data.table` with information about jobs.
+#' @return A `data.frame` with information about jobs.
 #' @export
 #' 
 #' @importFrom data.table rbindlist
@@ -218,32 +218,34 @@ getJobs <- function(job_id = NULL, opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   if (!is_api_study(opts))
     stop("getJobs can only be used with Antares API.", call. = FALSE)
-  if (is.null(job_id)) {
-    jobs <- api_get(opts = opts, "launcher/jobs", default_endpoint = "v1")
-    
-    # fix duplicated raw cause multiple elements for "owner"
-    jobs <- lapply(jobs, 
-                   rename_floor_list, 
-                   target_name = "owner")
-    
-    jobs <- suppressWarnings(data.table::rbindlist(jobs, fill = TRUE))
-    
-    add_col_names <- c("owner_id", "owner_name")
-    if(all(add_col_names %in% names(jobs))){
-      names_to_keep = setdiff(names(jobs), 
-                              add_col_names)
-      names_to_keep <- append(names_to_keep, add_col_names)
-      setcolorder(jobs, names_to_keep)
-    }else
-      suppressWarnings(data.table::rbindlist(jobs, fill = TRUE))
-  } else {
-    jobs <- api_get(opts = opts, paste0("launcher/jobs/", job_id), default_endpoint = "v1")
-    
-    # fix duplicated raw cause multiple elements for "owner"
-    jobs <- rename_floor_list(target_name = "owner", 
-                              list_to_reforge = jobs)
-    data.table::as.data.table(jobs)
-  }
+  if (is.null(job_id)) 
+    .getjobs(opts = opts)
+  else 
+    .getjobs(opts = opts, 
+             id_job = job_id)
+}
+
+.getjobs <- function(opts, id_job=NULL){
+  # make endpoint with id or not
+  if(is.null(id_job))
+    custom_endpoint <- file.path("launcher", "jobs")
+  else
+    custom_endpoint <- file.path("launcher", "jobs", id_job)
+  # api call with text content
+  jobs <- api_get(opts = opts, 
+                  endpoint = custom_endpoint, 
+                  default_endpoint = "v1", 
+                  parse_result = "text")
+  # reformat 
+  if(!is.null(id_job))
+    jobs <- paste0("[",jobs,"]")
+  # as DT to reformat names
+  jobs <- as.data.table(
+    jsonlite::fromJSON(jobs))
+  names(jobs) <- sub(pattern = "\\.", 
+                     replacement = "_", 
+                     x = names(jobs))
+  return(jobs)
 }
 
 
