@@ -10,9 +10,9 @@ filteringOptions(
 )
 }
 \arguments{
-\item{filter_synthesis}{Output synthesis}
+\item{filter_synthesis}{Character, vector of time steps used in the output synthesis, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
 
-\item{filter_year_by_year}{Output Year-by-year}
+\item{filter_year_by_year}{Character, vector of time steps used in the output year-by-year, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
 }
 \value{
 a named list
@@ -21,5 +21,8 @@ a named list
 Output profile options for creating an area
 }
 \examples{
-filteringOptions()
+filteringOptions(
+  filter_synthesis=c("hourly","daily"),
+  filter_year_by_year=c("weekly","monthly")
+)
 }

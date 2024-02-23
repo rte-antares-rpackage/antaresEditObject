@@ -21,8 +21,8 @@ a character containing the type of control to execute.
 \description{
 Compute the type of control to make between :
 \itemize{
-\item{\verb{input/hydro/series/<area>/mingen.txt}}
-\item{\verb{input/hydro/series/<area>/mod.txt}}
+\item \code{input/hydro/series/<area>/mingen.txt}
+\item \code{input/hydro/series/<area>/mod.txt}
 }
 This control is implemented in Antares too.
 }

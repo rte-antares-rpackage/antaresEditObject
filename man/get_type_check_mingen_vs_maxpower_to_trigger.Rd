@@ -21,8 +21,8 @@ a character containing the type of control to execute.
 \description{
 Compute the type of control to make between :
 \itemize{
-\item{\verb{input/hydro/series/<area>/mingen.txt}}
-\item{\verb{input/hydro/common/capacity/maxpower_<area>.txt}}
+\item \code{input/hydro/series/<area>/mingen.txt}
+\item \code{input/hydro/common/capacity/maxpower_<area>.txt}
 }
 This control is implemented in Antares too.
 No control to execute if \code{reservoir} section in hydro.ini for the area is set to TRUE.

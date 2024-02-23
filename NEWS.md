@@ -1,9 +1,32 @@
-# antaresEditObject 0.6.1
+# antaresEditObject 0.6.2
+
+NEW FEATURES :
+
+* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
+* New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
 
 ### Breaking changes
 
+* `setPlaylist()` optimized for the API mode
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()` 
+  
+BUGFIXES : 
+
+* Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
+* Fix `setPlaylist()` works in API and local mode with weights.
+* Fix `getPlaylist()` works in API and local mode with weights.
+* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows 
+
+
+# antaresEditObject 0.6.1
+
+
 * `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
 
+
+BUGFIXES : 
+
+* Error CRAN CHECKS (fix issue #115)
 
 # antaresEditObject 0.6.0
 
