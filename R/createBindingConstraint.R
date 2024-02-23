@@ -82,7 +82,7 @@ createBindingConstraint <- function(name,
   operator <- match.arg(arg = operator)
   
   ## Values
-  values <- .valueCheck(values, timeStep)
+  checked_values <- .valueCheck(values, timeStep)
   
   if(!is.null(coefficients)){
     names_coef <- names(coefficients)
@@ -105,7 +105,7 @@ createBindingConstraint <- function(name,
       enabled = enabled,
       time_step = timeStep,
       operator = operator,
-      values = values,
+      values = checked_values,
       coeffs = lapply(as.list(coefficients), as.list)
     )
     
@@ -127,7 +127,7 @@ createBindingConstraint <- function(name,
     bindingConstraints,
     name,
     id,
-    values,
+    values = checked_values,
     enabled,
     timeStep,
     operator,
