@@ -84,12 +84,16 @@ createBindingConstraint <- function(name,
   ## Values
   values <- .valueCheck(values, timeStep)
   
-  names_coef <- names(coefficients)
-  splitted_names <- strsplit(names_coef, "%")
-  areas <- splitted_names[[1]]
-  are_areas_sorted <- identical(areas, sort(areas))
-  if (!are_areas_sorted) {
-    stop("The areas are not sorted alphabetically.", call. = FALSE)
+  if(!is.null(coefficients)){
+    names_coef <- names(coefficients)
+    splitted_names <- strsplit(names_coef, "%")
+    are_areas_sorted <- sapply(splitted_names, function(areas) {
+      identical(areas, sort(areas))
+    })
+    
+    if (!all(are_areas_sorted)) {
+      stop("The areas are not sorted alphabetically.", call. = FALSE)
+    }
   }
 
   # API block
