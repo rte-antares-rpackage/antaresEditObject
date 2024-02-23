@@ -87,7 +87,7 @@ Read, create, update & deduplicate scenario builder.
 }
 \note{
 \code{series = "ntc"} is only available with Antares >= 8.2.0.
-\code{series = "binding"} is only available with Antares >= 8.7.0.
+\code{series = "bc"} is only available with Antares >= 8.7.0.
 \code{series = "hl"} each value must be between 0 and 1.
 }
 \examples{

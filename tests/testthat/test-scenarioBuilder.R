@@ -358,10 +358,6 @@ opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 # areas list
 antaresRead::getAreas(opts = opts_test)
 
-# temporary to test with "870"
-# force version
-opts_test$antaresVersion <- 870
-
 test_that("scenarioBuilder works with binding constraint (v870)", {
   
   # Read, create & update scenario builder

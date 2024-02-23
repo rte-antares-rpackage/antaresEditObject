@@ -277,7 +277,7 @@ extract_el <- function(l, indice) {
 #'  
 #' @note
 #' `series = "ntc"` is only available with Antares >= 8.2.0.  
-#' `series = "binding"` is only available with Antares >= 8.7.0. 
+#' `series = "bc"` is only available with Antares >= 8.7.0. 
 #' `series = "hl"` each value must be between 0 and 1.
 #'
 #' @export
@@ -289,10 +289,14 @@ updateScenarioBuilder <- function(ldata,
                                   clusters_areas = NULL,
                                   links = NULL,
                                   opts = antaresRead::simOptions()) {
+  browser()
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
+  suppressWarnings(
+    prevSB <- readScenarioBuilder(ruleset = ruleset, 
+                                  as_matrix = FALSE, 
+                                  opts = opts))
   
   ref_series <- create_referential_series_type()
   possible_series <- ref_series$series
