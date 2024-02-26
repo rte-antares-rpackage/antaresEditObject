@@ -202,7 +202,7 @@ useVariant <- function(name, variant_id = NULL, opts = antaresRead::simOptions()
 #' @param job_id The job identifier, if `NULL` (default), retrieve all jobs.
 #' @template opts-arg 
 #'
-#' @return A `data.frame` with information about jobs.
+#' @return A `data.table` with information about jobs.
 #' @export
 #' 
 #' @importFrom data.table rbindlist

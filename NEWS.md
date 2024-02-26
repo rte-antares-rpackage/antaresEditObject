@@ -16,6 +16,7 @@ BUGFIXES :
 * Fix `setPlaylist()` works in API and local mode with weights.
 * Fix `getPlaylist()` works in API and local mode with weights.
 * Fix `createDSR()` in API mode : daily binding constraint takes 366 rows 
+* `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
 
 
 # antaresEditObject 0.6.1
