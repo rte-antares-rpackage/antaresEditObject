@@ -156,7 +156,7 @@ createCluster <- function(area,
                           cluster_name, 
                           group = "Other",
                           ...,
-                          list_pollutants = list_pollutants_values(),
+                          list_pollutants = NULL,
                           time_series = NULL,
                           prepro_data = NULL,
                           prepro_modulation = NULL,
@@ -166,28 +166,24 @@ createCluster <- function(area,
   # check study parameters
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  # static name of list parameters of pulluants
+  # static name of list parameters of pollutants
   name_list_param_poll <- names(list_pollutants_values())
   
   # check v860
-    # check list pulluants parameters
+  # check list pollutants parameters
   if(opts$antaresVersion >= 860){
-    if(!is.null(list_pollutants) & !assert_that(inherits(list_pollutants, "list")))
+    if(!is.null(list_pollutants) & !(class(list_pollutants) == "list"))
       stop("Parameter 'list_pollutants' must be a 'list'")
     
     if(!all(names(list_pollutants) %in% name_list_param_poll))
       stop(append("Parameter 'list_pollutants' must be named with the following elements: ", 
                   paste0(name_list_param_poll, collapse= ", ")))
-    
-    # check if all elements are NULL => replace by NULL 
-      # API (only) can't create with NULL values
-    all_null <- lapply(list_pollutants, is.null)
-    all_null <- all(unlist(all_null))
-    
-    if(all_null)
-      list_pollutants <- NULL
   }
-    
+  else{
+    if(!is.null(list_pollutants))
+      stop("antaresVersion should be >= v8.6.0 to use parameter 'list_pollutants'.")
+  }
+  
   
   # statics groups
   thermal_group <- c("Gas",
