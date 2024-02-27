@@ -86,5 +86,28 @@ update_opts <- function(opts) {
   }
 }
 
-
+# reorder a list into a simple named list 
+# target a named list within the list, then move items up one step in the main list
+rename_floor_list <- function(target_name, list_to_reforge){
+  assertthat::assert_that(inherits(target_name, "character"))
+  assertthat::assert_that(inherits(list_to_reforge, "list"))
+  
+  if(target_name %in% names(list_to_reforge)){
+    if(class(list_to_reforge[[target_name]]) %in% "list"){
+      target_elements <- list_to_reforge[[target_name]]
+      names(target_elements) <- paste(target_name, names(target_elements), sep = "_")
+      
+      # overwrite list
+      list_to_reforge[[target_name]] <- NULL
+      list_to_reforge <- append(list_to_reforge, target_elements)
+      
+      return(list_to_reforge)
+    }else{
+      list_to_reforge[[target_name]] <- NULL
+      return(list_to_reforge)
+    }
+      
+  }else
+    return(list_to_reforge)
+}
 
