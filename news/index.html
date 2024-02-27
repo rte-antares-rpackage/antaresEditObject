@@ -78,9 +78,10 @@
 <h4 id="breaking-changes-0-6-2">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-2"></a></h4>
 <ul><li>
 <code><a href="../reference/playlist.html">setPlaylist()</a></code> optimized for the API mode
-<ul><li>returned an updated list of simulation parameters returned by the function <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath()</a></code> and <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPathAPI()</a></code>
-</li>
+<ul><li>returned an updated list of simulation parameters returned by the function <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath()</a></code> and <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPathAPI()</a></code>.</li>
 </ul></li>
+<li>
+<code><a href="../reference/createCluster.html">createCluster()</a></code> parameter <code>list_pollutants</code> default value to NULL.</li>
 <li>
 <code><a href="../reference/create-binding-constraint.html">createBindingConstraint()</a></code> parameter <code>coefficients</code> must be alphabetically ordered.</li>
 </ul><p>BUGFIXES :</p>
@@ -88,7 +89,7 @@
 <li>Fix <code><a href="../reference/playlist.html">setPlaylist()</a></code> works in API and local mode with weights.</li>
 <li>Fix <code><a href="../reference/playlist.html">getPlaylist()</a></code> works in API and local mode with weights.</li>
 <li>Fix <code><a href="../reference/createDSR.html">createDSR()</a></code> in API mode : daily binding constraint takes 366 rows.</li>
-<li>Fix <code><a href="../reference/createCluster.html">createCluster()</a></code> parameter <code>list_pollutants</code> stop for Antares Version &lt; 860.</li>
+<li>Fix <code><a href="../reference/createCluster.html">createCluster()</a></code> and <code><a href="../reference/editCluster.html">editCluster()</a></code> parameter <code>list_pollutants</code> stop if Antares Version &lt; 8.6.0</li>
 <li>
 <code><a href="../reference/getJobs.html">getJobs()</a></code> no longer returns duplicates and displays the two new columns <code>owner_id</code> and <code>owner_name</code>.</li>
 </ul></div>
