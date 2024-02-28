@@ -4,6 +4,7 @@ NEW FEATURES :
 
 * Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
 * New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
+* Add `importStudy()`to allow the user to import a local study in Antares Web
 
 ### Breaking changes
 

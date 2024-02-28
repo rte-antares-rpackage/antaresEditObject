@@ -112,6 +112,46 @@ createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_
   invisible(opts)
 }
 
+
+#' @title Import a local study to Antares Web
+#'
+#' @param host Host of AntaREST server API.
+#' @param token API personnal access token.
+#' @param zipfile_name Name of the zipfile of the study.
+#'
+#' @template opts
+#'
+#' @importFrom antaresRead setSimulationPathAPI api_post simOptions
+#' @importFrom httr upload_file
+#' 
+#' @export
+#'
+#' @rdname create-study
+importStudy <- function(host, token, zipfile_name, opts = antaresRead::simOptions()) {
+  
+  # Build the destination folder
+  dir_study <- unlist(strsplit(opts$studyPath, split = .Platform$file.sep))
+  dir_study <- dir_study[seq(length(dir_study) - 1)]
+  dir_study <- do.call("file.path", as.list(dir_study))
+  
+  # Zip the study
+  zipfile <- backupStudy(zipfile_name, what = "study", opts = opts, extension = ".zip") 
+  
+  # Import the study
+  studyId <- api_post(
+    opts = list(host = host, token = token),
+    endpoint = "_import",
+    default_endpoint = "v1/studies",
+    body = list(study = upload_file(file.path(dir_study, zipfile))),
+    encode = "multipart"
+  )
+  
+  opts <- setSimulationPathAPI(host = host, token = token, study_id = studyId, simulation = "input")
+  
+  return(invisible(opts))
+}
+
+
 #' @title Delete a study or a simulation
 #' 
 #' @param opts List. study options
