@@ -358,29 +358,27 @@ opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
 # areas list
 antaresRead::getAreas(opts = opts_test)
 
-# temporary to test with "870"
-# force version
-opts_test$antaresVersion <- 870
-
 test_that("scenarioBuilder works with binding constraint (v870)", {
   
   # Read, create & update scenario builder
   
   sbuilder <- scenarioBuilder(
     n_scenario = opts_test$parameters$general$nbyears,
-    n_mc = opts_test$parameters$general$nbyears,
+    n_mc = 10,
     areas = getAreas()[1:3],
-    areas_rand = getAreas()[1:2], 
     opts = opts_test
   )
   
-  # Read previous scenario builder
-  # in a matrix format
-  prev_sb <- readScenarioBuilder(opts = opts_test, as_matrix = TRUE)
-  
   # Update scenario builder
-  # for binding constraints series
-  updateScenarioBuilder(ldata = sbuilder, series = "bc", opts = opts_test)
+    # for binding constraints series
+  updateScenarioBuilder(ldata = sbuilder, series = "bc")
+  
+  # Read scenario builder
+    # in a matrix format
+  prev_sb <- readScenarioBuilder(as_matrix = TRUE)
+  
+  # test
+  testthat::expect_equal(names(prev_sb), "bc")
   
   # remove temporary study
   unlink(x = study_latest_version, recursive = TRUE)

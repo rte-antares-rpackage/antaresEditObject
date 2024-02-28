@@ -265,7 +265,7 @@ extract_el <- function(l, indice) {
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -277,7 +277,7 @@ extract_el <- function(l, indice) {
 #'  
 #' @note
 #' `series = "ntc"` is only available with Antares >= 8.2.0.  
-#' `series = "binding"` is only available with Antares >= 8.7.0. 
+#' `series = "bc"` is only available with Antares >= 8.7.0. 
 #' `series = "hl"` each value must be between 0 and 1.
 #'
 #' @export
@@ -292,7 +292,10 @@ updateScenarioBuilder <- function(ldata,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
+  suppressWarnings(
+    prevSB <- readScenarioBuilder(ruleset = ruleset, 
+                                  as_matrix = FALSE, 
+                                  opts = opts))
   
   ref_series <- create_referential_series_type()
   possible_series <- ref_series$series

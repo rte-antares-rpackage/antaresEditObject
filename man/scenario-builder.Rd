@@ -63,7 +63,7 @@ deduplicateScenarioBuilder(
 
 \item{ldata}{A \code{matrix} obtained with \code{scenarioBuilder},
 or a named list of matrices obtained with \code{scenarioBuilder}, names must be
-'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.}
+'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.}
 
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
 
@@ -87,7 +87,7 @@ Read, create, update & deduplicate scenario builder.
 }
 \note{
 \code{series = "ntc"} is only available with Antares >= 8.2.0.
-\code{series = "binding"} is only available with Antares >= 8.7.0.
+\code{series = "bc"} is only available with Antares >= 8.7.0.
 \code{series = "hl"} each value must be between 0 and 1.
 }
 \examples{
