@@ -37,7 +37,8 @@ It contains one line per time step and three columns "less", "greater" and "equa
 
 \item{filter_synthesis}{Marginal price granularity for synthesis}
 
-\item{coefficients}{A named vector containing the coefficients used by the constraint.}
+\item{coefficients}{A named vector containing the coefficients used by the constraint,
+the coefficients have to be alphabetically ordered.}
 
 \item{group}{"character" group of the constraint, default value : "default"}
 

@@ -109,6 +109,16 @@ test_that("Create cluster with pollutants params (new feature v8.6)",{
     testthat::expect_equal(all(is.na(values_default)), TRUE)
   })
   
+  bad_pollutants_param <- "not_a_list"
+  testthat::expect_error(createCluster(
+    area = getAreas()[1],
+    cluster_name = "bad_cluster",
+    group = "Other",
+    unitcount = as.integer(1),
+    nominalcapacity = 100,
+    list_pollutants = bad_pollutants_param,
+    opts = opts_test), regexp = "'list_pollutants' must be a 'list'")
+  
   pollutants_params <- list(
     "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
     "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,

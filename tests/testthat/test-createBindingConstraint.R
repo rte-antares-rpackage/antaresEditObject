@@ -134,8 +134,21 @@ sapply(studies, function(study) {
         name = "badcoeffs",
         timeStep = "weekly", 
         values = matrix(data = rep(0, 365 * 3), ncol = 3),
-        coefficients =  c("z%psp in" = 12, "b%null" = 0, "fr%de" = 0.5)
-      )
+        coefficients =  c("psp in%z" = 12, "b%null" = 0, "de%fr" = 0.5)
+      ), regexp = "not valid link"
+    )
+    
+  })
+  
+  test_that("Create a new binding constraint with coefficients not ordered alphabetically", {
+    
+    expect_error(
+      createBindingConstraint(
+        name = "not_ordered",
+        timeStep = "weekly", 
+        values = matrix(data = rep(0, 365 * 3), ncol = 3),
+        coefficients =  c("z%psp in" = 12, "fr%de" = 0)
+      ), regexp = "The areas are not sorted alphabetically"
     )
     
   })
@@ -251,7 +264,7 @@ test_that("createBindingConstraint (default group value) v8.7", {
     enabled = FALSE,
     timeStep = "hourly",
     operator = "both",
-    coefficients = c("fr%at" = 1), 
+    coefficients = c("at%fr" = 1), 
     overwrite = TRUE,
     opts = opts_test
   )
