@@ -172,7 +172,9 @@ createCluster <- function(area,
   # check v860
   # check list pollutants parameters
   if(opts$antaresVersion >= 860){
-    if(!is.null(list_pollutants) & !(class(list_pollutants) == "list"))
+    if(!is.null(list_pollutants) & 
+       !(inherits(x = list_pollutants, 
+                  what = "list")))
       stop("Parameter 'list_pollutants' must be a 'list'")
     
     if(!all(names(list_pollutants) %in% name_list_param_poll))
