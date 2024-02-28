@@ -17,15 +17,18 @@ NEW FEATURES :
 ### Breaking changes
 
 * `setPlaylist()` optimized for the API mode
-  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()` 
-  
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()`.
+* `createCluster()` parameter `list_pollutants` default value to NULL.
+* `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
+
 BUGFIXES : 
 
 * Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
 * Fix `setPlaylist()` works in API and local mode with weights.
 * Fix `getPlaylist()` works in API and local mode with weights.
-* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows 
-
+* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
+* Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
+* `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
 
 # antaresEditObject 0.6.1
 

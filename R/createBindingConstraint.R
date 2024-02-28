@@ -18,7 +18,8 @@
 #' @param operator Type of constraint: equality, inequality on one side or both sides.
 #' @param filter_year_by_year Marginal price granularity for year by year
 #' @param filter_synthesis Marginal price granularity for synthesis
-#' @param coefficients A named vector containing the coefficients used by the constraint.
+#' @param coefficients A named vector containing the coefficients used by the constraint, 
+#' the coefficients have to be alphabetically ordered.
 #' @param group "character" group of the constraint, default value : "default group"
 #' @param overwrite If the constraint already exist, overwrite the previous value.
 #' 
@@ -143,6 +144,22 @@ createBindingConstraint <- function(name,
   timeStep <- match.arg(arg = timeStep)
   operator <- match.arg(arg = operator)
   
+  # Check parameter values + standardization of values
+  if(opts$antaresVersion<870)
+    values <- .valueCheck(values, timeStep)
+  
+  if(!is.null(coefficients)){
+    names_coef <- names(coefficients)
+    splitted_names <- strsplit(names_coef, "%")
+    are_areas_sorted <- sapply(splitted_names, function(areas) {
+      identical(areas, sort(areas))
+    })
+    
+    if (!all(are_areas_sorted)) {
+      stop("The areas are not sorted alphabetically.", call. = FALSE)
+    }
+  }
+
   # API block
   if (is_api_study(opts)) {
     
@@ -215,7 +232,7 @@ createBindingConstraint <- function(name,
     bindingConstraints,
     name,
     id,
-    values,
+    values = values,
     enabled,
     timeStep,
     operator,
@@ -231,7 +248,7 @@ createBindingConstraint <- function(name,
   
   # Write Ini
   writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
-
+  
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
@@ -298,7 +315,7 @@ createBindingConstraint_ <- function(bindingConstraints,
     #these lines are here to correct this behaviour
     #see https://github.com/r-lib/testthat/issues/144
     #and https://github.com/r-lib/testthat/issues/86
-    #set Sys.setenv("R_TESTS" = "") do nothing 
+    #set Sys.setenv("R_TESTS" = "") do nothing
     resLinks <- strsplit(links, "%")
     for(i in seq_along(resLinks)){
       resLinks[[i]] <- paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
@@ -326,11 +343,9 @@ createBindingConstraint_ <- function(bindingConstraints,
   # add new bc to write then in .ini file
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
-  ## Values
+  # Check parameter values + standardization of values
   if(opts$antaresVersion>=870 & !is.null(values))
     values <- .valueCheck870(values, timeStep)
-  else
-    values <- .valueCheck(values, timeStep)
   
   # Write values
   # v870
