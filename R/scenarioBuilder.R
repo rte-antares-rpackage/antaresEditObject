@@ -265,7 +265,7 @@ extract_el <- function(l, indice) {
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -289,7 +289,6 @@ updateScenarioBuilder <- function(ldata,
                                   clusters_areas = NULL,
                                   links = NULL,
                                   opts = antaresRead::simOptions()) {
-  browser()
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
