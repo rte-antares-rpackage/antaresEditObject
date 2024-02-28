@@ -264,7 +264,7 @@ createClusterRES <- function(area,
   )
 }
 
-
+#' @importFrom data.table fwrite as.data.table
 .createCluster <- function(area, 
                            cluster_name, 
                            ...,
@@ -299,6 +299,7 @@ createClusterRES <- function(area,
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster$name <- cluster_name
+  lower_cluster_name <- tolower(cluster_name)
   
   # v860 pollutants
   if(opts$antaresVersion >= 860)
@@ -336,7 +337,7 @@ createClusterRES <- function(area,
       currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
       cmd <- api_command_generate(
         action = "replace_matrix",
-        target = sprintf(currPath, area, tolower(cluster_name)),
+        target = sprintf(currPath, area, lower_cluster_name),
         matrix = time_series
       )
       api_command_register(cmd, opts = opts)
@@ -357,15 +358,15 @@ createClusterRES <- function(area,
   # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
   
   # path to ini file containing clusters' name and parameters
-  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", tolower(area), "list.ini")
+  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", area, "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  if (tolower(cluster_name) %in% tolower(names(previous_params)) & !overwrite){
+  if (lower_cluster_name %in% tolower(names(previous_params)) & !overwrite){
     stop(paste(cluster_name, "already exist"))
-  } else if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
-    ind_cluster <- which(tolower(names(previous_params)) %in% tolower(cluster_name))[1]
+  } else if (lower_cluster_name %in% tolower(names(previous_params)) & overwrite){
+    ind_cluster <- which(tolower(names(previous_params)) %in% lower_cluster_name)[1]
     previous_params[[ind_cluster]] <- params_cluster
     names(previous_params)[[ind_cluster]] <- cluster_name
   } else {
@@ -383,7 +384,7 @@ createClusterRES <- function(area,
   
   # initialize series
   dir.create(
-    path = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name)),
+    path = file.path(inputPath, cluster_type, "series", area, lower_cluster_name),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -399,33 +400,33 @@ createClusterRES <- function(area,
     time_series <- rbind(time_series, fill_mat)
   }
   
-  utils::write.table(
-    x = time_series, row.names = FALSE, col.names = FALSE, sep = "\t",
-    file = file.path(inputPath, cluster_type, "series", tolower(area), tolower(cluster_name), "series.txt")
+  fwrite(
+    x = as.data.table(time_series), row.names = FALSE, col.names = FALSE, sep = "\t",
+    file = file.path(inputPath, cluster_type, "series", area, lower_cluster_name, "series.txt")
   )
   
   
   # prepro
   if (identical(cluster_type, "thermal")) {
     dir.create(
-      path = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name)),
+      path = file.path(inputPath, cluster_type, "prepro", area, lower_cluster_name),
       recursive = TRUE, showWarnings = FALSE
     )
     
     if (is.null(prepro_data))
       prepro_data <- matrix(data = c(rep(1, times = 365 * 2), rep(0, times = 365 * 4)), ncol = 6)
-    utils::write.table(
-      x = prepro_data, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name), "data.txt")
+    fwrite(
+      x = as.data.table(prepro_data), row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, cluster_type, "prepro", area, lower_cluster_name, "data.txt")
     )
     
     
     if (is.null(prepro_modulation))
       prepro_modulation <- matrix(data = c(rep(1, times = 365 * 24 * 3), rep(0, times = 365 * 24 * 1)), ncol = 4)
     
-    utils::write.table(
-      x = prepro_modulation, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(inputPath, cluster_type, "prepro", tolower(area), tolower(cluster_name), "modulation.txt")
+    fwrite(
+      x = as.data.table(prepro_modulation), row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, cluster_type, "prepro", area, lower_cluster_name, "modulation.txt")
     )
   }
   
