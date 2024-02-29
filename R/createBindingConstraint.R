@@ -162,26 +162,64 @@ createBindingConstraint <- function(name,
 
   # API block
   if (is_api_study(opts)) {
+   
+    if(opts$antaresVersion<870){
+      cmd <- api_command_generate(
+        "create_binding_constraint", 
+        name = name,
+        enabled = enabled,
+        time_step = timeStep,
+        operator = operator,
+        filter_year_by_year = filter_year_by_year,
+        filter_synthesis = filter_synthesis,
+        group = group,
+        values = values,
+        coeffs = lapply(as.list(coefficients), as.list)
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
+        cli_command_registered("create_binding_constraint")
+      )
+    }
     
-    cmd <- api_command_generate(
-      "create_binding_constraint", 
-      name = name,
-      enabled = enabled,
-      time_step = timeStep,
-      operator = operator,
-      filter_year_by_year = filter_year_by_year,
-      filter_synthesis = filter_synthesis,
-      group = group,
-      values = values,
-      coeffs = lapply(as.list(coefficients), as.list)
-    )
+    # v870
+    body <- list(name = name,
+                 enabled = enabled,
+                 time_step = timeStep,
+                 operator = operator,
+                 filter_year_by_year = filter_year_by_year,
+                 filter_synthesis = filter_synthesis,
+                 group = group,
+                 coeffs = lapply(as.list(coefficients), as.list))
     
-    api_command_register(cmd, opts = opts)
+    if(!is.null(values)){
+      list_values <- list(less_term_matrix = values$lt,
+                          equal_term_matrix = values$eq,
+                          greater_term_matrix = values$gt)
+      
+      list_values <- dropNulls(list_values)
+      
+      body <- append(body, list_values)
+    }
+      
+    if(is.null(body$group))
+      body$group <- NULL
+    
+    body <- jsonlite::toJSON(body,
+                             auto_unbox = TRUE)
+    
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
-      cli_command_registered("create_binding_constraint")
+      api_post(opts, paste0(opts$study_id, "/bindingconstraints"), 
+               body = body, 
+               encode = "raw"),
+      cli::cli_alert_info("Endpoint {.emph {'/bindingconstraints'}} success")
     )
+    
+    
+    
     
     return(invisible(opts))
   }
