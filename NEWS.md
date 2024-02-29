@@ -1,10 +1,20 @@
 # antaresRead 0.7.0 (devlopment)
 
+> Second-member coupling constraint scenarios
+
 ### Breaking changes (Antares v8.7, cf. Antares v8.7 changelog) : 
 
-* Existing function `createBindingConstraint()` / `createBindingConstraintBulk()` has new arguments `group`
-* Existing function `editBindingConstraint()` has new arguments `group`
-  * Integration of the scenario of the coupling constraints of second member 
+* `createBindingConstraint()` / `createBindingConstraintBulk()` 
+  - New parameters `group`  
+  - Parameter `values` is now list of `data.frame` 
+  
+* `editBindingConstraint()` 
+  - New parameters `group`  
+  - Parameter `values` is now list of `data.frame`
+  
+* `removeBindingConstraint()` can now delete coupling constraints from the `group` parameter.
+* `updateGeneralSettings()` adds coupling constraints to the `scenariobuilder.dat` file
+ 
 
 
 # antaresEditObject 0.6.2
