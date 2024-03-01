@@ -147,6 +147,9 @@ createBindingConstraint <- function(name,
   # Check parameter values + standardization of values
   if(opts$antaresVersion<870)
     values <- .valueCheck(values, timeStep)
+  else
+    if(!is.null(values))
+      values <- .valueCheck870(values, timeStep)
   
   if(!is.null(coefficients)){
     names_coef <- names(coefficients)
@@ -182,6 +185,7 @@ createBindingConstraint <- function(name,
         api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
         cli_command_registered("create_binding_constraint")
       )
+      return(invisible(opts))
     }
     
     # v870
@@ -381,10 +385,6 @@ createBindingConstraint_ <- function(bindingConstraints,
   # add new bc to write then in .ini file
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
   
-  # Check parameter values + standardization of values
-  if(opts$antaresVersion>=870 & !is.null(values))
-    values <- .valueCheck870(values, timeStep)
-  
   # Write values
   # v870
   if(opts$antaresVersion>=870){
@@ -535,31 +535,36 @@ group_values_check <- function(group_value,
                     monthly = 12,
                     annual = 1)
     
-    list_checked <- sapply(names(values), function(x, list_in= values, check_standard_rows= nrows){
-      list_work <- list_in[[x]]
-      
-      # one column scenario
-      if(ncol(list_work)==1){
-        if (NROW(list_work) == 24*365)
-            list_work <- rbind(list_work, matrix(rep(0, 24*1), ncol = 1))
-        if (NROW(list_work) == 365) 
-          list_work <- rbind(list_work, matrix(rep(0, 1), ncol = 1))
-        if (! NROW(list_work) %in% c(0, check_standard_rows)) 
-          stop("Incorrect number of rows according to the timeStep")
+    list_checked <- sapply(
+      names(values), 
+      function(x, 
+               list_in= values, 
+               check_standard_rows= nrows){
+        
+        list_work <- list_in[[x]]
+        
+        # one column scenario
+        if(ncol(list_work)==1){
+          if (NROW(list_work) == 24*365)
+              list_work <- rbind(list_work, matrix(rep(0, 24*1), ncol = 1))
+          if (NROW(list_work) == 365) 
+            list_work <- rbind(list_work, matrix(rep(0, 1), ncol = 1))
+          if (! NROW(list_work) %in% c(0, check_standard_rows)) 
+            stop("Incorrect number of rows according to the timeStep")
         }else{# scenarized columns
-        if(dim(list_work)[1]==24*365)
-          list_work <- rbind(list_work, 
-                             matrix(rep(0, 24*dim(list_work)[2]), 
-                                    ncol = dim(list_work)[2]))
-        if(dim(list_work)[1]==365)
-          list_work <- rbind(list_work, 
-                             matrix(rep(0, dim(list_work)[2]), 
-                                    ncol = dim(list_work)[2]))
-        if (! dim(list_work)[1] %in% c(0, check_standard_rows)) 
-          stop("Incorrect number of rows according to the timeStep")
+          if(dim(list_work)[1]==24*365)
+            list_work <- rbind(list_work, 
+                               matrix(rep(0, 24*dim(list_work)[2]), 
+                                      ncol = dim(list_work)[2]))
+          if(dim(list_work)[1]==365)
+            list_work <- rbind(list_work, 
+                               matrix(rep(0, dim(list_work)[2]), 
+                                      ncol = dim(list_work)[2]))
+          if (! dim(list_work)[1] %in% c(0, check_standard_rows)) 
+            stop("Incorrect number of rows according to the timeStep")
         }
-      list_work
-      }, simplify = FALSE)
+        list_work
+        }, simplify = FALSE)
     list_checked
 }
 
