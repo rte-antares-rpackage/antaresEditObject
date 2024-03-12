@@ -4,7 +4,6 @@
 \alias{create-study}
 \alias{createStudy}
 \alias{createStudyAPI}
-\alias{importStudy}
 \title{Create an empty Antares study}
 \usage{
 createStudy(path, study_name = "my_study", antares_version = "8.2.0")
@@ -16,8 +15,6 @@ createStudyAPI(
   antares_version = "8.2.0",
   ...
 )
-
-importStudy(host, token, zipfile_name, opts = antaresRead::simOptions())
 }
 \arguments{
 \item{path}{Path where to create study, it should be an empty directory,
@@ -32,16 +29,9 @@ if it doesn't exist, it'll be created.}
 \item{token}{API personnal access token.}
 
 \item{...}{Other query parameters passed to POST request.}
-
-\item{zipfile_name}{Name of the zipfile of the study.}
-
-\item{opts}{List of simulation parameters returned by the function
-\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
 Result of \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}} or \code{\link[=setSimulationPathAPI]{setSimulationPathAPI()}} accordingly.
-
-An updated list containing various information about the simulation.
 }
 \description{
 Create study on disk or with AntaREST server through the API.
