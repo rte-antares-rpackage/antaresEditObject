@@ -166,66 +166,73 @@ createBindingConstraint <- function(name,
   # API block
   if (is_api_study(opts)) {
    
-    if(opts$antaresVersion<870){
-      cmd <- api_command_generate(
-        "create_binding_constraint", 
-        name = name,
-        enabled = enabled,
-        time_step = timeStep,
-        operator = operator,
-        filter_year_by_year = filter_year_by_year,
-        filter_synthesis = filter_synthesis,
-        group = group,
-        values = values,
-        coeffs = lapply(as.list(coefficients), as.list)
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
-        cli_command_registered("create_binding_constraint")
-      )
-      return(invisible(opts))
-    }
+    api_opts <- .createBindingConstraint_api(name = name,
+                                 enabled = enabled,
+                                 time_step = timeStep,
+                                 operator = operator,
+                                 filter_year_by_year = filter_year_by_year,
+                                 filter_synthesis = filter_synthesis,
+                                 values = values,
+                                 group = group,
+                                 coeffs = lapply(as.list(coefficients), as.list), 
+                                 opts = opts)
     
-    # v870
-    body <- list(name = name,
-                 enabled = enabled,
-                 time_step = timeStep,
-                 operator = operator,
-                 filter_year_by_year = filter_year_by_year,
-                 filter_synthesis = filter_synthesis,
-                 group = group,
-                 coeffs = lapply(as.list(coefficients), as.list))
+    return(invisible(api_opts))
     
-    if(!is.null(values)){
-      list_values <- list(less_term_matrix = values$lt,
-                          equal_term_matrix = values$eq,
-                          greater_term_matrix = values$gt)
-      
-      list_values <- dropNulls(list_values)
-      
-      body <- append(body, list_values)
-    }
-      
-    if(is.null(body$group))
-      body$group <- NULL
-    
-    body <- jsonlite::toJSON(body,
-                             auto_unbox = TRUE)
-    
-    `if`(
-      should_command_be_executed(opts), 
-      api_post(opts, paste0(opts$study_id, "/bindingconstraints"), 
-               body = body, 
-               encode = "raw"),
-      cli::cli_alert_info("Endpoint {.emph {'/bindingconstraints'}} success")
-    )
-    
-    
-    
-    
-    return(invisible(opts))
+    # if(opts$antaresVersion<870){
+    #   cmd <- api_command_generate(
+    #     "create_binding_constraint",
+    #     name = name,
+    #     enabled = enabled,
+    #     time_step = timeStep,
+    #     operator = operator,
+    #     filter_year_by_year = filter_year_by_year,
+    #     filter_synthesis = filter_synthesis,
+    #     values = values,
+    #     coeffs = lapply(as.list(coefficients), as.list)
+    #   )
+    #   api_command_register(cmd, opts = opts)
+    #   `if`(
+    #     should_command_be_executed(opts), 
+    #     api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
+    #     cli_command_registered("create_binding_constraint")
+    #   )
+    #   return(invisible(opts))
+    # }
+    # 
+    # # v870
+    # body <- list(name = name,
+    #              enabled = enabled,
+    #              time_step = timeStep,
+    #              operator = operator,
+    #              filter_year_by_year = filter_year_by_year,
+    #              filter_synthesis = filter_synthesis,
+    #              group = group,
+    #              coeffs = lapply(as.list(coefficients), as.list))
+    # 
+    # if(!is.null(values)){
+    #   list_values <- list(less_term_matrix = values$lt,
+    #                       equal_term_matrix = values$eq,
+    #                       greater_term_matrix = values$gt)
+    #   
+    #   list_values <- dropNulls(list_values)
+    #   
+    #   body <- append(body, list_values)
+    # }
+    #   
+    # if(is.null(body$group))
+    #   body$group <- NULL
+    # 
+    # body <- jsonlite::toJSON(body,
+    #                          auto_unbox = TRUE)
+    # 
+    # should_command_be_executed(opts)
+    # api_post(opts, paste0(opts$study_id, "/bindingconstraints"), 
+    #          body = body, 
+    #          encode = "raw")
+    # cli::cli_alert_info("Endpoint {.emph {'/bindingconstraints'}} success")
+    # 
+    # return(invisible(opts))
   }
   
   ## Ini file
@@ -297,6 +304,57 @@ createBindingConstraint <- function(name,
   })
   
   invisible(res)
+}
+
+
+.createBindingConstraint_api <- function(..., opts){
+  # <v870
+  if(opts$antaresVersion<870){
+    cmd <- api_command_generate(
+      "create_binding_constraint", 
+      ...)
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
+      cli_command_registered("create_binding_constraint")
+    )
+    return(invisible(opts))
+  }
+  
+  # v870
+  body <- list(...)
+  
+  # reforge list structure
+  if(!is.null(body$values)){
+    list_values <- list(less_term_matrix = body$values$lt,
+                        equal_term_matrix = body$values$eq,
+                        greater_term_matrix = body$values$gt)
+    
+    list_values <- dropNulls(list_values)
+    body$values <- NULL
+    
+    body <- append(body, list_values)
+  }
+  
+  # delete NULL from parameters
+  if(is.null(body$group))
+    body$group <- NULL
+  if(is.null(body$values))
+    body$values <- NULL
+  
+  # make json file
+  body <- jsonlite::toJSON(body,
+                           auto_unbox = TRUE)
+  
+  # send request
+  should_command_be_executed(opts)
+  api_post(opts, paste0(opts$study_id, "/bindingconstraints"), 
+           body = body, 
+           encode = "raw")
+  cli::cli_alert_info("Endpoint {.emph {'/bindingconstraints'}} success")
+  
+  return(invisible(opts))
 }
 
 
@@ -656,35 +714,6 @@ createBindingConstraintBulk <- function(constraints,
   })
   invisible(res)
 }
-
-
-
-constructor_binding_values <- function(lt = NULL, gt = NULL, eq = NULL){
-  # # check args
-  # args <- sapply(match.call()[-1], 
-  #                FUN = is.null)
-  # 
-  # if(!any(args)){
-  #   args <- sapply(match.call()[-1], 
-  #                  FUN = is.numeric)
-  #   
-  #   values <- sapply(match.call()[-1], 
-  #                    FUN = as.data.frame)
-  # }
-    
-  list(lt = lt,
-       gt = gt, 
-       eq = eq)
-  
-  
-}
-
-
-
-
-
-
-
 
 
 
