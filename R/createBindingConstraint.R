@@ -147,6 +147,9 @@ createBindingConstraint <- function(name,
   # Check parameter values + standardization of values
   if(opts$antaresVersion<870)
     values <- .valueCheck(values, timeStep)
+  else
+    if(!is.null(values))
+      values <- .valueCheck870(values, timeStep)
   
   if(!is.null(coefficients)){
     names_coef <- names(coefficients)
@@ -162,28 +165,19 @@ createBindingConstraint <- function(name,
 
   # API block
   if (is_api_study(opts)) {
+    api_opts <- .createBC_api(name = name,
+                              enabled = enabled,
+                              time_step = timeStep,
+                              operator = operator,
+                              filter_year_by_year = filter_year_by_year,
+                              filter_synthesis = filter_synthesis,
+                              values = values,
+                              group = group,
+                              coeffs = lapply(as.list(coefficients), 
+                                              as.list), 
+                              opts = opts)
     
-    cmd <- api_command_generate(
-      "create_binding_constraint", 
-      name = name,
-      enabled = enabled,
-      time_step = timeStep,
-      operator = operator,
-      filter_year_by_year = filter_year_by_year,
-      filter_synthesis = filter_synthesis,
-      group = group,
-      values = values,
-      coeffs = lapply(as.list(coefficients), as.list)
-    )
-    
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
-      cli_command_registered("create_binding_constraint")
-    )
-    
-    return(invisible(opts))
+    return(invisible(api_opts))
   }
   
   ## Ini file
@@ -255,6 +249,57 @@ createBindingConstraint <- function(name,
   })
   
   invisible(res)
+}
+
+
+.createBC_api <- function(..., opts){
+  # <v870
+  if(opts$antaresVersion<870){
+    cmd <- api_command_generate(
+      "create_binding_constraint", 
+      ...)
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
+      cli_command_registered("create_binding_constraint")
+    )
+    return(invisible(opts))
+  }
+  
+  # v870
+  body <- list(...)
+  
+  # reforge list structure
+  if(!is.null(body$values)){
+    list_values <- list(less_term_matrix = body$values$lt,
+                        equal_term_matrix = body$values$eq,
+                        greater_term_matrix = body$values$gt)
+    
+    list_values <- dropNulls(list_values)
+    body$values <- NULL
+    
+    body <- append(body, list_values)
+  }
+  
+  # delete NULL from parameters
+  if(is.null(body$group))
+    body$group <- NULL
+  if(is.null(body$values))
+    body$values <- NULL
+  
+  # make json file
+  body <- jsonlite::toJSON(body,
+                           auto_unbox = TRUE)
+  
+  # send request
+  should_command_be_executed(opts)
+  api_post(opts, paste0(opts$study_id, "/bindingconstraints"), 
+           body = body, 
+           encode = "raw")
+  cli::cli_alert_info("Endpoint {.emph {'/bindingconstraints'}} success")
+  
+  return(invisible(opts))
 }
 
 
@@ -342,10 +387,6 @@ createBindingConstraint_ <- function(bindingConstraints,
   
   # add new bc to write then in .ini file
   bindingConstraints[[indexBC]] <- c(iniParams, coefficients)
-  
-  # Check parameter values + standardization of values
-  if(opts$antaresVersion>=870 & !is.null(values))
-    values <- .valueCheck870(values, timeStep)
   
   # Write values
   # v870
@@ -497,31 +538,36 @@ group_values_check <- function(group_value,
                     monthly = 12,
                     annual = 1)
     
-    list_checked <- sapply(names(values), function(x, list_in= values, check_standard_rows= nrows){
-      list_work <- list_in[[x]]
-      
-      # one column scenario
-      if(ncol(list_work)==1){
-        if (NROW(list_work) == 24*365)
-            list_work <- rbind(list_work, matrix(rep(0, 24*1), ncol = 1))
-        if (NROW(list_work) == 365) 
-          list_work <- rbind(list_work, matrix(rep(0, 1), ncol = 1))
-        if (! NROW(list_work) %in% c(0, check_standard_rows)) 
-          stop("Incorrect number of rows according to the timeStep")
+    list_checked <- sapply(
+      names(values), 
+      function(x, 
+               list_in= values, 
+               check_standard_rows= nrows){
+        
+        list_work <- list_in[[x]]
+        
+        # one column scenario
+        if(ncol(list_work)==1){
+          if (NROW(list_work) == 24*365)
+              list_work <- rbind(list_work, matrix(rep(0, 24*1), ncol = 1))
+          if (NROW(list_work) == 365) 
+            list_work <- rbind(list_work, matrix(rep(0, 1), ncol = 1))
+          if (! NROW(list_work) %in% c(0, check_standard_rows)) 
+            stop("Incorrect number of rows according to the timeStep")
         }else{# scenarized columns
-        if(dim(list_work)[1]==24*365)
-          list_work <- rbind(list_work, 
-                             matrix(rep(0, 24*dim(list_work)[2]), 
-                                    ncol = dim(list_work)[2]))
-        if(dim(list_work)[1]==365)
-          list_work <- rbind(list_work, 
-                             matrix(rep(0, dim(list_work)[2]), 
-                                    ncol = dim(list_work)[2]))
-        if (! dim(list_work)[1] %in% c(0, check_standard_rows)) 
-          stop("Incorrect number of rows according to the timeStep")
+          if(dim(list_work)[1]==24*365)
+            list_work <- rbind(list_work, 
+                               matrix(rep(0, 24*dim(list_work)[2]), 
+                                      ncol = dim(list_work)[2]))
+          if(dim(list_work)[1]==365)
+            list_work <- rbind(list_work, 
+                               matrix(rep(0, dim(list_work)[2]), 
+                                      ncol = dim(list_work)[2]))
+          if (! dim(list_work)[1] %in% c(0, check_standard_rows)) 
+            stop("Incorrect number of rows according to the timeStep")
         }
-      list_work
-      }, simplify = FALSE)
+        list_work
+        }, simplify = FALSE)
     list_checked
 }
 
@@ -613,35 +659,6 @@ createBindingConstraintBulk <- function(constraints,
   })
   invisible(res)
 }
-
-
-
-constructor_binding_values <- function(lt = NULL, gt = NULL, eq = NULL){
-  # # check args
-  # args <- sapply(match.call()[-1], 
-  #                FUN = is.null)
-  # 
-  # if(!any(args)){
-  #   args <- sapply(match.call()[-1], 
-  #                  FUN = is.numeric)
-  #   
-  #   values <- sapply(match.call()[-1], 
-  #                    FUN = as.data.frame)
-  # }
-    
-  list(lt = lt,
-       gt = gt, 
-       eq = eq)
-  
-  
-}
-
-
-
-
-
-
-
 
 
 
