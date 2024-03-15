@@ -112,7 +112,6 @@ createStudyAPI <- function(host, token = NULL, study_name = "my_study", antares_
   invisible(opts)
 }
 
-
 #' @title Delete a study or a simulation
 #' 
 #' @param opts List. study options
