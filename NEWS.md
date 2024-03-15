@@ -23,11 +23,13 @@ NEW FEATURES :
 
 * Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
 * New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
+* Add `importZipStudyWeb()` to allow the user to import a local study in Antares Web
 
 ### Breaking changes
 
 * `setPlaylist()` optimized for the API mode
-  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()`.
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()`
+* `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
 
