@@ -293,11 +293,12 @@ createBindingConstraint <- function(name,
                            auto_unbox = TRUE)
   
   # send request
-  should_command_be_executed(opts)
   api_post(opts, paste0(opts$study_id, "/bindingconstraints"), 
            body = body, 
            encode = "raw")
-  cli::cli_alert_info("Endpoint {.emph {'/bindingconstraints'}} success")
+  bc_name <- list(...)$name
+  cli::cli_alert_info("Endpoint {.emph {'Create bindingconstraints'}} {.emph 
+                      {.strong {bc_name}}} success")
   
   return(invisible(opts))
 }
