@@ -17,6 +17,11 @@
 #' @family binding constraints functions
 #' 
 #' @section Warning: 
+#' Put values with rights dimensions :  
+#'  - hourly : 8784  
+#'  - daily = 366  
+#'  
+#' 
 #' **>= v8.7.0** : For each constraint name, one file .txt containing `<id>_lt.txt, <id>_gt.txt, <id>_eq.txt`  
 #' Parameter `values` must be named `list` ("lt", "gt", "eq") containing `data.frame` scenarized.  
 #' see example section below.
@@ -31,7 +36,7 @@
 #'  # < v8.7.0 :
 #' editBindingConstraint(
 #'   name = "myconstraint", 
-#'   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+#'   values = matrix(data = rep(0, 8784 * 3), ncol = 3), 
 #'   enabled = FALSE, 
 #'   timeStep = "hourly",
 #'   operator = "both",
@@ -41,7 +46,7 @@
 #'  # >= v8.7.0 :
 #'  
 #' # data values scenarized (hourly)
-#' df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
+#' df <- matrix(data = rep(0, 8784 * 3), ncol = 3)
 #'  
 #' # you can provide list data with all value 
 #' # or just according with 'operator' (ex : 'lt' for 'less)
@@ -72,37 +77,20 @@ editBindingConstraint <- function(name,
                                   opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  # API block
+  ## API block ----
   if (is_api_study(opts)) {
+    opts_api <- .editBC_api(id = name,
+                enabled = enabled,
+                time_step = timeStep,
+                operator = operator,
+                filter_year_by_year = filter_year_by_year,
+                filter_synthesis = filter_synthesis,
+                values = values,
+                coeffs = lapply(as.list(coefficients), as.list),
+                group = group,
+                opts = opts)
     
-    if (is.null(timeStep))
-      stop("You must provide `timeStep` argument with API.", 
-           call. = FALSE)
-    if (is.null(operator))
-      stop("You must provide `operator` argument with API.", 
-           call. = FALSE)
-    
-    cmd <- api_command_generate(
-      "update_binding_constraint", 
-      id = name,
-      enabled = enabled,
-      time_step = timeStep,
-      operator = operator,
-      filter_year_by_year = filter_year_by_year,
-      filter_synthesis = filter_synthesis,
-      values = values,
-      coeffs = lapply(as.list(coefficients), as.list)
-    )
-    
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, 
-                          text_alert = "update_binding_constraint: {msg_api}"),
-      cli_command_registered("update_binding_constraint")
-    )
-    
-    return(invisible(opts))
+    return(invisible(opts_api))
   }
   
   # valuesIn <- values
@@ -275,4 +263,73 @@ editBindingConstraint <- function(name,
                                           simulation = "input")
   })
   
+}
+
+# api part code
+.editBC_api <- function(..., opts){
+  args <- list(...)
+  # multi vers checks (legacy)
+  if (is.null(args$time_step))
+    stop("You must provide `timeStep` argument with API.", 
+         call. = FALSE)
+  if (is.null(args$time_step))
+    stop("You must provide `operator` argument with API.", 
+         call. = FALSE)
+  
+  # <v870
+  if(opts$antaresVersion<870){
+    cmd <- api_command_generate(
+      "update_binding_constraint", 
+      ...)
+    
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, 
+                          text_alert = "update_binding_constraint: {msg_api}"),
+      cli_command_registered("update_binding_constraint")
+    )
+    
+    return(invisible(opts))
+  }
+  
+  # >=v870
+  
+  # reforge list structure
+  if(!is.null(args$values)){
+    list_values <- list(less_term_matrix = args$values$lt,
+                        equal_term_matrix = args$values$eq,
+                        greater_term_matrix = args$values$gt)
+    
+    list_values <- dropNulls(list_values)
+    args$values <- NULL
+    
+    args <- append(args, list_values)
+  }
+  
+  # delete NULL from parameters
+  args <- dropNulls(args)
+  
+  # loop for every parameter (legacy endpoint)
+  names_to_keep <- setdiff(names(args), "id")
+  id_bc <- args$id
+  
+  lapply(names_to_keep, function(x){
+    select_element <- args[x]
+    body <- list(key= names(select_element),
+                 value= args[[x]])
+    # make json file
+    body <- jsonlite::toJSON(body, 
+                             auto_unbox = TRUE)
+    # send request
+    api_put(opts = opts, 
+            endpoint =  file.path(opts$study_id, "bindingconstraints", id_bc), 
+            body = body, 
+            encode = "raw")
+  })
+  
+  cli::cli_alert_info("Endpoint {.emph {'Update bindingconstraints'}} {.emph 
+                      {.strong {id_bc}}} success")
+  
+  return(invisible(opts))
 }

@@ -57,6 +57,12 @@ The key search value of the constraint is the \code{id} field
 }
 \section{Warning}{
 
+Put values with rights dimensions :
+\itemize{
+\item hourly : 8784
+\item daily = 366
+}
+
 \strong{>= v8.7.0} : For each constraint name, one file .txt containing \verb{<id>_lt.txt, <id>_gt.txt, <id>_eq.txt}
 Parameter \code{values} must be named \code{list} ("lt", "gt", "eq") containing \code{data.frame} scenarized.
 see example section below.
@@ -67,7 +73,7 @@ see example section below.
  # < v8.7.0 :
 editBindingConstraint(
   name = "myconstraint", 
-  values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+  values = matrix(data = rep(0, 8784 * 3), ncol = 3), 
   enabled = FALSE, 
   timeStep = "hourly",
   operator = "both",
@@ -77,7 +83,7 @@ editBindingConstraint(
  # >= v8.7.0 :
  
 # data values scenarized (hourly)
-df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
+df <- matrix(data = rep(0, 8784 * 3), ncol = 3)
  
 # you can provide list data with all value 
 # or just according with 'operator' (ex : 'lt' for 'less)
