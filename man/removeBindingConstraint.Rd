@@ -13,7 +13,7 @@ removeBindingConstraint(
 \arguments{
 \item{name}{Name(s) of the binding constraint(s) to remove.}
 
-\item{group}{\code{character} Name(s) of group to delete}
+\item{group}{\code{character} Name(s) of group to delete (\strong{disk mode only})}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -32,7 +32,7 @@ Remove a binding constraint in an Antares study.
 # < v8.7.0 :
 removeBindingConstraint(name = "mybindingconstraint")
 
-# >= v8.7.0 (delete by names group) :
+# >= v8.7.0 (delete by names group **ONLY WITH DISK MODE**) :
 # read
 bc <- readBindingConstraints()
 

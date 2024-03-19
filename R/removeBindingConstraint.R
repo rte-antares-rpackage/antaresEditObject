@@ -8,7 +8,7 @@
 #' 
 #' 
 #' @param name Name(s) of the binding constraint(s) to remove.
-#' @param group `character` Name(s) of group to delete
+#' @param group `character` Name(s) of group to delete (**disk mode only**)
 #' 
 #' @template opts
 #' 
@@ -21,7 +21,7 @@
 #'# < v8.7.0 :
 #' removeBindingConstraint(name = "mybindingconstraint")
 #' 
-#' # >= v8.7.0 (delete by names group) :
+#' # >= v8.7.0 (delete by names group **ONLY WITH DISK MODE**) :
 #' # read
 #' bc <- readBindingConstraints()
 #'
@@ -51,19 +51,9 @@ removeBindingConstraint <- function(name = NULL,
   
   # API block
   if (is_api_study(opts)) {
-    for (i in name) {
-      cmd <- api_command_generate(
-        "remove_binding_constraint", 
-        id = i
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "remove_binding_constraint: {msg_api}"),
-        cli_command_registered("remove_binding_constraint")
-      )
-    }
-    return(invisible(opts))
+    opts_api <- .remove_bc_api(name = name, opts = opts)
+    
+    return(invisible(opts_api))
   }
   
   ## read Ini file
@@ -166,4 +156,37 @@ removeBindingConstraint <- function(name = NULL,
                                     opts = opts)
       updated_bc
     }
+}
+
+.remove_bc_api <- function(..., opts){
+  args <- list(...)
+  # <v870
+  if(opts$antaresVersion<870){
+    # remove serial bc
+    for (i in args$name) {
+      cmd <- api_command_generate(
+        "remove_binding_constraint", 
+        id = i
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "remove_binding_constraint: {msg_api}"),
+        cli_command_registered("remove_binding_constraint")
+      )
+    }
+    return(invisible(opts))
+  }
+  
+  # >=v870
+  lapply(args$name, function(x){
+    # send request
+    api_delete(opts = opts, 
+            endpoint =  file.path(opts$study_id, "bindingconstraints", x), 
+            encode = "raw")
+    
+    cli::cli_alert_info("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
+                      {.strong {x}}} success")
+  })
+  return(invisible(opts))
 }
