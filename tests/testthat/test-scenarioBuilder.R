@@ -345,3 +345,52 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
+
+
+test_that("scenarioBuilder() has the same beahviour for one single matrix with argument series l or load and does nothing if argument series is lo", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  createArea("zone51", opts = simOptions())
+  
+  updateGeneralSettings(horizon = "2030", first.month.in.year = "january", january.1st = "Monday", nbyears = 10, opts = simOptions())
+  
+	# Use scenarioBuilder constructor
+  my_scenario <- scenarioBuilder(n_scenario = 2, areas = c("zone51"), opts = simOptions())
+  
+	# With series = "load"
+  updateScenarioBuilder(my_scenario, series = "load", opts = simOptions())
+  scbuilder_w_load <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = simOptions())
+  
+  # Clear ScenarioBuilder
+  clearScenarioBuilder(ruleset = "Default Ruleset", opts = simOptions())
+  
+  # With series = "l"
+  updateScenarioBuilder(my_scenario, series = "l", opts = simOptions())
+  scbuilder_w_l <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = simOptions())
+  
+  expect_true(inherits(x = scbuilder_w_load, what = "list"))
+  expect_true(inherits(x = scbuilder_w_l, what = "list"))
+  
+  expect_true(length(scbuilder_w_load) == 1)
+  expect_true(length(scbuilder_w_l) == 1)
+  
+  expect_true(names(scbuilder_w_load) == "l")
+  expect_true(names(scbuilder_w_l) == "l")
+  expect_equal(scbuilder_w_load, scbuilder_w_l)
+  
+  # Clear ScenarioBuilder
+  clearScenarioBuilder(ruleset = "Default Ruleset", opts = simOptions())
+
+  # With series = "lo"
+	# previous version of updateScenarioBuilder used the match.arg function and series = "lo" (or "loa") writes data in scenariobuilder.dat
+  updateScenarioBuilder(my_scenario, series = "lo", opts = simOptions())
+  scbuilder_w_lo <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = simOptions())
+  
+	expect_true(inherits(x = scbuilder_w_lo, what = "list"))
+  expect_true(length(scbuilder_w_lo) == 0)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
