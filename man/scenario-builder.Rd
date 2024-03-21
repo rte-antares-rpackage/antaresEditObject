@@ -88,6 +88,20 @@ Read, create, update & deduplicate scenario builder.
 \note{
 \code{series = "ntc"} is only available with Antares >= 8.2.0.
 \code{series = "hl"} each value must be between 0 and 1.
+
+For a single matrix, value of series can be :
+\itemize{
+\item l or load
+\item t or thermal
+\item h or hydro
+\item w or wind
+\item s or solar
+\item w or wind
+\item r or renewables
+\item r or renewables
+\item r or renewables
+\item r or renewables
+}
 }
 \examples{
 \dontrun{
@@ -133,8 +147,8 @@ prev_sb <- readScenarioBuilder()
 
 # Update scenario builder
 
-# for load serie
-updateScenarioBuilder(ldata = sbuilder, series = "load")
+# Single matrix for load serie
+updateScenarioBuilder(ldata = sbuilder, series = "load") # can be l instead of load
 
 # equivalent as
 updateScenarioBuilder(ldata = list(l = sbuilder))
@@ -149,7 +163,7 @@ updateScenarioBuilder(
   series = c("load", "hydro", "solar")
 )
 
-# different input
+# List of matrix
 updateScenarioBuilder(ldata = list(
   l = load_sb,
   h = hydro_sb,
