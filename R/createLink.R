@@ -207,7 +207,7 @@ createLink <- function(from,
       )
     }
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
 
