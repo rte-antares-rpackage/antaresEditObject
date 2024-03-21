@@ -65,8 +65,8 @@
 #' 
 #' # Update scenario builder
 #' 
-#' # for load serie
-#' updateScenarioBuilder(ldata = sbuilder, series = "load")
+#' # Single matrix for load serie
+#' updateScenarioBuilder(ldata = sbuilder, series = "load") # can be l instead of load
 #' 
 #' # equivalent as
 #' updateScenarioBuilder(ldata = list(l = sbuilder))
@@ -81,7 +81,7 @@
 #'   series = c("load", "hydro", "solar")
 #' )
 #' 
-#' # different input
+#' # List of matrix
 #' updateScenarioBuilder(ldata = list(
 #'   l = load_sb,
 #'   h = hydro_sb,
@@ -147,11 +147,23 @@ scenarioBuilder <- function(n_scenario,
 
 #' @title Create the correspondence data frame between the symbol and the type in scenario builder
 #' @return a `data.frame`.
-create_referential_series_type <- function(){
-
-  ref_series <- data.frame("series" = c("l", "h", "w", "s", "t", "r", "ntc", "hl"),
-                           "choices" = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels")
-                         )
+create_scb_referential_series_type <- function(){
+  
+  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl")
+  choices <- c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels")
+  
+  # Check data consistency
+  len_series_to_write <- length(series_to_write)  
+  len_choices <- length(choices)
+  if (len_choices != len_series_to_write) {
+    stop("Inconsistent data between series and choices.\n")
+  }
+  
+  # Generate referential : w to write in scenarioBuilder, r for read only in argument
+  ref_series <- data.frame("series" = c(series_to_write, choices),
+                           "choices" = rep(choices, 2),
+                           "type" = c(rep("w",len_series_to_write), rep("r",len_choices))
+                          )
 
   return(ref_series)
 }
@@ -269,6 +281,16 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' `series = "ntc"` is only available with Antares >= 8.2.0.
 #' `series = "hl"` each value must be between 0 and 1.
 #'
+#' For a single matrix, value of series can be :
+#'  - l or load
+#'  - t or thermal
+#'  - h or hydro
+#'  - w or wind
+#'  - s or solar
+#'  - r or renewables
+#'  - ntc
+#'  - hl or hydrolevels
+#' 
 #' @export
 #' 
 #' @rdname scenario-builder
@@ -283,7 +305,7 @@ updateScenarioBuilder <- function(ldata,
   
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
   
-  ref_series <- create_referential_series_type()
+  ref_series <- create_scb_referential_series_type()
   possible_series <- ref_series$series
   
   if (!is.list(ldata)) {
@@ -291,7 +313,7 @@ updateScenarioBuilder <- function(ldata,
       series <- ref_series[possible_series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
-      series <- ref_series[ref_series$choices %in% series, "series"]
+      series <- ref_series[ref_series$choices %in% series & ref_series$type == "w", "series"]
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
