@@ -8,9 +8,13 @@
 #' 
 #' 
 #' @param name Name(s) of the binding constraint(s) to remove.
-#' @param group `character` Name(s) of group to delete (**disk mode only**)
+#' @param group `character` Name(s) of group to delete 
 #' 
 #' @template opts
+#' 
+#' @note 
+#' Starting with version **v8.7.0**, you can delete binding constraints by 
+#' name or by group.
 #' 
 #' @family binding constraints functions
 #' 
@@ -21,7 +25,7 @@
 #'# < v8.7.0 :
 #' removeBindingConstraint(name = "mybindingconstraint")
 #' 
-#' # >= v8.7.0 (delete by names group **ONLY WITH DISK MODE**) :
+#' # >= v8.7.0 (delete by names group) :
 #' # read
 #' bc <- readBindingConstraints()
 #'
@@ -51,7 +55,9 @@ removeBindingConstraint <- function(name = NULL,
   
   # API block
   if (is_api_study(opts)) {
-    opts_api <- .remove_bc_api(name = name, opts = opts)
+    opts_api <- .remove_bc_api(name = name, 
+                               group = group,
+                               opts = opts)
     
     return(invisible(opts_api))
   }
@@ -179,14 +185,48 @@ removeBindingConstraint <- function(name = NULL,
   }
   
   # >=v870
-  lapply(args$name, function(x){
-    # send request
-    api_delete(opts = opts, 
-            endpoint =  file.path(opts$study_id, "bindingconstraints", x), 
-            encode = "raw")
+  # delete by group(s) name(s)
+  if(!is.null(args$group)){
+    group <- args$group
+    all_bc <- readBindingConstraints(opts = opts)
     
-    cli::cli_alert_info("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
-                      {.strong {x}}} success")
+    # extract groups
+    bc_groups <- sapply(all_bc, function(x){
+      x$properties$group
+    })
+    
+    # check
+    if(!all(group%in%bc_groups))
+      stop(paste0("No binding constraint with group '", 
+                     group[!group%in%bc_groups], "'"), 
+              call. = FALSE)
+    
+    # select name to delete
+    index <- which(bc_groups%in%group)
+    names_to_delete <- sapply(index, 
+                              function(x, 
+                                       bc = all_bc){
+                                bc[[x]]$properties$id
+                              })
+    
+    # delete names
+    lapply(names_to_delete, function(x){
+      # send request
+      api_delete(opts = opts, 
+                 endpoint =  file.path(opts$study_id, "bindingconstraints", x), 
+                 encode = "raw")
+      cli::cli_alert_info("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
+                          {.strong {x}}} success")
+    })
+    
+  }else
+    lapply(args$name, function(x){
+      # send request
+      api_delete(opts = opts, 
+                 endpoint =  file.path(opts$study_id, "bindingconstraints", x), 
+                 encode = "raw")
+      cli::cli_alert_info("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
+                          {.strong {x}}} success")
   })
   return(invisible(opts))
 }
