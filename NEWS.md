@@ -13,6 +13,7 @@ NEW FEATURES :
 * `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
+* `.createCluster()` default matrix in API mode.
 
 BUGFIXES : 
 
