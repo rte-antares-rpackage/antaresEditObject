@@ -365,7 +365,9 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   sbuilder <- scenarioBuilder(
     n_scenario = opts_test$parameters$general$nbyears,
     n_mc = 10,
-    areas = getAreas()[1:3],
+    group_bc = c("group_test", "default"), 
+    group_bc_rand = "default",
+    mode = "bc",
     opts = opts_test
   )
   

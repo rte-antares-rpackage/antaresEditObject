@@ -10,11 +10,14 @@
 \title{Read, create, update & deduplicate scenario builder}
 \usage{
 scenarioBuilder(
-  n_scenario,
+  n_scenario = NULL,
   n_mc = NULL,
   areas = NULL,
   areas_rand = NULL,
+  group_bc = NULL,
+  group_bc_rand = NULL,
   coef_hydro_levels = NULL,
+  mode = NULL,
   opts = antaresRead::simOptions()
 )
 
@@ -52,7 +55,13 @@ deduplicateScenarioBuilder(
 
 \item{areas_rand}{Areas for which to use \code{"rand"}.}
 
+\item{group_bc}{\code{character} Bindgind constraints's groups names to use.}
+
+\item{group_bc_rand}{\code{character} Bindgind constraints which to use \code{"rand"}.}
+
 \item{coef_hydro_levels}{Hydro levels coefficients.}
+
+\item{mode}{\code{character} "bc" to edit binding constraints.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}

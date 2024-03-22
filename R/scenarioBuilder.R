@@ -9,6 +9,9 @@
 #' @param n_mc Number of Monte-Carlo years.
 #' @param areas Areas to use in scenario builder, if `NULL` (default) all areas in Antares study are used.
 #' @param areas_rand Areas for which to use `"rand"`.
+#' @param group_bc `character` Bindgind constraints's groups names to use.
+#' @param group_bc_rand `character` Bindgind constraints which to use `"rand"`.
+#' @param mode `character` "bc" to edit binding constraints.
 #' @param coef_hydro_levels Hydro levels coefficients.
 #' @param opts
 #'   List of simulation parameters returned by the function
@@ -92,54 +95,160 @@
 #' 
 #' deduplicateScenarioBuilder()
 #' }
-scenarioBuilder <- function(n_scenario, 
+scenarioBuilder <- function(n_scenario = NULL, 
                             n_mc = NULL,
                             areas = NULL,
                             areas_rand = NULL,
+                            group_bc = NULL, 
+                            group_bc_rand = NULL,
                             coef_hydro_levels = NULL,
+                            mode = NULL,
                             opts = antaresRead::simOptions()) {
+  
   
   if (is_api_study(opts) && is_api_mocked(opts)) {
     stopifnot("In mocked API mode, n_mc cannot be NULL" = !is.null(n_mc))
-    stopifnot("In mocked API mode, areas cannot be NULL" = !is.null(n_mc))
+    stopifnot("In mocked API mode, areas cannot be NULL" = !is.null(areas))
   }
-  if (is.null(areas)) {
-    areas <- antaresRead::getAreas(opts = opts)
+  
+  # check version >=870 from group parameter
+  if(!opts$antaresVersion >= 870 & !is.null(group_bc))
+    stop("Parameter 'group_bc' is only for Antares study version >= v8.7.0", 
+         call. = FALSE)
+  if(!opts$antaresVersion >= 870 & !is.null(group_bc_rand))
+    stop("Parameter 'group_bc_rand' is only for Antares study version >= v8.7.0", 
+         call. = FALSE)
+  
+  # >=v870
+  if(opts$antaresVersion >= 870){
+    # update with bc
+    if(mode %in% "bc"){
+      # read groups
+      if(is.null(group_bc)){
+        group_bc <- readBindingConstraints(opts = opts)
+        group_bc <- sapply(group_bc, function(x){
+          x$properties$group
+        })
+      }
+      else 
+        group_bc <- unique(c(group_bc, group_bc_rand))
+      
+      # check parameters
+      if (!all(group_bc_rand %in% group_bc)) 
+        warning("Some 'group_bc_rand' are not Antares 'group_bc'", call. = FALSE)
+      
+      # n_mc parameter
+      if (is.null(n_mc)) 
+        n_mc <- opts$parameters$general$nbyears
+      else 
+        if (isTRUE(n_mc != opts$parameters$general$nbyears)) 
+          warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
+    }
+    
+    # write data
+    data_mat <- rep(rep_len(seq_len(n_scenario), 
+                        n_mc),
+                    length(group_bc))
+    
+    sb <- matrix(
+      data = data_mat,
+      byrow = TRUE, 
+      nrow = length(group_bc),
+      dimnames = list(group_bc, NULL)
+    )
+    sb[group_bc %in% group_bc_rand, ] <- "rand"
+    
+    return(sb)
+  }
+  else # without bc 
+    .manage_parameter(n_scenario = n_scenario,
+                      n_mc = n_mc,
+                      areas = areas,
+                      areas_rand = areas_rand,
+                      coef_hydro_levels = coef_hydro_levels,
+                      opts = opts)
+  
+  # if (is.null(areas)) {
+  #   areas <- antaresRead::getAreas(opts = opts)
+  # } else {
+  #   areas <- unique(c(areas, areas_rand))
+  # }
+  # if (!all(areas_rand %in% areas)) {
+  #   warning("Some 'areas_rand' are not Antares' areas", call. = FALSE)
+  # }
+  # if (is.null(n_mc)) {
+  #   n_mc <- opts$parameters$general$nbyears
+  # } else {
+  #   if (isTRUE(n_mc != opts$parameters$general$nbyears)) {
+  #     warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
+  #   }
+  # }
+  # 
+  # if (!is.null(coef_hydro_levels)) {
+  #   nb_areas <- length(areas)
+  #   nb_coef_hydro_levels <- length(coef_hydro_levels)
+  #   if (nb_coef_hydro_levels == nb_areas) {
+  #     data_mat <- rep(coef_hydro_levels, each = n_mc)
+  #   } else if(nb_coef_hydro_levels == nb_areas * n_mc) {
+  #     data_mat <- coef_hydro_levels
+  #   } else {
+  #     stop("Please check the number of areas and the number of coefficients for hydro levels that you provided.")
+  #   }
+  # } else {
+  #   data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
+  # }
+  # 
+  # sb <- matrix(
+  #   data = data_mat,
+  #   byrow = TRUE, 
+  #   nrow = length(areas),
+  #   dimnames = list(areas, NULL)
+  # )
+  # sb[areas %in% areas_rand, ] <- "rand"
+  # 
+  # return(sb)
+}
+
+.manage_parameter <- function(..., opts){
+  args <- list(...)
+  if (is.null(args$areas)) {
+    args$areas <- antaresRead::getAreas(opts = opts)
   } else {
-    areas <- unique(c(areas, areas_rand))
+    args$areas <- unique(c(args$areas, args$areas_rand))
   }
-  if (!all(areas_rand %in% areas)) {
+  if (!all(args$areas_rand %in% args$areas)) {
     warning("Some 'areas_rand' are not Antares' areas", call. = FALSE)
   }
-  if (is.null(n_mc)) {
-    n_mc <- opts$parameters$general$nbyears
+  if (is.null(args$n_mc)) {
+    args$n_mc <- opts$parameters$general$nbyears
   } else {
-    if (isTRUE(n_mc != opts$parameters$general$nbyears)) {
+    if (isTRUE(args$n_mc != opts$parameters$general$nbyears)) {
       warning("Specified number of Monte-Carlo years differ from the one in Antares general parameter", call. = FALSE)
     }
   }
   
-  if (!is.null(coef_hydro_levels)) {
-    nb_areas <- length(areas)
-    nb_coef_hydro_levels <- length(coef_hydro_levels)
+  if (!is.null(args$coef_hydro_levels)) {
+    nb_areas <- length(args$areas)
+    nb_coef_hydro_levels <- length(args$coef_hydro_levels)
     if (nb_coef_hydro_levels == nb_areas) {
-      data_mat <- rep(coef_hydro_levels, each = n_mc)
-    } else if(nb_coef_hydro_levels == nb_areas * n_mc) {
-      data_mat <- coef_hydro_levels
+      data_mat <- rep(args$coef_hydro_levels, each = args$n_mc)
+    } else if(nb_coef_hydro_levels == nb_areas * args$n_mc) {
+      data_mat <- args$coef_hydro_levels
     } else {
       stop("Please check the number of areas and the number of coefficients for hydro levels that you provided.")
     }
   } else {
-    data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
+    data_mat <- rep_len(seq_len(args$n_scenario), 
+                        length(args$areas) * args$n_mc)
   }
   
   sb <- matrix(
     data = data_mat,
     byrow = TRUE, 
-    nrow = length(areas),
-    dimnames = list(areas, NULL)
+    nrow = length(args$areas),
+    dimnames = list(args$areas, NULL)
   )
-  sb[areas %in% areas_rand, ] <- "rand"
+  sb[args$areas %in% args$areas_rand, ] <- "rand"
   
   return(sb)
 }
