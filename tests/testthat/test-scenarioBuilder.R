@@ -347,7 +347,7 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
 })
 
 
-test_that("scenarioBuilder() has the same beahviour for one single matrix with argument series l or load and does nothing if argument series is lo", {
+test_that("updateScenarioBuilder() has the same behaviour for one single matrix with argument series l or load and does nothing if argument series is lo", {
   
   ant_version <- "8.2.0"
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
@@ -357,10 +357,10 @@ test_that("scenarioBuilder() has the same beahviour for one single matrix with a
   
   updateGeneralSettings(horizon = "2030", first.month.in.year = "january", january.1st = "Monday", nbyears = 10, opts = simOptions())
   
-	# Use scenarioBuilder constructor
+  # Use scenarioBuilder constructor
   my_scenario <- scenarioBuilder(n_scenario = 2, areas = c("zone51"), opts = simOptions())
   
-	# With series = "load"
+  # With series = "load"
   updateScenarioBuilder(my_scenario, series = "load", opts = simOptions())
   scbuilder_w_load <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = simOptions())
   
@@ -381,16 +381,35 @@ test_that("scenarioBuilder() has the same beahviour for one single matrix with a
   expect_true(names(scbuilder_w_l) == "l")
   expect_equal(scbuilder_w_load, scbuilder_w_l)
   
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+test_that("updateScenarioBuilder() has error if names of list or argument series is not valid", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  createArea("zone51", opts = simOptions())
+  
+  updateGeneralSettings(horizon = "2030", first.month.in.year = "january", january.1st = "Monday", nbyears = 10, opts = simOptions())
+  
+  # Use scenarioBuilder constructor
+  my_scenario <- scenarioBuilder(n_scenario = 2, areas = c("zone51"), opts = simOptions())
+  
+  # Single matrix
+  # With series = "blablabla"
+  expect_error(updateScenarioBuilder(my_scenario, series = "blablabla", opts = simOptions()),
+               regexp = "Your argument series must be one of")
+  
   # Clear ScenarioBuilder
   clearScenarioBuilder(ruleset = "Default Ruleset", opts = simOptions())
-
-  # With series = "lo"
-	# previous version of updateScenarioBuilder used the match.arg function and series = "lo" (or "loa") writes data in scenariobuilder.dat
-  updateScenarioBuilder(my_scenario, series = "lo", opts = simOptions())
-  scbuilder_w_lo <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = simOptions())
   
-	expect_true(inherits(x = scbuilder_w_lo, what = "list"))
-  expect_true(length(scbuilder_w_lo) == 0)
+  # List of matrixes
+  # With list names = "blablabla"(KO) and "l"(OK)
+  expect_error(updateScenarioBuilder(ldata = list("blablabla" = my_scenario, "l" = my_scenario), opts = simOptions()),
+               regexp = "Each of your list name must be in the following list")
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
