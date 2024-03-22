@@ -91,16 +91,14 @@ Read, create, update & deduplicate scenario builder.
 
 For a single matrix, value of series can be :
 \itemize{
-\item l or load
-\item t or thermal
 \item h or hydro
-\item w or wind
+\item hl or hydrolevels
+\item l or load
+\item ntc
+\item r or renewables
 \item s or solar
+\item t or thermal
 \item w or wind
-\item r or renewables
-\item r or renewables
-\item r or renewables
-\item r or renewables
 }
 }
 \examples{
