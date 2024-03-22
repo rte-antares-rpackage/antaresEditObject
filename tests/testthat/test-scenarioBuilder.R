@@ -345,3 +345,40 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
+
+
+test_that("scenarioBuilder() works as expected, same row for each area except if it is rand", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  createArea("zone51", opts = simOptions())
+	createArea("zone52", opts = simOptions())
+	createArea("zone53", opts = simOptions())
+	createArea("zone54", opts = simOptions())
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  updateGeneralSettings(nbyears = 10)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  sbuilder <- scenarioBuilder(
+      n_scenario = 3,
+      n_mc = 10,
+      areas = c("zone51", "zone52", "zone53", "zone54"),
+      areas_rand = c("zone52")
+  )
+    
+  sb <- structure(
+      c("1", "rand", "1", "1", "2", "rand", "2", "2", "3", "rand", "3", "3",
+			  "1", "rand", "1", "1", "2", "rand", "2", "2", "3", "rand", "3", "3",
+				"1", "rand", "1", "1", "2", "rand", "2", "2", "3", "rand", "3", "3",
+				"1", "rand", "1", "1"
+				),
+      .Dim = c(4L,10L),
+      .Dimnames = list(c("zone51", "zone52", "zone53", "zone54"), NULL)
+  )
+    
+    expect_identical(sbuilder, sb)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
