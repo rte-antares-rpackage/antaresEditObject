@@ -282,14 +282,14 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' `series = "hl"` each value must be between 0 and 1.
 #'
 #' For a single matrix, value of series can be :
-#'  - l or load
-#'  - t or thermal
 #'  - h or hydro
-#'  - w or wind
-#'  - s or solar
-#'  - r or renewables
-#'  - ntc
 #'  - hl or hydrolevels
+#'  - l or load
+#'  - ntc
+#'  - r or renewables
+#'  - s or solar
+#'  - t or thermal
+#'  - w or wind
 #' 
 #' @export
 #' 
@@ -306,14 +306,16 @@ updateScenarioBuilder <- function(ldata,
   suppressWarnings(prevSB <- readScenarioBuilder(ruleset = ruleset, as_matrix = FALSE, opts = opts))
   
   ref_series <- create_scb_referential_series_type()
-  possible_series <- ref_series$series
   
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- ref_series[possible_series %in% series, "choices"]
+      if (! all(series %in% ref_series$series)) {
+        stop("Your argument series must be one of ", paste0(ref_series$series, collapse = ", "), call. = FALSE)
+      }
+      choices <- ref_series[ref_series$series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
-      series <- ref_series[ref_series$choices %in% series & ref_series$type == "w", "series"]
+      series <- ref_series[ref_series$choices %in% choices & ref_series$type == "w", "series"]
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
@@ -328,8 +330,9 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% possible_series)) {
-      stop("'ldata' must be one of ", paste0(possible_series, collapse = ", "), call. = FALSE)
+    possible_series <- ref_series[ref_series$type == "w", "series"]
+    if (! all(series %in% possible_series)) {
+      stop("Each of your list names must be in the following list : ", paste0(possible_series, collapse = ", "), call. = FALSE)
     }
     if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
