@@ -464,7 +464,8 @@ listify_sb <- function(mat,
       x = dtsb, 
       y = links[, .SD, .SDcols = c("from", "to")],
       by.x = "rn",
-      by.y = "from"
+      by.y = "from",
+      allow.cartesian = TRUE  
     )
   }
   
