@@ -347,7 +347,7 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
 })
 
 
-test_that("scenarioBuilder() works as expected, same row for each area except if it is rand", {
+test_that("scenarioBuilder() works as expected if n_mc is not a multiple of n_scenario, same row for each area except if it is rand", {
   
   ant_version <- "8.2.0"
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
@@ -378,7 +378,7 @@ test_that("scenarioBuilder() works as expected, same row for each area except if
       .Dimnames = list(c("zone51", "zone52", "zone53", "zone54"), NULL)
   )
     
-    expect_identical(sbuilder, sb)
+  expect_identical(sbuilder, sb)
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
