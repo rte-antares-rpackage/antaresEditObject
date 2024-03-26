@@ -198,26 +198,28 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
         Sys.sleep(opts$sleep)
       result <- api_get(opts, paste0(opts$study_id, "/task"))
     }
-    result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
-    msg_api <- result_log$message
+    result_res <- result$result
+    msg_api <- result_res$message
     if (is.null(msg_api) | identical(msg_api, ""))
       msg_api <- "<no feedback from API>"
-    if (identical(result_log$success, TRUE)) {
+    if (identical(result_res$success, TRUE)) {
       if (!is_quiet())
         cli::cli_alert_success(text_alert)
     }
-    if (identical(result_log$success, FALSE)) {
+    if (identical(result_res$success, FALSE)) {
       if (!is_quiet())
         cli::cli_alert_danger(text_alert)
+      # TO DO : id of the command to delete is not available in the result for the moment
       api_delete(opts, paste0(opts$study_id, "/commands/", result_log$id))
       stop(paste0("\n", msg_api), 
            call. = FALSE)
       if (!is_quiet())
         cli::cli_alert_warning("Command has been deleted")
     }
-    return(invisible(result$result$success))
+    return(invisible(result_res$success))
   }
 }
+
 
 
 
