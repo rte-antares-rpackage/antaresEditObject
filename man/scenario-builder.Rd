@@ -10,11 +10,14 @@
 \title{Read, create, update & deduplicate scenario builder}
 \usage{
 scenarioBuilder(
-  n_scenario,
+  n_scenario = 1,
   n_mc = NULL,
   areas = NULL,
   areas_rand = NULL,
+  group_bc = NULL,
+  group_bc_rand = NULL,
   coef_hydro_levels = NULL,
+  mode = NULL,
   opts = antaresRead::simOptions()
 )
 
@@ -52,7 +55,13 @@ deduplicateScenarioBuilder(
 
 \item{areas_rand}{Areas for which to use \code{"rand"}.}
 
+\item{group_bc}{\code{character} Bindgind constraints's groups names to use.}
+
+\item{group_bc_rand}{\code{character} Bindgind constraints which to use \code{"rand"}.}
+
 \item{coef_hydro_levels}{Hydro levels coefficients.}
+
+\item{mode}{\code{character} "bc" to edit binding constraints.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -129,6 +138,17 @@ sbuilder <- scenarioBuilder(
   )
 )
 
+# Create a scenario builder matrix with 
+ # bindings constraints groups (study version >= 8.7.0)
+  # Use parameter "mode" with "bc"   
+sbuilder <- scenarioBuilder(
+  n_scenario = 51,
+  n_mc = 2040,
+  group_bc = c("my_bc_1", "my_bc_2"), 
+  group_bc_rand = "my_bc_2",
+  mode = "bc"
+)
+
 # Read previous scenario builder
 # in a matrix format
 prev_sb <- readScenarioBuilder()
@@ -142,6 +162,8 @@ updateScenarioBuilder(ldata = sbuilder, series = "load")
 # equivalent as
 updateScenarioBuilder(ldata = list(l = sbuilder))
 
+# for binding constraints (study version >= 8.7.0)
+updateScenarioBuilder(ldata = sbuilder, series = "bc")
 
 # update several series
 
