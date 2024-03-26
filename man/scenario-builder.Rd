@@ -10,7 +10,7 @@
 \title{Read, create, update & deduplicate scenario builder}
 \usage{
 scenarioBuilder(
-  n_scenario = NULL,
+  n_scenario = 1,
   n_mc = NULL,
   areas = NULL,
   areas_rand = NULL,
@@ -138,6 +138,17 @@ sbuilder <- scenarioBuilder(
   )
 )
 
+# Create a scenario builder matrix with 
+ # bindings constraints groups (study version >= 8.7.0)
+  # Use parameter "mode" with "bc"   
+sbuilder <- scenarioBuilder(
+  n_scenario = 51,
+  n_mc = 2040,
+  group_bc = c("my_bc_1", "my_bc_2"), 
+  group_bc_rand = "my_bc_2",
+  mode = "bc"
+)
+
 # Read previous scenario builder
 # in a matrix format
 prev_sb <- readScenarioBuilder()
@@ -151,6 +162,8 @@ updateScenarioBuilder(ldata = sbuilder, series = "load")
 # equivalent as
 updateScenarioBuilder(ldata = list(l = sbuilder))
 
+# for binding constraints (study version >= 8.7.0)
+updateScenarioBuilder(ldata = sbuilder, series = "bc")
 
 # update several series
 
