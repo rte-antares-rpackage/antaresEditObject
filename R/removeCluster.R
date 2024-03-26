@@ -114,6 +114,10 @@ removeClusterST <- function(area,
                            opts = antaresRead::simOptions()) {
   
   cluster_type <- match.arg(cluster_type)
+  if (cluster_type == "st-storage") {
+    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+    assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
+  }
   
   area <- tolower(area)
   

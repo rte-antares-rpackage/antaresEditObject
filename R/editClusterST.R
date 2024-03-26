@@ -37,6 +37,9 @@ editClusterST <- function(area,
   assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_ST(opts, check_dir = TRUE)
   check_area_name(area, opts)
+  cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+  cl_name_msg <- ifelse(add_prefix, paste(area, cluster_name, "_"), cluster_name)
+  assertthat::assert_that(cluster_exists, msg = paste0("Cluster '", cl_name_msg, "' does not exist. It can not be edited."))
   
   # statics groups
   st_storage_group <- c("PSP_open", 
@@ -152,13 +155,6 @@ editClusterST <- function(area,
   else{
     # read previous content of ini
     previous_params <- readIniFile(file = path_clusters_ini)
-    
-    if (!tolower(cluster_name) %in% tolower(names(previous_params))){
-      stop(
-        "'", cluster_name, "' doesn't exist, it can't be edited. You can create cluster with createCluster().",
-        call. = FALSE
-      )
-    }
     
     # select existing cluster
     ind_cluster <- which(tolower(names(previous_params)) %in% 

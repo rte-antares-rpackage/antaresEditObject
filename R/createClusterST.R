@@ -108,10 +108,22 @@ createClusterST <- function(area,
       " you should be using one of: ", paste(st_storage_group, collapse = ", ")
     )
   
-  # check area exsiting in current study
+  # check area existing in current study
   check_area_name(area, opts)  
   area <- tolower(area)
   
+  cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+  
+  if (!is_api_study(opts)) {
+    if (cluster_exists & !overwrite) {
+      stop("Cluster already exists. Overwrite it with overwrite option or edit it with editClusterST().")
+    }
+  }
+  if (is_api_study(opts)) {
+    if (cluster_exists) {
+      stop("Cluster already exists. Edit it with editClusterST().")
+    }
+  }
   ##
   # check parameters (ini file)
   ##
@@ -214,9 +226,7 @@ createClusterST <- function(area,
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  if (tolower(cluster_name) %in% tolower(names(previous_params)) & !overwrite){
-    stop(paste(cluster_name, "already exist"))
-  } else if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
+  if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
     ind_cluster <- which(tolower(names(previous_params)) %in% tolower(cluster_name))[1]
     previous_params[[ind_cluster]] <- params_cluster
     names(previous_params)[[ind_cluster]] <- cluster_name
