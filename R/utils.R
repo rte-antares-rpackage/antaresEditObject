@@ -111,7 +111,7 @@ rename_floor_list <- function(target_name, list_to_reforge){
     return(list_to_reforge)
 }
 
-
+#' @importFrom antaresRead readClusterSTDesc
 check_cluster_name <- function(area, cluster_name, add_prefix, opts = antaresRead::simOptions()) {
   
   exists <- FALSE
@@ -124,9 +124,9 @@ check_cluster_name <- function(area, cluster_name, add_prefix, opts = antaresRea
   
   clusters <- readClusterSTDesc(opts = opts)
   if (nrow(clusters) > 0) {
-    clusters_filtered <- clusters[area == area & cluster == cluster_name]
+    clusters_filtered <- clusters[clusters$area == area & clusters$cluster == cluster_name,]
     exists <- nrow(clusters_filtered) > 0
   }
-  
+    
   return(exists)
 }
