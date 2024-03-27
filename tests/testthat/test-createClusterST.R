@@ -171,6 +171,69 @@ if (opts_test$antaresVersion >= 860){
 }
 
 
+test_that("Test the behaviour of createClusterST() if the ST cluster already exists", {
+  
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  val <- 0.7
+  val_mat <- matrix(val, 8760)
+  cl_name <- "test_storage"
+  createClusterST(area = area, 
+                    cluster_name = cl_name, 
+                    storage_parameters = storage_values_default()[1], 
+                    PMAX_injection = val_mat, 
+                    PMAX_withdrawal = val_mat, 
+                    inflows = val_mat, 
+                    lower_rule_curve = val_mat, 
+                    upper_rule_curve = val_mat, 
+                    opts = opts)
+  
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  ## createClusterST()
+  # With overwrite FALSE  
+  expect_error(createClusterST(area = area, 
+                    cluster_name = cl_name, 
+                    storage_parameters = storage_values_default()[1], 
+                    PMAX_injection = val_mat, 
+                    PMAX_withdrawal = val_mat, 
+                    inflows = val_mat, 
+                    lower_rule_curve = val_mat, 
+                    upper_rule_curve = val_mat,
+                    overwrite = FALSE,                    
+                    opts = opts), regexp = "Cluster already exists.")
+  
+  # With overwrite TRUE  
+  expect_no_error(createClusterST(area = area, 
+                    cluster_name = cl_name, 
+                    storage_parameters = storage_values_default()[1], 
+                    PMAX_injection = val_mat, 
+                    PMAX_withdrawal = val_mat, 
+                    inflows = val_mat, 
+                    lower_rule_curve = val_mat, 
+                    upper_rule_curve = val_mat,
+                    overwrite = TRUE,                    
+                    opts = opts))
+  
+  ## removeClusterST()
+  # On a non-existing cluster
+  expect_error(removeClusterST(area = area, 
+               cluster_name = "not_a_cluster",                   
+               opts = opts), regexp = "Cluster can not be removed.")
+  
+  # On an existing cluster
+  expect_no_error(removeClusterST(area = area, 
+               cluster_name = cl_name,                   
+               opts = opts))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
 
 # API ----
 
