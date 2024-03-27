@@ -13,6 +13,8 @@ NEW FEATURES :
 * `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
+* `createClusterST()` : add a control to check if a cluster exists before running actions.
+* `removeClusterST()` : add a control to check if a cluster exists before running actions.
 
 BUGFIXES : 
 
@@ -23,6 +25,7 @@ BUGFIXES :
 * Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
 * `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
 * Fix `createLink()` to update opts in API mode.
+* Fix `editClusterST()` : can not edit a cluster if it does not exist in API mode.
 
 # antaresEditObject 0.6.1
 
