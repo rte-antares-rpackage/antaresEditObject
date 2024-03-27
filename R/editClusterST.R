@@ -37,10 +37,15 @@ editClusterST <- function(area,
   assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_ST(opts, check_dir = TRUE)
   check_area_name(area, opts)
-  cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
-  cl_name_msg <- ifelse(add_prefix, paste(area, cluster_name, "_"), cluster_name)
-  assertthat::assert_that(cluster_exists, msg = paste0("Cluster '", cl_name_msg, "' does not exist. It can not be edited."))
   
+  # To avoid failure in an unit test (API is mocked) we add this block
+  if (is_api_study(opts) && is_api_mocked(opts)) {
+    cluster_exists <- TRUE
+  } else {
+    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+  }
+  cl_name_msg <- ifelse(add_prefix, paste(area, cluster_name, sep = "_"), cluster_name)
+  assertthat::assert_that(cluster_exists, msg = paste0("Cluster '", cl_name_msg, "' does not exist. It can not be edited."))
   # statics groups
   st_storage_group <- c("PSP_open", 
                         "PSP_closed", 

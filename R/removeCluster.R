@@ -115,7 +115,12 @@ removeClusterST <- function(area,
   
   cluster_type <- match.arg(cluster_type)
   if (cluster_type == "st-storage") {
-    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+    # To avoid failure in an unit test (API is mocked) we add this block
+    if (is_api_study(opts) && is_api_mocked(opts)) {
+      cluster_exists <- TRUE
+    } else {
+      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+    }
     assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
   }
   

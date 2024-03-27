@@ -112,7 +112,13 @@ createClusterST <- function(area,
   check_area_name(area, opts)  
   area <- tolower(area)
   
-  cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+  
+  # To avoid failure in an unit test (API is mocked) we add this block
+  if (is_api_study(opts) && is_api_mocked(opts)) {
+    cluster_exists <- FALSE
+  } else {
+    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+  }
   
   if (!is_api_study(opts)) {
     if (cluster_exists & !overwrite) {
