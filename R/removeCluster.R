@@ -116,14 +116,17 @@ removeClusterST <- function(area,
   cluster_type <- match.arg(cluster_type)
   
   area <- tolower(area)
+  check_area_name(area, opts)
   
-  # Input path
-  inputPath <- opts$inputPath
+  api_study <- is_api_study(opts)
+  if (!api_study | (api_study && !is_api_mocked(opts))) {
+    check_cluster_in_binding_constraint(area = area, cluster_name = cluster_name, add_prefix = add_prefix, opts = opts)
+  }
   
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
   
-  if (is_api_study(opts)) {
+  if (api_study) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
@@ -139,48 +142,81 @@ removeClusterST <- function(area,
     return(invisible(opts))
   }
   
+  # Input path
+  inputPath <- opts$inputPath
+  clustertypePath <- file.path(inputPath, cluster_type)
+  
   # Remove from Ini file
   # path to ini file
-  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", area, "list.ini")
+  path_clusters_ini <- file.path(clustertypePath, "clusters", area, "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
   # cluster indice
-  ind <- which(tolower(names(previous_params)) %in% tolower(cluster_name))
-  if (length(ind) < 1)
-    warning("Cluster '", cluster_name, "' you want to remove doesn't seem to exist in area '", area, "'.")
+  lower_cluster_name <- tolower(cluster_name)
+  idx <- which(tolower(names(previous_params)) %in% lower_cluster_name)
+  if (length(idx) < 1)
+    warning("Cluster '", lower_cluster_name, "' you want to remove doesn't seem to exist in area '", area, "'.")
   
-  # Remove
-  previous_params[ind] <- NULL
+  # Remove entry in list.ini
+  previous_params[idx] <- NULL
   
-  # write
   writeIni(
     listData = previous_params,
     pathIni = path_clusters_ini,
     overwrite = TRUE
   )
   
+  # Remove series
   if (length(previous_params) > 0) {
-    # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area, tolower(cluster_name)), recursive = TRUE)
-    if (identical(cluster_type, "thermal")) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
-    }
+    dirs_to_remove <- file.path(clustertypePath, "series", area, lower_cluster_name)
   } else {
-    # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
-    if (identical(cluster_type, "thermal")) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
-    }
+    dirs_to_remove <- file.path(clustertypePath, "series", area)
   }
   
+  # Remove prepro
+  if (identical(cluster_type, "thermal")) {
+    dirs_to_remove <- c(dirs_to_remove, file.path(clustertypePath, "prepro", area))
+  }
+  lapply(dirs_to_remove, unlink, recursive = TRUE)
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   })
   
   invisible(res)
+}
+
+
+#' @title Check if a cluster is referenced in a binding constraint as a coefficient.
+#'
+#' @param area The area where to create the cluster.
+#' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
+#' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
+#'  
+#' @template opts
+#'
+#' @importFrom antaresRead readBindingConstraints
+check_cluster_in_binding_constraint <- function(area, cluster_name, add_prefix, opts = antaresRead::simOptions()) {
+  
+  bc <- readBindingConstraints(opts = opts)
+  if (length(bc) > 0) {
+    area <- tolower(area)
+    cluster_name <- tolower(cluster_name)
+    if (add_prefix) {
+      cluster_name <- paste(area, cluster_name, sep = "_")
+    }
+    cluster_name_pattern <- paste(area, cluster_name, sep = ".")
+    bc_coefs <- lapply(bc, "[[", "coefs")
+    names_bc_coefs <- lapply(bc_coefs, names)
+    cluster_in_names_bc_coefs <- lapply(names_bc_coefs, FUN = function(coef_name){cluster_name_pattern %in% coef_name})
+    bc_not_remove <- cluster_in_names_bc_coefs[which(cluster_in_names_bc_coefs == TRUE)]
+    
+    bc_not_remove <- names(bc_not_remove)
+    if(length(bc_not_remove) > 0) {
+      message("The following binding constraints have the cluster_name to remove as a coefficient : ", paste0(bc_not_remove, collapse = ","))
+      stop("Can not remove the cluster ", cluster_name, " in the area ", area)
+    }
+  }
 }
