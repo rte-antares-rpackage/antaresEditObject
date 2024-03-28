@@ -119,8 +119,12 @@ removeClusterST <- function(area,
   check_area_name(area, opts)
   
   api_study <- is_api_study(opts)
-  if (!api_study | (api_study && !is_api_mocked(opts))) {
-    check_cluster_in_binding_constraint(area = area, cluster_name = cluster_name, add_prefix = add_prefix, opts = opts)
+  is_thermal <- identical(cluster_type, "thermal")
+  
+  if (is_thermal) {
+    if (!api_study | (api_study && !is_api_mocked(opts))) {
+      check_cluster_in_binding_constraint(area = area, cluster_name = cluster_name, add_prefix = add_prefix, opts = opts)
+    }
   }
   
   if (add_prefix)
@@ -176,7 +180,7 @@ removeClusterST <- function(area,
   }
   
   # Remove prepro
-  if (identical(cluster_type, "thermal")) {
+  if (is_thermal) {
     dirs_to_remove <- c(dirs_to_remove, file.path(clustertypePath, "prepro", area))
   }
   lapply(dirs_to_remove, unlink, recursive = TRUE)
