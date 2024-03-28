@@ -44,13 +44,15 @@ removeBindingConstraint <- function(name = NULL,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   # some checks for "group" parameter according to study version
-  if(!opts$antaresVersion >= 870 & !is.null(group))
-    stop("Parameter 'group' is only for Antares study version >= v8.7.0", 
-         call. = FALSE)
-  if(opts$antaresVersion >= 870){
-    if(!is.null(name) & !is.null(group))
+  if(!is.null(group)){
+    if(!opts$antaresVersion >= 870){
+      stop("Parameter 'group' is only for Antares study version >= v8.7.0", 
+           call. = FALSE)
+    }
+    else if(!is.null(name)){
       stop("You can only delete binding constraint by id/name or by group", 
            call. = FALSE)
+    }
   }
   
   # API block
