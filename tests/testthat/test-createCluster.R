@@ -73,8 +73,9 @@ sapply(studies, function(study) {
         add_prefix = FALSE
       )
     }
-    expect_error(antaresRead::readClusterDesc())
     
+    all_clusters <- readClusterDesc()
+    expect_true(nrow(all_clusters)==0)
   })
   
   # remove temporary study
