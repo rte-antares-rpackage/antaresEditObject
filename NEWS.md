@@ -1,3 +1,22 @@
+# antaresRead 0.7.0 (devlopment)
+
+> Second-member coupling constraint scenarios
+
+### Breaking changes (Antares v8.7, cf. Antares v8.7 changelog) : 
+
+* `createBindingConstraint()` / `createBindingConstraintBulk()` 
+  - New parameters `group`  
+  - Parameter `values` is now list of `data.frame` 
+  
+* `editBindingConstraint()` 
+  - New parameters `group`  
+  - Parameter `values` is now list of `data.frame`
+  
+* `removeBindingConstraint()` can now delete coupling constraints from the `group` parameter.
+* `updateGeneralSettings()` adds coupling constraints to the `scenariobuilder.dat` file
+ 
+
+
 # antaresEditObject 0.6.2
 
 NEW FEATURES :
@@ -35,6 +54,7 @@ BUGFIXES :
 
 * Error CRAN CHECKS (fix issue #115)
 
+
 # antaresEditObject 0.6.0
 
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
@@ -65,7 +85,6 @@ NEW FEATURES :
 * Add `writeIniHydro()` function to make easier the edition of the input/hydro/hydro.ini file
 * Call `writeIniHydro()` in `createArea()` and `removeArea()`
 * `removeArea()` removes only expected files in links directory
-
 
 
 ### Breaking changes

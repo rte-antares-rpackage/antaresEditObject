@@ -4,10 +4,16 @@
 \alias{removeBindingConstraint}
 \title{Remove a Binding Constraint}
 \usage{
-removeBindingConstraint(name, opts = antaresRead::simOptions())
+removeBindingConstraint(
+  name = NULL,
+  group = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{name}{Name(s) of the binding constraint(s) to remove.}
+
+\item{group}{\code{character} Name(s) of group to delete}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -17,14 +23,35 @@ An updated list containing various information about the simulation.
 }
 \description{
 \ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Remove a binding constraint in an Antares study.
 }
+\note{
+Starting with version \strong{v8.7.0}, you can delete binding constraints by
+name or by group.
+}
 \examples{
 \dontrun{
-removeBindingConstraint("mybindingconstraint")
+# < v8.7.0 :
+removeBindingConstraint(name = "mybindingconstraint")
+
+# >= v8.7.0 (delete by names group) :
+# read
+bc <- readBindingConstraints()
+
+# select all groups
+group_to_delete <- sapply(bc, function(x){
+  x$properties$group
+})
+
+# delete all groups
+removeBindingConstraint(group = group_to_delete)
 }
 }
 \seealso{
-\code{\link[=createBindingConstraint]{createBindingConstraint()}} to create new binding constraints, \code{\link[=editBindingConstraint]{editBindingConstraint()}} to edit existing binding constraints.
+Other binding constraints functions: 
+\code{\link{createBindingConstraint}()},
+\code{\link{editBindingConstraint}()}
 }
+\concept{binding constraints functions}

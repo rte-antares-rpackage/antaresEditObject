@@ -9,7 +9,7 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/antaresEditObject)](https://CRAN.R-project.org/package=antaresEditObject)
 [![cranlogs](https://cranlogs.r-pkg.org/badges/antaresEditObject)](https://cran.r-project.org/package=antaresEditObject)
-[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/rte-antares-rpackage/antaresEditObject/workflows/R-CMD-check/badge.svg)](https://github.com/rte-antares-rpackage/antaresEditObject/actions)
 [![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/antaresEditObject/branch/master/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresEditObject?branch=master)

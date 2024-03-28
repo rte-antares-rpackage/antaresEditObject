@@ -3,9 +3,9 @@ test_that("Edit a link filters", {
   
   pasteVectorItemsWithComma <- function(x) paste(x,collapse=", ")
   
-  setup_study_860(sourcedir860)
+  setup_study_last(dir_path = sourcedir_last_study)
   suppressWarnings(
-    opts_test <- setSimulationPath(study_temp_path,simulation="input")
+    opts_test <- setSimulationPath(study_latest_version,simulation="input")
   )
   
   opts_test <- createArea(name="area1",opts=opts_test)

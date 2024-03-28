@@ -11,8 +11,8 @@ studies <- list.files(sourcedir, pattern = "\\.tar\\.gz$", full.names = TRUE)
 
 # untar etude
 untar(studies[1], exdir = tempdir()) # v8
-study_temp_path <- file.path(tempdir(), "test_case")
-opts_temp <- antaresRead::setSimulationPath(study_temp_path, "input")
+study_latest_version <- file.path(tempdir(), "test_case")
+opts_temp <- antaresRead::setSimulationPath(study_latest_version, "input")
 
 # areas list
 antaresRead::getAreas()
