@@ -333,20 +333,22 @@ createClusterRES <- function(area,
       cli_command_registered("create_cluster")
     )
     
-    if (!is.null(time_series)) {
-      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf(currPath, area, lower_cluster_name),
-        matrix = time_series
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
-        cli_command_registered("replace_matrix")
-      )
+    if (is.null(time_series)) {
+      time_series <- matrix(0,8760) #Default
     }
+    
+    currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
+    cmd <- api_command_generate(
+      action = "replace_matrix",
+      target = sprintf(currPath, area, lower_cluster_name),
+      matrix = time_series
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
+      cli_command_registered("replace_matrix")
+    )
     
     return(invisible(opts))
   }
