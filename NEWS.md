@@ -14,6 +14,8 @@ NEW FEATURES :
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
 * `.createCluster()` default matrix in API mode.
+* `removeLink()` : control the existence of a link a in a binding constraint coefficient before deletion
+* `removeCluster()` : control the existence of a cluster a in a binding constraint coefficient before deletion
 
 BUGFIXES : 
 
