@@ -24,6 +24,7 @@ BUGFIXES :
 * Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
 * `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
 * Fix `createLink()` to update opts in API mode.
+* `api_command_execute()` : remove rollback part and catch the API message in the result block
 
 # antaresEditObject 0.6.1
 
