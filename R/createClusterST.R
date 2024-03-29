@@ -109,23 +109,23 @@ createClusterST <- function(area,
     )
   
   # check area existing in current study
-  check_area_name(area, opts)  
   area <- tolower(area)
-  
+  check_area_name(area, opts)  
   
   # To avoid failure in an unit test (API is mocked) we add this block
-  if (is_api_study(opts) && is_api_mocked(opts)) {
+  api_study <- is_api_study(opts)
+  if (api_study && is_api_mocked(opts)) {
     cluster_exists <- FALSE
   } else {
     cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
   }
   
-  if (!is_api_study(opts)) {
+  if (!api_study) {
     if (cluster_exists & !overwrite) {
       stop("Cluster already exists. Overwrite it with overwrite option or edit it with editClusterST().")
     }
   }
-  if (is_api_study(opts)) {
+  if (api_study) {
     if (cluster_exists) {
       stop("Cluster already exists. Edit it with editClusterST().")
     }
@@ -162,13 +162,12 @@ createClusterST <- function(area,
   
   # check syntax ini parameters
   params_cluster <- hyphenize_names(storage_parameters)
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
   params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
   
   ################# -
   # API block
-  if (is_api_study(opts)) {
+  if (api_study) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     params_cluster$name <- cluster_name
