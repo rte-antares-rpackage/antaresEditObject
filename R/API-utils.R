@@ -209,8 +209,6 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
     if (identical(result_res$success, FALSE)) {
       if (!is_quiet())
         cli::cli_alert_danger(text_alert)
-      # TO DO : id of the command to delete is not available in the result for the moment
-      api_delete(opts, paste0(opts$study_id, "/commands/", result_log$id))
       stop(paste0("\n", msg_api), 
            call. = FALSE)
       if (!is_quiet())
