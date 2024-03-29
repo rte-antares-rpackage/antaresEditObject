@@ -114,7 +114,10 @@ removeClusterST <- function(area,
                            opts = antaresRead::simOptions()) {
   
   cluster_type <- match.arg(cluster_type)
-  if (cluster_type == "st-storage") {
+  
+  area <- tolower(area)
+  check_area_name(area, opts)
+  if (identical(cluster_type,"st-storage")) {
     # To avoid failure in an unit test (API is mocked) we add this block
     if (is_api_study(opts) && is_api_mocked(opts)) {
       cluster_exists <- TRUE
@@ -124,13 +127,10 @@ removeClusterST <- function(area,
     assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
   }
   
-  area <- tolower(area)
-  
   # Input path
   inputPath <- opts$inputPath
   
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
   
   if (is_api_study(opts)) {
     # format name for API 
