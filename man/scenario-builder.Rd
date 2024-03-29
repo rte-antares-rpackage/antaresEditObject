@@ -173,3 +173,6 @@ updateScenarioBuilder(ldata = list(
 deduplicateScenarioBuilder()
 }
 }
+\seealso{
+\href{https://rte-antares-rpackage.github.io/antaresEditObject/articles/scenario-builder.html}{Scenario Builder vignette}
+}

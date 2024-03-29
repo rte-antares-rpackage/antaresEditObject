@@ -19,6 +19,7 @@
 #' 
 #' @importFrom antaresRead getAreas simOptions
 #' 
+#' @seealso \href{https://rte-antares-rpackage.github.io/antaresEditObject/articles/scenario-builder.html}{Scenario Builder vignette}
 #' @name scenario-builder
 #'
 #' @examples
