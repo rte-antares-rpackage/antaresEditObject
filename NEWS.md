@@ -13,6 +13,7 @@ NEW FEATURES :
 * `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
+* `.createCluster()` default matrix in API mode.
 
 BUGFIXES : 
 
@@ -22,7 +23,11 @@ BUGFIXES :
 * Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
 * Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
 * `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
+<<<<<<< HEAD
 * Allow the user to set symbol or full name as argument series in `updateScenarioBuilder()`
+=======
+* Fix `createLink()` to update opts in API mode.
+>>>>>>> 38391bb943bc0839f30ca2fca4a0a533725d4c34
 
 # antaresEditObject 0.6.1
 
