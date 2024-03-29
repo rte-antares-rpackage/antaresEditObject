@@ -409,7 +409,7 @@ test_that("updateScenarioBuilder() has error if names of list or argument series
   # List of matrixes
   # With list names = "blablabla"(KO) and "l"(OK)
   expect_error(updateScenarioBuilder(ldata = list("blablabla" = my_scenario, "l" = my_scenario), opts = simOptions()),
-               regexp = "Each of your list name must be in the following list")
+               regexp = "Each of your list names must be in the following list")
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
