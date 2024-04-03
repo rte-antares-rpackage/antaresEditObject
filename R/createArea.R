@@ -59,7 +59,7 @@ createArea <- function(name,
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_area}: {msg_api}"),
+      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_area}: "),
       cli_command_registered("create_area")
     )
     
@@ -72,7 +72,7 @@ createArea <- function(name,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Create area's nodal optimization option: {msg_api}"),
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's nodal optimization option: "),
         cli_command_registered("update_config")
       )
     }
@@ -85,7 +85,7 @@ createArea <- function(name,
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Create area's filtering: {msg_api}"),
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's filtering: "),
         cli_command_registered("update_config")
       )
     }
@@ -99,7 +99,7 @@ createArea <- function(name,
         api_command_register(cmd, opts = opts)
         `if`(
           should_command_be_executed(opts), 
-          api_command_execute(cmd, opts = opts, text_alert = "Create area's adequacy patch mode: {msg_api}"),
+          api_command_execute(cmd, opts = opts, text_alert = "Create area's adequacy patch mode: "),
           cli_command_registered("update_config")
         )
       }
