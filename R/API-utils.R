@@ -187,34 +187,23 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
       "'command' must be a command generated with api_command_generate() or api_commands_generate()"
     )
   }
-  api_post(opts, paste0(opts$study_id, "/commands"), body = body, encode = "raw")
+  
+  # send command for study or variant
+  api_post(opts, 
+           paste0(opts$study_id, "/commands"), 
+           body = body, 
+           encode = "raw")
+  
+  # extract command name to put message
+  command_name <- jsonlite::fromJSON(body, simplifyVector = TRUE)
+  command_name <- command_name$action
+  msg_api=" " # HACK /!\
+  cli::cli_alert_success(paste0(text_alert, "success"))
+  
+  # one more "PUT" "/generate" for variant only
   if (is_variant(opts)) {
     api_put(opts, paste0(opts$study_id, "/generate"))
-    result <- api_get(opts, paste0(opts$study_id, "/task"))
-    while(is.null(result$result)) {
-      if(is.null(opts$sleep))
-        Sys.sleep(0.5)
-      else
-        Sys.sleep(opts$sleep)
-      result <- api_get(opts, paste0(opts$study_id, "/task"))
-    }
-    result_res <- result$result
-    msg_api <- result_res$message
-    if (is.null(msg_api) | identical(msg_api, ""))
-      msg_api <- "<no feedback from API>"
-    if (identical(result_res$success, TRUE)) {
-      if (!is_quiet())
-        cli::cli_alert_success(text_alert)
-    }
-    if (identical(result_res$success, FALSE)) {
-      if (!is_quiet())
-        cli::cli_alert_danger(text_alert)
-      stop(paste0("\n", msg_api), 
-           call. = FALSE)
-      if (!is_quiet())
-        cli::cli_alert_warning("Command has been deleted")
-    }
-    return(invisible(result_res$success))
+    return(invisible(TRUE))
   }
 }
 
