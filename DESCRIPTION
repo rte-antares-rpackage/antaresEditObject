@@ -55,3 +55,4 @@ Suggests:
 VignetteBuilder: knitr
 Remotes: 
     rte-antares-rpackage/antaresRead@release/v8.7.0
+
