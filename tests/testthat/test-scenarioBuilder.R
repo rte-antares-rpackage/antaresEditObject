@@ -2,7 +2,7 @@
 
 context("Function scenarioBuilder")
 
-
+# v710 ----
 sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
@@ -232,7 +232,8 @@ sapply(studies, function(study) {
   
 })
 
-
+# v820 ----
+# hydro ----
 test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro levels coefficients (error expected)", {
   
   ant_version <- "8.2.0"
@@ -265,7 +266,7 @@ test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro l
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
-
+## hl ----
 test_that("scenarioBuilder() for hl with right number of areas and hydro levels coefficients", {
   
   ant_version <- "8.2.0"
@@ -310,7 +311,7 @@ test_that("scenarioBuilder() for hl with right number of areas and hydro levels 
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
-
+## hl ----
 test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   
   ant_version <- "8.2.0"
@@ -347,7 +348,7 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
 })
 
 
-
+# ntc ----
 test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part", {
   
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
@@ -361,7 +362,7 @@ test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part
   nb_areas <- 5
   ids_areas <- seq(1,nb_areas)
   my_areas <- paste0("zone",ids_areas)
-  lapply(my_areas, FUN = function(area){createArea(name = area, opts = simOptions())})
+  lapply(my_areas, function(area){createArea(name = area, opts = simOptions())})
   
   # Create 10 links (all possibilities) between zone{i} and zone{j}, i < j
   my_links <- expand.grid("from" = ids_areas, "to" = ids_areas)
@@ -372,7 +373,7 @@ test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part
   my_links$to <- paste0("zone",my_links$to)
   apply(my_links[,c("from","to")],
         MARGIN = 1,
-        FUN = function(row){
+        function(row){
           createLink(as.character(row[1]),as.character(row[2]), opts = simOptions())
           }
       )
