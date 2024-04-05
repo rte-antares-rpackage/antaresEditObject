@@ -251,8 +251,8 @@ sapply(studies, function(study) {
   
 })
 
-
 # v820 ----
+# hydro ----
 
 test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro levels coefficients (error expected)", {
   
@@ -286,6 +286,8 @@ test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro l
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
+
+## hl ----
 test_that("scenarioBuilder() for hl with right number of areas and hydro levels coefficients", {
   
   ant_version <- "8.2.0"
@@ -330,7 +332,7 @@ test_that("scenarioBuilder() for hl with right number of areas and hydro levels 
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
-
+## hl ----
 test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   
   ant_version <- "8.2.0"
@@ -362,6 +364,62 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   values_newSB_hl <- unique(unlist(newSB[["hl"]], use.names = FALSE))
   expect_true(length(setdiff(my_coef, values_newSB_hl)) == 0)
   expect_true(length(setdiff(values_newSB_hl, my_coef)) == 0)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+# ntc ----
+test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part", {
+  
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  ant_version <- "8.2.0"
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  nbyears <- 10
+  updateGeneralSettings(nbyears = nbyears, opts = simOptions())
+  
+  # Create 5 areas
+  nb_areas <- 5
+  ids_areas <- seq(1,nb_areas)
+  my_areas <- paste0("zone",ids_areas)
+  lapply(my_areas, function(area){createArea(name = area, opts = simOptions())})
+  
+  # Create 10 links (all possibilities) between zone{i} and zone{j}, i < j
+  my_links <- expand.grid("from" = ids_areas, "to" = ids_areas)
+  my_links$check_same <- my_links$from != my_links$to
+  my_links <- my_links[my_links$check_same,]
+  my_links <- my_links[my_links$from < my_links$to,]
+  my_links$from <- paste0("zone",my_links$from)
+  my_links$to <- paste0("zone",my_links$to)
+  apply(my_links[,c("from","to")],
+        MARGIN = 1,
+        function(row){
+          createLink(as.character(row[1]),as.character(row[2]), opts = simOptions())
+        }
+  )
+  
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
+  
+  my_scenario <- scenarioBuilder(n_scenario = 2, n_mc = nbyears, opts = opts)
+  updateScenarioBuilder(my_scenario, series = "ntc", links = as.character(getLinks(opts = opts)))
+  
+  sb <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = opts)
+  
+  expect_true(inherits(sb, what = "list"))
+  expect_true("ntc" %in% names(sb))
+  expect_true(inherits(sb[["ntc"]], what = "matrix"))
+  
+  sb_matrix_ntc_expected <- structure(
+    c(rep(c(rep(1L,10),rep(2L,10)),5)),
+    .Dim = c(10L,10L),
+    .Dimnames = list(c("zone1%zone2", "zone1%zone3", "zone1%zone4", "zone1%zone5", "zone2%zone3",
+                       "zone2%zone4", "zone2%zone5", "zone3%zone4", "zone3%zone5", "zone4%zone5"
+    ),
+    NULL
+    )
+  )
+  
+  expect_identical(sb[["ntc"]], sb_matrix_ntc_expected)
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
@@ -459,3 +517,4 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   # remove temporary study
   unlink(x = study_latest_version, recursive = TRUE)
 })
+
