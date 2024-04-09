@@ -310,25 +310,37 @@ editBindingConstraint <- function(name,
   # delete NULL from parameters
   args <- dropNulls(args)
   
-  # loop for every parameter (legacy endpoint)
+  # rename parameter coeffs
+  index_to_change <- which(names(args)%in%"coeffs")
+  names(args)[index_to_change] <- "terms"
+  
+  # keep id/name of constraint
   names_to_keep <- setdiff(names(args), "id")
   id_bc <- args$id
   
-  lapply(names_to_keep, function(x){
-    select_element <- args[x]
-    body <- list(key= names(select_element),
-                 value= args[[x]])
-    # make json file
-    body <- jsonlite::toJSON(body, 
-                             auto_unbox = TRUE)
-    # send request
-    api_put(opts = opts, 
-            endpoint =  file.path(opts$study_id, "bindingconstraints", id_bc), 
-            body = body, 
-            encode = "raw")
-  })
+  # drop id
+  args$id <- NULL
   
-  cli::cli_alert_info("Endpoint {.emph {'Update bindingconstraints'}} {.emph 
+  # make json file
+  args <- jsonlite::toJSON(args, 
+                           auto_unbox = TRUE)
+  
+  # send request
+  result <- api_put(opts = opts, 
+          endpoint =  file.path(opts$study_id, 
+                                "bindingconstraints", 
+                                id_bc), 
+          body = args, 
+          encode = "raw")
+  
+  # /validate 
+  api_get(opts = opts, 
+          endpoint = file.path(opts$study_id, 
+                               "constraint-groups",
+                               result$group, 
+                               "validate"))
+  
+  cli::cli_alert_success("Endpoint {.emph {'Update bindingconstraints'}} {.emph 
                       {.strong {id_bc}}} success")
   
   return(invisible(opts))
