@@ -321,3 +321,61 @@ test_that("API Command test for createClusterST", {
   testthat::expect_true(all(unlist(names_file_api) %in% 
                               names_file_list))
 })
+
+
+test_that("createClusterST(), editClusterST() and removeClusterST() work as expected if the cluster exists or does not exist", {
+  
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5), collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area_test <- "zone1"
+  opts <- createArea(name = area_test, opts = simOptions())
+  
+  ## createClusterST
+  # Create a cluster on a non-existing area
+  expect_error(createClusterST(area = "bla", cluster_name = "cluster_st_test_create", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.6), opts = simOptions()),
+               regexp = "is not a valid area name")
+  # Create a non-existing cluster
+  expect_no_error(createClusterST(area = area_test, cluster_name = "cluster_st_test_create", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.6), opts = simOptions()))
+  # Create an existing cluster - idempotence
+  expect_error(createClusterST(area = area_test, cluster_name = "cluster_st_test_create", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.7), opts = simOptions()),
+               regexp = "Cluster already exists.")  
+  # Create a non-existing cluster - CI
+  expect_no_error(createClusterST(area = toupper(area_test), cluster_name = "clUstEr_st_tEst_crEAtE2", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.6), opts = simOptions()))
+  # Create an existing cluster - CI - idempotence
+  expect_error(createClusterST(area = toupper(area_test), cluster_name = toupper("clUstEr_st_tEst_crEAtE2"), add_prefix = TRUE, storage_parameters = list("efficiency" = 0.7), opts = simOptions()),
+               regexp = "Cluster already exists.")     
+  
+  ## editClusterST
+  # Edit a cluster on a non-existing area
+  expect_error(editClusterST(area = "bla", cluster_name = "cluster_st_not_exists", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.6), opts = simOptions()),
+               regexp = "is not a valid area name")
+  # Edit a non-existing cluster
+  expect_error(editClusterST(area = area_test, cluster_name = "cluster_st_not_exists", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.6), opts = simOptions()),
+               regexp = "Cluster 'zone1_cluster_st_not_exists' does not exist. It can not be edited.")
+  # Edit an existing cluster
+  expect_no_error(editClusterST(area = area_test, cluster_name = "cluster_st_test_create", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.789), opts = simOptions()))
+  # Edit the same existing cluster
+  expect_no_error(editClusterST(area = area_test, cluster_name = "cluster_st_test_create", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.890), opts = simOptions()))
+  # Edit an existing cluster - CI
+  expect_no_error(editClusterST(area = toupper(area_test), cluster_name = "ClUStER_st_tEst_crEAtE2", add_prefix = TRUE, storage_parameters = list("efficiency" = 0.789), opts = simOptions()))
+  # Edit an existing cluster - CI - idempotence
+  expect_no_error(editClusterST(area = toupper(area_test), cluster_name = toupper("clUstEr_st_tEst_crEAtE2"), add_prefix = TRUE, storage_parameters = list("efficiency" = 0.890), opts = simOptions()))
+  
+  ## removeClusterST
+  # Remove a cluster on a non-existing area
+  expect_error(removeClusterST(area = "bla", cluster_name = "cluster_st_not_exists", add_prefix = TRUE, opts = simOptions()),
+               regexp = "is not a valid area name")
+  # Remove a non-existing cluster
+  expect_error(removeClusterST(area = area_test, cluster_name = "cluster_st_not_exists", add_prefix = TRUE, opts = simOptions()),
+               regexp = "Cluster can not be removed")
+  # Remove an existing cluster
+  expect_no_error(removeClusterST(area = area_test, cluster_name = "cluster_st_test_create", add_prefix = TRUE, opts = simOptions()))
+  # Remove an existing cluster - idempotence
+  expect_error(removeClusterST(area = area_test, cluster_name = "cluster_st_test_create", add_prefix = TRUE, opts = simOptions()),
+               regexp = "Cluster can not be removed")
+  # Remove an existing cluster - CI
+  expect_no_error(removeClusterST(area = area_test, cluster_name = "CLuSTeR_ST_TeST_CReaTe2", add_prefix = TRUE, opts = simOptions()))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
