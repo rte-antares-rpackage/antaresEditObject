@@ -11,3 +11,5 @@ test_case/
 man-roxygen/
 ^codecov\.yml$
 ^CRAN-SUBMISSION$
+^doc$
+^Meta$
