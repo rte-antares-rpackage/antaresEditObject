@@ -283,21 +283,30 @@ createBindingConstraint <- function(name,
   }
   
   # delete NULL from parameters
-  if(is.null(body$group))
-    body$group <- NULL
-  if(is.null(body$values))
-    body$values <- NULL
+  body <- dropNulls(body)
+  
+  # rename parameter coeffs
+  index_to_change <- which(names(body)%in%"coeffs")
+  names(body)[index_to_change] <- "terms"
   
   # make json file
   body <- jsonlite::toJSON(body,
                            auto_unbox = TRUE)
   
   # send request
-  api_post(opts, paste0(opts$study_id, "/bindingconstraints"), 
+  result <- api_post(opts = opts, 
+           endpoint = file.path(opts$study_id, "bindingconstraints"), 
            body = body, 
            encode = "raw")
-  bc_name <- list(...)$name
-  cli::cli_alert_info("Endpoint {.emph {'Create bindingconstraints'}} {.emph 
+  # /validate 
+  api_get(opts = opts, 
+          endpoint = file.path(opts$study_id, 
+                               "constraint-groups",
+                               result$group, 
+                               "validate"))
+  
+  bc_name <- result$id
+  cli::cli_alert_success("Endpoint {.emph {'Create bindingconstraints'}} {.emph 
                       {.strong {bc_name}}} success")
   
   return(invisible(opts))
