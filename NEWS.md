@@ -15,7 +15,8 @@ NEW FEATURES :
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
 * `.createCluster()` default matrix in API mode.
 * `createClusterST()` : add a control to check if a cluster exists before running actions.
-* `removeClusterST()` : add a control to check if a cluster exists before running actions.
+* `editClusterST()` : add a control to check if a cluster exists before running actions.
+* `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
 
 BUGFIXES : 
 
