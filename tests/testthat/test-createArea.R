@@ -272,5 +272,200 @@ test_that("removeArea() in 8.2.0 : check that properties.ini are all there", {
 })
 
 
+test_that("removeArea(): check that area is removed if it is not referenced in a binding constraint and not removed if the area is referenced in a binding constraint", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  # Areas
+  nb_areas <- 5
+  ids_areas <- seq(1,nb_areas)
+  my_areas <- paste0("zone",ids_areas)
 
+  lapply(my_areas, FUN = function(area){createArea(name = area, opts = simOptions())})
 
+  # Links
+  my_links <- expand.grid("from" = ids_areas, "to" = ids_areas)
+  my_links <- my_links[my_links$from < my_links$to,]
+  my_links$from <- paste0("zone", my_links$from)
+  my_links$to <- paste0("zone", my_links$to)
+  
+  apply(my_links[,c("from","to")],
+        MARGIN = 1,
+        FUN = function(row){
+          createLink(as.character(row[1]),as.character(row[2]), opts = simOptions())
+    } 
+  )
+
+  # Clusters
+  clusters <- c("nuclear", "gas", "coal")
+  my_clusters <- expand.grid("area" = my_areas, "cluster_name" = clusters)
+  my_clusters$cluster_name_prefixed <- paste0(my_clusters$area, "_", my_clusters$cluster_name)
+  my_clusters$cluster_name_binding <- paste0(my_clusters$area, ".", my_clusters$cluster_name_prefixed)
+  lst_clusters <- split(my_clusters[,c("cluster_name_binding")], my_clusters$cluster_name)
+  
+  apply(my_clusters[,c("area","cluster_name")],
+        MARGIN = 1,
+        FUN = function(row){
+          createCluster(area = as.character(row[1]),
+                        cluster_name = as.character(row[2]),
+                        add_prefix = TRUE,
+                        opts = simOptions())
+    }
+  )
+
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
+
+  # Binding constraints
+  # Link
+  all_areas <- getAreas(opts = opts)
+  all_links <- as.character(getLinks(opts = opts))
+  all_links <- gsub(pattern = " - ", replacement = "%", x = all_links)
+  nb_cols_per_matrix <- 3
+  nb_hours_per_year <- 8784
+  nb_values_per_matrix <- nb_hours_per_year * nb_cols_per_matrix
+  for (area in all_areas) {
+    
+    links_area <- all_links[startsWith(all_links, area)]
+    if (length(links_area) > 0) {
+      coefs <- seq_len(length(links_area))
+      names(coefs) <- links_area
+      createBindingConstraint(name = paste0("bc_",area),
+                              timeStep = "hourly",
+                              operator = "less",
+                              coefficients = coefs,
+                              values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                              opts = opts)
+    }
+  }
+
+  # Cluster
+  for (cluster in names(lst_clusters)) {
+    names_coefs_bc <- lst_clusters[[cluster]]
+    coefs <- seq_len(length(names_coefs_bc))
+    names(coefs) <- names_coefs_bc
+    createBindingConstraint(name = paste0("bc_",cluster),
+                            timeStep = "hourly",
+                            operator = "less",
+                            coefficients = coefs,
+                            values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                            opts = opts)
+  }
+  
+  new_area <- "zzone_bc_link"
+  
+  # Area
+  opts <- createArea(name = new_area, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  # Area + Link
+  opts <- createArea(name = new_area, opts = simOptions())
+  opts <- createLink(from = "zone1", to = new_area, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  # Area + Link + Binding Constraint
+  opts <- createArea(name = new_area, opts = simOptions())
+  opts <- createLink(from = "zone1", to = new_area, opts = simOptions())
+  coefs <- c(1)
+  names(coefs) <- paste0("zone1", "%", new_area)
+  name_bc <- "bc_new_area_link"
+  opts <- createBindingConstraint(name = name_bc,
+                                  timeStep = "hourly",
+                                  operator = "less",
+                                  coefficients = coefs,
+                                  values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                                  opts = simOptions())
+  expect_error(removeArea(name = new_area, opts = simOptions()),
+               regexp = paste0("Can not remove the area ", new_area)
+  )
+  
+  removeBindingConstraint(name = name_bc, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  new_area <- "zzone_bc_cluster"
+  
+  # Area
+  opts <- createArea(name = new_area, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  # Area + Cluster
+  opts <- createArea(name = new_area, opts = simOptions())
+  opts <- createCluster(area = new_area, cluster_name = "nuclear", add_prefix = TRUE, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  # Area + Cluster + Binding Constraint
+  opts <- createArea(name = new_area, opts = simOptions())
+  cl_name <- "nuclear"
+  opts <- createCluster(area = new_area, cluster_name = cl_name, add_prefix = TRUE, opts = simOptions())
+  coefs <- c(1)
+  names(coefs) <- paste0(new_area, ".", paste0(new_area, "_", cl_name))
+  name_bc <- "bc_new_area_cluster"
+  opts <- createBindingConstraint(name = name_bc,
+                                  timeStep = "hourly",
+                                  operator = "less",
+                                  coefficients = coefs,
+                                  values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                                  opts = simOptions())
+  expect_error(removeArea(name = new_area, opts = simOptions()),
+               regexp = paste0("Can not remove the area ", new_area)
+  )
+  
+  removeBindingConstraint(name = name_bc, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  new_area <- "zzone_bc_cluster_link"
+  
+  # Area + Cluster + Link + Binding Constraint : every coefficient has the area to remove
+  opts <- createArea(name = new_area, opts = simOptions())
+  opts <- createLink(from = "zone1", to = new_area, opts = simOptions())
+  opts <- createCluster(area = new_area, cluster_name = cl_name, add_prefix = TRUE, opts = simOptions())
+  
+  coefs <- c(1,2)
+  names(coefs) <- c(paste0(new_area, ".", paste0(new_area, "_", cl_name)), paste0("zone1", "%", new_area))
+  name_bc <- "bc_new_area_cluster_link"
+  opts <- createBindingConstraint(name = name_bc,
+                                  timeStep = "hourly",
+                                  operator = "less",
+                                  coefficients = coefs,
+                                  values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                                  opts = simOptions())
+  expect_error(removeArea(name = new_area, opts = simOptions()),
+               regexp = paste0("Can not remove the area ", new_area)
+  )
+  
+  removeBindingConstraint(name = name_bc, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  new_area <- "zzone_bc_cluster_link_2"
+  
+  # Area + Cluster + Link + Binding Constraint : at least one coefficient has the area to remove
+  opts <- createArea(name = new_area, opts = simOptions())
+  opts <- createLink(from = "zone1", to = new_area, opts = simOptions())
+  opts <- createCluster(area = new_area, cluster_name = cl_name, add_prefix = TRUE, opts = simOptions())
+  
+  coefs <- c(1,2,3,4)
+  names(coefs) <- c(paste0(new_area, ".", paste0(new_area, "_", cl_name)), paste0("zone1", "%", new_area), paste0("zone1", "%", "zone2"), paste0("zone2", ".", "zone2_gas"))
+  name_bc <- "bc_new_area_cluster_link_2"
+  opts <- createBindingConstraint(name = name_bc,
+                                  timeStep = "hourly",
+                                  operator = "less",
+                                  coefficients = coefs,
+                                  values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                                  opts = simOptions())
+  expect_error(removeArea(name = new_area, opts = simOptions()),
+               regexp = paste0("Can not remove the area ", new_area)
+  )
+  
+  removeBindingConstraint(name = name_bc, opts = simOptions())
+  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  
+  # standard areas
+  for (area in my_areas) {
+    expect_error(removeArea(name = area, opts = simOptions()),
+               regexp = paste0("Can not remove the area ", area)
+    )
+  }
+  
+  unlink(opts$studyPath, recursive = TRUE)
+})

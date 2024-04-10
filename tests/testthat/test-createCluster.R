@@ -190,8 +190,11 @@ test_that("removeCluster() : cluster is not removed if it is referenced in a bin
         }
   )
   
-  opts <- setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
   
+  nb_cols_per_matrix <- 3
+  nb_hours_per_year <- 8784
+  nb_values_per_matrix <- nb_hours_per_year * nb_cols_per_matrix
   for (cluster in names(lst_clusters)) {
     names_coefs_bc <- lst_clusters[[cluster]]
     coefs <- seq_len(length(names_coefs_bc))
@@ -200,12 +203,12 @@ test_that("removeCluster() : cluster is not removed if it is referenced in a bin
                             timeStep = "hourly",
                             operator = "less",
                             coefficients = coefs,
-                            values = matrix(rep(0,8784*3), ncol = 3),
+                            values = matrix(rep(0,nb_values_per_matrix), ncol = nb_cols_per_matrix),
                             opts = opts
                             )
   }
   
-  opts <- setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
   
   expect_error(removeCluster(area = "zone1", cluster_name = "nuclear", add_prefix = TRUE, opts = opts), regexp = "Can not remove the cluster")
   removeBindingConstraint(name = "bc_nuclear", opts = opts)

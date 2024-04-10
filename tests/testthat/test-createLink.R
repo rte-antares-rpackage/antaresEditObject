@@ -264,13 +264,15 @@ test_that("removeLink() : link is not removed if it is referenced in a binding c
         }
   )
 
-  opts <- setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
 
   all_areas <- getAreas(opts = opts)
   
   all_links <- as.character(getLinks(opts = opts))
   all_links <- gsub(pattern = " - ", replacement = "%", x = all_links)
-  
+  nb_cols_per_matrix <- 3
+  nb_hours_per_year <- 8784
+  nb_values_per_matrix <- nb_hours_per_year * nb_cols_per_matrix
   for (area in all_areas) {
     links_area <- all_links[startsWith(all_links, paste0(area,"%"))]
     if (length(links_area) > 0) {
@@ -280,13 +282,13 @@ test_that("removeLink() : link is not removed if it is referenced in a binding c
                               timeStep = "hourly",
                               operator = "less",
                               coefficients = coefs,
-                              values = matrix(rep(0,8784*3), ncol = 3),
+                              values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
                               opts = opts
                              )
     }
   }
   
-  opts <- setSimulationPath(path = opts$studyPath, simulation = "input")
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
   
   expect_error(removeLink(from = "zone1", to = "zone2", opts = opts), regexp = "Can not remove the link")
   removeBindingConstraint(name = "bc_zone1", opts = opts)
