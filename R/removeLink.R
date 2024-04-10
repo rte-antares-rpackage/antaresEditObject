@@ -43,7 +43,11 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   }
   
   # Link referenced as a coefficient in a binding constraint
-  check_link_in_binding_constraint(from = from, to = to, opts = opts)
+  bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(from, "%", to), opts = opts)
+  if (!identical(bc_not_remove, character(0))) {
+    message("The following binding constraints have the link to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
+    stop("Can not remove the link ", link)
+  }
   
   # API block
   if (is_api_study(opts)) {
@@ -97,30 +101,4 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   })
   
   invisible(res)
-}
-
-
-#' @title Check if a link is referenced in a binding constraint as a coefficient.
-#'
-#' @param from,to The two areas linked together.
-#'  
-#' @template opts
-#'
-#' @importFrom antaresRead readBindingConstraints
-check_link_in_binding_constraint <- function(from, to, opts = antaresRead::simOptions()) {
-  
-  bc <- readBindingConstraints(opts = opts)
-  if (length(bc) > 0) {
-    link <- paste(from, to, sep = "%")
-    bc_coefs <- lapply(bc, "[[", "coefs")
-    names_bc_coefs <- lapply(bc_coefs, names)
-    link_in_names_bc_coefs <- lapply(names_bc_coefs, FUN = function(coef_name){link %in% coef_name})
-    bc_not_remove <- link_in_names_bc_coefs[which(link_in_names_bc_coefs == TRUE)]
-    
-    bc_not_remove <- names(bc_not_remove)
-    if(length(bc_not_remove) > 0) {
-      message("The following binding constraints have the link to remove as a coefficient : ", paste0(bc_not_remove, collapse = ","))
-      stop("Can not remove the link ", link)
-    }
-  }
 }
