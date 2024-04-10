@@ -112,6 +112,14 @@ rename_floor_list <- function(target_name, list_to_reforge){
 }
 
 
+#' @title Detect a pattern in a binding constraint coefficient
+#'
+#' @importFrom antaresRead readBindingConstraints
+#'
+#' @param pattern The pattern to detect.
+#' @template opts
+#'
+#' @return the names of the binding constraints containing the pattern
 detect_pattern_in_binding_constraint <- function(pattern, opts = antaresRead::simOptions()) {
   
   pattern <- as.character(pattern)
