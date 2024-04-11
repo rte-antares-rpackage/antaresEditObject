@@ -294,5 +294,8 @@ test_that("removeLink() : link is not removed if it is referenced in a binding c
   removeBindingConstraint(name = "bc_zone1", opts = opts)
   expect_no_error(removeLink(from = "zone1", to = "zone2", opts = opts))
   
+  # createLink() with overwrite to TRUE calls removeLink()
+  expect_error(createLink(from = "zone2", to = "zone3", overwrite = TRUE, opts = opts), regexp = "Can not remove the link")
+  
   unlink(x = opts$studyPath, recursive = TRUE)
 })
