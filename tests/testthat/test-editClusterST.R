@@ -46,12 +46,13 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                                        group = "Other1",
                                        add_prefix = FALSE, 
                                        opts = opts_test), 
-                         regexp = "'casper' doesn't exist,")
+                         regexp = "'casper' does not exist")
   
   ## default edition cluster ----
     # if all parameters are NULL => no edition of ini and data .txt
   testthat::expect_warning(editClusterST(area = area_test, 
                                          cluster_name = levels(st_clusters$cluster)[1],
+                                         add_prefix = FALSE,
                                          opts = opts_test), 
                            regexp = "No edition for 'list.ini' file")
   

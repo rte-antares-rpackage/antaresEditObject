@@ -195,8 +195,9 @@ scenarioBuilder <- function(n_scenario = 1,
       stop("Please check the number of areas and the number of coefficients for hydro levels that you provided.")
     }
   } else {
-    data_mat <- rep_len(seq_len(args$n_scenario), 
-                        length(args$areas) * args$n_mc)
+    data_mat <- rep(rep_len(seq_len(args$n_scenario), 
+                            args$n_mc), 
+                    length(args$areas))
   }
   
   sb <- matrix(

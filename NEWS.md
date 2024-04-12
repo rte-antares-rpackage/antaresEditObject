@@ -34,6 +34,9 @@ NEW FEATURES :
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
 * `.createCluster()` default matrix in API mode.
+* `createClusterST()` : add a control to check if a cluster exists before running actions.
+* `editClusterST()` : add a control to check if a cluster exists before running actions.
+* `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
 
 BUGFIXES : 
 
@@ -43,11 +46,14 @@ BUGFIXES :
 * Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
 * Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
 * `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
+* `scenarioBuilder()` matrix has the same row repeated if the area is not rand
 * Fix `createLink()` to update opts in API mode.
+* Fix `editClusterST()` : can not edit a cluster if it does not exist in API mode.
 * `updateScenarioBuilder()` works for NTC part : allow cartesian in the merge.
 * `api_command_execute()` :  
   - no longer deletes a command  
   - displays a success message for a study or variant
+
 
 
 # antaresEditObject 0.6.1

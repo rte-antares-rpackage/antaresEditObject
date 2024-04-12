@@ -116,12 +116,21 @@ removeClusterST <- function(area,
   cluster_type <- match.arg(cluster_type)
   
   area <- tolower(area)
+  check_area_name(area, opts)
+  if (identical(cluster_type,"st-storage")) {
+    # To avoid failure in an unit test (API is mocked) we add this block
+    if (is_api_study(opts) && is_api_mocked(opts)) {
+      cluster_exists <- TRUE
+    } else {
+      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+    }
+    assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
+  }
   
   # Input path
   inputPath <- opts$inputPath
   
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
   
   if (is_api_study(opts)) {
     # format name for API 

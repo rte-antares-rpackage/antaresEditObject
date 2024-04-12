@@ -111,3 +111,30 @@ rename_floor_list <- function(target_name, list_to_reforge){
     return(list_to_reforge)
 }
 
+
+generate_cluster_name <- function(area, cluster_name, add_prefix) {
+  
+  cluster_name <- tolower(cluster_name)
+  
+  if (add_prefix) {
+    cluster_name <- paste(tolower(area), cluster_name, sep = "_")
+  }
+  
+  return(cluster_name)
+}
+
+
+#' @importFrom antaresRead readClusterSTDesc
+check_cluster_name <- function(area, cluster_name, add_prefix, opts = antaresRead::simOptions()) {
+  
+  exists <- FALSE
+  
+  clusters <- readClusterSTDesc(opts = opts)
+  if (nrow(clusters) > 0) {
+    cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
+    clusters_filtered <- clusters[clusters$area == tolower(area) & clusters$cluster == cluster_name,]
+    exists <- nrow(clusters_filtered) > 0
+  }
+    
+  return(exists)
+}
