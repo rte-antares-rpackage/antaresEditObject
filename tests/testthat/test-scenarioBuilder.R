@@ -266,6 +266,7 @@ test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro l
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
+
 ## hl ----
 test_that("scenarioBuilder() for hl with right number of areas and hydro levels coefficients", {
   
@@ -311,7 +312,7 @@ test_that("scenarioBuilder() for hl with right number of areas and hydro levels 
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
-## hl ----
+## hl - all values between 0 and 1 ----
 test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   
   ant_version <- "8.2.0"
@@ -348,6 +349,7 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
 })
 
 
+# row repeated for each area in matrix scenarioBuilder ----
 test_that("scenarioBuilder() works as expected if n_mc is not a multiple of n_scenario, same row for each area except if it is rand", {
   
   ant_version <- "8.2.0"
@@ -385,7 +387,7 @@ test_that("scenarioBuilder() works as expected if n_mc is not a multiple of n_sc
 })
 
 
-# ntc ----
+# ntc - cartesian product in merge allowed ----
 test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part", {
   
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
@@ -437,6 +439,76 @@ test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part
   )
 
   expect_identical(sb[["ntc"]], sb_matrix_ntc_expected)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+# argument series l or load OK ----
+test_that("updateScenarioBuilder() has the same behaviour for one single matrix with argument series l or load", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  createArea("zone51", opts = simOptions())
+  
+  updateGeneralSettings(horizon = "2030", first.month.in.year = "january", january.1st = "Monday", nbyears = 10, opts = simOptions())
+  
+  # Use scenarioBuilder constructor
+  my_scenario <- scenarioBuilder(n_scenario = 2, areas = c("zone51"), opts = simOptions())
+  
+  # With series = "load"
+  updateScenarioBuilder(my_scenario, series = "load", opts = simOptions())
+  scbuilder_w_load <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = simOptions())
+  
+  # Clear ScenarioBuilder
+  clearScenarioBuilder(ruleset = "Default Ruleset", opts = simOptions())
+  
+  # With series = "l"
+  updateScenarioBuilder(my_scenario, series = "l", opts = simOptions())
+  scbuilder_w_l <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = simOptions())
+  
+  expect_true(inherits(x = scbuilder_w_load, what = "list"))
+  expect_true(inherits(x = scbuilder_w_l, what = "list"))
+  
+  expect_true(length(scbuilder_w_load) == 1)
+  expect_true(length(scbuilder_w_l) == 1)
+  
+  expect_true(names(scbuilder_w_load) == "l")
+  expect_true(names(scbuilder_w_l) == "l")
+  expect_equal(scbuilder_w_load, scbuilder_w_l)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+# not allowed argument series KO ----
+test_that("updateScenarioBuilder() has error if names of list or argument series is not valid", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  createArea("zone51", opts = simOptions())
+  
+  updateGeneralSettings(horizon = "2030", first.month.in.year = "january", january.1st = "Monday", nbyears = 10, opts = simOptions())
+  
+  # Use scenarioBuilder constructor
+  my_scenario <- scenarioBuilder(n_scenario = 2, areas = c("zone51"), opts = simOptions())
+  
+  # Single matrix
+  # With series = "blablabla"
+  expect_error(updateScenarioBuilder(my_scenario, series = "blablabla", opts = simOptions()),
+               regexp = "Your argument series must be one of")
+  
+  # Clear ScenarioBuilder
+  clearScenarioBuilder(ruleset = "Default Ruleset", opts = simOptions())
+  
+  # List of matrixes
+  # With list names = "blablabla"(KO) and "l"(OK)
+  expect_error(updateScenarioBuilder(ldata = list("blablabla" = my_scenario, "l" = my_scenario), opts = simOptions()),
+               regexp = "Each of your list names must be in the following list")
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })

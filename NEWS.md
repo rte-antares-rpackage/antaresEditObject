@@ -26,6 +26,7 @@ BUGFIXES :
 * Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
 * Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
 * `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
+* Allow the user to set symbol or full name as argument series in `updateScenarioBuilder()`
 * `scenarioBuilder()` matrix has the same row repeated if the area is not rand
 * Fix `createLink()` to update opts in API mode.
 * Fix `editClusterST()` : can not edit a cluster if it does not exist in API mode.
