@@ -382,7 +382,7 @@ test_that("scenarioBuilder() works as expected if n_mc is not a multiple of n_sc
   expect_identical(sbuilder, sb)
   
 	unlink(x = opts$studyPath, recursive = TRUE)
-}
+})
 
 
 # ntc ----
