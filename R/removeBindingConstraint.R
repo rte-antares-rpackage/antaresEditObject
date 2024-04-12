@@ -217,7 +217,7 @@ removeBindingConstraint <- function(name = NULL,
       api_delete(opts = opts, 
                  endpoint =  file.path(opts$study_id, "bindingconstraints", x), 
                  encode = "raw")
-      cli::cli_alert_info("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
+      cli::cli_alert_success("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
                           {.strong {x}}} success")
     })
     
@@ -227,7 +227,7 @@ removeBindingConstraint <- function(name = NULL,
       api_delete(opts = opts, 
                  endpoint =  file.path(opts$study_id, "bindingconstraints", x), 
                  encode = "raw")
-      cli::cli_alert_info("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
+      cli::cli_alert_success("Endpoint {.emph {'Delete bindingconstraints'}} {.emph 
                           {.strong {x}}} success")
   })
   return(invisible(opts))
