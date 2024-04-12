@@ -131,7 +131,7 @@ scenarioBuilder <- function(n_scenario,
       stop("Please check the number of areas and the number of coefficients for hydro levels that you provided.")
     }
   } else {
-    data_mat <- rep_len(seq_len(n_scenario), length(areas) * n_mc)
+    data_mat <- rep(rep_len(seq_len(n_scenario), n_mc), length(areas))
   }
   
   sb <- matrix(
@@ -490,7 +490,8 @@ listify_sb <- function(mat,
       x = dtsb, 
       y = links[, .SD, .SDcols = c("from", "to")],
       by.x = "rn",
-      by.y = "from"
+      by.y = "from",
+      allow.cartesian = TRUE  
     )
   }
   

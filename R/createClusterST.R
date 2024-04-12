@@ -108,10 +108,28 @@ createClusterST <- function(area,
       " you should be using one of: ", paste(st_storage_group, collapse = ", ")
     )
   
-  # check area exsiting in current study
-  check_area_name(area, opts)  
+  # check area existing in current study
   area <- tolower(area)
+  check_area_name(area, opts)  
   
+  # To avoid failure in an unit test (API is mocked) we add this block
+  api_study <- is_api_study(opts)
+  if (api_study && is_api_mocked(opts)) {
+    cluster_exists <- FALSE
+  } else {
+    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+  }
+  
+  if (!api_study) {
+    if (cluster_exists & !overwrite) {
+      stop("Cluster already exists. Overwrite it with overwrite option or edit it with editClusterST().")
+    }
+  }
+  if (api_study) {
+    if (cluster_exists) {
+      stop("Cluster already exists. Edit it with editClusterST().")
+    }
+  }
   ##
   # check parameters (ini file)
   ##
@@ -144,13 +162,12 @@ createClusterST <- function(area,
   
   # check syntax ini parameters
   params_cluster <- hyphenize_names(storage_parameters)
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
   params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
   
   ################# -
   # API block
-  if (is_api_study(opts)) {
+  if (api_study) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     params_cluster$name <- cluster_name
@@ -214,9 +231,7 @@ createClusterST <- function(area,
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  if (tolower(cluster_name) %in% tolower(names(previous_params)) & !overwrite){
-    stop(paste(cluster_name, "already exist"))
-  } else if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
+  if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
     ind_cluster <- which(tolower(names(previous_params)) %in% tolower(cluster_name))[1]
     previous_params[[ind_cluster]] <- params_cluster
     names(previous_params)[[ind_cluster]] <- cluster_name

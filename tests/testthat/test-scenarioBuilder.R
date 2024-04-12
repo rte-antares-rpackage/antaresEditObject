@@ -2,7 +2,7 @@
 
 context("Function scenarioBuilder")
 
-
+# v710 ----
 sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
@@ -232,7 +232,8 @@ sapply(studies, function(study) {
   
 })
 
-
+# v820 ----
+# hydro ----
 test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro levels coefficients (error expected)", {
   
   ant_version <- "8.2.0"
@@ -266,6 +267,7 @@ test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro l
 })
 
 
+## hl ----
 test_that("scenarioBuilder() for hl with right number of areas and hydro levels coefficients", {
   
   ant_version <- "8.2.0"
@@ -310,7 +312,7 @@ test_that("scenarioBuilder() for hl with right number of areas and hydro levels 
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
-
+## hl - all values between 0 and 1 ----
 test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
   
   ant_version <- "8.2.0"
@@ -347,7 +349,103 @@ test_that("updateScenarioBuilder() for hl with all values between 0 and 1", {
 })
 
 
-test_that("updateScenarioBuilder() has the same behaviour for one single matrix with argument series l or load and does nothing if argument series is lo", {
+# row repeated for each area in matrix scenarioBuilder ----
+test_that("scenarioBuilder() works as expected if n_mc is not a multiple of n_scenario, same row for each area except if it is rand", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  createArea("zone51", opts = simOptions())
+  createArea("zone52", opts = simOptions())
+  createArea("zone53", opts = simOptions())
+  createArea("zone54", opts = simOptions())
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  updateGeneralSettings(nbyears = 10)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  sbuilder <- scenarioBuilder(
+      n_scenario = 3,
+      n_mc = 10,
+      areas = c("zone51", "zone52", "zone53", "zone54"),
+      areas_rand = c("zone52")
+  )
+    
+  sb <- structure(
+      c("1", "rand", "1", "1", "2", "rand", "2", "2", "3", "rand", "3", "3",
+        "1", "rand", "1", "1", "2", "rand", "2", "2", "3", "rand", "3", "3",
+        "1", "rand", "1", "1", "2", "rand", "2", "2", "3", "rand", "3", "3",
+        "1", "rand", "1", "1"
+        ),
+      .Dim = c(4L,10L),
+      .Dimnames = list(c("zone51", "zone52", "zone53", "zone54"), NULL)
+  )
+    
+  expect_identical(sbuilder, sb)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+# ntc - cartesian product in merge allowed ----
+test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part", {
+  
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  ant_version <- "8.2.0"
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+
+  nbyears <- 10
+  updateGeneralSettings(nbyears = nbyears, opts = simOptions())
+  
+  # Create 5 areas
+  nb_areas <- 5
+  ids_areas <- seq(1,nb_areas)
+  my_areas <- paste0("zone",ids_areas)
+  lapply(my_areas, function(area){createArea(name = area, opts = simOptions())})
+  
+  # Create 10 links (all possibilities) between zone{i} and zone{j}, i < j
+  my_links <- expand.grid("from" = ids_areas, "to" = ids_areas)
+  my_links$check_same <- my_links$from != my_links$to
+  my_links <- my_links[my_links$check_same,]
+  my_links <- my_links[my_links$from < my_links$to,]
+  my_links$from <- paste0("zone",my_links$from)
+  my_links$to <- paste0("zone",my_links$to)
+  apply(my_links[,c("from","to")],
+        MARGIN = 1,
+        function(row){
+          createLink(as.character(row[1]),as.character(row[2]), opts = simOptions())
+          }
+      )
+
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
+  
+  my_scenario <- scenarioBuilder(n_scenario = 2, n_mc = nbyears, opts = opts)
+  updateScenarioBuilder(my_scenario, series = "ntc", links = as.character(getLinks(opts = opts)))
+
+  sb <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = opts)
+
+  expect_true(inherits(sb, what = "list"))
+  expect_true("ntc" %in% names(sb))
+  expect_true(inherits(sb[["ntc"]], what = "matrix"))
+
+  sb_matrix_ntc_expected <- structure(
+    c(rep(c(rep(1L,10),rep(2L,10)),5)),
+    .Dim = c(10L,10L),
+    .Dimnames = list(c("zone1%zone2", "zone1%zone3", "zone1%zone4", "zone1%zone5", "zone2%zone3",
+                       "zone2%zone4", "zone2%zone5", "zone3%zone4", "zone3%zone5", "zone4%zone5"
+                       ),
+                     NULL
+                     )
+  )
+
+  expect_identical(sb[["ntc"]], sb_matrix_ntc_expected)
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+# argument series l or load OK ----
+test_that("updateScenarioBuilder() has the same behaviour for one single matrix with argument series l or load", {
   
   ant_version <- "8.2.0"
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
@@ -385,6 +483,7 @@ test_that("updateScenarioBuilder() has the same behaviour for one single matrix 
 })
 
 
+# not allowed argument series KO ----
 test_that("updateScenarioBuilder() has error if names of list or argument series is not valid", {
   
   ant_version <- "8.2.0"
