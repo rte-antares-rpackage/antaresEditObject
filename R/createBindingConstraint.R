@@ -173,8 +173,7 @@ createBindingConstraint <- function(name,
                               filter_synthesis = filter_synthesis,
                               values = values,
                               group = group,
-                              coeffs = lapply(as.list(coefficients), 
-                                              as.list), 
+                              coeffs = coefficients, 
                               opts = opts)
     
     return(invisible(api_opts))
@@ -253,12 +252,32 @@ createBindingConstraint <- function(name,
 
 
 .createBC_api <- function(..., opts){
+  body <- list(...)
   # <v870
   if(opts$antaresVersion<870){
+    # re structure parameter coeffs
+    if(is.null(body$coeffs))
+      body$coeffs <- list()
+    else if(length(body$coeffs[[1]]) %in% 1)
+      body$coeffs <- lapply(body$coeffs, 
+                            as.list)
+    # re structure parameter values
+    if(identical(body$values, character(0)))
+      body$values <- NULL
+    
     cmd <- api_command_generate(
       "create_binding_constraint", 
-      ...)
+      name = body$name,
+      enabled = body$enabled,
+      time_step = body$timeStep,
+      operator = body$operator,
+      filter_year_by_year = body$filter_year_by_year,
+      filter_synthesis = body$filter_synthesis,
+      values = body$values,
+      coeffs = body$coeffs)
+    
     api_command_register(cmd, opts = opts)
+    
     `if`(
       should_command_be_executed(opts), 
       api_command_execute(cmd, opts = opts, text_alert = "create_binding_constraint: {msg_api}"),
@@ -267,8 +286,7 @@ createBindingConstraint <- function(name,
     return(invisible(opts))
   }
   
-  # v870
-  body <- list(...)
+  # >=v870
   
   # reforge list structure
   if(!is.null(body$values)){
@@ -305,6 +323,7 @@ createBindingConstraint <- function(name,
                                result$group, 
                                "validate"))
   
+  # output message
   bc_name <- result$id
   cli::cli_alert_success("Endpoint {.emph {'Create bindingconstraints'}} {.emph 
                       {.strong {bc_name}}} success")
