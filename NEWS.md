@@ -26,7 +26,7 @@ BUGFIXES :
 * Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
 * Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
 * `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
-* `scenarioBuilder()` maxtrix has the same row repeated if the area is not rand
+* `scenarioBuilder()` matrix has the same row repeated if the area is not rand
 * Fix `createLink()` to update opts in API mode.
 * Fix `editClusterST()` : can not edit a cluster if it does not exist in API mode.
 * `updateScenarioBuilder()` works for NTC part : allow cartesian in the merge.
