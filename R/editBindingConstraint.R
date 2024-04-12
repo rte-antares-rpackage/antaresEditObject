@@ -86,7 +86,7 @@ editBindingConstraint <- function(name,
                 filter_year_by_year = filter_year_by_year,
                 filter_synthesis = filter_synthesis,
                 values = values,
-                coeffs = lapply(as.list(coefficients), as.list),
+                coeffs = coefficients,
                 group = group,
                 opts = opts)
     
@@ -278,9 +278,23 @@ editBindingConstraint <- function(name,
   
   # <v870
   if(opts$antaresVersion<870){
+    # re structure parameter coeffs
+    if(is.null(args$coeffs))
+      args$coeffs <- list()
+    else if(length(args$coeffs[[1]]) %in% 1)
+      args$coeffs <- lapply(args$coeffs, 
+                            as.list)
+    
     cmd <- api_command_generate(
       "update_binding_constraint", 
-      ...)
+      id = args$id,
+      enabled = args$enabled,
+      time_step = args$time_step,
+      operator = args$operator,
+      filter_year_by_year = args$filter_year_by_year,
+      filter_synthesis = args$filter_synthesis,
+      values = args$values,
+      coeffs = args$coeffs)
     
     api_command_register(cmd, opts = opts)
     `if`(
