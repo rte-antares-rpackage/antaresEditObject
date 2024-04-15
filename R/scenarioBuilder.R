@@ -22,6 +22,7 @@
 #' 
 #' @importFrom antaresRead getAreas simOptions
 #' 
+#' @seealso \href{https://rte-antares-rpackage.github.io/antaresEditObject/articles/scenario-builder.html}{Scenario Builder vignette}
 #' @name scenario-builder
 #'
 #' @examples
@@ -79,8 +80,8 @@
 #' 
 #' # Update scenario builder
 #' 
-#' # for load serie
-#' updateScenarioBuilder(ldata = sbuilder, series = "load")
+#' # Single matrix for load serie
+#' updateScenarioBuilder(ldata = sbuilder, series = "load") # can be l instead of load
 #' 
 #' # equivalent as
 #' updateScenarioBuilder(ldata = list(l = sbuilder))
@@ -97,7 +98,7 @@
 #'   series = c("load", "hydro", "solar")
 #' )
 #' 
-#' # different input
+#' # List of matrix
 #' updateScenarioBuilder(ldata = list(
 #'   l = load_sb,
 #'   h = hydro_sb,
@@ -259,12 +260,23 @@ scenarioBuilder <- function(n_scenario = 1,
 #' @title Create the correspondence data frame between the symbol and the type in scenario builder
 #' @return a `data.frame`.
 #' @export
-create_referential_series_type <- function(){
-
-  ref_series <- data.frame("series" = c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc"),
-                           "choices" = c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels", "binding")
-                         )
-
+create_scb_referential_series_type <- function(){
+  
+  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc")
+  choices <- c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels", "binding")
+  
+  # Check data consistency
+  len_series_to_write <- length(series_to_write)  
+  len_choices <- length(choices)
+  if (len_choices != len_series_to_write) {
+    stop("Inconsistent data between series and choices.\n")
+  }
+  
+  # Generate referential : w to write in scenarioBuilder, r for read only in argument
+  ref_series <- data.frame("series" = c(series_to_write, choices),
+                           "choices" = rep(choices, 2),
+                           "type" = c(rep("w",len_series_to_write), rep("r",len_choices))
+                          )
   return(ref_series)
 }
 
@@ -420,6 +432,16 @@ extract_el <- function(l, indice) {
 #' 
 #' `series = "bc"` is only available with Antares >= 8.7.0. 
 #'
+#' For a single matrix, value of series can be :
+#'  - h or hydro
+#'  - hl or hydrolevels
+#'  - l or load
+#'  - ntc
+#'  - r or renewables
+#'  - s or solar
+#'  - t or thermal
+#'  - w or wind
+#' 
 #' @export
 #' 
 #' @rdname scenario-builder
@@ -437,18 +459,20 @@ updateScenarioBuilder <- function(ldata,
                                   as_matrix = FALSE, 
                                   opts = opts))
   
-  ref_series <- create_referential_series_type()
-  possible_series <- ref_series$series
+  ref_series <- create_scb_referential_series_type()
   
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      series <- ref_series[possible_series %in% series, "choices"]
+      if (! all(series %in% ref_series$series)) {
+        stop("Your argument series must be one of ", paste0(ref_series$series, collapse = ", "), call. = FALSE)
+      }
+      choices <- ref_series[ref_series$series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
         stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
       if (isTRUE("bc" %in% series) & isTRUE(opts$antaresVersion < 870))
         stop("updateScenarioBuilder: cannot use series='bc' with Antares < 8.7.0", 
              call. = FALSE)
-      series <- ref_series[ref_series$choices %in% series, "series"]
+      series <- ref_series[ref_series$choices %in% choices & ref_series$type == "w", "series"]
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
     }
@@ -463,8 +487,9 @@ updateScenarioBuilder <- function(ldata,
     prevSB[series] <- NULL
   } else {
     series <- names(ldata)
-    if (!all(series %in% possible_series)) {
-      stop("'ldata' must be one of ", paste0(possible_series, collapse = ", "), call. = FALSE)
+    possible_series <- ref_series[ref_series$type == "w", "series"]
+    if (! all(series %in% possible_series)) {
+      stop("Each of your list names must be in the following list : ", paste0(possible_series, collapse = ", "), call. = FALSE)
     }
     if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
