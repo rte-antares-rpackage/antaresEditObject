@@ -272,6 +272,7 @@ test_that("removeArea() in 8.2.0 : check that properties.ini are all there", {
 })
 
 
+# Area in binding constraint not removed ----
 test_that("removeArea(): check that area is removed if it is not referenced in a binding constraint and not removed if the area is referenced in a binding constraint", {
   
   ant_version <- "8.2.0"

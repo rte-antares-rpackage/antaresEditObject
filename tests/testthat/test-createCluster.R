@@ -159,6 +159,7 @@ test_that("Create cluster with pollutants params (new feature v8.6)",{
 })
 
 
+# Cluster in binding constraint not removed ----
 test_that("removeCluster() : cluster is not removed if it is referenced in a binding constraint", {
   
   ant_version <- "8.2.0"
