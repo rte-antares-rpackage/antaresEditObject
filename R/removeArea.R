@@ -29,6 +29,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   check_area_name(name, opts)
   api_study <- is_api_study(opts)
   if (!api_study | (api_study && !is_api_mocked(opts))) {
+    # check if the area can be removed safely, i.e. the area is not referenced in a binding constraint
     .check_area_in_binding_constraint(name, opts)
   }
   

@@ -42,7 +42,7 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
     return()
   }
   
-  # Link referenced as a coefficient in a binding constraint
+  # check if the link can be removed safely, i.e. the link is not referenced in a binding constraint
   bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(from, "%", to), opts = opts)
   if (!identical(bc_not_remove, character(0))) {
     message("The following binding constraints have the link to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
