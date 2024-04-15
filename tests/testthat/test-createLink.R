@@ -91,7 +91,7 @@ sapply(studies, function(study) {
 })
 
 
-
+# Write right time series in right files regardless alphabetical order ----
 test_that("Check if createLink() in version >= 8.2 writes time series link in the right file regardless alphabetical order", {
 
   ant_version <- "8.2.0"
@@ -167,6 +167,7 @@ test_that("Check if createLink() in version >= 8.2 writes time series link in th
 })
 
 
+# Delete expected files regardless alphabetical order ----
 test_that("removeLink() in 8.2.0 : check if the expected files are deleted/updated", {
   
   ant_version <- "8.2.0"
@@ -235,7 +236,7 @@ test_that("removeLink() in 8.2.0 : check if the expected files are deleted/updat
 })
 
 
-
+# Link in binding constraint not removed ----
 test_that("removeLink() : link is not removed if it is referenced in a binding constraint", {
   
   ant_version <- "8.2.0"
@@ -296,6 +297,17 @@ test_that("removeLink() : link is not removed if it is referenced in a binding c
   
   # createLink() with overwrite to TRUE calls removeLink()
   expect_error(createLink(from = "zone2", to = "zone3", overwrite = TRUE, opts = opts), regexp = "Can not remove the link")
+  
+  pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
+  bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
+  # Legacy code allows reversed (i.e. not sorted) coefficient in a binding constraint 
+  bc_names <- sapply(bindingConstraints,"[[", "name")
+  bc_idx <- which(bc_names == "bc_zone4")
+  bc_char <- as.character(bc_idx - 1)
+  names(bindingConstraints[[bc_char]])[names(bindingConstraints[[bc_char]]) == "zone4%zone5"] <- "zone5%zone4"
+  
+  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
+  expect_error(removeLink(from = "zone4", to = "zone5", opts = opts), regexp = "Can not remove the link")
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
