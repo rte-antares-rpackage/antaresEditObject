@@ -15,7 +15,7 @@ NEW FEATURES :
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
 * `.createCluster()` default matrix in API mode.
 * `removeArea()` :
-  - control the existence of an area in a binding constraint coefficient
+  - control the existence of an area in a binding constraint coefficient before deletion
   - no longer deletes a binding constraint
 * `removeLink()` : control the existence of a link a in a binding constraint coefficient before deletion
 * `removeCluster()` : control the existence of a cluster a in a binding constraint coefficient before deletion
