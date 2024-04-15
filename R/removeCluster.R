@@ -117,12 +117,20 @@ removeClusterST <- function(area,
   
   area <- tolower(area)
   check_area_name(area, opts)
-  
   api_study <- is_api_study(opts)
   is_thermal <- identical(cluster_type, "thermal")
   
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  if (identical(cluster_type,"st-storage")) {
+    # To avoid failure in an unit test (API is mocked) we add this block
+    if (api_study && is_api_mocked(opts)) {
+      cluster_exists <- TRUE
+    } else {
+      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+    }
+    assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
+  }
+  
+  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
   
   if (is_thermal) {
     if (!api_study | (api_study && !is_api_mocked(opts))) {

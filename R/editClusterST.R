@@ -33,11 +33,20 @@ editClusterST <- function(area,
                           add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
 
-  # basics checks
+  # basic checks
   assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_ST(opts, check_dir = TRUE)
   check_area_name(area, opts)
   
+  api_study <- is_api_study(opts)
+  # To avoid failure in an unit test (API is mocked) we add this block
+  if (api_study && is_api_mocked(opts)) {
+    cluster_exists <- TRUE
+  } else {
+    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+  }
+  cl_name_msg <- generate_cluster_name(area, cluster_name, add_prefix)
+  assertthat::assert_that(cluster_exists, msg = paste0("Cluster '", cl_name_msg, "' does not exist. It can not be edited."))
   # statics groups
   st_storage_group <- c("PSP_open", 
                         "PSP_closed", 
@@ -79,8 +88,7 @@ editClusterST <- function(area,
   # make list of parameters
   area <- tolower(area)
   if(!(is.null(params_cluster)&&is.null(group))){
-    if (add_prefix)
-      cluster_name <- paste(area, cluster_name, sep = "_")
+    cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
     params_cluster <- c(list(name = cluster_name, group = group), 
                         params_cluster)
   }
@@ -88,7 +96,7 @@ editClusterST <- function(area,
     params_cluster$group <- NULL
   
   ##### API block ----
-  if (is_api_study(opts)) {
+  if (api_study) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
@@ -141,7 +149,7 @@ editClusterST <- function(area,
   path_clusters_ini <- file.path(opts$inputPath, 
                                  "st-storage", 
                                  "clusters", 
-                                 tolower(area), 
+                                 area, 
                                  "list.ini")
   if (!file.exists(path_clusters_ini))
     stop("'", cluster_name, "' in area '", area, "' doesn't seems to exist.")
@@ -152,13 +160,6 @@ editClusterST <- function(area,
   else{
     # read previous content of ini
     previous_params <- readIniFile(file = path_clusters_ini)
-    
-    if (!tolower(cluster_name) %in% tolower(names(previous_params))){
-      stop(
-        "'", cluster_name, "' doesn't exist, it can't be edited. You can create cluster with createCluster().",
-        call. = FALSE
-      )
-    }
     
     # select existing cluster
     ind_cluster <- which(tolower(names(previous_params)) %in% 
