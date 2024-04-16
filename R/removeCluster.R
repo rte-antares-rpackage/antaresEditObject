@@ -185,18 +185,18 @@ removeClusterST <- function(area,
     overwrite = TRUE
   )
   
-  # Remove series
-  if (length(previous_params) > 0) {
-    dirs_to_remove <- file.path(clustertypePath, "series", area, cluster_name)
-  } else {
-    dirs_to_remove <- file.path(clustertypePath, "series", area)
+  # Remove directories recursively
+  subdirs_to_remove <- c("series")
+  if (is_thermal) {
+    subdirs_to_remove <- c("series", "prepro")
   }
   
-  # Remove prepro
-  if (is_thermal) {
-    dirs_to_remove <- c(dirs_to_remove, file.path(clustertypePath, "prepro", area))
+  dirs_to_remove <- file.path(clustertypePath, subdirs_to_remove, area)
+  if (length(previous_params) > 0) {
+    dirs_to_remove <- file.path(dirs_to_remove, cluster_name)
   }
   lapply(dirs_to_remove, unlink, recursive = TRUE)
+  
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
