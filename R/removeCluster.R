@@ -188,7 +188,7 @@ removeClusterST <- function(area,
   # Remove directories recursively
   subdirs_to_remove <- c("series")
   if (is_thermal) {
-    subdirs_to_remove <- c("series", "prepro")
+    subdirs_to_remove <- c(subdirs_to_remove, "prepro")
   }
   
   dirs_to_remove <- file.path(clustertypePath, subdirs_to_remove, area)
