@@ -34,9 +34,15 @@ NEW FEATURES :
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
 * `.createCluster()` default matrix in API mode.
+* `removeArea()` :
+  - control the existence of an area in a binding constraint coefficient before deletion
+  - no longer deletes a binding constraint
+* `removeLink()` : control the existence of a link a in a binding constraint coefficient before deletion
+* `removeCluster()` : control the existence of a cluster a in a binding constraint coefficient before deletion
 * `createClusterST()` : add a control to check if a cluster exists before running actions.
 * `editClusterST()` : add a control to check if a cluster exists before running actions.
 * `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
+
 
 BUGFIXES : 
 

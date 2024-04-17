@@ -157,3 +157,63 @@ test_that("Create cluster with pollutants params (new feature v8.6)",{
   # remove temporary study
   unlink(x = opts_test$studyPath, recursive = TRUE)
 })
+
+
+# Cluster in binding constraint not removed ----
+test_that("removeCluster() : cluster is not removed if it is referenced in a binding constraint", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  
+  nb_areas <- 5
+  ids_areas <- seq(1,nb_areas)
+  my_areas <- paste0("zone",ids_areas)
+  
+  clusters <- c("nuclear", "gas", "coal")
+  my_clusters <- expand.grid("area" = my_areas, "cluster_name" = clusters)
+  my_clusters$cluster_name_prefixed <- paste0(my_clusters$area, "_", my_clusters$cluster_name)
+  my_clusters$cluster_name_binding <- paste0(my_clusters$area, ".", my_clusters$cluster_name_prefixed)
+  lst_clusters <- split(my_clusters[,c("cluster_name_binding")], my_clusters$cluster_name)
+  
+  # Areas
+  lapply(my_areas, FUN = function(area){createArea(name = area, opts = simOptions())})
+  
+  # Clusters
+  apply(my_clusters[,c("area","cluster_name")],
+        MARGIN = 1,
+        FUN = function(row){
+          createCluster(area = as.character(row[1]),
+                        cluster_name = as.character(row[2]),
+                        add_prefix = TRUE,
+                        opts = simOptions()
+                        )
+        }
+  )
+  
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
+  
+  nb_cols_per_matrix <- 3
+  nb_hours_per_year <- 8784
+  nb_values_per_matrix <- nb_hours_per_year * nb_cols_per_matrix
+  for (cluster in names(lst_clusters)) {
+    names_coefs_bc <- lst_clusters[[cluster]]
+    coefs <- seq_len(length(names_coefs_bc))
+    names(coefs) <- names_coefs_bc
+    createBindingConstraint(name = paste0("bc_",cluster),
+                            timeStep = "hourly",
+                            operator = "less",
+                            coefficients = coefs,
+                            values = matrix(rep(0,nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                            opts = opts
+                            )
+  }
+  
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
+  
+  expect_error(removeCluster(area = "zone1", cluster_name = "nuclear", add_prefix = TRUE, opts = opts), regexp = "Can not remove the cluster")
+  removeBindingConstraint(name = "bc_nuclear", opts = opts)
+  expect_no_error(removeCluster(area = "zone1", cluster_name = "nuclear", add_prefix = TRUE, opts = opts))
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
