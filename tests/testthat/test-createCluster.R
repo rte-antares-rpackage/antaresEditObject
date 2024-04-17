@@ -222,7 +222,6 @@ test_that("removeCluster() : cluster is not removed if it is referenced in a bin
 # Delete expected files ----
 test_that("removeCluster(): check if the expected files are deleted", {
   
-  ant_version <- "8.2.0"
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
   suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = "8.2.0"))
 
@@ -251,14 +250,16 @@ test_that("removeCluster(): check if the expected files are deleted", {
   expect_true(nrow(all_clusters) == nb_clusters)
   
   i <- 0
+  preproPath <- file.path(opts$inputPath, "thermal", "prepro")
+  seriesPath <- file.path(opts$inputPath, "thermal", "series")
   # remove N-1 first clusters
   for (cluster in clusters[-length(clusters)]) {
     i <- i + 1
     suppressWarnings(removeCluster(area = area, cluster_name = cluster, add_prefix = TRUE, opts = simOptions()))
     all_clusters <- readClusterDesc(opts = simOptions())
     expect_true(nrow(all_clusters) == nb_clusters - i)
-    expect_false(dir.exists(file.path(opts$inputPath, "thermal", "prepro", area, paste0(area, "_", cluster))))
-    expect_false(dir.exists(file.path(opts$inputPath, "thermal", "series", area, paste0(area, "_", cluster))))
+    expect_false(dir.exists(file.path(preproPath, area, paste0(area, "_", cluster))))
+    expect_false(dir.exists(file.path(seriesPath, area, paste0(area, "_", cluster))))
   }
   
   all_clusters <- readClusterDesc(opts = simOptions())
@@ -269,8 +270,8 @@ test_that("removeCluster(): check if the expected files are deleted", {
   suppressWarnings(all_clusters <- readClusterDesc(opts = simOptions()))
   expect_true(nrow(all_clusters) == 0)
   # Remove area directory when removing last cluster of the area
-  expect_false(dir.exists(file.path(opts$inputPath, "thermal", "prepro", area)))
-  expect_false(dir.exists(file.path(opts$inputPath, "thermal", "series", area)))
+  expect_false(dir.exists(file.path(preproPath, area)))
+  expect_false(dir.exists(file.path(seriesPath, area)))
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
