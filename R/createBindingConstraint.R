@@ -302,26 +302,65 @@ createBindingConstraint <- function(name,
   
   # delete NULL from parameters
   body <- dropNulls(body)
+  body_terms <- NULL
   
-  # rename parameter coeffs
-  index_to_change <- which(names(body)%in%"coeffs")
-  names(body)[index_to_change] <- "terms"
+  # filter coeffs if none null
+  if(!is.null(body$coeffs)){
+    body_terms <- body$coeffs
+    body$coeffs <- NULL
+    
+    # extract areas/cluster (links or thermal)
+    terms_values <- strsplit(x = names(body_terms), split = "%|\\.")
+    
+    is_dot <- grep(x = names(body_terms), 
+                       pattern = ".")
+    
+    # build list 
+    if(is_dot)
+      data_list <- list(area=terms_values[[1]][1],
+                           cluster=terms_values[[1]][2])
+    else
+      data_list <- list(area1=terms_values[[1]][1],
+                       area2=terms_values[[1]][2])
+    
+    if(length(body_terms[[1]])>1)
+      body_terms <- list(weight=body_terms[[1]][1],
+                         offset=body_terms[[1]][2],
+                         data=data_list)
+    else
+      body_terms <- list(weight=body_terms[[1]][1],
+                         data=data_list)
+    
+    # make json file
+    body_terms <- jsonlite::toJSON(body_terms,
+                                   auto_unbox = TRUE)
+  }
   
   # make json file
   body <- jsonlite::toJSON(body,
                            auto_unbox = TRUE)
   
-  # send request
+  # send request (without coeffs/term)
   result <- api_post(opts = opts, 
-           endpoint = file.path(opts$study_id, "bindingconstraints"), 
-           body = body, 
-           encode = "raw")
+                     endpoint = file.path(opts$study_id, "bindingconstraints"), 
+                     body = body, 
+                     encode = "raw")
   # /validate 
   api_get(opts = opts, 
           endpoint = file.path(opts$study_id, 
                                "constraint-groups",
                                result$group, 
                                "validate"))
+  
+  # specific endpoint for coeffs/term
+  if(!is.null(body_terms))
+    api_post(opts = opts, 
+             endpoint = file.path(opts$study_id, 
+                                  "bindingconstraints", 
+                                  result$id, 
+                                  "term"), 
+             body = body_terms, 
+             encode = "raw")
   
   # output message
   bc_name <- result$id
