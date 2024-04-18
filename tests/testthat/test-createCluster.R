@@ -260,6 +260,8 @@ test_that("removeCluster(): check if the expected files are deleted", {
     expect_true(nrow(all_clusters) == nb_clusters - i)
     expect_false(dir.exists(file.path(preproPath, area, paste0(area, "_", cluster))))
     expect_false(dir.exists(file.path(seriesPath, area, paste0(area, "_", cluster))))
+    expect_true(dir.exists(file.path(preproPath, area)))
+    expect_true(dir.exists(file.path(seriesPath, area)))
   }
   
   all_clusters <- readClusterDesc(opts = simOptions())
