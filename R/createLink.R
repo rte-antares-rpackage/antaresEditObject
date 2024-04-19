@@ -207,7 +207,7 @@ createLink <- function(from,
       )
     }
     
-    return(invisible(opts))
+    return(update_api_opts(opts))
   }
   
 
@@ -299,14 +299,20 @@ createLink <- function(from,
 #'   state whether the link is either an AC component (subject to Kirchhoff’s laws), a DC component, 
 #'   or another type of asset.
 #' @param display_comments Logical, display comments or not.
-#' @param filter_synthesis Output synthesis.
-#' @param filter_year_by_year Output year-by-year.
+#' @param filter_synthesis Character, vector of time steps used in the output synthesis, among `hourly`, `daily`, `weekly`, `monthly`, and `annual`
+#' @param filter_year_by_year Character, vector of time steps used in the output year-by-year, among `hourly`, `daily`, `weekly`, `monthly`, and `annual`
 #'
 #' @return A named list that can be used in [createLink()].
 #' @export
 #'
 #' @examples
-#' propertiesLinkOptions(hurdles_cost = TRUE)
+#' \dontrun{
+#' propertiesLinkOptions(
+#'   hurdles_cost = TRUE,
+#'   filter_synthesis=c("hourly","daily"),
+#'   filter_year_by_year=c("weekly","monthly")
+#' )
+#' }
 propertiesLinkOptions <- function(hurdles_cost = FALSE, 
                                   transmission_capacities = "enabled",
                                   asset_type = "ac",

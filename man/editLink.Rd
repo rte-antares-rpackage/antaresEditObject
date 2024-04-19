@@ -34,9 +34,9 @@ or another type of asset.}
 
 \item{display_comments}{Logical, display comments or not.}
 
-\item{filter_synthesis}{Output synthesis.}
+\item{filter_synthesis}{Character, vector of time steps used in the output synthesis, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
 
-\item{filter_year_by_year}{Output year-by-year.}
+\item{filter_year_by_year}{Character, vector of time steps used in the output year-by-year, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
 
 \item{dataLink}{See Details section below.}
 
@@ -61,7 +61,9 @@ See \code{\link[=createLink]{createLink()}} for more documentation
 editLink(
   from = "area1",
   to = "area2",
-  transmission_capacities = "infinite"
+  transmission_capacities = "infinite",
+  filter_synthesis = c("hourly","daily"),
+  filter_year_by_year = c("weekly","monthly")
 )
 }
 }
