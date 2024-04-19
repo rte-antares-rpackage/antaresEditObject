@@ -2,7 +2,7 @@
 
 > Second-member coupling constraint scenarios
 
-### Breaking changes (Antares v8.7, cf. Antares v8.7 changelog) : 
+NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :  
 
 * `createBindingConstraint()` / `createBindingConstraintBulk()` 
   - New parameters `group`  
@@ -16,6 +16,9 @@
 * `scenarioBuilder()` has 3 new parameters dedicated to use with binding constraints.
 * `updateGeneralSettings()` adds coupling constraints to the `scenariobuilder.dat` file.
  
+### Breaking changes  :  
+
+* `createBindingConstraint()` is available with **offset** parameter in API mode 
 
 
 # antaresEditObject 0.6.2

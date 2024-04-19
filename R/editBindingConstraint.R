@@ -267,34 +267,34 @@ editBindingConstraint <- function(name,
 
 # api part code
 .editBC_api <- function(..., opts){
-  args <- list(...)
+  body <- list(...)
   # multi vers checks (legacy)
-  if (is.null(args$time_step))
+  if (is.null(body$time_step))
     stop("You must provide `timeStep` argument with API.", 
          call. = FALSE)
-  if (is.null(args$time_step))
+  if (is.null(body$time_step))
     stop("You must provide `operator` argument with API.", 
          call. = FALSE)
   
   # <v870
   if(opts$antaresVersion<870){
     # re structure parameter coeffs
-    if(is.null(args$coeffs))
-      args$coeffs <- list()
-    else if(length(args$coeffs[[1]]) %in% 1)
-      args$coeffs <- lapply(args$coeffs, 
+    if(is.null(body$coeffs))
+      body$coeffs <- list()
+    else if(length(body$coeffs[[1]]) %in% 1)
+      body$coeffs <- lapply(body$coeffs, 
                             as.list)
     
     cmd <- api_command_generate(
       "update_binding_constraint", 
-      id = args$id,
-      enabled = args$enabled,
-      time_step = args$time_step,
-      operator = args$operator,
-      filter_year_by_year = args$filter_year_by_year,
-      filter_synthesis = args$filter_synthesis,
-      values = args$values,
-      coeffs = args$coeffs)
+      id = body$id,
+      enabled = body$enabled,
+      time_step = body$time_step,
+      operator = body$operator,
+      filter_year_by_year = body$filter_year_by_year,
+      filter_synthesis = body$filter_synthesis,
+      values = body$values,
+      coeffs = body$coeffs)
     
     api_command_register(cmd, opts = opts)
     `if`(
@@ -310,33 +310,33 @@ editBindingConstraint <- function(name,
   # >=v870
   
   # reforge list structure
-  if(!is.null(args$values)){
-    list_values <- list(less_term_matrix = args$values$lt,
-                        equal_term_matrix = args$values$eq,
-                        greater_term_matrix = args$values$gt)
+  if(!is.null(body$values)){
+    list_values <- list(less_term_matrix = body$values$lt,
+                        equal_term_matrix = body$values$eq,
+                        greater_term_matrix = body$values$gt)
     
     list_values <- dropNulls(list_values)
-    args$values <- NULL
+    body$values <- NULL
     
-    args <- append(args, list_values)
+    body <- append(body, list_values)
   }
   
   # delete NULL from parameters
-  args <- dropNulls(args)
+  body <- dropNulls(body)
   
   # rename parameter coeffs
-  index_to_change <- which(names(args)%in%"coeffs")
-  names(args)[index_to_change] <- "terms"
+  index_to_change <- which(names(body)%in%"coeffs")
+  names(body)[index_to_change] <- "terms"
   
   # keep id/name of constraint
-  names_to_keep <- setdiff(names(args), "id")
-  id_bc <- args$id
+  names_to_keep <- setdiff(names(body), "id")
+  id_bc <- body$id
   
   # drop id
-  args$id <- NULL
+  body$id <- NULL
   
   # make json file
-  args <- jsonlite::toJSON(args, 
+  body <- jsonlite::toJSON(body, 
                            auto_unbox = TRUE)
   
   # send request
@@ -344,7 +344,7 @@ editBindingConstraint <- function(name,
           endpoint =  file.path(opts$study_id, 
                                 "bindingconstraints", 
                                 id_bc), 
-          body = args, 
+          body = body, 
           encode = "raw")
   
   # /validate 
