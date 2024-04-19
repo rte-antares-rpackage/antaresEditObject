@@ -3,9 +3,36 @@
 
 # antaresEditObject 0.6.1
 
+NEW FEATURES :
+
+* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
+* New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
+* Add `importZipStudyWeb()` to allow the user to import a local study in Antares Web
+
 ### Breaking changes
 
+* `setPlaylist()` optimized for the API mode
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()`
+* `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
+* `createCluster()` parameter `list_pollutants` default value to NULL.
+* `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
+* `.createCluster()` default matrix in API mode.
+
+BUGFIXES : 
+
+* Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
+* Fix `setPlaylist()` works in API and local mode with weights.
+* Fix `getPlaylist()` works in API and local mode with weights.
+* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
+* Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
+* `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
+* Fix `createLink()` to update opts in API mode.
+
+# antaresEditObject 0.6.1
+
+
 * `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
+
 
 BUGFIXES : 
 
