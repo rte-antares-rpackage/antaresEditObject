@@ -73,7 +73,11 @@ sapply(studies, function(study) {
         add_prefix = FALSE
       )
     }
-    expect_error(antaresRead::readClusterDesc())
+    path_thermal <- file.path(opts$inputPath, "thermal", "clusters")
+    all_dirs <- list.files(path_thermal, full.names = TRUE)
+    size_files <- sapply(all_dirs, file.size)
+    
+    expect_equal(sum(size_files), 0)
     
   })
   

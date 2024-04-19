@@ -1,3 +1,6 @@
+# antaresEditObject 0.6.2
+* Fix test to remove rev dep to `antaresRead` (see `cran-comments.md` for details)
+
 # antaresEditObject 0.6.1
 
 ### Breaking changes
