@@ -59,6 +59,14 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   ## edit list ini ----
     # edit only group value
   name_cluster_test <- levels(st_clusters$cluster)[1]
+  # case insensitive
+  expect_no_error(editClusterST(area = toupper(area_test),
+                                cluster_name = toupper(name_cluster_test),
+                                group = "Other5",
+                                add_prefix = FALSE,
+                                storage_parameters = list("efficiency" = 0.789),
+                                opts = opts_test))
+
   opts_test <- editClusterST(area = area_test, 
                              cluster_name = name_cluster_test,
                              group = "Other2", 

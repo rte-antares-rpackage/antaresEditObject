@@ -45,6 +45,7 @@ NEW FEATURES :
 * `createClusterST()` : add a control to check if a cluster exists before running actions.
 * `editClusterST()` : add a control to check if a cluster exists before running actions.
 * `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
+* Update documentation for scenarioBuilder : user must enable/disable `custom-scenario` property in `generaldata.ini` by himself
 
 
 BUGFIXES : 
@@ -63,6 +64,7 @@ BUGFIXES :
 * `api_command_execute()` :  
   - no longer deletes a command  
   - displays a success message for a study or variant
+* `removeCluster()` no longer deletes everything in the folder prepro  
 
 
 

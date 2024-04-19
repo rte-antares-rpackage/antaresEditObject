@@ -408,7 +408,7 @@ test_that("scenarioBuilder() works as expected if n_mc is not a multiple of n_sc
 
 
 # ntc - cartesian product in merge allowed ----
-test_that("updateScenarioBuilderscenarioBuilder() works as expected for ntc part", {
+test_that("updateScenarioBuilder() works as expected for ntc part", {
   
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
   ant_version <- "8.2.0"

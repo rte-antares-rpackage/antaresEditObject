@@ -426,11 +426,10 @@ extract_el <- function(l, indice) {
 #'  
 #'  
 #' @note
-#' `series = "hl"` each value must be between 0 and 1.
-#'   
-#' `series = "ntc"` is only available with Antares >= 8.2.0.  
-#' 
-#' `series = "bc"` is only available with Antares >= 8.7.0. 
+#'  - `series = "ntc"` is only available with Antares >= 8.2.0.
+#'  - For `series = "hl"`, each value must be between 0 and 1.
+#'  - User must enable/disable `custom-scenario` property in `settings/generaldata.ini` by himself.  
+#'  - `series = "bc"` is only available with Antares >= 8.7.0.
 #'
 #' For a single matrix, value of series can be :
 #'  - h or hydro
