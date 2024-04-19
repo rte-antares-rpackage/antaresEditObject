@@ -323,10 +323,42 @@ editBindingConstraint <- function(name,
   
   # delete NULL from parameters
   body <- dropNulls(body)
+  body_terms <- NULL
   
-  # rename parameter coeffs
-  index_to_change <- which(names(body)%in%"coeffs")
-  names(body)[index_to_change] <- "terms"
+  # filter coeffs if none null
+  if(!is.null(body$coeffs)){
+    body_terms <- body$coeffs
+    body$coeffs <- NULL
+    
+    # extract areas/cluster (links or thermal)
+    id_terms <- names(body_terms)
+    terms_values <- strsplit(x = id_terms, split = "%|\\.")
+    
+    is_dot <- grepl(x = id_terms, 
+                    pattern = "\\.")
+    
+    # build list 
+    if(is_dot)
+      data_list <- list(area=terms_values[[1]][1],
+                        cluster=terms_values[[1]][2])
+    else
+      data_list <- list(area1=terms_values[[1]][1],
+                        area2=terms_values[[1]][2])
+    
+    if(length(body_terms[[1]])>1)
+      body_terms <- list(id=id_terms,
+                         weight=body_terms[[1]][1],
+                         offset=body_terms[[1]][2],
+                         data=data_list)
+    else
+      body_terms <- list(id=id_terms,
+                         weight=body_terms[[1]][1],
+                         data=data_list)
+    
+    # make json file
+    body_terms <- jsonlite::toJSON(body_terms,
+                                   auto_unbox = TRUE)
+  }
   
   # keep id/name of constraint
   names_to_keep <- setdiff(names(body), "id")
@@ -353,6 +385,16 @@ editBindingConstraint <- function(name,
                                "constraint-groups",
                                result$group, 
                                "validate"))
+  
+  # specific endpoint for coeffs/term
+  if(!is.null(body_terms))
+    api_put(opts = opts, 
+             endpoint = file.path(opts$study_id, 
+                                  "bindingconstraints", 
+                                  result$id, 
+                                  "term"), 
+             body = body_terms, 
+             encode = "raw")
   
   cli::cli_alert_success("Endpoint {.emph {'Update bindingconstraints'}} {.emph 
                       {.strong {id_bc}}} success")
