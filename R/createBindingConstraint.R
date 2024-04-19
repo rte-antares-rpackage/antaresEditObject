@@ -312,8 +312,8 @@ createBindingConstraint <- function(name,
     # extract areas/cluster (links or thermal)
     terms_values <- strsplit(x = names(body_terms), split = "%|\\.")
     
-    is_dot <- grep(x = names(body_terms), 
-                       pattern = ".")
+    is_dot <- grepl(x = names(body_terms), 
+                       pattern = "\\.")
     
     # build list 
     if(is_dot)
