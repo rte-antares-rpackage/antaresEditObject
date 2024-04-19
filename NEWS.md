@@ -22,6 +22,7 @@ NEW FEATURES :
 * `createClusterST()` : add a control to check if a cluster exists before running actions.
 * `editClusterST()` : add a control to check if a cluster exists before running actions.
 * `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
+* Update documentation for scenarioBuilder : user must enable/disable `custom-scenario` property in `generaldata.ini` by himself
 
 
 BUGFIXES : 
