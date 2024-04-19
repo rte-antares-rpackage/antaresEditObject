@@ -41,6 +41,7 @@ BUGFIXES :
 * `api_command_execute()` :  
   - no longer deletes a command  
   - displays a success message for a study or variant
+* `removeCluster()` no longer deletes everything in the folder prepro  
 
 
 
