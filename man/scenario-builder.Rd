@@ -86,8 +86,11 @@ Default is to read existing links and update them all.}
 Read, create, update & deduplicate scenario builder.
 }
 \note{
-\code{series = "ntc"} is only available with Antares >= 8.2.0.
-\code{series = "hl"} each value must be between 0 and 1.
+\itemize{
+\item \code{series = "ntc"} is only available with Antares >= 8.2.0.
+\item For \code{series = "hl"}, each value must be between 0 and 1.
+\item User must enable/disable \code{custom-scenario} property in \code{settings/generaldata.ini} by himself.
+}
 
 For a single matrix, value of series can be :
 \itemize{
