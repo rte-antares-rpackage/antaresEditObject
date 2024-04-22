@@ -41,7 +41,7 @@ It contains one line per time step and three columns "less", "greater" and "equa
 
 \item{filter_synthesis}{Marginal price granularity for synthesis}
 
-\item{coefficients}{A named vector containing the coefficients used by the constraint,
+\item{coefficients}{A named list containing the coefficients used by the constraint,
 the coefficients have to be alphabetically ordered.}
 
 \item{group}{"character" group of the constraint, default value : "default group"}
@@ -76,13 +76,29 @@ see example section below.
 \examples{
 \dontrun{
 # < v8.7.0 :
+
+# Create constraints with multi coeffs (only weight)
+
 createBindingConstraint(
   name = "myconstraint", 
   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
   enabled = FALSE, 
   timeStep = "hourly",
   operator = "both",
-  coefficients = c("fr\%myarea" = 1)
+  coefficients = list("area1\%area2" = 1,
+    "area1\%area3" = 2)
+)
+
+# Create constraints with multi coeffs + offset
+
+createBindingConstraint(
+  name = "myconstraint", 
+  values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+  enabled = FALSE, 
+  timeStep = "hourly",
+  operator = "both",
+  coefficients = list("area1\%area2" = "1\%1",
+    "area1\%area3" = "2\%3")
 )
 
 # Create multiple constraints
@@ -100,7 +116,7 @@ bindings_constraints <- lapply(
       enabled = FALSE, 
       timeStep = "hourly",
       operator = "both",
-      coefficients = c("area1\%area2" = 1),
+      coefficients = list("area1\%area2" = 1),
       overwrite = TRUE
     )
   }
@@ -146,7 +162,7 @@ bindings_constraints <- lapply(
       enabled = FALSE, 
       timeStep = "hourly",
       operator = "both",
-      coefficients = c("at\%fr" = 1),
+      coefficients = list("at\%fr" = 1),
       group= "group_bulk",
      overwrite = TRUE
    )

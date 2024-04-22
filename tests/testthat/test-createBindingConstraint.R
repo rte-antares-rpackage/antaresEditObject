@@ -109,7 +109,7 @@ sapply(studies, function(study) {
   })
   
   
-  
+  ## coeffs ----
   test_that("Create a new binding constraint with coefficients", {
     
     coefs <- antaresRead::readBindingConstraints()[[1]]$coefs
@@ -124,8 +124,53 @@ sapply(studies, function(study) {
     expect_identical(antaresRead::readBindingConstraints()[["coeffs"]]$coefs, coefs)
   })
   
+  ## multi coeffs ----
+  test_that("Create new bc with multi coefficients values", {
+    links_available <- getLinks()[1:3]
+    names_links <- gsub(pattern = " - ", replacement = "%", x = links_available)
+    
+    list_coeffs_values <- list(a=1, b=2, c=3)
+    names(list_coeffs_values) <- names_links
+    
+    createBindingConstraint(
+      name = "multi_coeffs",
+      timeStep = "weekly", 
+      values = matrix(data = rep(0, 365 * 3), ncol = 3),
+      coefficients = list_coeffs_values
+    )
+    
+    path_bc_ini <- file.path("input", "bindingconstraints", "bindingconstraints")
+    
+    read_bc <- antaresRead::readIni(path_bc_ini)
+    bc_to_test <- read_bc[length(read_bc)]
+    
+    testthat::expect_true(all(names_links %in% names(bc_to_test[[1]]))) 
+  })
   
-  
+  ## multi coeffs + offset ----
+  test_that("Create new bc with multi coefficients values + offset", {
+    links_available <- getLinks()[1:3]
+    names_links <- gsub(pattern = " - ", replacement = "%", x = links_available)
+    
+    list_coeffs_values <- list(a="1%8", b="2%7", c="3%9")
+    names(list_coeffs_values) <- names_links
+    
+    createBindingConstraint(
+      name = "multi_coeffs_offset",
+      timeStep = "weekly", 
+      values = matrix(data = rep(0, 365 * 3), ncol = 3),
+      coefficients = list_coeffs_values
+    )
+    
+    path_bc_ini <- file.path("input", "bindingconstraints", "bindingconstraints")
+    
+    read_bc <- antaresRead::readIni(path_bc_ini)
+    bc_to_test <- read_bc[length(read_bc)]
+    
+    offset_values <- unlist(bc_to_test[[1]][names_links])
+    
+    testthat::expect_equal(offset_values, unlist(list_coeffs_values))
+  })
   
   test_that("Create a new binding constraint with BAD coefficients", {
     

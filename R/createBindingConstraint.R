@@ -18,7 +18,7 @@
 #' @param operator Type of constraint: equality, inequality on one side or both sides.
 #' @param filter_year_by_year Marginal price granularity for year by year
 #' @param filter_synthesis Marginal price granularity for synthesis
-#' @param coefficients A named vector containing the coefficients used by the constraint, 
+#' @param coefficients A named list containing the coefficients used by the constraint, 
 #' the coefficients have to be alphabetically ordered.
 #' @param group "character" group of the constraint, default value : "default group"
 #' @param overwrite If the constraint already exist, overwrite the previous value.
@@ -46,13 +46,29 @@
 #' @examples
 #' \dontrun{
 #' # < v8.7.0 :
+#' 
+#' # Create constraints with multi coeffs (only weight)
+#' 
 #' createBindingConstraint(
 #'   name = "myconstraint", 
 #'   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
 #'   enabled = FALSE, 
 #'   timeStep = "hourly",
 #'   operator = "both",
-#'   coefficients = c("fr%myarea" = 1)
+#'   coefficients = list("area1%area2" = 1,
+#'     "area1%area3" = 2)
+#' )
+#' 
+#' # Create constraints with multi coeffs + offset
+#' 
+#' createBindingConstraint(
+#'   name = "myconstraint", 
+#'   values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+#'   enabled = FALSE, 
+#'   timeStep = "hourly",
+#'   operator = "both",
+#'   coefficients = list("area1%area2" = "1%1",
+#'     "area1%area3" = "2%3")
 #' )
 #' 
 #' # Create multiple constraints
@@ -70,7 +86,7 @@
 #'       enabled = FALSE, 
 #'       timeStep = "hourly",
 #'       operator = "both",
-#'       coefficients = c("area1%area2" = 1),
+#'       coefficients = list("area1%area2" = 1),
 #'       overwrite = TRUE
 #'     )
 #'   }
@@ -116,7 +132,7 @@
 #'       enabled = FALSE, 
 #'       timeStep = "hourly",
 #'       operator = "both",
-#'       coefficients = c("at%fr" = 1),
+#'       coefficients = list("at%fr" = 1),
 #'       group= "group_bulk",
 #'      overwrite = TRUE
 #'    )
@@ -162,7 +178,7 @@ createBindingConstraint <- function(name,
       stop("The areas are not sorted alphabetically.", call. = FALSE)
     }
   }
-
+  
   # API block
   if (is_api_study(opts)) {
     api_opts <- .createBC_api(name = name,
@@ -208,7 +224,7 @@ createBindingConstraint <- function(name,
           call. = FALSE)
       
       # v870 : check group and values
-        # no check for add BC with NULL values
+      # no check for add BC with NULL values
       group_values_check(group_value = group, 
                          values_data = values,
                          operator_check = operator,
@@ -313,15 +329,15 @@ createBindingConstraint <- function(name,
     terms_values <- strsplit(x = names(body_terms), split = "%|\\.")
     
     is_dot <- grepl(x = names(body_terms), 
-                       pattern = "\\.")
+                    pattern = "\\.")
     
     # build list 
     if(is_dot)
       data_list <- list(area=terms_values[[1]][1],
-                           cluster=terms_values[[1]][2])
+                        cluster=terms_values[[1]][2])
     else
       data_list <- list(area1=terms_values[[1]][1],
-                       area2=terms_values[[1]][2])
+                        area2=terms_values[[1]][2])
     
     if(length(body_terms[[1]])>1)
       body_terms <- list(weight=body_terms[[1]][1],
@@ -445,9 +461,9 @@ createBindingConstraint_ <- function(bindingConstraints,
       }
     }
   }
- 
+  
   # check when overwrite element in list 
-    # names of bindingConstraints are provided by R automatically
+  # names of bindingConstraints are provided by R automatically
   indexBC <- as.character(length(bindingConstraints))
   if (indexBC %in% names(bindingConstraints)) {
     indexBC <- as.character(max(as.numeric(names(bindingConstraints))) + 1)
@@ -517,10 +533,10 @@ group_values_check <- function(group_value,
     if(dim(values_data[[output_operator]])[2] <= 1)
       return()
   }
-    
+  
   
   # read existing binding constraint
-    # /!\/!\ function return "default values" (vector of 0)
+  # /!\/!\ function return "default values" (vector of 0)
   existing_bc <- readBindingConstraints(opts = opts)
   
   # study with no BC or virgin study
@@ -536,7 +552,7 @@ group_values_check <- function(group_value,
     lapply(existing_bc, 
            function(x){
              x[["properties"]][["group"]]})
-    )
+  )
   search_group_index <- grep(pattern = group_value, 
                              x = existing_groups)
   
@@ -562,7 +578,7 @@ group_values_check <- function(group_value,
                                x$properties$id, call. = FALSE)
                         lt_dim
                       }
-                      })
+                    })
     
     # keep dimension >1 
     names(p_col) <- NULL
@@ -573,7 +589,7 @@ group_values_check <- function(group_value,
     }else
       p_col <- unique(p_col[p_col>1])
     message("actual dimension of group : ", group_value, " is ", p_col)
- 
+    
     # check dimension of new group
     if(operator_check%in%"both"){
       lt_dim <- dim(values_data$lt)[2]
@@ -588,55 +604,55 @@ group_values_check <- function(group_value,
     # # no values provided
     # if(is.null(p_col_new))
     #  p_col_new <- 0
-   
-   if(p_col!=p_col_new) # & p_col!=0
-     stop(paste0("Put right columns dimension : ", 
-                 p_col, " for existing 'group' : ", 
-                 group_value), call. = FALSE)
+    
+    if(p_col!=p_col_new) # & p_col!=0
+      stop(paste0("Put right columns dimension : ", 
+                  p_col, " for existing 'group' : ", 
+                  group_value), call. = FALSE)
   }
 }
 
 # v870
 .valueCheck870 <- function(values, timeStep){
   # check nrow Vs timeStep
-    nrows <- switch(timeStep,
-                    hourly = 24*366,
-                    daily = 366,
-                    weekly = 366,
-                    monthly = 12,
-                    annual = 1)
-    
-    list_checked <- sapply(
-      names(values), 
-      function(x, 
-               list_in= values, 
-               check_standard_rows= nrows){
-        
-        list_work <- list_in[[x]]
-        
-        # one column scenario
-        if(ncol(list_work)==1){
-          if (NROW(list_work) == 24*365)
-              list_work <- rbind(list_work, matrix(rep(0, 24*1), ncol = 1))
-          if (NROW(list_work) == 365) 
-            list_work <- rbind(list_work, matrix(rep(0, 1), ncol = 1))
-          if (! NROW(list_work) %in% c(0, check_standard_rows)) 
-            stop("Incorrect number of rows according to the timeStep")
-        }else{# scenarized columns
-          if(dim(list_work)[1]==24*365)
-            list_work <- rbind(list_work, 
-                               matrix(rep(0, 24*dim(list_work)[2]), 
-                                      ncol = dim(list_work)[2]))
-          if(dim(list_work)[1]==365)
-            list_work <- rbind(list_work, 
-                               matrix(rep(0, dim(list_work)[2]), 
-                                      ncol = dim(list_work)[2]))
-          if (! dim(list_work)[1] %in% c(0, check_standard_rows)) 
-            stop("Incorrect number of rows according to the timeStep")
-        }
-        list_work
-        }, simplify = FALSE)
-    list_checked
+  nrows <- switch(timeStep,
+                  hourly = 24*366,
+                  daily = 366,
+                  weekly = 366,
+                  monthly = 12,
+                  annual = 1)
+  
+  list_checked <- sapply(
+    names(values), 
+    function(x, 
+             list_in= values, 
+             check_standard_rows= nrows){
+      
+      list_work <- list_in[[x]]
+      
+      # one column scenario
+      if(ncol(list_work)==1){
+        if (NROW(list_work) == 24*365)
+          list_work <- rbind(list_work, matrix(rep(0, 24*1), ncol = 1))
+        if (NROW(list_work) == 365) 
+          list_work <- rbind(list_work, matrix(rep(0, 1), ncol = 1))
+        if (! NROW(list_work) %in% c(0, check_standard_rows)) 
+          stop("Incorrect number of rows according to the timeStep")
+      }else{# scenarized columns
+        if(dim(list_work)[1]==24*365)
+          list_work <- rbind(list_work, 
+                             matrix(rep(0, 24*dim(list_work)[2]), 
+                                    ncol = dim(list_work)[2]))
+        if(dim(list_work)[1]==365)
+          list_work <- rbind(list_work, 
+                             matrix(rep(0, dim(list_work)[2]), 
+                                    ncol = dim(list_work)[2]))
+        if (! dim(list_work)[1] %in% c(0, check_standard_rows)) 
+          stop("Incorrect number of rows according to the timeStep")
+      }
+      list_work
+    }, simplify = FALSE)
+  list_checked
 }
 
 
