@@ -1,4 +1,4 @@
-# antaresRead 0.7.0 (devlopment)
+# antaresEditObject 0.7.0 (development)
 
 > Second-member coupling constraint scenarios
 
@@ -21,7 +21,7 @@ NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :
 * `createBindingConstraint()` is available with **offset** parameter in API mode 
 
 
-# antaresEditObject 0.6.2
+# antaresEditObject 0.6.3
 
 NEW FEATURES :
 
@@ -66,13 +66,11 @@ BUGFIXES :
   - displays a success message for a study or variant
 * `removeCluster()` no longer deletes everything in the folder prepro  
 
-
+# antaresEditObject 0.6.2
+* Fix test to remove rev dep to `antaresRead` (see `cran-comments.md` for details)
 
 # antaresEditObject 0.6.1
-
-
 * `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
-
 
 BUGFIXES : 
 

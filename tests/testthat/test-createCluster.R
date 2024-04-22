@@ -73,9 +73,21 @@ sapply(studies, function(study) {
         add_prefix = FALSE
       )
     }
+
+    # list .ini files
+    path_thermal <- file.path(opts$inputPath, "thermal", "clusters")
+    all_ini_files <- list.files(path_thermal, full.names = TRUE, recursive = TRUE)
     
-    all_clusters <- readClusterDesc()
-    expect_true(nrow(all_clusters)==0)
+    # extract number or raw
+    suppressWarnings(
+      ini_nb_raw <- sapply(
+        lapply(all_ini_files, 
+               data.table::fread), 
+        function(x) dim(x)[2])
+    )
+    
+    # test all ini files are empty
+    expect_equal(sum(ini_nb_raw), 0)
   })
   
   # remove temporary study
