@@ -16,3 +16,18 @@ Thanks!
 
 ## Fix CRAN CHECKS on version 0.6.0 
 * Fix ERROR on `r-devel-linux-x86_64-debian-gcc` cause function `base::NCOL()` is updated
+
+## Fix TESTS (in this patch version 0.6.2) to remove rev dep to package `antaresRead` 
+* we have issue to next release of package `antaresRead` (v2.6.1), see below
+
+Changes to worse in reverse depends:
+
+Package: antaresEditObject
+Check: tests
+New result: ERROR
+    Running ‘testthat.R’ [54s/51s]
+    
+Failure ('test-createCluster.R:76:5'): Remove all clusters ──────────────────
+`antaresRead::readClusterDesc()` did not throw an error.
+
+
