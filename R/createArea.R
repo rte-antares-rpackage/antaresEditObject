@@ -53,6 +53,16 @@ createArea <- function(name,
   list_name <- name
   name <- tolower(name)
   
+  # properties to write in optimization.ini
+  target_optimization <- c(
+        "non-dispatchable-power",
+        "dispatchable-hydro-power",
+        "other-dispatchable-power",
+        "spread-unsupplied-energy-cost",
+        "spread-spilled-energy-cost"
+  )
+  nodalOptimization_opti <- nodalOptimization[target_optimization]
+  
   # API block
   if (is_api_study(opts)) {
     cmd <- api_command_generate("create_area", area_name = name)
@@ -63,11 +73,13 @@ createArea <- function(name,
       cli_command_registered("create_area")
     )
     
-    if (is_different(nodalOptimization, nodalOptimizationOptions())){
+    # input/areas/<name>/optimization/nodal optimization
+    nodalOptimizationOptions_areas <- nodalOptimizationOptions()[target_optimization]
+    if (is_different(nodalOptimization_opti, nodalOptimizationOptions_areas)){
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/areas/%s/optimization/nodal optimization", name),
-        data = nodalOptimization
+        data = nodalOptimization_opti
       )
       api_command_register(cmd, opts = opts)
       `if`(
@@ -76,6 +88,37 @@ createArea <- function(name,
         cli_command_registered("update_config")
       )
     }
+    
+    # input/thermal/areas
+    if (!is.null(nodalOptimization$unserverdenergycost)) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/thermal/areas/unserverdenergycost/%s", name),
+        data = nodalOptimization$unserverdenergycost
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's unsupplied energy cost option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    if (!is.null(nodalOptimization$spilledenergycost)) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/thermal/areas/spilledenergycost/%s", name),
+        data = nodalOptimization$spilledenergycost
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's spilled energy cost option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    # input/areas/<name>/optimization/filtering
     if (is_different(filtering, filteringOptions())){
       cmd <- api_command_generate(
         action = "update_config", 
@@ -136,13 +179,7 @@ createArea <- function(name,
   # optimization ini file
   writeIni(
     listData = c(
-      list(`nodal optimization` = nodalOptimization[c(
-        "non-dispatchable-power",
-        "dispatchable-hydro-power",
-        "other-dispatchable-power",
-        "spread-unsupplied-energy-cost",
-        "spread-spilled-energy-cost"
-      )]),
+      list(`nodal optimization` = nodalOptimization_opti),
       list(filtering = filtering)
     ),
     pathIni = file.path(inputPath, "areas", name, "optimization.ini"),
