@@ -63,6 +63,9 @@ createArea <- function(name,
   )
   nodalOptimization_opti <- nodalOptimization[target_optimization]
   
+  unserverdenergycost <- nodalOptimization[["unserverdenergycost"]]
+  spilledenergycost <- nodalOptimization[["spilledenergycost"]]
+  
   # API block
   if (is_api_study(opts)) {
     cmd <- api_command_generate("create_area", area_name = name)
@@ -90,11 +93,11 @@ createArea <- function(name,
     }
     
     # input/thermal/areas
-    if (!is.null(nodalOptimization$unserverdenergycost)) {
+    if (!is.null(unserverdenergycost)) {
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/thermal/areas/unserverdenergycost/%s", name),
-        data = nodalOptimization$unserverdenergycost
+        data = unserverdenergycost
       )
       api_command_register(cmd, opts = opts)
       `if`(
@@ -104,11 +107,11 @@ createArea <- function(name,
       )
     }
     
-    if (!is.null(nodalOptimization$spilledenergycost)) {
+    if (!is.null(spilledenergycost)) {
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/thermal/areas/spilledenergycost/%s", name),
-        data = nodalOptimization$spilledenergycost
+        data = spilledenergycost
       )
       api_command_register(cmd, opts = opts)
       `if`(
@@ -301,19 +304,6 @@ createArea <- function(name,
   writeLines(text = character(0), con = con)
   close(con)
   
-  
-  
-  ## Links ----
-  # dir
-  dir.create(path = file.path(inputPath, "links", name), showWarnings = FALSE)
-  writeIni(
-    listData = list(),
-    pathIni = file.path(inputPath, "links", name, "properties.ini"),
-    overwrite = overwrite
-  )
-  
-  
-  
   ## Load ----
   
   # prepro
@@ -410,51 +400,22 @@ createArea <- function(name,
     file = file.path(inputPath, "solar", "series", paste0("solar_", name, ".txt"))
   )
   
+  ## Links ----
+  .initializeLinksArea(name = name, overwrite = overwrite, opts = opts)
   
   ## Thermal ----
-  
-  # dir
-  dir.create(path = file.path(inputPath, "thermal", "clusters", name), showWarnings = FALSE)
-  
-  writeIni(
-    listData = list(),
-    pathIni = file.path(inputPath, "thermal", "clusters", name, "list.ini"),
-    overwrite = overwrite
-  )
-  
-  # thermal/areas ini file
-  thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
-  if (file.exists(thermal_areas_path)) {
-    thermal_areas <- readIniFile(file = thermal_areas_path)
-  } else {
-    thermal_areas <- list()
-  }
-  thermal_areas$unserverdenergycost[[name]] <- nodalOptimization[["unserverdenergycost"]]
-  thermal_areas$spilledenergycost[[name]] <- nodalOptimization[["spilledenergycost"]]
-  writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
-  
+  .initializeThermalArea(name = name, overwrite = overwrite,
+                         economic_options = list("unserverdenergycost" = unserverdenergycost, "spilledenergycost" = spilledenergycost),
+                         opts = opts
+                         )
   
   ## Renewables ----
-  
-  if (is_active_RES(opts)) {
-    # INIT dir
-    dir.create(path = file.path(inputPath, "renewables", "clusters", name), showWarnings = FALSE)
-    
-    # INIT list.ini file
-    writeIni(
-      listData = list(),
-      pathIni = file.path(inputPath, "renewables", "clusters", name, "list.ini"),
-      overwrite = overwrite
-    )
-    
-    
-  }
-  
+  .initializeRenewablesArea(name = name, overwrite = overwrite, opts = opts)
   
   ## st-storage ----
   
   # INIT dir
-  if (opts$antaresVersion >= 860 ){
+  if (opts$antaresVersion >= 860) {
     dir.create(path = file.path(inputPath, "st-storage", "clusters", name), showWarnings = FALSE)
     
   # INIT list.ini file  
@@ -593,4 +554,82 @@ adequacyOptions <- function(adequacy_patch_mode = "outside"){
   list(
     `adequacy-patch-mode` = adequacy_patch_mode
   )
+}
+
+
+#' Initialize thermal data for a new area. For disk mode only.
+#'
+#' @param name Name of the area as a character, without punctuation except - and _.
+#' @param overwrite Overwrite the area if already exists.
+#' @param economic_options Economic options.
+#'
+#' @template opts
+#'
+.initializeThermalArea <- function(name, overwrite, economic_options, opts) {
+  
+  inputPath <- opts$inputPath
+  # dir
+  dir.create(path = file.path(inputPath, "thermal", "clusters", name), showWarnings = FALSE)
+  
+  writeIni(
+    listData = list(),
+    pathIni = file.path(inputPath, "thermal", "clusters", name, "list.ini"),
+    overwrite = overwrite
+  )
+  
+  # thermal/areas ini file
+  thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
+  if (file.exists(thermal_areas_path)) {
+    thermal_areas <- readIniFile(file = thermal_areas_path)
+  } else {
+    thermal_areas <- list()
+  }
+  thermal_areas[["unserverdenergycost"]][[name]] <- economic_options[["unserverdenergycost"]]
+  thermal_areas[["spilledenergycost"]][[name]] <- economic_options[["spilledenergycost"]]
+  
+  writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
+}
+
+
+#' Initialize links data for a new area. For disk mode only.
+#'
+#' @param name Name of the area as a character, without punctuation except - and _.
+#' @param overwrite Overwrite the area if already exists.
+#'
+#' @template opts
+#'
+.initializeLinksArea <- function(name, overwrite, opts) {
+  
+  linksPath <- file.path(opts$inputPath, "links", name)
+  # dir
+  dir.create(path = linksPath, showWarnings = FALSE)
+  writeIni(
+    listData = list(),
+    pathIni = file.path(linksPath, "properties.ini"),
+    overwrite = overwrite
+  )
+}
+
+
+#' Initialize renewables data for a new area. For disk mode only.
+#'
+#' @param name Name of the area as a character, without punctuation except - and _.
+#' @param overwrite Overwrite the area if already exists.
+#'
+#' @template opts
+#'
+.initializeRenewablesArea <- function(name, overwrite, opts) {
+  
+  if (is_active_RES(opts)) {
+    renewablesPath <- file.path(opts$inputPath, "renewables", "clusters", name)
+    # dir
+    dir.create(path = renewablesPath, showWarnings = FALSE)
+    
+    # list.ini file
+    writeIni(
+      listData = list(),
+      pathIni = file.path(renewablesPath, "list.ini"),
+      overwrite = overwrite
+    )
+  }
 }
