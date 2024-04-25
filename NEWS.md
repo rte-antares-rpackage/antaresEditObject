@@ -5,7 +5,7 @@ NEW FEATURES :
 BUGFIXES :
 
 BREAKING CHANGES :
-* Add UTF-8 enconding argument in `.getJobs()`
+* Add UTF-8 encoding argument in `.getJobs()`
 
 DATA :
 
