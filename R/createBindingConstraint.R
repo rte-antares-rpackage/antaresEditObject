@@ -168,6 +168,7 @@ createBindingConstraint <- function(name,
       values <- .valueCheck870(values, timeStep)
   
   if(!is.null(coefficients)){
+    # check if areas are sorted
     names_coef <- names(coefficients)
     splitted_names <- strsplit(names_coef, "%")
     are_areas_sorted <- sapply(splitted_names, function(areas) {
@@ -181,6 +182,11 @@ createBindingConstraint <- function(name,
   
   # API block
   if (is_api_study(opts)) {
+    
+    # reformat coefficients offset values
+    coefficients <- .check_format_offset(coefficients = coefficients)
+    
+    # api treatments
     api_opts <- .createBC_api(name = name,
                               enabled = enabled,
                               time_step = timeStep,
@@ -700,6 +706,31 @@ group_values_check <- function(group_value,
     values <- character(0)
   }
   values
+}
+
+# update structure of coefficients/offset for api mode (char to vector)
+.check_format_offset <- function(coefficients){
+  if(!is.null(coefficients)){
+    # check if offset
+    is_character_values <- sapply(coefficients, 
+                                  function(x) is.character(x))
+    
+    if(any(is_character_values)){
+      # format offset for solver
+      index <- which(is_character_values)
+      
+      list_format <- lapply(index, function(x){
+        var <- unlist(strsplit(x = coefficients[[x]], 
+                               split = "%"))
+        as.numeric(var)
+      })
+      
+      # update list with format
+      coefficients <- append(list_format, 
+                             coefficients[-index])
+    }else
+      coefficients
+  }
 }
 
 
