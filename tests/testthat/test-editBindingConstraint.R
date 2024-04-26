@@ -20,15 +20,16 @@ test_that("editBindingConstraint v710", {
                         values = data_hourly, 
                         timeStep = "hourly",
                         operator = "less", 
-                        coefficients = c("b%psp in"= 1.75,
-                                         "b%psp out"= 2),
+                        coefficients = list("b%psp in"= 1.75,
+                                         "b%psp out"= 2,
+                                         "a%a_offshore"= "2%-5"),
                         opts = simOptions())
   
   bc_modified <- antaresRead::readBindingConstraints()
   new_coef <- bc_modified[[bc_names[1]]]$coefs
   
   # test
-  testthat::expect_true(all(new_coef %in% c(1.75, 2)))
+  testthat::expect_true(all(new_coef %in% c(1.75, 2, "2%-5")))
   
   # remove temporary study
   unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
@@ -79,7 +80,7 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
                         operator = "both", 
                         filter_year_by_year = "daily",
                         filter_synthesis = "daily",
-                        coefficients = c("fr%it"= 7.45),
+                        coefficients = list("fr%it"= 7.45),
                         opts = opts_test)
   
   # read
@@ -121,7 +122,7 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
                           values = scenar_values_daily_n, 
                           timeStep = "daily",
                           operator = "both", 
-                          coefficients = c("fr%it"= 7.45),
+                          coefficients = list("fr%it"= 7.45),
                           opts = opts_test), 
     regexp = "Put right columns dimension"
   )
@@ -133,7 +134,7 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
                         values = NULL, 
                         timeStep = "daily",
                         operator = "both", 
-                        coefficients = c("fr%it" = 12, 
+                        coefficients = list("fr%it" = 12, 
                                          "fr%at" = 0),
                         opts = opts_test)
   
@@ -143,7 +144,6 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
   
   # test coefs
   testthat::expect_true(all(new_coef %in% c(12, 0)))
-  
 })
 
 ## exisintg group ----
@@ -187,7 +187,7 @@ test_that("editBindingConstraint with existing group v8.7.0", {
                         group = group_bc,
                         timeStep = "daily",
                         operator = "both", 
-                        coefficients = c("fr%it" = 12),
+                        coefficients = list("fr%it" = 12),
                         opts = opts_test)
   
   # read
