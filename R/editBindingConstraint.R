@@ -79,6 +79,10 @@ editBindingConstraint <- function(name,
   
   ## API block ----
   if (is_api_study(opts)) {
+    # reformat coefficients offset values
+    coefficients <- .check_format_offset(coefficients = coefficients)
+    
+    # api treatments
     opts_api <- .editBC_api(id = name,
                 enabled = enabled,
                 time_step = timeStep,
