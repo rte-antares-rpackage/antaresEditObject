@@ -235,15 +235,15 @@ sapply(studies, function(study) {
 
 # v8.7 ----
 
-## Global data 
-# read / open template study
-setup_study_last(dir_path = sourcedir_last_study)
+# read script to generate study v8.7.0
+sourcedir_last_study <- system.file("study_test_generator/generate_test_study_870.R", 
+                                    package = "antaresEditObject")
 
-opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
+# create study
+source(file = sourcedir_last_study)
+opts_test <- simOptions()
 
-# areas list
-antaresRead::getAreas(opts = opts_test)
-
+## Global data----
 # scenarized data hourly
 n <- 10
 lt_data <- matrix(data = rep(1, 8760 * n), ncol = n)
@@ -264,7 +264,7 @@ scenar_values_daily <- list(lt= lt_data,
                             gt= gt_data, 
                             eq= eq_data)
 
-## parameter values ----
+## ERROR CASE ----
 test_that("createBindingConstraint with bad structure values object v8.7", {
   
   # less
@@ -277,9 +277,8 @@ test_that("createBindingConstraint with bad structure values object v8.7", {
       enabled = FALSE,
       timeStep = "daily",
       operator = "less",
-      coefficients = c("at%fr" = 1), 
-      opts = opts_test
-    ), regexp = "you must provide a list named according your parameter"
+      coefficients = list("at%fr" = 1)), 
+    regexp = "you must provide a list named according your parameter"
   )
 
   # both
@@ -292,9 +291,8 @@ test_that("createBindingConstraint with bad structure values object v8.7", {
       enabled = FALSE,
       timeStep = "daily",
       operator = "both",
-      coefficients = c("at%fr" = 1), 
-      opts = opts_test
-    ), regexp = "you must provide a list named according your parameter"
+      coefficients = list("at%fr" = 1)), 
+    regexp = "you must provide a list named according your parameter"
   )
  
 })
@@ -309,12 +307,10 @@ test_that("createBindingConstraint (default group value) v8.7", {
     enabled = FALSE,
     timeStep = "hourly",
     operator = "both",
-    coefficients = c("at%fr" = 1), 
-    overwrite = TRUE,
-    opts = opts_test
-  )
+    coefficients = list("at%fr" = 1), 
+    overwrite = TRUE)
   
-  bc <- readBindingConstraints(opts = opts_test)
+  bc <- readBindingConstraints()
   
   # tests
   testthat::expect_true("myconstraint" %in% 
@@ -335,6 +331,7 @@ test_that("createBindingConstraint (default group value) v8.7", {
   
   res <- unlist(res)
   
+  # txt files are empty
   testthat::expect_equal(res, NULL)
   
   ### with values ----
@@ -344,11 +341,9 @@ test_that("createBindingConstraint (default group value) v8.7", {
     enabled = FALSE,
     timeStep = "hourly",
     operator = "both",
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    coefficients = c("at%fr" = 1))
   
-  bc <- readBindingConstraints(opts = opts_test)
+  bc <- readBindingConstraints()
   
   # tests
   testthat::expect_true("myconstraint2" %in% 
@@ -373,75 +368,15 @@ test_that("createBindingConstraint (default group value) v8.7", {
   
 })
 
-## existing named group ----
-  # study provide BC with group "group_test"
-test_that("createBindingConstraint with existing group v8.7", {
-  
-  # read to have dimension
-  bc <- readBindingConstraints()
-  
-  # dimension according BC/group
-  dim_bc <- lapply(bc, function(x){
-    if(x$properties$operator %in% "both")
-      list(group = x$properties$group,
-           dim_values = dim(x$values$less)[2])
-    else
-      list(group = x$properties$group,
-         dim_values = dim(x$values)[2])
-    })
-  
-  existing_name_group <- dim_bc$bc_1$group
-  dim_existing_group <- dim_bc$bc_1$dim_values
-  
-  # ADD binding constraint with bad dimension
-  testthat::expect_error(
-    createBindingConstraint(
-      name = "myconstraint_group1",
-      values = scenar_values_daily,
-      enabled = FALSE,
-      timeStep = "daily",
-      operator = "both", 
-      group = existing_name_group,
-      coefficients = c("at%fr" = 1), 
-      opts = opts_test
-    ), regexp = "Put right columns dimension"
-  )
-  
-  # put right dimension
-  data_ok <- list()
-  data_ok$lt <- scenar_values_daily$lt[,1:dim_existing_group]
-  data_ok$gt <- scenar_values_daily$gt[,1:dim_existing_group]
-  
-  # ADD binding constraint with good dimension
-  createBindingConstraint(
-    name = "bc_existing_group",
-    values = data_ok,
-    enabled = FALSE,
-    timeStep = "daily",
-    operator = "both", 
-    group = existing_name_group,
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
-  
-  bc <- readBindingConstraints(opts = opts_test)
-  
-  # tests
-  testthat::expect_true("bc_existing_group" %in% 
-                          names(bc))
-  testthat::expect_equal(bc$bc_existing_group$properties$group, 
-                         existing_name_group)
-  testthat::expect_equal(dim(data_ok$lt)[2], 
-                         dim(bc$bc_existing_group$values$less)[2])
-  
-})
 
 ## add new group ----
 testthat::test_that("createBindingConstraint with new group v8.7",{
   
   # add values with the following steps
-    # NULL => 1 column => >1 column => 1 column => NULL
-    # error case with dimension different
+  # NULL => 1 column => >1 column => 1 column => NULL
+  # error case with dimension different
+  
+  name_group <- "new_group"
   
   # ADD binding with NULL values
   createBindingConstraint(
@@ -450,10 +385,8 @@ testthat::test_that("createBindingConstraint with new group v8.7",{
     enabled = FALSE,
     timeStep = "hourly",
     operator = "greater", 
-    group = "new_group",
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    group = name_group,
+    coefficients = list("at%fr" = 1))
   
   # ADD binding with 1 col
   df_one_col <- scenar_values["lt"]
@@ -465,40 +398,34 @@ testthat::test_that("createBindingConstraint with new group v8.7",{
     enabled = FALSE,
     timeStep = "hourly",
     operator = "less", 
-    group = "new_group",
+    group = name_group,
     coefficients = c("at%fr" = 1), 
     opts = opts_test
   )
   
   # ADD binding with multi cols
-  df_one_col <- scenar_values["lt"]
-  df_one_col$lt <- df_one_col$lt[,1:3, drop = FALSE]
+  df_multi_col <- scenar_values["lt"]
+  df_multi_col$lt <- df_multi_col$lt[,1:3, drop = FALSE]
   
+  # now, group will keep this dimension
   createBindingConstraint(
     name = "bc_new_group_multi",
-    values = df_one_col,
+    values = df_multi_col,
     enabled = FALSE,
     timeStep = "hourly",
     operator = "less", 
-    group = "new_group",
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    group = name_group,
+    coefficients = list("at%fr" = 1))
   
   # ADD binding with 1 col
-  df_one_col <- scenar_values["lt"]
-  df_one_col$lt <- df_one_col$lt[,1, drop = FALSE]
-  
   createBindingConstraint(
     name = "bc_new_group_1_bis",
     values = df_one_col,
     enabled = FALSE,
     timeStep = "hourly",
     operator = "less", 
-    group = "new_group",
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    group = name_group,
+    coefficients = list("at%fr" = 1))
   
   # ADD binding with NULL values
   createBindingConstraint(
@@ -507,25 +434,116 @@ testthat::test_that("createBindingConstraint with new group v8.7",{
     enabled = FALSE,
     timeStep = "hourly",
     operator = "greater", 
-    group = "new_group",
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    group = name_group,
+    coefficients = list("at%fr" = 1))
   
-  # ADD binding with NULL values
+  # ADD binding with NULL values (both case)
   createBindingConstraint(
     name = "bc_new_group_NULL_bis_both",
     values = NULL,
     enabled = FALSE,
     timeStep = "hourly",
     operator = "both", 
-    group = "new_group",
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    group = name_group,
+    coefficients = list("at%fr" = 1))
+  
+  # test dimension of group "new_group"
+  path_bc_value_file <- file.path(opts_test$inputPath, 
+                                  "bindingconstraints", 
+                                  "bc_new_group_multi_lt.txt")
+  
+  # read value
+  dim_new_group <- dim(data.table::fread(file = path_bc_value_file))
+  testthat::expect_equal(3, dim_new_group[2])
   
 })
 
+
+
+## existing named group ----
+  # study provide BC with group "group_test"
+test_that("createBindingConstraint with existing group v8.7", {
+  
+  # create "group_test"
+  name_group <- "group_test"
+  createBindingConstraint(
+    name = "bc_with_group",
+    values = scenar_values,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "both",
+    group = name_group,
+    coefficients = list("at%fr" = 1))
+  
+  # ADD binding constraint with bad dimension
+  testthat::expect_error(
+    createBindingConstraint(
+      name = "bc_with_group_error",
+      values = scenar_values_daily,
+      enabled = FALSE,
+      timeStep = "daily",
+      operator = "both", 
+      group = name_group,
+      coefficients = list("at%fr" = 1)), 
+    regexp = "Put right columns dimension"
+  )
+  
+  n <- 10
+  ts_data <- matrix(data = rep(1, 365 * n), ncol = n)
+  data_ok <- list()
+  data_ok$lt <- ts_data
+  data_ok$gt <- ts_data
+  
+  # ADD binding constraint with good dimension
+  createBindingConstraint(
+    name = "bc_existing_group",
+    values = data_ok,
+    enabled = FALSE,
+    timeStep = "daily",
+    operator = "both", 
+    group = name_group,
+    coefficients = list("at%fr" = 1))
+  
+  bc <- readBindingConstraints(opts = opts_test)
+  
+  # tests
+  testthat::expect_true("bc_existing_group" %in% 
+                          names(bc))
+  testthat::expect_equal(bc$bc_existing_group$properties$group, 
+                         name_group)
+  testthat::expect_equal(dim(data_ok$lt)[2], 
+                         dim(bc$bc_existing_group$values$less)[2])
+  
+})
+
+## multi terms properties ----
+test_that("bc with multi weight + offset properties", {
+  
+  # multi properties
+  data_terms <- list("at%fr" = "1%10",
+                     "at%fr" = "1%11",
+                     "fr%it" = "1%-5",
+                     "at.at_gas" = "1%10")
+  
+  createBindingConstraint(
+    name = "bc_multi_offset",
+    values = scenar_values,
+    enabled = TRUE,
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = data_terms)
+  
+  path_bc_ini <- file.path("input", "bindingconstraints", "bindingconstraints")
+  
+  read_bc <- antaresRead::readIni(path_bc_ini)
+  bc_id <- sapply(read_bc, `[[`, "id")
+  index_my_bc <- which(bc_id%in%"bc_multi_offset")
+  
+  # test if all terms are created
+  testthat::expect_true(all(
+    names(data_terms)%in%names(read_bc[[index_my_bc]])))
+  
+})
 
 ## bulk ----
 test_that("createBindingConstraintBulk v8.7", {
@@ -542,14 +560,14 @@ test_that("createBindingConstraintBulk v8.7", {
         enabled = FALSE, 
         timeStep = "hourly",
         operator = "both",
-        coefficients = c("at%fr" = 1),
+        coefficients = list("at%fr" = 1),
         group= "group_bulk",
         overwrite = TRUE
       )
     }
   )
   # create all constraints
-  createBindingConstraintBulk(bindings_constraints, opts = opts_test)
+  createBindingConstraintBulk(bindings_constraints)
   
   # tests
   testthat::expect_true("constraints_bulk1" %in% 
@@ -561,4 +579,4 @@ test_that("createBindingConstraintBulk v8.7", {
 
 
 # remove temporary study ----
-unlink(x = study_latest_version, recursive = TRUE)
+deleteStudy()
