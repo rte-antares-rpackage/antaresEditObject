@@ -38,14 +38,15 @@ test_that("editBindingConstraint v710", {
 
 # v870 ----
 
-## Global data 
-# read / open template study
-setup_study_last(dir_path = sourcedir_last_study)
-opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
+# read script to generate study v8.7.0
+sourcedir_last_study <- system.file("study_test_generator/generate_test_study_870.R", 
+                                    package = "antaresEditObject")
 
-# areas list
-antaresRead::getAreas(opts = opts_test)
+# create study
+source(file = sourcedir_last_study)
+opts_test <- simOptions()
 
+## global data ----
 # scenarized data 
   # hourly
 n <- 10
@@ -67,21 +68,37 @@ scenar_values_daily <- list(lt= lt_data,
 
 ## default group ----
 test_that("editBindingConstraint with 'default' group v8.7.0", {
+  # INIT with creation BC 
+    # multi properties
+  data_terms <- list("at%fr" = "1%10",
+                     "at%fr" = "1%11",
+                     "fr%it" = "1%-5",
+                     "at.at_gas" = "1%10")
+  
+  name_bc <- "bc_multi_offset"
+  
+  createBindingConstraint(
+    name = name_bc,
+    values = scenar_values_hourly,
+    enabled = TRUE,
+    timeStep = "hourly",
+    operator = "both",
+    overwrite = TRUE,
+    coefficients = data_terms)
 
   # PS : in this study, "default" have 1 column dimension
   bc <- readBindingConstraints(opts = opts_test)
     
   # edit properties + values (good dimension)
     # edit "greater" to "both"
-  bc_names_v870 <- bc$bc_2$properties$id
+  bc_names_v870 <- bc[[name_bc]]$properties$id
   editBindingConstraint(name = bc_names_v870, 
                         values = scenar_values_daily, 
                         timeStep = "daily",
                         operator = "both", 
                         filter_year_by_year = "daily",
                         filter_synthesis = "daily",
-                        coefficients = list("fr%it"= 7.45),
-                        opts = opts_test)
+                        coefficients = list("fr%it"= 7.45))
   
   # read
   bc_modified <- readBindingConstraints(opts = opts_test)
@@ -92,7 +109,7 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
   filter_synthesis <- bc_modified[[bc_names_v870]]$properties$`filter-synthesis`
   
   # test properties
-  testthat::expect_true(all(new_coef %in% c(7.45)))
+  testthat::expect_true(7.45 %in% new_coef)
   testthat::expect_true(timeStep %in% "daily")
   testthat::expect_true(operator %in% "both")
   testthat::expect_true(filter_year %in% "daily")
@@ -122,12 +139,9 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
                           values = scenar_values_daily_n, 
                           timeStep = "daily",
                           operator = "both", 
-                          coefficients = list("fr%it"= 7.45),
-                          opts = opts_test), 
+                          coefficients = list("fr%it"= 7.45)), 
     regexp = "Put right columns dimension"
   )
-  
-  
   
   ### multi coeff ----
   editBindingConstraint(name = bc_names_v870, 
@@ -135,19 +149,48 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
                         timeStep = "daily",
                         operator = "both", 
                         coefficients = list("fr%it" = 12, 
-                                         "fr%at" = 0),
-                        opts = opts_test)
+                                         "fr%at" = 0))
   
   # read
   bc_modified <- readBindingConstraints(opts = opts_test)
   new_coef <- bc_modified[[bc_names_v870]]$coefs
   
   # test coefs
-  testthat::expect_true(all(new_coef %in% c(12, 0)))
+  testthat::expect_true(all(
+    c(12, 0) %in% new_coef))
 })
 
 ## exisintg group ----
 test_that("editBindingConstraint with existing group v8.7.0", {
+  # INIT with creation BC 
+    # multi properties
+  data_terms <- list("at%fr" = "1%10",
+                     "at%fr" = "1%11",
+                     "fr%it" = "1%-5",
+                     "at.at_gas" = "1%10")
+  
+  name_bc <- "bc_group_multi_offset"
+  name_group <- "group_test"
+  
+  createBindingConstraint(
+    name = name_bc,
+    values = scenar_values_hourly,
+    enabled = TRUE,
+    timeStep = "hourly",
+    operator = "both",
+    group = name_group,
+    overwrite = TRUE,
+    coefficients = data_terms)
+  
+  createBindingConstraint(
+    name = "bc_test_default_group",
+    values = scenar_values_hourly,
+    enabled = TRUE,
+    timeStep = "hourly",
+    operator = "both",
+    overwrite = TRUE,
+    coefficients = data_terms)
+  
   # read existing binding
   bc <- readBindingConstraints(opts = opts_test)
  
@@ -172,7 +215,7 @@ test_that("editBindingConstraint with existing group v8.7.0", {
   dim_bc <- info_bc[index][[bc_no_default]]$dim_values
   
   # edit bc with good dim
-  n <- 2
+  n <- dim_bc
   # daily
   lt_data <- matrix(data = rep(1, 365 * n), ncol = n)
   gt_data <- matrix(data = rep(2, 365 * n), ncol = n)
@@ -197,16 +240,38 @@ test_that("editBindingConstraint with existing group v8.7.0", {
   operator <- bc_modified[[bc_no_default]]$properties$operator
   
   # test properties
-  testthat::expect_true(all(new_coef %in% c(1, 12)))
-  testthat::expect_true(timeStep %in% "daily")
-  testthat::expect_true(operator %in% "both")
+  testthat::expect_true(12 %in% new_coef)
+  testthat::expect_true("daily" %in% timeStep)
+  testthat::expect_true("both" %in% operator)
   
   # test values
   dim_col_values_input <- dim(scenar_values_daily_n$lt)[2]
   dim_col_values_edited <- dim(bc_modified[[bc_no_default]]$values$less)[2]
   testthat::expect_equal(dim_col_values_input, dim_col_values_edited)
   
+  # edit properties + values (bad dimension)
+  ### error dimension ----  
+  
+  n <- 9
+  # daily
+  lt_data <- matrix(data = rep(1, 365 * n), ncol = n)
+  gt_data <- matrix(data = rep(2, 365 * n), ncol = n)
+  eq_data <- matrix(data = rep(3, 365 * n), ncol = n)
+  
+  scenar_values_daily_n <- list(lt= lt_data,
+                                gt= gt_data, 
+                                eq= eq_data)
+  
+  testthat::expect_error(
+    editBindingConstraint(name = bc_no_default, 
+                          values = scenar_values_daily_n, 
+                          timeStep = "daily",
+                          operator = "both", 
+                          coefficients = list("fr%it"= 7.45)), 
+    regexp = "Put right columns dimension"
+  )
+  
 })
 
 # remove study ----
-unlink(x = study_latest_version, recursive = TRUE)
+deleteStudy()

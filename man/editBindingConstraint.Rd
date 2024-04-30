@@ -38,7 +38,8 @@ It contains one line per time step and three columns "less", "greater" and "equa
 \item{filter_synthesis}{Marginal price granularity for synthesis}
 
 \item{coefficients}{A named list containing the coefficients used by the constraint,
-the coefficients have to be alphabetically ordered.}
+the coefficients have to be alphabetically ordered see examples below for entering
+weight or weight with offset.}
 
 \item{group}{"character" group of the constraint, default value : "default"}
 
@@ -77,7 +78,17 @@ editBindingConstraint(
   enabled = FALSE, 
   timeStep = "hourly",
   operator = "both",
-  coefficients = c("fr\%de" = 1)
+  coefficients = list("fr\%de" = 1)
+)
+
+# update binding constraint with weight + offset 
+editBindingConstraint(
+  name = "myconstraint", 
+  values = matrix(data = rep(0, 8784 * 3), ncol = 3), 
+  enabled = FALSE, 
+  timeStep = "hourly",
+  operator = "both",
+  coefficients = list("fr\%de" = "1\%-5")
 )
 
  # >= v8.7.0 :
@@ -98,7 +109,7 @@ editBindingConstraint(name = "myconstraint",
                       operator = "both", 
                       filter_year_by_year = "hourly", 
                       filter_synthesis = "hourly", 
-                      coefficients = c("fr\%de" = 1), 
+                      coefficients = list("fr\%de" = 1), 
                       group = "myconstraint_group")                   
 }
 }

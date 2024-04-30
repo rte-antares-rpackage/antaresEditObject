@@ -40,7 +40,17 @@
 #'   enabled = FALSE, 
 #'   timeStep = "hourly",
 #'   operator = "both",
-#'   coefficients = c("fr%de" = 1)
+#'   coefficients = list("fr%de" = 1)
+#' )
+#' 
+#' # update binding constraint with weight + offset 
+#' editBindingConstraint(
+#'   name = "myconstraint", 
+#'   values = matrix(data = rep(0, 8784 * 3), ncol = 3), 
+#'   enabled = FALSE, 
+#'   timeStep = "hourly",
+#'   operator = "both",
+#'   coefficients = list("fr%de" = "1%-5")
 #' )
 #' 
 #'  # >= v8.7.0 :
@@ -61,7 +71,7 @@
 #'                       operator = "both", 
 #'                       filter_year_by_year = "hourly", 
 #'                       filter_synthesis = "hourly", 
-#'                       coefficients = c("fr%de" = 1), 
+#'                       coefficients = list("fr%de" = 1), 
 #'                       group = "myconstraint_group")                   
 #' }
 editBindingConstraint <- function(name,

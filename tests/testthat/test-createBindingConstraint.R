@@ -233,7 +233,7 @@ sapply(studies, function(study) {
 })
 
 
-# v8.7 ----
+# v870 ----
 
 # read script to generate study v8.7.0
 sourcedir_last_study <- system.file("study_test_generator/generate_test_study_870.R", 
