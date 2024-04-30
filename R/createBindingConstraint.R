@@ -19,7 +19,8 @@
 #' @param filter_year_by_year Marginal price granularity for year by year
 #' @param filter_synthesis Marginal price granularity for synthesis
 #' @param coefficients A named list containing the coefficients used by the constraint, 
-#' the coefficients have to be alphabetically ordered.
+#' the coefficients have to be alphabetically ordered see examples below for entering 
+#' weight or weight with offset.
 #' @param group "character" group of the constraint, default value : "default group"
 #' @param overwrite If the constraint already exist, overwrite the previous value.
 #' 
