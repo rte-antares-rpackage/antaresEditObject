@@ -7,7 +7,10 @@ sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
   opts <- antaresRead::setSimulationPath(studyPath, "input")
-  
+  bc <- readBindingConstraints(opts = opts)
+  if (length(bc) > 0) {
+    lapply(names(bc), removeBindingConstraint, opts = opts)
+  }
   
   test_that("Create a new link", {
     
@@ -75,6 +78,10 @@ sapply(studies, function(study) {
   
   
   test_that("Remove a link that doesn't exist", {
+  
+    createArea("myimaginaryarea")
+    createArea("myimaginaryareabis")
+    
     expect_message(removeLink(from = "myimaginaryarea", to = "myimaginaryareabis"))
   })
   
@@ -84,7 +91,7 @@ sapply(studies, function(study) {
 })
 
 
-
+# Write right time series in right files regardless alphabetical order ----
 test_that("Check if createLink() in version >= 8.2 writes time series link in the right file regardless alphabetical order", {
 
   ant_version <- "8.2.0"
@@ -160,6 +167,7 @@ test_that("Check if createLink() in version >= 8.2 writes time series link in th
 })
 
 
+# Delete expected files regardless alphabetical order ----
 test_that("removeLink() in 8.2.0 : check if the expected files are deleted/updated", {
   
   ant_version <- "8.2.0"
@@ -223,6 +231,83 @@ test_that("removeLink() in 8.2.0 : check if the expected files are deleted/updat
   expect_false(file.exists(file.path(opts$inputPath, "links", to, "capacities", paste0(from,"_direct.txt"))))
   expect_false(file.exists(file.path(opts$inputPath, "links", to, "capacities", paste0(from,"_indirect.txt"))))
   
+  
+  unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+
+# Link in binding constraint not removed ----
+test_that("removeLink() : link is not removed if it is referenced in a binding constraint", {
+  
+  ant_version <- "8.2.0"
+  st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+
+  nb_areas <- 5
+  ids_areas <- seq(1,nb_areas)
+  my_areas <- paste0("zone",ids_areas)
+  
+  my_links <- expand.grid("from" = ids_areas, "to" = ids_areas)
+  my_links$check_same <- my_links$from != my_links$to
+  my_links <- my_links[my_links$check_same,]
+  my_links <- my_links[my_links$from < my_links$to,]
+  my_links$from <- paste0("zone",my_links$from)
+  my_links$to <- paste0("zone",my_links$to)
+
+  # Areas
+  lapply(my_areas, FUN = function(area){createArea(name = area, opts = simOptions())})
+  
+  # Links
+  apply(my_links[,c("from","to")],
+        MARGIN = 1,
+        FUN = function(row){
+          createLink(as.character(row[1]),as.character(row[2]), opts = simOptions())
+        }
+  )
+
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
+
+  all_areas <- getAreas(opts = opts)
+  
+  all_links <- as.character(getLinks(opts = opts))
+  all_links <- gsub(pattern = " - ", replacement = "%", x = all_links)
+  nb_cols_per_matrix <- 3
+  nb_hours_per_year <- 8784
+  nb_values_per_matrix <- nb_hours_per_year * nb_cols_per_matrix
+  for (area in all_areas) {
+    links_area <- all_links[startsWith(all_links, paste0(area,"%"))]
+    if (length(links_area) > 0) {
+      coefs <- seq_len(length(links_area))
+      names(coefs) <- links_area
+      createBindingConstraint(name = paste0("bc_",area),
+                              timeStep = "hourly",
+                              operator = "less",
+                              coefficients = coefs,
+                              values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
+                              opts = opts
+                             )
+    }
+  }
+  
+  suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
+  
+  expect_error(removeLink(from = "zone1", to = "zone2", opts = opts), regexp = "Can not remove the link")
+  removeBindingConstraint(name = "bc_zone1", opts = opts)
+  expect_no_error(removeLink(from = "zone1", to = "zone2", opts = opts))
+  
+  # createLink() with overwrite to TRUE calls removeLink()
+  expect_error(createLink(from = "zone2", to = "zone3", overwrite = TRUE, opts = opts), regexp = "Can not remove the link")
+  
+  pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
+  bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
+  # Legacy code allows reversed (i.e. not sorted) coefficient in a binding constraint 
+  bc_names <- sapply(bindingConstraints,"[[", "name")
+  bc_idx <- which(bc_names == "bc_zone4")
+  bc_char <- as.character(bc_idx - 1)
+  names(bindingConstraints[[bc_char]])[names(bindingConstraints[[bc_char]]) == "zone4%zone5"] <- "zone5%zone4"
+  
+  writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
+  expect_error(removeLink(from = "zone4", to = "zone5", opts = opts), regexp = "Can not remove the link")
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })

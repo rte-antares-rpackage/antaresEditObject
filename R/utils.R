@@ -111,3 +111,66 @@ rename_floor_list <- function(target_name, list_to_reforge){
     return(list_to_reforge)
 }
 
+
+
+#' @title Detect a pattern in a binding constraint coefficient
+#'
+#' @importFrom antaresRead readBindingConstraints
+#'
+#' @param pattern The pattern to detect.
+#' @template opts
+#'
+#' @return the names of the binding constraints containing the pattern
+detect_pattern_in_binding_constraint <- function(pattern, opts = antaresRead::simOptions()) {
+  
+  pattern <- as.character(pattern)
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  assertthat::assert_that(all(nchar(pattern) - nchar(gsub("%", "", pattern)) <= 1))
+  assertthat::assert_that(all(!startsWith(pattern, prefix = "%")))
+  assertthat::assert_that(all(!endsWith(pattern, suffix = "%")))
+  assertthat::assert_that(all(nchar(as.character(pattern)) - nchar(gsub("\\.", "", pattern)) <= 1))
+  assertthat::assert_that(all(!startsWith(pattern, prefix = ".")))
+  assertthat::assert_that(all(!endsWith(pattern, suffix = ".")))
+  
+  bc_not_remove <- character(0)
+  bc <- readBindingConstraints(opts = opts)
+  
+  if (length(bc) > 0) {
+    bc_coefs <- lapply(bc, "[[", "coefs")
+    names_bc_coefs <- lapply(bc_coefs, names)
+    pattern_in_names_bc_coefs <- lapply(names_bc_coefs, FUN = function(coef_name){sum(pattern %in% coef_name)})
+    bc_not_remove <- pattern_in_names_bc_coefs[which(pattern_in_names_bc_coefs >= 1)]
+    bc_not_remove <- names(bc_not_remove)
+  }
+  
+  return(bc_not_remove)
+}
+
+
+generate_cluster_name <- function(area, cluster_name, add_prefix) {
+  
+  cluster_name <- tolower(cluster_name)
+  
+  if (add_prefix) {
+    cluster_name <- paste(tolower(area), cluster_name, sep = "_")
+  }
+  
+  return(cluster_name)
+}
+
+
+#' @importFrom antaresRead readClusterSTDesc
+check_cluster_name <- function(area, cluster_name, add_prefix, opts = antaresRead::simOptions()) {
+  
+  exists <- FALSE
+  
+  clusters <- readClusterSTDesc(opts = opts)
+  if (nrow(clusters) > 0) {
+    cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
+    clusters_filtered <- clusters[clusters$area == tolower(area) & clusters$cluster == cluster_name,]
+    exists <- nrow(clusters_filtered) > 0
+  }
+    
+  return(exists)
+}
+

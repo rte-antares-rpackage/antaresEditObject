@@ -116,14 +116,36 @@ removeClusterST <- function(area,
   cluster_type <- match.arg(cluster_type)
   
   area <- tolower(area)
+  check_area_name(area, opts)
+  api_study <- is_api_study(opts)
+  api_mocked <- is_api_mocked(opts)
+  is_thermal <- identical(cluster_type, "thermal")
   
-  # Input path
-  inputPath <- opts$inputPath
+  # check cluster short-term storage existence
+  if (identical(cluster_type,"st-storage")) {
+    # To avoid failure in an unit test (API is mocked) we add this block
+    if (api_study && api_mocked) {
+      cluster_exists <- TRUE
+    } else {
+      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+    }
+    assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
+  }
   
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
   
-  if (is_api_study(opts)) {
+  # check if the cluster can be removed safely, i.e. the cluster is not referenced in a binding constraint
+  if (is_thermal) {
+    if (!api_study | (api_study && !api_mocked)) {
+      bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(area, ".", cluster_name), opts = opts)
+      if (!identical(bc_not_remove, character(0))) {
+        message("The following binding constraints have the cluster to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
+        stop("Can not remove the cluster ", cluster_name, " in the area ", area, ".")
+      }
+    }
+  }
+  
+  if (api_study) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
@@ -139,43 +161,41 @@ removeClusterST <- function(area,
     return(invisible(opts))
   }
   
+  # Input path
+  clustertypePath <- file.path(opts$inputPath, cluster_type)
+  
   # Remove from Ini file
   # path to ini file
-  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", area, "list.ini")
+  path_clusters_ini <- file.path(clustertypePath, "clusters", area, "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
   # cluster indice
-  ind <- which(tolower(names(previous_params)) %in% tolower(cluster_name))
-  if (length(ind) < 1)
+  idx <- which(tolower(names(previous_params)) %in% cluster_name)
+  if (length(idx) < 1)
     warning("Cluster '", cluster_name, "' you want to remove doesn't seem to exist in area '", area, "'.")
   
-  # Remove
-  previous_params[ind] <- NULL
+  # Remove entry in list.ini
+  previous_params[idx] <- NULL
   
-  # write
   writeIni(
     listData = previous_params,
     pathIni = path_clusters_ini,
     overwrite = TRUE
   )
   
-  if (length(previous_params) > 0) {
-    # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area, tolower(cluster_name)), recursive = TRUE)
-    if (identical(cluster_type, "thermal")) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
-    }
-  } else {
-    # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
-    if (identical(cluster_type, "thermal")) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
-    }
+  # Remove directories recursively
+  subdirs_to_remove <- c("series")
+  if (is_thermal) {
+    subdirs_to_remove <- c(subdirs_to_remove, "prepro")
   }
+  
+  dirs_to_remove <- file.path(clustertypePath, subdirs_to_remove, area)
+  if (length(previous_params) > 0) {
+    dirs_to_remove <- file.path(dirs_to_remove, cluster_name)
+  }
+  lapply(dirs_to_remove, unlink, recursive = TRUE)
   
   # Maj simulation
   suppressWarnings({

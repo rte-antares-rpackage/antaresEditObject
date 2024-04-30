@@ -86,8 +86,23 @@ Default is to read existing links and update them all.}
 Read, create, update & deduplicate scenario builder.
 }
 \note{
-\code{series = "ntc"} is only available with Antares >= 8.2.0.
-\code{series = "hl"} each value must be between 0 and 1.
+\itemize{
+\item \code{series = "ntc"} is only available with Antares >= 8.2.0.
+\item For \code{series = "hl"}, each value must be between 0 and 1.
+\item User must enable/disable \code{custom-scenario} property in \code{settings/generaldata.ini} by himself.
+}
+
+For a single matrix, value of series can be :
+\itemize{
+\item h or hydro
+\item hl or hydrolevels
+\item l or load
+\item ntc
+\item r or renewables
+\item s or solar
+\item t or thermal
+\item w or wind
+}
 }
 \examples{
 \dontrun{
@@ -133,8 +148,8 @@ prev_sb <- readScenarioBuilder()
 
 # Update scenario builder
 
-# for load serie
-updateScenarioBuilder(ldata = sbuilder, series = "load")
+# Single matrix for load serie
+updateScenarioBuilder(ldata = sbuilder, series = "load") # can be l instead of load
 
 # equivalent as
 updateScenarioBuilder(ldata = list(l = sbuilder))
@@ -149,7 +164,7 @@ updateScenarioBuilder(
   series = c("load", "hydro", "solar")
 )
 
-# different input
+# List of matrix
 updateScenarioBuilder(ldata = list(
   l = load_sb,
   h = hydro_sb,
@@ -160,4 +175,7 @@ updateScenarioBuilder(ldata = list(
 
 deduplicateScenarioBuilder()
 }
+}
+\seealso{
+\href{https://rte-antares-rpackage.github.io/antaresEditObject/articles/scenario-builder.html}{Scenario Builder vignette}
 }

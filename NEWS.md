@@ -1,7 +1,6 @@
-# antaresEditObject 0.6.2
-* Fix test to remove rev dep to `antaresRead` (see `cran-comments.md` for details)
 
-# antaresEditObject 0.6.1
+
+# antaresEditObject 0.6.3
 
 NEW FEATURES :
 
@@ -17,6 +16,16 @@ NEW FEATURES :
 * `createCluster()` parameter `list_pollutants` default value to NULL.
 * `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
 * `.createCluster()` default matrix in API mode.
+* `removeArea()` :
+  - control the existence of an area in a binding constraint coefficient before deletion
+  - no longer deletes a binding constraint
+* `removeLink()` : control the existence of a link a in a binding constraint coefficient before deletion
+* `removeCluster()` : control the existence of a cluster a in a binding constraint coefficient before deletion
+* `createClusterST()` : add a control to check if a cluster exists before running actions.
+* `editClusterST()` : add a control to check if a cluster exists before running actions.
+* `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
+* Update documentation for scenarioBuilder : user must enable/disable `custom-scenario` property in `generaldata.ini` by himself
+
 
 BUGFIXES : 
 
@@ -26,11 +35,20 @@ BUGFIXES :
 * Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
 * Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
 * `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
+* Allow the user to set symbol or full name as argument series in `updateScenarioBuilder()`
+* `scenarioBuilder()` matrix has the same row repeated if the area is not rand
 * Fix `createLink()` to update opts in API mode.
+* Fix `editClusterST()` : can not edit a cluster if it does not exist in API mode.
+* `updateScenarioBuilder()` works for NTC part : allow cartesian in the merge.
+* `api_command_execute()` :  
+  - no longer deletes a command  
+  - displays a success message for a study or variant
+* `removeCluster()` no longer deletes everything in the folder prepro  
+
+# antaresEditObject 0.6.2
+* Fix test to remove rev dep to `antaresRead` (see `cran-comments.md` for details)
 
 # antaresEditObject 0.6.1
-
-
 * `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
 
 
