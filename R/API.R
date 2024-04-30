@@ -235,7 +235,8 @@ getJobs <- function(job_id = NULL, opts = antaresRead::simOptions()) {
   jobs <- api_get(opts = opts, 
                   endpoint = custom_endpoint, 
                   default_endpoint = "v1", 
-                  parse_result = "text")
+                  parse_result = "text",
+                  encoding = "UTF-8")
   # reformat 
   if(!is.null(id_job))
     jobs <- paste0("[",jobs,"]")
