@@ -20,7 +20,7 @@
 #' 
 #' @export
 #' 
-#' @importFrom antaresRead simOptions setSimulationPath
+#' @importFrom antaresRead simOptions setSimulationPath readIniFile
 #' @importFrom utils read.table write.table
 #' @importFrom assertthat assert_that
 #' @importFrom grDevices col2rgb
