@@ -1,15 +1,8 @@
-# antaresEditObject 0.6.4
-
-NEW FEATURES :
-
-BUGFIXES :
+# antaresEditObject 0.6.4 (development)
 
 BREAKING CHANGES :
 * Add UTF-8 encoding argument in `.getJobs()`
 
-DATA :
-
-PERFORMANCE :
 
 # antaresEditObject 0.6.3
 
