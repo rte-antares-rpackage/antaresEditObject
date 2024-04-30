@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -136,9 +136,9 @@
 <span><span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span><span class="st">"moon"</span>, <span class="st">"ceres"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check what we have created</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "ceres" "earth" "moon"  "titan"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      area  group     cluster</span></span>
 <span><span class="co">#&gt;    &lt;char&gt; &lt;char&gt;      &lt;fctr&gt;</span></span>
 <span><span class="co">#&gt; 1:  earth  Other     america</span></span>
@@ -157,8 +157,8 @@ data:</p>
 <span><span class="fu"><a href="../reference/scenario-builder.html">scenarioBuilder</a></span><span class="op">(</span>n_scenario <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt; ceres "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  </span></span>
-<span><span class="co">#&gt; earth "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  </span></span>
-<span><span class="co">#&gt; moon  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  </span></span>
+<span><span class="co">#&gt; earth "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  </span></span>
+<span><span class="co">#&gt; moon  "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  </span></span>
 <span><span class="co">#&gt; titan "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"</span></span>
 <span><span class="fu"><a href="../reference/scenario-builder.html">scenarioBuilder</a></span><span class="op">(</span>n_scenario <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
@@ -175,7 +175,7 @@ data:</p>
 <span><span class="co">#&gt;       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]   [,7]   [,8]   [,9]   [,10] </span></span>
 <span><span class="co">#&gt; ceres "1"    "2"    "3"    "1"    "2"    "3"    "1"    "2"    "3"    "1"   </span></span>
 <span><span class="co">#&gt; earth "rand" "rand" "rand" "rand" "rand" "rand" "rand" "rand" "rand" "rand"</span></span>
-<span><span class="co">#&gt; moon  "3"    "1"    "2"    "3"    "1"    "2"    "3"    "1"    "2"    "3"   </span></span>
+<span><span class="co">#&gt; moon  "1"    "2"    "3"    "1"    "2"    "3"    "1"    "2"    "3"    "1"   </span></span>
 <span><span class="co">#&gt; titan "1"    "2"    "3"    "1"    "2"    "3"    "1"    "2"    "3"    "1"</span></span></code></pre></div>
 <p>Now we can update the scenario builder data:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -217,15 +217,15 @@ several series at once you can do:</p>
 <span><span class="co">#&gt; $h</span></span>
 <span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt; ceres    1    2    3    4    1    2    3    4    1     2</span></span>
-<span><span class="co">#&gt; earth    3    4    1    2    3    4    1    2    3     4</span></span>
+<span><span class="co">#&gt; earth    1    2    3    4    1    2    3    4    1     2</span></span>
 <span><span class="co">#&gt; moon     1    2    3    4    1    2    3    4    1     2</span></span>
-<span><span class="co">#&gt; titan    3    4    1    2    3    4    1    2    3     4</span></span>
+<span><span class="co">#&gt; titan    1    2    3    4    1    2    3    4    1     2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $l</span></span>
 <span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt; ceres    1    2    3    1    2    3    1    2    3     1</span></span>
-<span><span class="co">#&gt; earth    2    3    1    2    3    1    2    3    1     2</span></span>
-<span><span class="co">#&gt; moon     3    1    2    3    1    2    3    1    2     3</span></span>
+<span><span class="co">#&gt; earth    1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; moon     1    2    3    1    2    3    1    2    3     1</span></span>
 <span><span class="co">#&gt; titan    1    2    3    1    2    3    1    2    3     1</span></span></code></pre></div>
 <p>For thermal and renewables series, default behavior is to set rules
 to each clusters in the area :</p>
@@ -238,7 +238,12 @@ to each clusters in the area :</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">t</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="co">#&gt;                  [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
+<span><span class="co">#&gt; earth_africa        1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; earth_america       1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; earth_europe        1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; moon_serenety       1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; moon_tranquility    1    2    3    1    2    3    1    2    3     1</span></span></code></pre></div>
 <p>We can specify specific clusters with:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span></span>
@@ -250,7 +255,12 @@ to each clusters in the area :</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">t</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="co">#&gt;                  [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
+<span><span class="co">#&gt; earth_africa        1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; earth_america      NA   NA   NA   NA   NA   NA   NA   NA   NA    NA</span></span>
+<span><span class="co">#&gt; earth_europe        1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; moon_serenety      NA   NA   NA   NA   NA   NA   NA   NA   NA    NA</span></span>
+<span><span class="co">#&gt; moon_tranquility   NA   NA   NA   NA   NA   NA   NA   NA   NA    NA</span></span></code></pre></div>
 <p>For NTC serie (Antares &gt;= 8.2.0), it writes the scenario for all
 links :</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -261,8 +271,8 @@ links :</p>
 <span><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">ntc</span></span>
 <span><span class="co">#&gt;            [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt; ceres%moon    1    2    3    1    2    3    1    2    3     1</span></span>
-<span><span class="co">#&gt; earth%moon    2    3    1    2    3    1    2    3    1     2</span></span>
-<span><span class="co">#&gt; moon%titan    3    1    2    3    1    2    3    1    2     3</span></span></code></pre></div>
+<span><span class="co">#&gt; earth%moon    1    2    3    1    2    3    1    2    3     1</span></span>
+<span><span class="co">#&gt; moon%titan    1    2    3    1    2    3    1    2    3     1</span></span></code></pre></div>
 <p>For writing scenario for a specific link you can do:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span></span>

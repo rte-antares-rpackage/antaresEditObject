@@ -18,7 +18,7 @@ Create a new thermal or RES (renewable energy source) cluster."><!-- mathjax -->
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@ Create a new thermal or RES (renewable energy source) cluster."><!-- mathjax -->
 <span>  prepro_modulation <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">createClusterRES</span><span class="op">(</span></span>
@@ -99,7 +99,7 @@ Create a new thermal or RES (renewable energy source) cluster."><!-- mathjax -->
 <span>  time_series <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -153,7 +153,7 @@ if specified, must have 8760 rows and 1 or 4 columns.</p></dd>
 
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
-<code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+<code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -190,7 +190,7 @@ if specified, must have 8760 rows and 1 or 4 columns.</p></dd>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># by default, cluster name is prefixed </span></span></span>
 <span class="r-in"><span><span class="co"># by the area name</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># &gt; "fr_my_cluster"</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># To prevent this, use `add_prefix`</span></span></span>
@@ -201,7 +201,7 @@ if specified, must have 8760 rows and 1 or 4 columns.</p></dd>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="st">"other"</span>, </span></span>
 <span class="r-in"><span>  marginal_cost <span class="op">=</span> <span class="fl">50</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># &gt; "my_cluster"</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

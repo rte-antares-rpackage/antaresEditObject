@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -70,20 +70,16 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.2" id="antareseditobject-062">antaresEditObject 0.6.2<small>2024-04-19</small><a class="anchor" aria-label="anchor" href="#antareseditobject-062"></a></h2>
-<ul><li>Fix test to remove rev dep to <code>antaresRead</code> (see <code>cran-comments.md</code> for details)</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.1" id="antareseditobject-061">antaresEditObject 0.6.1<small>2023-12-12</small><a class="anchor" aria-label="anchor" href="#antareseditobject-061"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.3" id="antareseditobject-063">antaresEditObject 0.6.3<small>2024-04-29</small><a class="anchor" aria-label="anchor" href="#antareseditobject-063"></a></h2>
 <p>NEW FEATURES :</p>
 <ul><li>Complete function <code><a href="../reference/deleteStudy.html">deleteStudy()</a></code> with new parameter <code>simulation</code> to delete a simulation in an Antares study.</li>
 <li>New parameter <code>geographic.trimming</code> in <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>to activate or deactivate this general parameter.</li>
 <li>Add <code><a href="../reference/importZipStudyWeb.html">importZipStudyWeb()</a></code> to allow the user to import a local study in Antares Web</li>
 </ul><div class="section level4">
-<h4 id="breaking-changes-0-6-1">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-1"></a></h4>
+<h4 id="breaking-changes-0-6-3">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-3"></a></h4>
 <ul><li>
 <code><a href="../reference/playlist.html">setPlaylist()</a></code> optimized for the API mode
-<ul><li>returned an updated list of simulation parameters returned by the function <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath()</a></code> and <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPathAPI()</a></code>
+<ul><li>returned an updated list of simulation parameters returned by the function <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath()</a></code> and <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPathAPI()</a></code>
 </li>
 </ul></li>
 <li>
@@ -94,6 +90,22 @@
 <code><a href="../reference/create-binding-constraint.html">createBindingConstraint()</a></code> parameter <code>coefficients</code> must be alphabetically ordered.</li>
 <li>
 <code>.createCluster()</code> default matrix in API mode.</li>
+<li>
+<code><a href="../reference/removeArea.html">removeArea()</a></code> :
+<ul><li>control the existence of an area in a binding constraint coefficient before deletion</li>
+<li>no longer deletes a binding constraint</li>
+</ul></li>
+<li>
+<code><a href="../reference/removeLink.html">removeLink()</a></code> : control the existence of a link a in a binding constraint coefficient before deletion</li>
+<li>
+<code><a href="../reference/removeCluster.html">removeCluster()</a></code> : control the existence of a cluster a in a binding constraint coefficient before deletion</li>
+<li>
+<code><a href="../reference/createClusterST.html">createClusterST()</a></code> : add a control to check if a cluster exists before running actions.</li>
+<li>
+<code><a href="../reference/editClusterST.html">editClusterST()</a></code> : add a control to check if a cluster exists before running actions.</li>
+<li>
+<code>.removeCluster()</code> : add a control to check if a cluster exists before running actions in st-storage mode.</li>
+<li>Update documentation for scenarioBuilder : user must enable/disable <code>custom-scenario</code> property in <code>generaldata.ini</code> by himself</li>
 </ul><p>BUGFIXES :</p>
 <ul><li>Fix <code>filter_synthesis</code> and <code>filter_year_by_year</code> parameters of <code><a href="../reference/editLink.html">editLink()</a></code> in API mode</li>
 <li>Fix <code><a href="../reference/playlist.html">setPlaylist()</a></code> works in API and local mode with weights.</li>
@@ -102,11 +114,29 @@
 <li>Fix <code><a href="../reference/createCluster.html">createCluster()</a></code> and <code><a href="../reference/editCluster.html">editCluster()</a></code> parameter <code>list_pollutants</code> stop if Antares Version &lt; 8.6.0</li>
 <li>
 <code><a href="../reference/getJobs.html">getJobs()</a></code> no longer returns duplicates and displays the two new columns <code>owner_id</code> and <code>owner_name</code>.</li>
+<li>Allow the user to set symbol or full name as argument series in <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>
+</li>
+<li>
+<code><a href="../reference/scenario-builder.html">scenarioBuilder()</a></code> matrix has the same row repeated if the area is not rand</li>
 <li>Fix <code><a href="../reference/createLink.html">createLink()</a></code> to update opts in API mode.</li>
+<li>Fix <code><a href="../reference/editClusterST.html">editClusterST()</a></code> : can not edit a cluster if it does not exist in API mode.</li>
+<li>
+<code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code> works for NTC part : allow cartesian in the merge.</li>
+<li>
+<code>api_command_execute()</code> :
+<ul><li>no longer deletes a command<br></li>
+<li>displays a success message for a study or variant</li>
+</ul></li>
+<li>
+<code><a href="../reference/removeCluster.html">removeCluster()</a></code> no longer deletes everything in the folder prepro</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.6.1" id="antareseditobject-061-1">antaresEditObject 0.6.1<small>2023-12-12</small><a class="anchor" aria-label="anchor" href="#antareseditobject-061-1"></a></h2>
+<h2 class="page-header" data-toc-text="0.6.2" id="antareseditobject-062">antaresEditObject 0.6.2<small>2024-04-19</small><a class="anchor" aria-label="anchor" href="#antareseditobject-062"></a></h2>
+<ul><li>Fix test to remove rev dep to <code>antaresRead</code> (see <code>cran-comments.md</code> for details)</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.6.1" id="antareseditobject-061">antaresEditObject 0.6.1<small>2023-12-12</small><a class="anchor" aria-label="anchor" href="#antareseditobject-061"></a></h2>
 <ul><li>
 <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code> allows the user to set a link with the separator ’ - ’ (ex: ‘area1 - area2’)</li>
 </ul><p>BUGFIXES :</p>
@@ -248,7 +278,7 @@
 <div class="section level4">
 <h4 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h4>
 <ul><li>
-<code><a href="../reference/create-study.html">createStudy()</a></code> no longer return <code>TRUE</code> / <code>FALSE</code>, but simulation options list returned by <code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</li>
+<code><a href="../reference/create-study.html">createStudy()</a></code> no longer return <code>TRUE</code> / <code>FALSE</code>, but simulation options list returned by <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code>.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="renewable-energy-sources-0-3-0">Renewable Energy Sources<a class="anchor" aria-label="anchor" href="#renewable-energy-sources-0-3-0"></a></h4>

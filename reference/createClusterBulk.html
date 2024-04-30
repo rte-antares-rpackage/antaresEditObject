@@ -23,7 +23,7 @@ Writing prepro_modulation files
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@ Writing prepro_modulation files
 <span>  <span class="va">cluster_object</span>,</span>
 <span>  <span class="va">area_zone</span>,</span>
 <span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,7 +108,7 @@ Writing prepro_modulation files
 
 <dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
-<code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+<code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -181,7 +181,7 @@ it will prefixed by area name, unless you set add_prefix = FALSE</p></li>
 <span class="r-in"><span>   prepro_modulation <span class="op">=</span> <span class="va">df_pm</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create multiple areas with multiple clusters</span></span></span>
-<span class="r-in"><span><span class="va">list_areas</span> <span class="op">&lt;-</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">list_areas</span> <span class="op">&lt;-</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">list_areas</span>, <span class="va">createClusterBulk</span>,</span></span>
 <span class="r-in"><span>cluster_object <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">zone_test_1</span>, <span class="va">zone_test_2</span><span class="op">)</span>,</span></span>

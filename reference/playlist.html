@@ -21,7 +21,7 @@ study and set the playlist in order to simulate only the MC years given in input
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -83,16 +83,16 @@ study and set the playlist in order to simulate only the MC years given in input
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getPlaylist</span><span class="op">(</span>opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getPlaylist</span><span class="op">(</span>opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">setPlaylist</span><span class="op">(</span><span class="va">playlist</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">setPlaylist</span><span class="op">(</span><span class="va">playlist</span>, weights <span class="op">=</span> <span class="cn">NULL</span>, opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>opts</dt>
 <dd><p>List of simulation parameters returned by the function
-<code><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
+<code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
 
 
 <dt>playlist</dt>
@@ -114,9 +114,9 @@ study and set the playlist in order to simulate only the MC years given in input
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="st">"PATH/TO/STUDY/"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="st">"PATH/TO/STUDY/"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># or </span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPathAPI</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPathAPI</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  host <span class="op">=</span> <span class="st">"http://localhost:8080"</span>,</span></span>
 <span class="r-in"><span>  study_id <span class="op">=</span> <span class="st">"6f98a393-155d-450f-a581-8668dc355235"</span>,</span></span>
 <span class="r-in"><span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span></span>

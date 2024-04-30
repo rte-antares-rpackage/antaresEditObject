@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -114,7 +114,7 @@ commands to be sent to the API.</p>
 </h2>
 <p>First we need to declare which study we are going to use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html" class="external-link">setSimulationPathAPI</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPathAPI</a></span><span class="op">(</span></span>
 <span>  host <span class="op">=</span> <span class="st">"http://localhost:8080"</span>,</span>
 <span>  study_id <span class="op">=</span> <span class="st">"70a08fae-da67-444a-b2ed-df4c0f956a31"</span>, </span>
 <span>  token <span class="op">=</span> <span class="cn">NULL</span>, </span>
@@ -337,14 +337,15 @@ their documentation:</p>
 <p>Remove a link with:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/removeLink.html">removeLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area01"</span>, to <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">remove_link</span> registered, see all commands with `getVariantCommands()`</span></span>
+<span><span class="co">#&gt; Link doesn't exist</span></span>
+<span><span class="co">#&gt; NULL</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
-<span><span class="co">#&gt;     "action": "remove_link",</span></span>
+<span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
-<span><span class="co">#&gt;       "area1": "area01",</span></span>
-<span><span class="co">#&gt;       "area2": "area03"</span></span>
+<span><span class="co">#&gt;       "target": "input/links/area01/capacities/area02_indirect",</span></span>
+<span><span class="co">#&gt;       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
@@ -594,7 +595,7 @@ the study.</p>
 <span><span class="va">my_scenario</span></span>
 <span><span class="co">#&gt;        [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt; area01 "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  </span></span>
-<span><span class="co">#&gt; area02 "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"</span></span></code></pre></div>
+<span><span class="co">#&gt; area02 "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"</span></span></code></pre></div>
 <p>Then you can update the scenario builder itself:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">my_scenario</span>, series <span class="op">=</span> <span class="st">"load"</span><span class="op">)</span></span>
@@ -605,7 +606,7 @@ the study.</p>
 <span><span class="co">#&gt;     "action": "update_config",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
 <span><span class="co">#&gt;       "target": "settings/scenariobuilder/Default Ruleset",</span></span>
-<span><span class="co">#&gt;       "data": []</span></span>
+<span><span class="co">#&gt;       "data": {"l,area01,0":"1","l,area01,1":"2","l,area01,2":"3","l,area01,3":"1","l,area01,4":"2","l,area01,5":"3"} [truncated]...</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>

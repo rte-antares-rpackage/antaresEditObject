@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
       </span>
     </div>
 
@@ -164,6 +164,7 @@ factors”</li>
 <span>                lower_rule_curve <span class="op">=</span> <span class="va">ratio_values</span>, </span>
 <span>                upper_rule_curve <span class="op">=</span> <span class="va">ratio_values</span>, </span>
 <span>                overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No cluster description available.</span></span>
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span>
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span>
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span>
@@ -186,7 +187,7 @@ factors”</li>
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span></code></pre></div>
 <p>Now you can see informations in simulation options.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">opts</span><span class="op">$</span><span class="va">areasWithSTClusters</span></span>
 <span><span class="co">#&gt; [1] "fr" "it"</span></span></code></pre></div>
 </div>
@@ -194,9 +195,9 @@ factors”</li>
 <h2 id="read-st-storages-parameters">Read st-storages parameters<a class="anchor" aria-label="anchor" href="#read-st-storages-parameters"></a>
 </h2>
 <p>After creating “st-storage” clusters, you can read all information
-with specific function <code><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterSTDesc()</a></code>.</p>
+with specific function <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc()</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -222,7 +223,7 @@ each function parameter):</p>
 <li>upper-rule-curve.txt</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_st_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">data_st_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Importing st-storage</span></span>
 <span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_st_storage</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -257,7 +258,7 @@ want.</p>
 <span><span class="co">#&gt; x being coerced from class: matrix to data.table</span></span>
 <span></span>
 <span><span class="co"># read parameters</span></span>
-<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -267,7 +268,7 @@ want.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># read data</span></span>
-<span><span class="va">data_st_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<span><span class="va">data_st_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Importing st-storage</span></span>
 <span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_st_storage</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -289,14 +290,14 @@ from study.</p>
 <span>                add_prefix <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># delete control </span></span>
-<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">opts</span><span class="op">$</span><span class="va">areasWithSTClusters</span></span>
 <span><span class="co">#&gt; [1] "it"</span></span></code></pre></div>
 <p>The area <code>fr</code> is deleted cause we created only one cluster
 <code>test_storage</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># control removed parameters</span></span>
-<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -306,7 +307,7 @@ from study.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># control removed data</span></span>
-<span><span class="va">data_st_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<span><span class="va">data_st_storage</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Importing st-storage</span></span>
 <span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_st_storage</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -347,7 +348,7 @@ parameters.</p>
 <span>              <span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># read parameters</span></span>
-<span><span class="va">param_th_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">param_th_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">param_th_cluster</span><span class="op">)</span></span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -366,7 +367,7 @@ pm2_5</strong>.</p>
 <span>            list_pollutants <span class="op">=</span> <span class="va">edit_param_pollutants</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># read parameters</span></span>
-<span><span class="va">param_th_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">param_th_cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">param_th_cluster</span><span class="op">)</span></span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -470,7 +471,7 @@ are empty. We will describe steps to edit <code>mingen.txt</code>.</p>
 <p>Now we can read time series.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># read input time series</span></span>
-<span><span class="va">read_ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/antaresRead/man/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>mingen <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<span><span class="va">read_ts_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>mingen <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Importing mingen</span></span>
 <span><span class="co">#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">read_ts_file</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
