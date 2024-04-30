@@ -1,4 +1,15 @@
+# antaresEditObject 0.6.4 (development)
 
+NEW FEATURES :
+
+BUGFIXES :
+* `editArea()` : not delete one of the two economic options if only one must be edited
+
+BREAKING CHANGES :
+
+DATA :
+
+PERFORMANCE :
 
 # antaresEditObject 0.6.3
 
