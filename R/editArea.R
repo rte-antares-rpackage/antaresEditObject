@@ -59,9 +59,10 @@ editArea <- function(name,
   
   check_area_name(name, opts)
   
+  nodalOptimization_ori <- nodalOptimization
   is_830 <- opts$antaresVersion >= 830
   nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimization)
-  nodalOptimization2 <- nodal_by_targets[["toIniOptimization"]]
+  nodalOptimization <- nodal_by_targets[["toIniOptimization"]]
   nodalThermal <- nodal_by_targets[["toIniAreas"]]
   
   not_null_filtering <- !is.null(filtering)
@@ -70,11 +71,11 @@ editArea <- function(name,
   # API block
   if (is_api_study(opts)) {
     
-    if (!is.null(nodalOptimization)) {
+    if (!is.null(nodalOptimization_ori)) {
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/areas/%s/optimization/nodal optimization", name),
-        data = nodalOptimization
+        data = nodalOptimization_ori
       )
       api_command_register(cmd, opts = opts)
       `if`(
@@ -128,9 +129,9 @@ editArea <- function(name,
   optimization_area_path <- file.path(inputPath, "areas", name, "optimization.ini")
   infoIni <- readIniFile(file = optimization_area_path)
   
-  if (!is.null(nodalOptimization2)) {
-    for (i in names(nodalOptimization2)) {
-      infoIni$`nodal optimization`[[i]] <- nodalOptimization2[[i]]
+  if (!is.null(nodalOptimization)) {
+    for (i in names(nodalOptimization)) {
+      infoIni$`nodal optimization`[[i]] <- nodalOptimization[[i]]
     }
   }
   

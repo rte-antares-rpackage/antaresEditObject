@@ -53,8 +53,9 @@ createArea <- function(name,
   list_name <- name
   name <- tolower(name)
   
+  nodalOptimization_ori <- nodalOptimization
   nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimization)
-  nodalOptimization2 <- nodal_by_targets[["toIniOptimization"]]
+  nodalOptimization <- nodal_by_targets[["toIniOptimization"]]
   nodalThermal <- nodal_by_targets[["toIniAreas"]]
   
   unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
@@ -70,11 +71,11 @@ createArea <- function(name,
       cli_command_registered("create_area")
     )
     
-    if (is_different(nodalOptimization, nodalOptimizationOptions())){
+    if (is_different(nodalOptimization_ori, nodalOptimizationOptions())){
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/areas/%s/optimization/nodal optimization", name),
-        data = nodalOptimization
+        data = nodalOptimization_ori
       )
       api_command_register(cmd, opts = opts)
       `if`(
@@ -143,7 +144,7 @@ createArea <- function(name,
   # optimization ini file
   writeIni(
     listData = c(
-      list(`nodal optimization` = nodalOptimization2),
+      list(`nodal optimization` = nodalOptimization),
       list(filtering = filtering)
     ),
     pathIni = file.path(inputPath, "areas", name, "optimization.ini"),
@@ -543,6 +544,7 @@ nodalOptimizationOptions <- function(non_dispatchable_power = TRUE,
     `spilledenergycost` = average_spilled_energy_cost
   )
 }
+
 
 #' Adequacy patch parameters for creating an area
 #'
