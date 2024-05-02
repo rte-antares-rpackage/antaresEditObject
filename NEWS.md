@@ -3,6 +3,10 @@
 BREAKING CHANGES :
 * Add UTF-8 encoding argument in `.getJobs()`
 
+BUGFIXES :
+* `createArea()` : in API mode, split data in nodalOptimization argument to write it in the expected files
+* `editArea()` : in API mode, split data in nodalOptimization argument to write it in the expected files
+
 
 # antaresEditObject 0.6.3
 
