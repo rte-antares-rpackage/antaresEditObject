@@ -534,9 +534,14 @@ test_that("updateScenarioBuilder() has error if names of list or argument series
 
 # v870 ----
 test_that("scenarioBuilder works with binding constraint (v870)", {
-  # read / open template study
-  setup_study_last(dir_path = sourcedir_last_study)
-  opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
+  # study test creation ----
+  # read script to generate study v8.7.0
+  sourcedir_last_study <- system.file("study_test_generator/generate_test_study_870.R", 
+                                      package = "antaresEditObject")
+  
+  # create study
+  source(file = sourcedir_last_study)
+  opts_test <- simOptions()
   
   ## no group rand ----
   sbuilder <- scenarioBuilder(
@@ -584,6 +589,9 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   testthat::expect_equal(rownames(prev_sb$bc), 
                          "group_test")
   
+  # clear
+  clearScenarioBuilder()
+  
   ## no bc mode ----
   # (classic mode of operation)
   sbuilder <- scenarioBuilder()
@@ -597,7 +605,7 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   prev_sb <- readScenarioBuilder(as_matrix = TRUE)
   
   # test
-  testthat::expect_equal(names(prev_sb), c("bc", "t"))
+  testthat::expect_equal(names(prev_sb), "t")
   
   ## parameter n_mc NULL ----
   # (classic mode of operation)
@@ -606,9 +614,7 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
     n_mc = NULL,
     group_bc = c("group_test", "default"), 
     group_bc_rand = NULL,
-    mode = "bc",
-    opts = opts_test
-  )
+    mode = "bc")
   
   # Update scenario builder
   # for binding constraints series
@@ -620,8 +626,8 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   
   # test
   value_default_n_mc <- opts_test$parameters$general$nbyears
-  testthat::expect_equal(prev_sb$bc[1,], seq(value_default_n_mc))
+  testthat::expect_equal(prev_sb$bc[1, drop = FALSE], rep(value_default_n_mc))
   
   # remove temporary study
-  unlink(x = study_latest_version, recursive = TRUE)
+  deleteStudy()
 })

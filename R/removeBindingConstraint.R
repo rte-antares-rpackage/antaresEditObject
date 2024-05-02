@@ -147,7 +147,7 @@ removeBindingConstraint <- function(name = NULL,
       use.names = FALSE)
     
     if(!all(group%in%bc_groups))
-      warning(paste0("No binding constraint with group '", 
+      stop(paste0("No binding constraint with group '", 
                      group[!group%in%bc_groups], "'"), 
               call. = FALSE)
     else{
