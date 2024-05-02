@@ -58,6 +58,13 @@ editArea <- function(name,
   list_name <- name
   name <- tolower(name)
   
+  nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimization)
+  nodalOptimization <- nodal_by_targets[["toIniOptimization"]]
+  nodalThermal <- nodal_by_targets[["toIniAreas"]]
+  
+  unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
+  spilledenergycost <- nodalThermal[["spilledenergycost"]]
+  
   # API block
   if (is_api_study(opts)) {
     
@@ -71,6 +78,34 @@ editArea <- function(name,
       `if`(
         should_command_be_executed(opts), 
         api_command_execute(cmd, opts = opts, text_alert = "Update area's nodal optimization option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    if (!is.null(unserverdenergycost)) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/thermal/areas/unserverdenergycost/%s", name),
+        data = unserverdenergycost
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update area's unsupplied energy cost option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+      
+    if (!is.null(spilledenergycost)) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/thermal/areas/spilledenergycost/%s", name),
+        data = spilledenergycost
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Update area's spilled energy cost option: {msg_api}"),
         cli_command_registered("update_config")
       )
     }
@@ -120,9 +155,6 @@ editArea <- function(name,
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   infoIni <- readIniFile(file.path(inputPath, "areas", name, "optimization.ini"))
   
-  
-  nodalOptimizationThermal <- nodalOptimization[names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
-  nodalOptimization <- nodalOptimization[!names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
   if (!is.null(nodalOptimization)) {
     for (i in names(nodalOptimization)) {
       infoIni$`nodal optimization`[[i]] <- nodalOptimization[[i]]
@@ -173,7 +205,7 @@ editArea <- function(name,
     overwrite = TRUE
   )
   
-  if (!is.null(nodalOptimizationThermal)) {
+  if (!is.null(nodalThermal)) {
     
     
     thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
@@ -182,8 +214,8 @@ editArea <- function(name,
     } else {
       thermal_areas <- list()
     }
-    thermal_areas$unserverdenergycost[[name]] <- nodalOptimizationThermal[["unserverdenergycost"]]
-    thermal_areas$spilledenergycost[[name]] <- nodalOptimizationThermal[["spilledenergycost"]]
+    thermal_areas$unserverdenergycost[[name]] <- unserverdenergycost
+    thermal_areas$spilledenergycost[[name]] <- spilledenergycost
     writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
     
   }
@@ -304,7 +336,7 @@ editArea <- function(name,
 # # dir
 # dir.create(path = file.path(inputPath, "load", "prepro", name), showWarnings = FALSE)
 # 
-# conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+# conversion <- matrix(data = c(-9999999980506447872,  0,  9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
 # utils::write.table(
 #   x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
 #   file = file.path(inputPath, "load", "prepro", name, "conversion.txt")
@@ -360,7 +392,7 @@ editArea <- function(name,
 # # dir
 # dir.create(path = file.path(inputPath, "solar", "prepro", name), showWarnings = FALSE)
 # 
-# conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+# conversion <- matrix(data = c(-9999999980506447872,  0,  9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
 # utils::write.table(
 #   x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
 #   file = file.path(inputPath, "solar", "prepro", name, "conversion.txt")
@@ -425,7 +457,7 @@ editArea <- function(name,
 # # dir
 # dir.create(path = file.path(inputPath, "wind", "prepro", name), showWarnings = FALSE)
 # 
-# conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
+# conversion <- matrix(data = c(-9999999980506447872,  0,  9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
 # utils::write.table(
 #   x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
 #   file = file.path(inputPath, "wind", "prepro", name, "conversion.txt")
