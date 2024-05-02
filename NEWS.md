@@ -21,6 +21,12 @@ NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :
 * `createBindingConstraint()` is available with **offset** parameter in API mode 
 
 
+# antaresEditObject 0.6.4 (development)
+
+BREAKING CHANGES :
+* Add UTF-8 encoding argument in `.getJobs()`
+
+
 # antaresEditObject 0.6.3
 
 NEW FEATURES :
