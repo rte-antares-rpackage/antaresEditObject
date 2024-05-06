@@ -557,3 +557,35 @@ adequacyOptions <- function(adequacy_patch_mode = "outside"){
     `adequacy-patch-mode` = adequacy_patch_mode
   )
 }
+
+
+#' Split list nodalOptimization by target file.
+#'
+#' @param nodalOptimization Nodal optimization parameters, see [nodalOptimizationOptions()]
+.split_nodalOptimization_by_target <- function(nodalOptimization) {
+  
+  nodal_optimization <- NULL
+  nodal_thermal <- NULL
+  
+  properties_to_edit <- names(nodalOptimization)
+  
+  # input/thermal/areas.ini
+  target_IniAreas <- c("unserverdenergycost", "spilledenergycost")
+  # input/areas/<area>/optimization.ini
+  target_IniOptimization <- setdiff(names(nodalOptimizationOptions()), target_IniAreas)
+  
+  ini_optimization <- intersect(properties_to_edit, target_IniOptimization)
+  if (!identical(ini_optimization, character(0))) {
+    nodal_optimization <- nodalOptimization[ini_optimization]
+  } 
+  
+  ini_areas <- intersect(properties_to_edit, target_IniAreas)
+  if (!identical(ini_areas, character(0))) {
+    nodal_thermal <- nodalOptimization[ini_areas]
+  }
+  
+  return(list("toIniOptimization" = nodal_optimization,
+              "toIniAreas" = nodal_thermal
+              )
+        )
+}

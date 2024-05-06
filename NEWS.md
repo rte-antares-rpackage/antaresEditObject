@@ -3,6 +3,8 @@
 BREAKING CHANGES :
 * Add UTF-8 encoding argument in `.getJobs()`
 
+BUGFIXES :
+* Avoid data deletion in API mode for `editArea()`
 
 # antaresEditObject 0.6.3
 
