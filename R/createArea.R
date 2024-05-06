@@ -53,6 +53,14 @@ createArea <- function(name,
   list_name <- name
   name <- tolower(name)
   
+  nodalOptimization_ori <- nodalOptimization
+  nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimization)
+  nodalOptimization <- nodal_by_targets[["toIniOptimization"]]
+  nodalThermal <- nodal_by_targets[["toIniAreas"]]
+  
+  unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
+  spilledenergycost <- nodalThermal[["spilledenergycost"]]
+  
   # API block
   if (is_api_study(opts)) {
     cmd <- api_command_generate("create_area", area_name = name)
@@ -63,11 +71,11 @@ createArea <- function(name,
       cli_command_registered("create_area")
     )
     
-    if (is_different(nodalOptimization, nodalOptimizationOptions())){
+    if (is_different(nodalOptimization_ori, nodalOptimizationOptions())){
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/areas/%s/optimization/nodal optimization", name),
-        data = nodalOptimization
+        data = nodalOptimization_ori
       )
       api_command_register(cmd, opts = opts)
       `if`(
@@ -136,13 +144,7 @@ createArea <- function(name,
   # optimization ini file
   writeIni(
     listData = c(
-      list(`nodal optimization` = nodalOptimization[c(
-        "non-dispatchable-power",
-        "dispatchable-hydro-power",
-        "other-dispatchable-power",
-        "spread-unsupplied-energy-cost",
-        "spread-spilled-energy-cost"
-      )]),
+      list(`nodal optimization` = nodalOptimization),
       list(filtering = filtering)
     ),
     pathIni = file.path(inputPath, "areas", name, "optimization.ini"),
@@ -392,8 +394,8 @@ createArea <- function(name,
   } else {
     thermal_areas <- list()
   }
-  thermal_areas$unserverdenergycost[[name]] <- nodalOptimization[["unserverdenergycost"]]
-  thermal_areas$spilledenergycost[[name]] <- nodalOptimization[["spilledenergycost"]]
+  thermal_areas$unserverdenergycost[[name]] <- unserverdenergycost
+  thermal_areas$spilledenergycost[[name]] <- spilledenergycost
   writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
   
   
@@ -543,6 +545,7 @@ nodalOptimizationOptions <- function(non_dispatchable_power = TRUE,
   )
 }
 
+
 #' Adequacy patch parameters for creating an area
 #'
 #' @param adequacy_patch_mode character, default to "outside"
@@ -557,3 +560,36 @@ adequacyOptions <- function(adequacy_patch_mode = "outside"){
     `adequacy-patch-mode` = adequacy_patch_mode
   )
 }
+
+
+#' Split list nodalOptimization by target file.
+#'
+#' @param nodalOptimization Nodal optimization parameters, see [nodalOptimizationOptions()]
+.split_nodalOptimization_by_target <- function(nodalOptimization) {
+  
+  nodal_optimization <- NULL
+  nodal_thermal <- NULL
+  
+  properties_to_edit <- names(nodalOptimization)
+  
+  # input/thermal/areas.ini
+  target_IniAreas <- c("unserverdenergycost", "spilledenergycost")
+  # input/areas/<area>/optimization.ini
+  target_IniOptimization <- setdiff(names(nodalOptimizationOptions()), target_IniAreas)
+  
+  ini_optimization <- intersect(properties_to_edit, target_IniOptimization)
+  if (!identical(ini_optimization, character(0))) {
+    nodal_optimization <- nodalOptimization[ini_optimization]
+  } 
+  
+  ini_areas <- intersect(properties_to_edit, target_IniAreas)
+  if (!identical(ini_areas, character(0))) {
+    nodal_thermal <- nodalOptimization[ini_areas]
+  }
+  
+  return(list("toIniOptimization" = nodal_optimization,
+              "toIniAreas" = nodal_thermal
+              )
+        )
+}
+
