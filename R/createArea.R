@@ -538,6 +538,7 @@ nodalOptimizationOptions <- function(non_dispatchable_power = TRUE,
   )
 }
 
+
 #' Adequacy patch parameters for creating an area
 #'
 #' @param adequacy_patch_mode character, default to "outside"
