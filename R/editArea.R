@@ -68,20 +68,7 @@ editArea <- function(name,
   if (is_api_study(opts)) {
     
     .api_command_execute_edit_area(name = name, new_values = nodalOptimization, type = "nodalOptimization", opts = opts)
-    
-    names_nodalThermal <- names(nodalThermal)
-    unserverdenergycost <- NULL
-    if ("unserverdenergycost" %in% names_nodalThermal) {
-      unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
-    }
-    .api_command_execute_edit_area(name = name, new_values = unserverdenergycost, type = "unserverdenergycost", opts = opts)
-     
-    spilledenergycost <- NULL
-    if ("spilledenergycost" %in% names_nodalThermal) {
-      spilledenergycost <- nodalThermal[["spilledenergycost"]]
-    }
-    .api_command_execute_edit_area(name = name, new_values = spilledenergycost, type = "spilledenergycost", opts = opts)    
-    
+    .api_command_execute_edit_area(name = name, new_values = nodalThermal, type = "nodalThermal", opts = opts)
     .api_command_execute_edit_area(name = name, new_values = filtering, type = "filtering", opts = opts)
     if (is_830) {
       .api_command_execute_edit_area(name = name, new_values = adequacy, type = "adequacy", opts = opts)
@@ -176,25 +163,23 @@ editArea <- function(name,
 
 .generate_params_editArea <- function() {
   
-  param_editArea <- list("nodalOptimization" = list("target" = "input/areas/%s/optimization/nodal optimization",
+  param_editArea <- list("nodalOptimization" = list("target" = "input/areas/%s/optimization/nodal optimization/%s",
                                                     "message" = "Update area's nodal optimization option: {msg_api}"
                                                     ),
-                         "filtering" = list("target" = "input/areas/%s/optimization/filtering",
+                         "nodalThermal" = list("target" = "input/thermal/areas/%s/%s",
+                                               "message" = "Update area's energy cost option: {msg_api}"
+                                               ),
+                         "filtering" = list("target" = "input/areas/%s/optimization/filtering/%s",
                                             "message" = "Update area's filtering option: {msg_api}"
                                             ),
-                         "adequacy" = list("target" = "input/areas/%s/adequacy_patch/adequacy-patch",
+                         "adequacy" = list("target" = "input/areas/%s/adequacy_patch/adequacy-patch/%s",
                                            "message" = "Update area's adequacy patch mode: {msg_api}"
-                                           ),
-                         "unserverdenergycost" = list("target" = "input/thermal/areas/unserverdenergycost/%s",
-                                                      "message" = "Update area's unsupplied energy cost option: {msg_api}"
-                                           ),
-                         "spilledenergycost" = list("target" = "input/thermal/areas/spilledenergycost/%s",
-                                                    "message" = "Update area's spilled energy cost option: {msg_api}"
                                            )
-                         )  
+                         )
 
   return(param_editArea)
 }
+
 
 
 #' Edit area's parameters in API mode.
@@ -204,20 +189,37 @@ editArea <- function(name,
 #' @param type Type of edition.
 #'
 #' @template opts
+#'
+#' @importFrom assertthat assert_that
+#'
 .api_command_execute_edit_area <- function(name, new_values, type, opts) {
+  
+  assert_that(type %in% c("nodalOptimization", "nodalThermal", "filtering", "adequacy"))
   
   if (!is.null(new_values)) {
     params <- .generate_params_editArea()
     params <- params[[type]]
     
-    cmd <- api_command_generate(
-      action = "update_config", 
-      target = sprintf(params[["target"]], name),
-      data = new_values
+    actions <- lapply(
+      X = seq_along(new_values),
+      FUN = function(i) {
+        property <- names(new_values)[i]
+        if (type == "nodalThermal") {
+          url_elts <- c(property, name)
+        } else {
+          url_elts <- c(name, property)
+        }
+        list(
+          target = sprintf(params[["target"]], url_elts[1], url_elts[2]),
+          data = new_values[[i]]
+        )
+      }
     )
+    actions <- setNames(actions, rep("update_config", length(actions)))
+    cmd <- do.call(api_commands_generate, actions)
     api_command_register(cmd, opts = opts)
     `if`(
-      should_command_be_executed(opts), 
+      should_command_be_executed(opts),
       api_command_execute(cmd, opts = opts, text_alert = params[["message"]]),
       cli_command_registered("update_config")
     )
