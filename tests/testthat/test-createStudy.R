@@ -60,14 +60,18 @@ test_that("delete v8.1.0 study", {
 
 
 test_that("delete v8.6.0 simulation", {
-  setup_study_860(sourcedir860)
+  #setup_study_860(sourcedir860)
+  createStudy(path = tempdir(), 
+              study_name = "createStudy8.6", 
+              antares_version = "8.6.0")
   suppressWarnings(
-    opts_test <- setSimulationPath(study_temp_path)
+    #opts_test <- setSimulationPath(study_temp_path)
+    opts_test <- simOptions()
   )
-  split_simPath <- strsplit(opts_test$simPath,"/")[[1]]
-  simulation <- split_simPath[length(split_simPath)]
-  testthat::expect_true(file.exists(opts_test$simPath))
-  deleteStudy(opts = opts_test,simulation = simulation)
-  testthat::expect_true(!file.exists(opts_test$simPath))
+ # split_simPath <- strsplit(opts_test$simPath,"/")[[1]]
+  #simulation <- split_simPath[length(split_simPath)]
+  testthat::expect_true(file.exists(opts_test$studyPath))
+  deleteStudy(opts = opts_test)
+  testthat::expect_true(!file.exists(opts_test$studyPath))
 })
 
