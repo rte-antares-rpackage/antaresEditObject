@@ -67,24 +67,24 @@ editArea <- function(name,
   # API block
   if (is_api_study(opts)) {
     
-    .api_command_execute_edit_area(name = name, lst_params = nodalOptimization, type = "nodalOptimization", opts = opts)
+    .api_command_execute_edit_area(name = name, new_values = nodalOptimization, type = "nodalOptimization", opts = opts)
     
     names_nodalThermal <- names(nodalThermal)
     unserverdenergycost <- NULL
     if ("unserverdenergycost" %in% names_nodalThermal) {
       unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
     }
-    .api_command_execute_edit_area(name = name, lst_params = unserverdenergycost, type = "unserverdenergycost", opts = opts)
+    .api_command_execute_edit_area(name = name, new_values = unserverdenergycost, type = "unserverdenergycost", opts = opts)
      
     spilledenergycost <- NULL
     if ("spilledenergycost" %in% names_nodalThermal) {
       spilledenergycost <- nodalThermal[["spilledenergycost"]]
     }
-    .api_command_execute_edit_area(name = name, lst_params = spilledenergycost, type = "spilledenergycost", opts = opts)    
+    .api_command_execute_edit_area(name = name, new_values = spilledenergycost, type = "spilledenergycost", opts = opts)    
     
-    .api_command_execute_edit_area(name = name, lst_params = filtering, type = "filtering", opts = opts)
+    .api_command_execute_edit_area(name = name, new_values = filtering, type = "filtering", opts = opts)
     if (is_830) {
-      .api_command_execute_edit_area(name = name, lst_params = adequacy, type = "adequacy", opts = opts)
+      .api_command_execute_edit_area(name = name, new_values = adequacy, type = "adequacy", opts = opts)
     }
     
     return(invisible(opts))
@@ -197,16 +197,23 @@ editArea <- function(name,
 }
 
 
-.api_command_execute_edit_area <- function(name, lst_params, type, opts) {
+#' Edit area's parameters in API mode.
+#'
+#' @param name Name of the area to edit.
+#' @param new_values Values of the parameters to edit.
+#' @param type Type of edition.
+#'
+#' @template opts
+.api_command_execute_edit_area <- function(name, new_values, type, opts) {
   
-  if (!is.null(lst_params)) {
+  if (!is.null(new_values)) {
     params <- .generate_params_editArea()
     params <- params[[type]]
     
     cmd <- api_command_generate(
       action = "update_config", 
       target = sprintf(params[["target"]], name),
-      data = lst_params
+      data = new_values
     )
     api_command_register(cmd, opts = opts)
     `if`(
@@ -216,4 +223,3 @@ editArea <- function(name,
     )
   }
 }
-
