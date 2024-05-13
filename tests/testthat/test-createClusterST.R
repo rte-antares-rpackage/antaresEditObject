@@ -1,15 +1,21 @@
 
 # global params for structure v8.6 ----
-setup_study_860(sourcedir860)
-opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
+#setup_study_860(sourcedir860)
+#opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
-path_master <- file.path(opts_test$inputPath, "st-storage")
+#path_master <- file.path(opts_test$inputPath, "st-storage")
 
-if (opts_test$antaresVersion >= 860){
+#if (opts_test$antaresVersion >= 860){
   test_that("Create short-term storage cluster (new feature v8.6)",{
     ## basics errors cases ----
+    suppressWarnings(
+      createStudy(path = tempdir(), 
+                  study_name = "st-storage", 
+                  antares_version = "8.6.0"))
     
     # default area with st cluster
+    createArea(name = "al")
+   
     area_test_clust = "al" 
     
     # study parameters
@@ -17,21 +23,25 @@ if (opts_test$antaresVersion >= 860){
     # valid groups ?
     
     # valid area ?
-    testthat::expect_error(createClusterST("INVALID_AREA", "cluster_name", opts = opts_test),
+    testthat::expect_error(createClusterST("INVALID_AREA", "cluster_name"),
                            regexp = "is not a valid area name")
     
     # bad dimension of data parameters
-    testthat::expect_error(createClusterST(area_test_clust, "cluster1", 
-                                           PMAX_injection = matrix(1, 2, 2),
-                                           opts = opts_test),
+    cluster_test_name = "cluster34" 
+    group_test_name = "Other1" 
+    testthat::expect_error(createClusterST(area_test_clust, cluster_test_name, group_test_name,
+                                           PMAX_injection = matrix(1, 2, 2)),
                            regexp = "Input data for")
     
-    # cluster already exist
-    name_st_clust <-levels(readClusterSTDesc(opts = opts_test)$cluster)
+    # cluster already exist in given area, with same name and group
+    
+    createClusterST(area_test_clust, 
+                    cluster_test_name, group_test_name,
+                    add_prefix = TRUE)
+    
     testthat::expect_error(createClusterST(area_test_clust, 
-                                           name_st_clust, 
-                                           add_prefix = FALSE,
-                                           opts = opts_test),
+                                           cluster_test_name, group_test_name,
+                                           add_prefix = TRUE),
                            regexp = "already exist")
   
     ## default creation cluster ----
@@ -43,8 +53,8 @@ if (opts_test$antaresVersion >= 860){
       # check name cluster
     area_test <- getAreas()[1]
     opts_test <- createClusterST(area_test, 
-                                 "cluster1", 
-                                 opts = opts_test) 
+                                 "cluster1") 
+
     
     namecluster_check <- paste(area_test, "cluster1", sep = "_")
     testthat::expect_true(namecluster_check %in% 
@@ -68,59 +78,59 @@ if (opts_test$antaresVersion >= 860){
     # check data (series files)
     ##
     
-    # read series (with fread_antares)
-    file_series <- antaresRead:::fread_antares(opts = opts_test, 
-                                               file = file.path(path_master, 
-                                                                "series",
-                                                                area_test, 
-                                                                paste(area_test, "cluster1", sep = "_"),
-                                                                "lower-rule-curve.txt"))
-    # check default value and dimension
-    testthat::expect_equal(dim(file_series), c(8760, 1))
-    testthat::expect_equal(mean(file_series$V1), 0)
-    
-    # read series (with readInputTS)
-    st_ts <- readInputTS(st_storage = "all", opts = opts_test)
-    
-    # check to find 5 names files created previously
-    files_names <- unique(st_ts$name_file)
-    
-    # names files from code 
-    original_files_names <- c("inflows", 
-                              "lower-rule-curve", 
-                              "PMAX-injection", 
-                              "PMAX-withdrawal" , 
-                              "upper-rule-curve")
-    
-    testthat::expect_true(all(original_files_names %in%
-                                files_names))
-    
-    # check default values of txt files
-    storage_value <- list(PMAX_injection = list(N=1, string = "PMAX-injection"),
-                          PMAX_withdrawal = list(N=1, string = "PMAX-withdrawal"),
-                          inflows = list(N=0, string = "inflows"),
-                          lower_rule_curve = list(N=0, string = "lower-rule-curve"),
-                          upper_rule_curve = list(N=1, string = "upper-rule-curve"))
-    
-    real_names_cols <- unlist(lapply(storage_value, `[[`, 2), use.names = FALSE)
-    names(storage_value) <- real_names_cols
-    
-    df_ref_default_value <- data.table::setDT(lapply(storage_value, `[[`, 1), )
-    df_ref_default_value <- melt(df_ref_default_value, 
-                                 variable.name = "name_file", 
-                                 value.name = "mean", 
-                                 variable.factor = FALSE)
-    
-    df_ref_default_value <- df_ref_default_value[base::order(df_ref_default_value$name_file)]
-    
-    # mean of default TS created
-    test_txt_value <- st_ts[area %in% area_test, 
-                            list(mean=mean(`st-storage`)), 
-                            by=name_file]
-    
-    # check default values
-    testthat::expect_equal(df_ref_default_value$mean, test_txt_value$mean)
-  
+    # read series (with fread_antares) TEST TO BE INTEGRATED IN ANTARES READ
+    # file_series <- antaresRead:::fread_antares(opts = opts_test,
+    #                                            file = file.path(path_master,
+    #                                                             "series",
+    #                                                             area_test,
+    #                                                             paste(area_test, "cluster1", sep = "_"),
+    #                                                             "lower-rule-curve.txt"))
+    # # check default value and dimension
+    # testthat::expect_equal(dim(file_series), c(8760, 1))
+    # testthat::expect_equal(mean(file_series$V1), 0)
+    # 
+    # # read series (with readInputTS)
+    # st_ts <- readInputTS(st_storage = "all", opts = opts_test)
+    # 
+    # # check to find 5 names files created previously
+    # files_names <- unique(st_ts$name_file)
+    # 
+    # # names files from code 
+    # original_files_names <- c("inflows", 
+    #                           "lower-rule-curve", 
+    #                           "PMAX-injection", 
+    #                           "PMAX-withdrawal" , 
+    #                           "upper-rule-curve")
+    # 
+    # testthat::expect_true(all(original_files_names %in%
+    #                             files_names))
+    # 
+    # # check default values of txt files
+    # storage_value <- list(PMAX_injection = list(N=1, string = "PMAX-injection"),
+    #                       PMAX_withdrawal = list(N=1, string = "PMAX-withdrawal"),
+    #                       inflows = list(N=0, string = "inflows"),
+    #                       lower_rule_curve = list(N=0, string = "lower-rule-curve"),
+    #                       upper_rule_curve = list(N=1, string = "upper-rule-curve"))
+    # 
+    # real_names_cols <- unlist(lapply(storage_value, `[[`, 2), use.names = FALSE)
+    # names(storage_value) <- real_names_cols
+    # 
+    # df_ref_default_value <- data.table::setDT(lapply(storage_value, `[[`, 1), )
+    # df_ref_default_value <- melt(df_ref_default_value, 
+    #                              variable.name = "name_file", 
+    #                              value.name = "mean", 
+    #                              variable.factor = FALSE)
+    # 
+    # df_ref_default_value <- df_ref_default_value[base::order(df_ref_default_value$name_file)]
+    # 
+    # # mean of default TS created
+    # test_txt_value <- st_ts[area %in% area_test, 
+    #                         list(mean=mean(`st-storage`)), 
+    #                         by=name_file]
+    # 
+    # # check default values
+    # testthat::expect_equal(df_ref_default_value$mean, test_txt_value$mean)
+    # 
     
     ## creation cluster (explicit data) ----
     val <- 0.7
@@ -152,8 +162,8 @@ if (opts_test$antaresVersion >= 860){
                           list(mean=mean(`st-storage`)), 
                           by=name_file]
     
-    testthat::expect_true(all(filter_st_ts$name_file %in% 
-                            original_files_names))
+    # testthat::expect_true(all(filter_st_ts$name_file %in% 
+    #                         original_files_names))
     testthat::expect_equal(val, unique(filter_st_ts$mean))
     
   
@@ -168,7 +178,7 @@ if (opts_test$antaresVersion >= 860){
     unlink(opts_test$studyPath, recursive = TRUE)
     
     })
-}
+#}
 
 
 test_that("Test the behaviour of createClusterST() if the ST cluster already exists", {
@@ -285,13 +295,14 @@ test_that("API Command test for createClusterST", {
                                  antares_version = "860")
   
   # create complete cluster st-storage
+  
   area_name <- "area01"
   cluster_name <- "ClusTER01"
     
     # no casse sensitiv
   createClusterST(area = area_name, 
                   cluster_name = cluster_name, 
-                  group = "Other", 
+                  group = "Other1", 
                   storage_parameters = storage_values_default(),
                   PMAX_injection = matrix(1,8760),
                   PMAX_withdrawal = matrix(0.5,8760),
