@@ -199,10 +199,10 @@ editArea <- function(name,
 
 .api_command_execute_edit_area <- function(name, lst_params, type, opts) {
   
-  params <- .generate_params_editArea()
-  params <- params[[type]]
-  
   if (!is.null(lst_params)) {
+    params <- .generate_params_editArea()
+    params <- params[[type]]
+    
     cmd <- api_command_generate(
       action = "update_config", 
       target = sprintf(params[["target"]], name),
