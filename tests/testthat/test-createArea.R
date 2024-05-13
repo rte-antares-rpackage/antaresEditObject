@@ -470,3 +470,62 @@ test_that("removeArea(): check that area is removed if it is not referenced in a
   
   unlink(opts$studyPath, recursive = TRUE)
 })
+
+# Expected behaviour for .split_nodalOptimization_by_target() ----
+test_that(".split_nodalOptimization_by_target() has the expected behaviour", {
+  
+  possible_names <- names(nodalOptimizationOptions())
+  target_IniAreas <- c("unserverdenergycost", "spilledenergycost")
+  target_IniOptimization <- c("non-dispatchable-power",
+                              "dispatchable-hydro-power",
+                              "other-dispatchable-power",
+                              "spread-unsupplied-energy-cost",
+                              "spread-spilled-energy-cost"
+                              )
+  # default values                            
+  res <- .split_nodalOptimization_by_target(nodalOptimizationOptions())
+  expect_true(all(names(res[["toIniOptimization"]]) %in% target_IniOptimization))
+  expect_true(all(names(res[["toIniAreas"]]) %in% target_IniAreas))
+  
+  # only input/thermal/areas.ini
+  res <- .split_nodalOptimization_by_target(list("unserverdenergycost" = 23))
+  expect_true(inherits(x = res[["toIniAreas"]], what = "list"))
+  expect_true(length(res[["toIniAreas"]]) == 1)
+  expect_true(names(res[["toIniAreas"]]) == "unserverdenergycost")
+  expect_null(res[["toIniOptimization"]])
+  
+  # only input/areas/<area>/optimization.ini
+  res <- .split_nodalOptimization_by_target(list("spread-unsupplied-energy-cost" = 23))
+  expect_true(inherits(x = res[["toIniOptimization"]], what = "list"))
+  expect_true(length(res[["toIniOptimization"]]) == 1)
+  expect_true(names(res[["toIniOptimization"]]) == "spread-unsupplied-energy-cost")
+  expect_null(res[["toIniAreas"]])
+  
+  # both target files
+  res <- .split_nodalOptimization_by_target(list("spread-unsupplied-energy-cost" = 23, "unserverdenergycost" = 45, "spilledenergycost" = 67))
+  expect_true(inherits(x = res[["toIniOptimization"]], what = "list"))
+  expect_true(length(res[["toIniOptimization"]]) == 1)
+  expect_true(names(res[["toIniOptimization"]]) == "spread-unsupplied-energy-cost")
+  expect_true(inherits(x = res[["toIniAreas"]], what = "list"))
+  expect_true(length(res[["toIniAreas"]]) == 2)
+  expect_true(all(names(res[["toIniAreas"]]) %in% target_IniAreas))
+  
+  # only bad names
+  res <- .split_nodalOptimization_by_target(list("spread-unsupplied-enejukrgy-cost" = 23, "unserverdegezgeznergycost" = 45, "spilledegezegnergycost" = 67))
+  expect_null(res[["toIniOptimization"]])
+  expect_null(res[["toIniAreas"]])
+  
+  # with one bad name per file
+  res <- .split_nodalOptimization_by_target(list("spread-spilled-energy-cost" = 15,
+                                                 "spread-unsupplied-enejukrgy-cost" = 23,
+                                                 "unserverdegezgeznergycost" = 45,
+                                                 "spilledenergycost" = 67
+                                                 )
+                                            )
+  expect_true(inherits(x = res[["toIniOptimization"]], what = "list"))
+  expect_true(length(res[["toIniOptimization"]]) == 1)
+  expect_true(names(res[["toIniOptimization"]]) == "spread-spilled-energy-cost")
+  expect_true(inherits(x = res[["toIniAreas"]], what = "list"))
+  expect_true(length(res[["toIniAreas"]]) == 1)
+  expect_true(names(res[["toIniAreas"]]) == "spilledenergycost")
+})

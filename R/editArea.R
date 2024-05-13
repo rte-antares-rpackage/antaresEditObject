@@ -59,60 +59,32 @@ editArea <- function(name,
   
   check_area_name(name, opts)
   
-  nodalOptimization_ori <- nodalOptimization
   is_830 <- opts$antaresVersion >= 830
   nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimization)
   nodalOptimization <- nodal_by_targets[["toIniOptimization"]]
   nodalThermal <- nodal_by_targets[["toIniAreas"]]
-  
-  not_null_filtering <- !is.null(filtering)
-  not_null_adequacy <- !is.null(adequacy)
    
   # API block
   if (is_api_study(opts)) {
     
-    if (!is.null(nodalOptimization_ori)) {
-      cmd <- api_command_generate(
-        action = "update_config", 
-        target = sprintf("input/areas/%s/optimization/nodal optimization", name),
-        data = nodalOptimization_ori
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update area's nodal optimization option: {msg_api}"),
-        cli_command_registered("update_config")
-      )
-    }
+    .api_command_execute_edit_area(name = name, new_values = nodalOptimization, type = "nodalOptimization", opts = opts)
     
-    if (not_null_filtering) {
-      cmd <- api_command_generate(
-        action = "update_config", 
-        target = sprintf("input/areas/%s/optimization/filtering", name),
-        data = filtering
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update area's filtering option: {msg_api}"),
-        cli_command_registered("update_config")
-      )
+    names_nodalThermal <- names(nodalThermal)
+    unserverdenergycost <- NULL
+    if ("unserverdenergycost" %in% names_nodalThermal) {
+      unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
     }
+    .api_command_execute_edit_area(name = name, new_values = unserverdenergycost, type = "unserverdenergycost", opts = opts)
+     
+    spilledenergycost <- NULL
+    if ("spilledenergycost" %in% names_nodalThermal) {
+      spilledenergycost <- nodalThermal[["spilledenergycost"]]
+    }
+    .api_command_execute_edit_area(name = name, new_values = spilledenergycost, type = "spilledenergycost", opts = opts)    
     
-    if (is_830){
-      if (not_null_adequacy) {
-        cmd <- api_command_generate(
-          action = "update_config", 
-          target = sprintf("input/areas/%s/adequacy_patch/adequacy-patch", name),
-          data = adequacy
-        )
-        api_command_register(cmd, opts = opts)
-        `if`(
-          should_command_be_executed(opts), 
-          api_command_execute(cmd, opts = opts, text_alert = "Update area's adequacy patch mode: {msg_api}"),
-          cli_command_registered("update_config")
-        )
-      }
+    .api_command_execute_edit_area(name = name, new_values = filtering, type = "filtering", opts = opts)
+    if (is_830) {
+      .api_command_execute_edit_area(name = name, new_values = adequacy, type = "adequacy", opts = opts)
     }
     
     return(invisible(opts))
@@ -130,14 +102,14 @@ editArea <- function(name,
   infoIni <- readIniFile(file = optimization_area_path)
   
   if (!is.null(nodalOptimization)) {
-    for (i in names(nodalOptimization)) {
-      infoIni$`nodal optimization`[[i]] <- nodalOptimization[[i]]
+    for (property in names(nodalOptimization)) {
+      infoIni$`nodal optimization`[[property]] <- nodalOptimization[[property]]
     }
   }
   
-  if (not_null_filtering) {
-    for (i in names(filtering)) {
-      infoIni$filtering[[i]] <- filtering[[i]]
+  if (!is.null(filtering)) {
+    for (property in names(filtering)) {
+      infoIni$filtering[[property]] <- filtering[[property]]
     }
   }
   
@@ -172,8 +144,8 @@ editArea <- function(name,
     thermal_areas <- readIniFile(file = thermal_areas_path)
     
     LnodalThermal <- list()
-    for (economic_option in names(nodalThermal)) {
-      LnodalThermal[[economic_option]][[name]] <- nodalThermal[[economic_option]]
+    for (property in names(nodalThermal)) {
+      LnodalThermal[[property]][[name]] <- nodalThermal[[property]]
     }
     
     writeIni(listData = modifyList(x = thermal_areas, val = LnodalThermal), pathIni = thermal_areas_path, overwrite = TRUE)
@@ -184,9 +156,9 @@ editArea <- function(name,
     adequacy_area_path <- file.path(inputPath, "areas", name, "adequacy_patch.ini")
     adequacyIni <- readIniFile(file = adequacy_area_path)
     
-    if (not_null_adequacy) {
-      for (i in names(adequacy)) {
-        adequacyIni$`adequacy-patch`[[i]] <- adequacy[[i]]
+    if (!is.null(adequacy)) {
+      for (property in names(adequacy)) {
+        adequacyIni$`adequacy-patch`[[property]] <- adequacy[[property]]
       }
     }
     
@@ -199,4 +171,55 @@ editArea <- function(name,
   })
   
   invisible(res)
+}
+
+
+.generate_params_editArea <- function() {
+  
+  param_editArea <- list("nodalOptimization" = list("target" = "input/areas/%s/optimization/nodal optimization",
+                                                    "message" = "Update area's nodal optimization option: {msg_api}"
+                                                    ),
+                         "filtering" = list("target" = "input/areas/%s/optimization/filtering",
+                                            "message" = "Update area's filtering option: {msg_api}"
+                                            ),
+                         "adequacy" = list("target" = "input/areas/%s/adequacy_patch/adequacy-patch",
+                                           "message" = "Update area's adequacy patch mode: {msg_api}"
+                                           ),
+                         "unserverdenergycost" = list("target" = "input/thermal/areas/unserverdenergycost/%s",
+                                                      "message" = "Update area's unsupplied energy cost option: {msg_api}"
+                                           ),
+                         "spilledenergycost" = list("target" = "input/thermal/areas/spilledenergycost/%s",
+                                                    "message" = "Update area's spilled energy cost option: {msg_api}"
+                                           )
+                         )  
+
+  return(param_editArea)
+}
+
+
+#' Edit area's parameters in API mode.
+#'
+#' @param name Name of the area to edit.
+#' @param new_values Values of the parameters to edit.
+#' @param type Type of edition.
+#'
+#' @template opts
+.api_command_execute_edit_area <- function(name, new_values, type, opts) {
+  
+  if (!is.null(new_values)) {
+    params <- .generate_params_editArea()
+    params <- params[[type]]
+    
+    cmd <- api_command_generate(
+      action = "update_config", 
+      target = sprintf(params[["target"]], name),
+      data = new_values
+    )
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts), 
+      api_command_execute(cmd, opts = opts, text_alert = params[["message"]]),
+      cli_command_registered("update_config")
+    )
+  }
 }

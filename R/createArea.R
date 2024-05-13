@@ -20,7 +20,7 @@
 #' 
 #' @export
 #' 
-#' @importFrom antaresRead simOptions setSimulationPath
+#' @importFrom antaresRead simOptions setSimulationPath readIniFile
 #' @importFrom utils read.table write.table
 #' @importFrom assertthat assert_that
 #' @importFrom grDevices col2rgb
@@ -53,13 +53,10 @@ createArea <- function(name,
   list_name <- name
   name <- tolower(name)
   
-  nodalOptimization_ori <- nodalOptimization
+  is_830 <- opts$antaresVersion >= 830
   nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimization)
   nodalOptimization <- nodal_by_targets[["toIniOptimization"]]
   nodalThermal <- nodal_by_targets[["toIniAreas"]]
-  
-  unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
-  spilledenergycost <- nodalThermal[["spilledenergycost"]]
   
   # API block
   if (is_api_study(opts)) {
@@ -71,11 +68,16 @@ createArea <- function(name,
       cli_command_registered("create_area")
     )
     
-    if (is_different(nodalOptimization_ori, nodalOptimizationOptions())){
+    default_nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimizationOptions())
+    # input/areas/<name>/optimization/nodal optimization
+    if (is_different(nodalOptimization,
+                     default_nodal_by_targets[["toIniOptimization"]]
+                    )
+        ) {
       cmd <- api_command_generate(
         action = "update_config", 
         target = sprintf("input/areas/%s/optimization/nodal optimization", name),
-        data = nodalOptimization_ori
+        data = nodalOptimization
       )
       api_command_register(cmd, opts = opts)
       `if`(
@@ -84,6 +86,45 @@ createArea <- function(name,
         cli_command_registered("update_config")
       )
     }
+    
+    # input/thermal/areas
+    unserverdenergycost <- nodalThermal[["unserverdenergycost"]]
+    if (is_different(unserverdenergycost,
+                     default_nodal_by_targets[["toIniAreas"]][["unserverdenergycost"]]
+                     )
+       ) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/thermal/areas/unserverdenergycost/%s", name),
+        data = unserverdenergycost
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's unsupplied energy cost option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    spilledenergycost <- nodalThermal[["spilledenergycost"]]
+    if (is_different(spilledenergycost,
+                     default_nodal_by_targets[["toIniAreas"]][["spilledenergycost"]]
+                    )
+       ) {
+      cmd <- api_command_generate(
+        action = "update_config", 
+        target = sprintf("input/thermal/areas/spilledenergycost/%s", name),
+        data = spilledenergycost
+      )
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts), 
+        api_command_execute(cmd, opts = opts, text_alert = "Create area's spilled energy cost option: {msg_api}"),
+        cli_command_registered("update_config")
+      )
+    }
+    
+    # input/areas/<name>/optimization/filtering
     if (is_different(filtering, filteringOptions())){
       cmd <- api_command_generate(
         action = "update_config", 
@@ -97,7 +138,7 @@ createArea <- function(name,
         cli_command_registered("update_config")
       )
     }
-    if (opts$antaresVersion >= 830){
+    if (is_830){
       if (is_different(adequacy, adequacyOptions())){
         cmd <- api_command_generate(
           action = "update_config", 
@@ -115,8 +156,6 @@ createArea <- function(name,
     
     return(update_api_opts(opts))
   }
-  
-  v7 <- is_antares_v7(opts)
   
   if (opts$mode != "Input") 
     stop("You can initialize an area only in 'Input' mode")
@@ -170,7 +209,7 @@ createArea <- function(name,
     overwrite = overwrite
   )
   # adequacy patch ini file
-  if (opts$antaresVersion >= 830){
+  if (is_830){
     writeIni(
       listData = c(
         list(`adequacy-patch` = adequacy[c("adequacy-patch-mode")])
@@ -210,7 +249,7 @@ createArea <- function(name,
     file = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt"))
   )
   
-  if (v7) {
+  if (is_antares_v7(opts)) {
     creditmodulations <- matrix(data = rep(1, 202), nrow = 2)
     utils::write.table(
       x = creditmodulations, row.names = FALSE, col.names = FALSE, sep = "\t",
@@ -265,19 +304,6 @@ createArea <- function(name,
   con <- file(description = file.path(inputPath, "hydro", "series", name, "ror.txt"), open = "wt")
   writeLines(text = character(0), con = con)
   close(con)
-  
-  
-  
-  ## Links ----
-  # dir
-  dir.create(path = file.path(inputPath, "links", name), showWarnings = FALSE)
-  writeIni(
-    listData = list(),
-    pathIni = file.path(inputPath, "links", name, "properties.ini"),
-    overwrite = overwrite
-  )
-  
-  
   
   ## Load ----
   
@@ -375,51 +401,23 @@ createArea <- function(name,
     file = file.path(inputPath, "solar", "series", paste0("solar_", name, ".txt"))
   )
   
+  ## Links ----
+  .initializeLinksArea(name = name, overwrite = overwrite, opts = opts)
   
   ## Thermal ----
-  
-  # dir
-  dir.create(path = file.path(inputPath, "thermal", "clusters", name), showWarnings = FALSE)
-  
-  writeIni(
-    listData = list(),
-    pathIni = file.path(inputPath, "thermal", "clusters", name, "list.ini"),
-    overwrite = overwrite
-  )
-  
-  # thermal/areas ini file
-  thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
-  if (file.exists(thermal_areas_path)) {
-    thermal_areas <- readIniFile(file = thermal_areas_path)
-  } else {
-    thermal_areas <- list()
-  }
-  thermal_areas$unserverdenergycost[[name]] <- unserverdenergycost
-  thermal_areas$spilledenergycost[[name]] <- spilledenergycost
-  writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
-  
+  .initializeThermalArea(name = name,
+                         overwrite = overwrite,
+                         economic_options = nodalThermal,
+                         opts = opts
+                         )
   
   ## Renewables ----
-  
-  if (is_active_RES(opts)) {
-    # INIT dir
-    dir.create(path = file.path(inputPath, "renewables", "clusters", name), showWarnings = FALSE)
-    
-    # INIT list.ini file
-    writeIni(
-      listData = list(),
-      pathIni = file.path(inputPath, "renewables", "clusters", name, "list.ini"),
-      overwrite = overwrite
-    )
-    
-    
-  }
-  
+  .initializeRenewablesArea(name = name, overwrite = overwrite, opts = opts)
   
   ## st-storage ----
   
   # INIT dir
-  if (opts$antaresVersion >= 860 ){
+  if (opts$antaresVersion >= 860) {
     dir.create(path = file.path(inputPath, "st-storage", "clusters", name), showWarnings = FALSE)
     
   # INIT list.ini file  
@@ -476,8 +474,6 @@ createArea <- function(name,
     file = file.path(inputPath, "wind", "series", paste0("wind_", name, ".txt"))
   )
   
-  
-  
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
@@ -485,9 +481,6 @@ createArea <- function(name,
   
   invisible(res)
 }
-
-
-
 
 
 #' Output profile options for creating an area
@@ -593,3 +586,80 @@ adequacyOptions <- function(adequacy_patch_mode = "outside"){
         )
 }
 
+
+#' Initialize thermal data for a new area. For disk mode only.
+#'
+#' @param name Name of the area as a character, without punctuation except - and _.
+#' @param overwrite Overwrite the area if already exists.
+#' @param economic_options Economic options.
+#'
+#' @template opts
+#'
+.initializeThermalArea <- function(name, overwrite, economic_options, opts) {
+  
+  inputPath <- opts$inputPath
+  # dir
+  dir.create(path = file.path(inputPath, "thermal", "clusters", name), showWarnings = FALSE)
+  
+  writeIni(
+    listData = list(),
+    pathIni = file.path(inputPath, "thermal", "clusters", name, "list.ini"),
+    overwrite = overwrite
+  )
+  
+  # thermal/areas ini file
+  thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
+  if (file.exists(thermal_areas_path)) {
+    thermal_areas <- readIniFile(file = thermal_areas_path)
+  } else {
+    thermal_areas <- list()
+  }
+  thermal_areas[["unserverdenergycost"]][[name]] <- economic_options[["unserverdenergycost"]]
+  thermal_areas[["spilledenergycost"]][[name]] <- economic_options[["spilledenergycost"]]
+  
+  writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
+}
+
+
+#' Initialize links data for a new area. For disk mode only.
+#'
+#' @param name Name of the area as a character, without punctuation except - and _.
+#' @param overwrite Overwrite the area if already exists.
+#'
+#' @template opts
+#'
+.initializeLinksArea <- function(name, overwrite, opts) {
+  
+  linksPath <- file.path(opts$inputPath, "links", name)
+  # dir
+  dir.create(path = linksPath, showWarnings = FALSE)
+  writeIni(
+    listData = list(),
+    pathIni = file.path(linksPath, "properties.ini"),
+    overwrite = overwrite
+  )
+}
+
+
+#' Initialize renewables data for a new area. For disk mode only.
+#'
+#' @param name Name of the area as a character, without punctuation except - and _.
+#' @param overwrite Overwrite the area if already exists.
+#'
+#' @template opts
+#'
+.initializeRenewablesArea <- function(name, overwrite, opts) {
+  
+  if (is_active_RES(opts)) {
+    renewablesPath <- file.path(opts$inputPath, "renewables", "clusters", name)
+    # dir
+    dir.create(path = renewablesPath, showWarnings = FALSE)
+    
+    # list.ini file
+    writeIni(
+      listData = list(),
+      pathIni = file.path(renewablesPath, "list.ini"),
+      overwrite = overwrite
+    )
+  }
+}
