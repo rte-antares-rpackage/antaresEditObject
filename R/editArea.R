@@ -198,19 +198,19 @@ editArea <- function(name,
   
   if (!is.null(new_values)) {
     params <- .generate_params_editArea()
-    params <- params[[type]]
+    params_type <- params[[type]]
     
     actions <- lapply(
       X = seq_along(new_values),
       FUN = function(i) {
         property <- names(new_values)[i]
         if (type == "nodalThermal") {
-          url_elts <- c(property, name)
+          url_elements <- c(property, name)
         } else {
-          url_elts <- c(name, property)
+          url_elements <- c(name, property)
         }
         list(
-          target = sprintf(params[["target"]], url_elts[1], url_elts[2]),
+          target = sprintf(params_type[["target"]], url_elements[1], url_elements[2]),
           data = new_values[[i]]
         )
       }
@@ -220,7 +220,7 @@ editArea <- function(name,
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts),
-      api_command_execute(cmd, opts = opts, text_alert = params[["message"]]),
+      api_command_execute(cmd, opts = opts, text_alert = params_type[["message"]]),
       cli_command_registered("update_config")
     )
   }
