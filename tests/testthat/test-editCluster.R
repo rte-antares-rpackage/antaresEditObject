@@ -58,16 +58,15 @@ sapply(studies, function(study) {
 
 test_that("Edit cluster with pollutants params (new feature v8.6)",{
   
-  createStudy(path = tempdir(), 
+  opts_test <-createStudy(path = tempdir(), 
               study_name = "edit-cluster", 
               antares_version = "8.6.0")
-  opts_test <- simOptions()
-  createArea(name = "gr")
-  # for mock purposes area should be added to opts_test
-  opts_test$areaList <- c("gr")
+  area_test="gr"
+  opts_test <- createArea(name = area_test,opts = opts_test)
+
   bad_pollutants_param <- "not_a_list"
   testthat::expect_error(createCluster(
-    area = getAreas()[1],
+    area = area_test,
     cluster_name = "mycluster_pollutant",
     group = "Other",
     unitcount = as.integer(1),
@@ -83,7 +82,7 @@ test_that("Edit cluster with pollutants params (new feature v8.6)",{
   )
   
   opts_test<- createCluster(
-    area = getAreas()[1], 
+    area = area_test, 
     cluster_name = "mycluster_pollutant",
     group = "Other",
     unitcount = 1,
@@ -100,7 +99,7 @@ test_that("Edit cluster with pollutants params (new feature v8.6)",{
   res_cluster <- antaresRead::readClusterDesc(opts = opts_test)
   
   # NULL as to effect to delete parameters
-  opts_test <- editCluster(area = getAreas()[1], 
+  opts_test <- editCluster(area = area_test, 
               cluster_name = levels(res_cluster$cluster)[1], 
               list_pollutants = list(
                 "nh3"= 0.07, 
