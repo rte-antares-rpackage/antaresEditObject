@@ -77,6 +77,9 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   
     # check update "group"
   st_clusters <- readClusterSTDesc(opts = opts_test)
+  group_test <- st_clusters[cluster %in% name_cluster_test, 
+                            .SD, .SDcols= "group"]
+  testthat::expect_equal("Other2", as.character(group_test$group))
 
   
   
