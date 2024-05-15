@@ -14,9 +14,9 @@
                   antares_version = "8.6.0"))
     
     # default area with st cluster
-    createArea(name = "al")
-   
     area_test_clust = "al" 
+    createArea(name = area_test_clust)
+  
     
     # study parameters
     # version ? == is ST study compatibility
@@ -51,12 +51,11 @@
       ##
     
       # check name cluster
-    area_test <- getAreas()[1]
-    opts_test <- createClusterST(area_test, 
+    opts_test <- createClusterST(area_test_clust, 
                                  "cluster1") 
 
     
-    namecluster_check <- paste(area_test, "cluster1", sep = "_")
+    namecluster_check <- paste(area_test_clust, "cluster1", sep = "_")
     testthat::expect_true(namecluster_check %in% 
                             levels(readClusterSTDesc(opts = opts_test)$cluster))
     
@@ -78,65 +77,66 @@
     # check data (series files)
     ##
     
-    # read series (with fread_antares) TEST TO BE INTEGRATED IN ANTARES READ
-    # file_series <- antaresRead:::fread_antares(opts = opts_test,
-    #                                            file = file.path(path_master,
-    #                                                             "series",
-    #                                                             area_test,
-    #                                                             paste(area_test, "cluster1", sep = "_"),
-    #                                                             "lower-rule-curve.txt"))
+    # read series (with fread_antares)
+    file_series <- antaresRead:::fread_antares(opts = opts_test,
+                                               file = file.path(opts_test$inputPath, "st-storage",
+                                                                "series",
+                                                                area_test_clust,
+                                                                namecluster_check,
+                                                                "lower-rule-curve.txt"))
     # # check default value and dimension
-    # testthat::expect_equal(dim(file_series), c(8760, 1))
-    # testthat::expect_equal(mean(file_series$V1), 0)
+    testthat::expect_equal(dim(file_series), c(8760, 1))
+    testthat::expect_equal(mean(file_series$V1), 0)
     # 
-    # # read series (with readInputTS)
-    # st_ts <- readInputTS(st_storage = "all", opts = opts_test)
+    # read series (with readInputTS)
+    st_ts <- readInputTS(st_storage = "all", opts = opts_test)
     # 
-    # # check to find 5 names files created previously
-    # files_names <- unique(st_ts$name_file)
+    # check to find 5 names files created previously
+    files_names <- unique(st_ts$name_file)
     # 
-    # # names files from code 
-    # original_files_names <- c("inflows", 
-    #                           "lower-rule-curve", 
-    #                           "PMAX-injection", 
-    #                           "PMAX-withdrawal" , 
-    #                           "upper-rule-curve")
+    # names files from code 
+    original_files_names <- c("inflows", 
+                               "lower-rule-curve", 
+                              "PMAX-injection",
+                              "PMAX-withdrawal" ,
+                              "upper-rule-curve")
     # 
-    # testthat::expect_true(all(original_files_names %in%
-    #                             files_names))
+    testthat::expect_true(all(original_files_names %in%
+                                files_names))
     # 
-    # # check default values of txt files
-    # storage_value <- list(PMAX_injection = list(N=1, string = "PMAX-injection"),
-    #                       PMAX_withdrawal = list(N=1, string = "PMAX-withdrawal"),
-    #                       inflows = list(N=0, string = "inflows"),
-    #                       lower_rule_curve = list(N=0, string = "lower-rule-curve"),
-    #                       upper_rule_curve = list(N=1, string = "upper-rule-curve"))
+    # check default values of txt files
+    storage_value <- list(PMAX_injection = list(N=1, string = "PMAX-injection"),
+                          PMAX_withdrawal = list(N=1, string = "PMAX-withdrawal"),
+                          inflows = list(N=0, string = "inflows"),
+                          lower_rule_curve = list(N=0, string = "lower-rule-curve"),
+                          upper_rule_curve = list(N=1, string = "upper-rule-curve"))
     # 
-    # real_names_cols <- unlist(lapply(storage_value, `[[`, 2), use.names = FALSE)
-    # names(storage_value) <- real_names_cols
-    # 
-    # df_ref_default_value <- data.table::setDT(lapply(storage_value, `[[`, 1), )
-    # df_ref_default_value <- melt(df_ref_default_value, 
-    #                              variable.name = "name_file", 
-    #                              value.name = "mean", 
-    #                              variable.factor = FALSE)
-    # 
-    # df_ref_default_value <- df_ref_default_value[base::order(df_ref_default_value$name_file)]
-    # 
-    # # mean of default TS created
-    # test_txt_value <- st_ts[area %in% area_test, 
-    #                         list(mean=mean(`st-storage`)), 
-    #                         by=name_file]
-    # 
-    # # check default values
-    # testthat::expect_equal(df_ref_default_value$mean, test_txt_value$mean)
+    real_names_cols <- unlist(lapply(storage_value, `[[`, 2), use.names = FALSE)
+    names(storage_value) <- real_names_cols
+
+    df_ref_default_value <- data.table::setDT(lapply(storage_value, `[[`, 1), )
+    df_ref_default_value <- melt(df_ref_default_value,
+                                 variable.name = "name_file",
+                                 value.name = "mean",
+                                 variable.factor = FALSE)
+
+    # Sort by name_file
+    df_ref_default_value <- df_ref_default_value[base::order(df_ref_default_value$name_file)]
+
+    # mean of default TS created
+    test_txt_value <- st_ts[area %in% area_test_clust,
+                            list(mean=mean(`st-storage`)),
+                            by=name_file]
+
+    # check default values
+    testthat::expect_equal(df_ref_default_value$mean, test_txt_value$mean)
     # 
     
     ## creation cluster (explicit data) ----
     val <- 0.7
     val_mat <- matrix(val, 8760)
     
-    opts_test <- createClusterST(area = area_test, 
+    opts_test <- createClusterST(area = area_test_clust, 
                     cluster_name = "test_storage", 
                     storage_parameters = storage_values_default()[1], 
                     PMAX_injection = val_mat, 
@@ -148,7 +148,7 @@
                     opts = opts_test)
     
     ## check name cluster created
-    namecluster_check <- paste(area_test, "test_storage", sep = "_")
+    namecluster_check <- paste(area_test_clust, "test_storage", sep = "_")
     testthat::expect_true(namecluster_check %in% 
                             levels(readClusterSTDesc(opts = opts_test)$cluster))
     
@@ -162,17 +162,17 @@
                           list(mean=mean(`st-storage`)), 
                           by=name_file]
     
-    # testthat::expect_true(all(filter_st_ts$name_file %in% 
-    #                         original_files_names))
+    testthat::expect_true(all(filter_st_ts$name_file %in% 
+                             original_files_names))
     testthat::expect_equal(val, unique(filter_st_ts$mean))
     
   
   ## remove cluster----  
     # RemoveClusterST (if no cluster => function read return error => see readClusterDesc tests)
-    opts_test <- removeClusterST(area = area_test, "cluster1", 
+    opts_test <- removeClusterST(area = area_test_clust, "cluster1", 
                                  opts = opts_test)
     
-    testthat::expect_false(paste(area_test, "cluster1", sep = "_") %in% 
+    testthat::expect_false(paste(area_test_clust, "cluster1", sep = "_") %in% 
                              levels(readClusterSTDesc(opts = opts_test)$cluster))
     #Delete study
     unlink(opts_test$studyPath, recursive = TRUE)
@@ -302,7 +302,7 @@ test_that("API Command test for createClusterST", {
     # no casse sensitiv
   createClusterST(area = area_name, 
                   cluster_name = cluster_name, 
-                  group = "Other1", 
+                  group = "Other", 
                   storage_parameters = storage_values_default(),
                   PMAX_injection = matrix(1,8760),
                   PMAX_withdrawal = matrix(0.5,8760),

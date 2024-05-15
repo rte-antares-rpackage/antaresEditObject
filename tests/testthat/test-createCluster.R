@@ -169,7 +169,7 @@ test_that("Create cluster with pollutants params (new feature v8.6)",{
   })
   
   # remove temporary study
-  deleteStudy()
+  deleteStudy(opts = simOptions())
 })
 
 
