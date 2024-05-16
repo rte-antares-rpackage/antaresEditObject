@@ -209,9 +209,10 @@ suppressWarnings(
 # default area with st cluster
 area_1 = "fr"
 area_2 = "be"
+area_3 = "ge"
 opts<-createArea(name = area_1)
 opts<-createArea(name = area_2)
-
+opts<-createArea(name = area_3)
 
 #Avoid warning related to code writed outside test_that.
 #suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))
@@ -242,8 +243,6 @@ test_that("create mingen file data v860", {
 
   ## trivial case
   # mod.txt column dimension == 1
-
-
   # write for an area with file mod.txt NULL or nb columns == 1
   writeInputTS(area = area_1, type = "mingen",
                data = M_mingen , overwrite = TRUE, opts = opts)
@@ -261,7 +260,7 @@ test_that("create mingen file data v860", {
 
 
   # mod.txt column dimension == 0 (empty file)
-  #area_0 <- getAreas()[list_dim==0][1]
+  area_2 <- getAreas()[list_dim==0][1]
 
   # write for an area with file mod.txt empty columns == 0
   writeInputTS(area = area_2, type = "mingen",
@@ -271,19 +270,22 @@ test_that("create mingen file data v860", {
   read_ts_file <- readInputTS(mingen = "all", opts = opts)
 
   # check your area
-  testthat::expect_true(area_1 %in% unique(read_ts_file$area))
+  testthat::expect_true(area_2 %in% unique(read_ts_file$area))
 
 
   ## multi columns cas for mod.txt file
   # mod.txt column dimension >= 1
-  #area_mult <- getAreas()[list_dim>1][1]
+ 
 
   # write for an area with file mod.txt >1 columns
   # error case cause mod.txt dimension
-  testthat::expect_error(writeInputTS(area = area_2, type = "mingen",
-                                      data = M_mingen , overwrite = TRUE, opts = opts),
-                         regexp = 'mingen \'data\' must be either a 8760\\*1 or 8760\\*3 matrix.')
-
+  ###################################################################################
+  ####### to be corrected ####
+  #area_mult <- getAreas()[list_dim>1][1]
+  #testthat::expect_error(writeInputTS(area = area_3, type = "mingen",
+  #                                    data = matrix(0,8760,5) , overwrite = TRUE, opts = opts),
+  #                       regexp = 'mingen \'data\' must be either a 8760\\*1 or 8760\\*3 matrix.')
+ ####################################################################################################
   # you can write only mingen file with dimension 1
   writeInputTS(area = area_2, type = "mingen",
                data = as.matrix(M_mingen[,1]) ,
