@@ -3,18 +3,22 @@ context("Function writeHydroValues")
 #WriteHydroValues does not depend on antaresVersion.
 # waterValues ----
 # global params for structure v8.6
-setup_study_860(sourcedir860)
+#setup_study_860(sourcedir860)
+opts_test <-createStudy(path = tempdir(), 
+                        study_name = "write-hydro-values", 
+                        antares_version = "8.6.0")
 
 #Avoid warning related to code writed outside test_that.
-suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))
+#suppressWarnings(opts <- antaresRead::setSimulationPath(study_temp_path, "input"))
 
 test_that("Write hydro values, 'waterValues' case", {
 
   #Initialize data for each type of file.
   m_water <- matrix(1,365,101)
-
-  area <- sample(x = getOption("antares")$areaList,
-                 size = 1)
+  area="it"
+  opts_test <- createArea(name = area,opts = opts_test)
+  # area <- sample(x = getOption("antares")$areaList,
+  #                size = 1)
 
   #waterValues case, there is 2 file formats for waterValues.
 
@@ -22,12 +26,19 @@ test_that("Write hydro values, 'waterValues' case", {
                    data = m_water ,
                    overwrite = FALSE)
 
-  values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity",
-                           paste0("waterValues_", tolower(area), ".txt"))
-
-  expect_equal(antaresRead:::fread_antares(opts = opts,
-                                           file = values_file),
+  # values_file <- file.path(opts_test$inputPath, "input", "hydro", "common", "capacity",
+  #                          paste0("waterValues_", tolower(area), ".txt"))
+  
+  values_file<- antaresRead:::fread_antares(opts = opts_test,
+                                            file = file.path(opts_test$inputPath, "hydro", "common", "capacity",
+                                                              paste0("waterValues_", tolower(area), ".txt")))
+                                            
+                                            
+  expect_equal(antaresRead:::fread_antares(opts = opts_test,
+                                           file = file.path(opts_test$inputPath, "hydro", "common", "capacity",
+                                                           paste0("waterValues_", tolower(area), ".txt"))),
                as.data.table(m_water))
+ 
 
   M2 <- cbind(
     date = rep(seq(as.Date("2018-01-01"), by = 1, length.out = 365), each = 101),
@@ -48,7 +59,8 @@ test_that("Write hydro values, 'waterValues' case", {
                    data = M2,
                    overwrite = TRUE)
 
-  expect_equal(antaresRead:::fread_antares(opts = opts, file = values_file),
+  expect_equal(antaresRead:::fread_antares(opts = opts_test, file = file.path(opts_test$inputPath, "hydro", "common", "capacity",
+                                                                                     paste0("waterValues_", tolower(area), ".txt"))),
                as.data.table(m_water))
 
   #Wrong data format
@@ -88,8 +100,8 @@ test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations 
   m_inflowPattern <- matrix(4,365,1)
   m_creditmodulations <- matrix(5,2,101)
 
-  area <- sample(x = getOption("antares")$areaList, size = 1)
-
+  #area <- sample(x = getOption("antares")$areaList, size = 1)
+  area="it"
   #reservoir/maxpower/inflowPattern/creditsmodulation
   for (file_type in c("reservoir", "maxpower", "inflowPattern", "creditmodulations")){
 
@@ -104,14 +116,22 @@ test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations 
                      type = file_type,
                      data = m_data ,
                      overwrite = TRUE)
-
-    values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity",
-                             paste0(file_type, "_", tolower(area), ".txt"))
-
-    #Test that the created file respect the matrix.
-    expect_equal(antaresRead:::fread_antares(opts = opts,
-                                             file = values_file),
+ ###################################ICIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    #values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity",
+     #                        paste0(file_type, "_", tolower(area), ".txt"))
+    values_file<- antaresRead:::fread_antares(opts = opts_test,
+                                              file = file.path(opts_test$inputPath, "hydro", "common", "capacity",
+                                                               paste0(file_type, "_", tolower(area), ".txt")))
+    
+    expect_equal(antaresRead:::fread_antares(opts = opts_test,
+                                             file = file.path(opts_test$inputPath, "hydro", "common", "capacity",
+                                                                     paste0(file_type, "_", tolower(area), ".txt"))),
                  as.data.table(m_data))
+    
+    #Test that the created file respect the matrix.
+    # expect_equal(antaresRead:::fread_antares(opts = opts_test,
+    #                                          file = values_file),
+    #              as.data.table(m_data))
 
     #Expect error when data format does not correspond.
     expect_error(
@@ -140,17 +160,18 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
   translate_value <- 23
   
   hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
-  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts_test)
   
-  area_to_edit <- opts$areaList[1]
+  area_to_edit <- "it"
+  opts_test$areaList <- area_to_edit
   new_data <- list("leeway low" = hydro_ini_data[["leeway low"]][[area_to_edit]] + translate_value,
                    "leeway up" = hydro_ini_data[["leeway up"]][[area_to_edit]] + translate_value,
                    "reservoir" = !is.null(hydro_ini_data[["reservoir"]][[area_to_edit]])
   )
   
-  writeIniHydro(area = area_to_edit, params = new_data, mode = "other", opts = opts)
+  writeIniHydro(area = area_to_edit, params = new_data, mode = "other", opts = opts_test)
 
-  hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts_test)
   
   expect_equal(hydro_ini_after_edit[["leeway low"]][[area_to_edit]] - hydro_ini_data[["leeway low"]][[area_to_edit]], translate_value)
   expect_equal(hydro_ini_after_edit[["leeway up"]][[area_to_edit]] - hydro_ini_data[["leeway up"]][[area_to_edit]], translate_value)
@@ -163,7 +184,7 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
   )
   
   expect_error(
-    writeIniHydro(area = area_to_edit, params = bad_data, mode = "other", opts = opts),
+    writeIniHydro(area = area_to_edit, params = bad_data, mode = "other", opts = opts_test),
     regexp = "Parameter params must be named with the following elements:"
   )
   
@@ -174,7 +195,7 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
   )
   
   expect_error(
-    writeIniHydro(area = area_to_edit, params = bad_types, mode = "other", opts = opts),
+    writeIniHydro(area = area_to_edit, params = bad_types, mode = "other", opts = opts_test),
     regexp = "The following parameters have a wrong type:"
   )
   
@@ -183,14 +204,15 @@ test_that("Write hydro.ini values for the first area, edit leeway up, leeway low
 
 test_that("Write NULL hydro.ini values to ensure its behaviour", {
   
+  opts_test$areaList<-"it"
   hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
-  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts_test)
   
   fname <- names(hydro_ini_data)[1]
   farea <- names(hydro_ini_data[[fname]])[1]
   
-  writeIniHydro(area = farea, params = setNames(list(NULL), fname), mode = "other", opts = opts)
-  hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  writeIniHydro(area = farea, params = setNames(list(NULL), fname), mode = "other", opts = opts_test)
+  hydro_ini_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts_test)
   
   expect_true(!is.null(hydro_ini_data[[fname]][[farea]]))
   expect_true(is.null(hydro_ini_after_edit[[fname]][[farea]]))
@@ -200,19 +222,19 @@ test_that("Write NULL hydro.ini values to ensure its behaviour", {
 test_that("fill_empty_hydro_ini_file() : fill specific sections in hydro.ini by default values", {
   
   hydro_ini_path <- file.path("input", "hydro", "hydro.ini")
-  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts_test)
   
   all_areas <- unique(unlist(lapply(names(hydro_ini_data), function(n) names(hydro_ini_data[[n]]))))
-  farea <- all_areas[1]
-  
+  farea <- "it"
+  opts_test$areaList<-farea
   # With argument mode set to "removeArea" to avoid control at this step
-  suppressWarnings(writeIniHydro(farea, list("use heuristic" = NULL, "follow load" = NULL, "reservoir" = NULL), mode = "removeArea", opts = opts))
+  suppressWarnings(writeIniHydro(farea, list("use heuristic" = NULL, "follow load" = NULL, "reservoir" = NULL), mode = "removeArea", opts = opts_test))
   
-  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  hydro_ini_data <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts_test)
   
-  fill_empty_hydro_ini_file(farea, opts)
+  fill_empty_hydro_ini_file(farea, opts_test)
   
-  hydro_ini_data_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts)
+  hydro_ini_data_after_edit <- antaresRead::readIni(pathIni = hydro_ini_path, opts = opts_test)
   
   expect_true(hydro_ini_data_after_edit[["use heuristic"]][[farea]])
   expect_true(hydro_ini_data_after_edit[["follow load"]][[farea]])
@@ -476,7 +498,7 @@ test_that("check_mingen_vs_hydro_storage() in 8.6.0 : check if the control betwe
   expect_true(res_check$check)
   expect_true(identical(res_check$msg,""))
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
@@ -697,7 +719,7 @@ test_that("check_mingen_vs_hydro_storage() in 8.6.0 : check if the control is al
   expect_true(res_check$check)
   expect_true(identical(res_check$msg,""))
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
@@ -735,7 +757,7 @@ test_that("writeHydroValues() in 8.6.0 : check if there is an error when data is
                ,regexp = "can not be updated"
   )
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
@@ -777,7 +799,7 @@ test_that("writeHydroValues() in 8.6.0 : check if new data is written when contr
                                            file = path_maxpower_file),
                as.data.table(mat_maxpower_true))
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
@@ -832,7 +854,7 @@ test_that("writeHydroValues() in 8.6.0 : check if new data is written when there
                                            file = path_maxpower_file),
                as.data.table(mat_maxpower_false))
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
@@ -850,6 +872,7 @@ test_that("replicate_missing_ts() : control if data is replicated if 2 data.tabl
   
   nb_hours_per_day <- 24
   nb_days_per_year <- 365
+  
   nb_hours_per_year <- nb_hours_per_day * nb_days_per_year
   
   val <- 2
@@ -886,7 +909,7 @@ test_that("replicate_missing_ts() : control if data is replicated if 2 data.tabl
   ts_mod_after_agg <- ts_mod_after[, .N, by = tsId]
   expect_true(all(ts_mod_after_agg$N == opts$timeIdMax) & nrow(ts_mod_after_agg) == nb_rep_ts_mingen * 2)
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
@@ -1044,7 +1067,7 @@ test_that("check_mingen_vs_maxpower() in 8.6.0 : control data consistency betwee
   expect_true(res_check$check)
   expect_true(identical(res_check$msg,""))
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
@@ -1149,9 +1172,9 @@ test_that("writeIniHydro(): check if consistency between reservoir and reservoir
   
   expect_true(is.null(hydro_ini_data[["reservoir capacity"]][[area]]))
   
-  unlink(x = opts$studyPath, recursive = TRUE)
+  unlink(x = opts_test$studyPath, recursive = TRUE)
 })
 
 
 # remove temporary study
-unlink(x = opts$studyPath, recursive = TRUE)
+unlink(x = opts_test$studyPath, recursive = TRUE)
