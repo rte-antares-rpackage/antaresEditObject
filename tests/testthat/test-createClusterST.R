@@ -1,11 +1,5 @@
 
-# global params for structure v8.6 ----
-#setup_study_860(sourcedir860)
-#opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
-#path_master <- file.path(opts_test$inputPath, "st-storage")
-
-#if (opts_test$antaresVersion >= 860){
   test_that("Create short-term storage cluster (new feature v8.6)",{
     ## basics errors cases ----
     suppressWarnings(
@@ -178,7 +172,6 @@
     unlink(opts_test$studyPath, recursive = TRUE)
     
     })
-#}
 
 
 test_that("Test the behaviour of createClusterST() if the ST cluster already exists", {

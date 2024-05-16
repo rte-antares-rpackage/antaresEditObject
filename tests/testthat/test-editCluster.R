@@ -52,9 +52,6 @@ sapply(studies, function(study) {
 
 
 # v860 ----
-# global params for structure v8.6 
-#setup_study_860(sourcedir860)
-#opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
 
 test_that("Edit cluster with pollutants params (new feature v8.6)",{
   

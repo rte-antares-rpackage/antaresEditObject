@@ -1,8 +1,6 @@
 
 test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   # global params for structure v8.6 ----
-  #setup_study_860(sourcedir860)
-  #opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
   opts_test <-createStudy(path = tempdir(), 
               study_name = "edit-cluster-st", 
               antares_version = "8.6.0")

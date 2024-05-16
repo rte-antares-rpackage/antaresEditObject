@@ -199,7 +199,6 @@ test_that("Check if writeInputTS() writes links time series with argument link '
 
 
 # >= v860 ----
-#setup_study_860(sourcedir860)
 
 suppressWarnings(
   createStudy(path = tempdir(), 
@@ -222,7 +221,8 @@ test_that("create mingen file data v860", {
 
   #Initialize mingen data
   M_mingen = matrix(0,8760,5)
-
+  # write TS with 3 columns for area_3 et file mod.txt
+  writeInputTS(data = matrix(12,365,3), type = "hydroSTOR", area = area_3, overwrite = TRUE, opts = opts)
 
   # [management rules] for mingen data :
   # file mod.txt (in /series) have to be same column dimension
@@ -232,8 +232,9 @@ test_that("create mingen file data v860", {
   path_file_mod <- file.path(opts$inputPath, "hydro", "series",
                              getAreas(),
                              "mod.txt")
-
-  list_dim <- lapply(path_file_mod, function(x){
+  
+ 
+   list_dim <- lapply(path_file_mod, function(x){
     # read
     file <- fread(file = x)
     dim_file <- dim(file)[2]
@@ -279,13 +280,12 @@ test_that("create mingen file data v860", {
 
   # write for an area with file mod.txt >1 columns
   # error case cause mod.txt dimension
-  ###################################################################################
-  ####### to be corrected ####
-  #area_mult <- getAreas()[list_dim>1][1]
-  #testthat::expect_error(writeInputTS(area = area_3, type = "mingen",
-  #                                    data = matrix(0,8760,5) , overwrite = TRUE, opts = opts),
-  #                       regexp = 'mingen \'data\' must be either a 8760\\*1 or 8760\\*3 matrix.')
- ####################################################################################################
+
+  area_mult <- getAreas()[list_dim>1][1]
+  testthat::expect_error(writeInputTS(area = area_mult, type = "mingen",
+                                      data = matrix(0,8760,5) , overwrite = TRUE, opts = opts),
+                        regexp = 'mingen \'data\' must be either a 8760\\*1 or 8760\\*3 matrix.')
+
   # you can write only mingen file with dimension 1
   writeInputTS(area = area_2, type = "mingen",
                data = as.matrix(M_mingen[,1]) ,
