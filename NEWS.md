@@ -8,6 +8,9 @@ BUGFIXES :
 * `editArea()` : not delete one of the two economic options if only one must be edited
 * Avoid data deletion in API mode for `editArea()`
 
+OTHER UPDATES :
+* `updateGeneralSettings()` : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers 
+
 # antaresEditObject 0.6.3
 
 NEW FEATURES :
