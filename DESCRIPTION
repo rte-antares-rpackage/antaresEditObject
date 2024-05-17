@@ -45,7 +45,8 @@ Imports:
     parallel,
     future,
     plyr,
-    yaml
+    yaml,
+    lifecycle
 Suggests: 
     testthat,
     covr,
