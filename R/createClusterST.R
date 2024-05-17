@@ -135,6 +135,11 @@ createClusterST <- function(area,
   ##
   assertthat::assert_that(inherits(storage_parameters, "list"))
   
+  if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
+    warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
+    storage_parameters$initiallevel <- 0.5
+  }
+  
     # static name of list parameters 
   names_parameters <- names(storage_values_default())
   
@@ -343,9 +348,10 @@ createClusterST <- function(area,
 storage_values_default <- function() {
   list(efficiency = 1,
        reservoircapacity = 0,
-       initiallevel = 0,
+       initiallevel = 0.5,
        withdrawalnominalcapacity = 0,
        injectionnominalcapacity = 0,
-       initialleveloptim = FALSE)
+       initialleveloptim = FALSE,
+       enabled = TRUE)
 }
 
