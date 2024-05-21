@@ -2,6 +2,7 @@
 
 BREAKING CHANGES :
 * Add UTF-8 encoding argument in `.getJobs()`
+* Unit tests no longer call the study in the antaresRead package for versions > 8.0.0
 
 
 # antaresEditObject 0.6.3
