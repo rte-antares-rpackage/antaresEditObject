@@ -193,12 +193,12 @@ test_that("API Command test for editClusterST", {
   # name of api instruction/action
   testthat::expect_equal(action_api_1$action, "update_config")
   # check "args" name parameters (just for one parameter/one action)
-  param_target <- res_list[[3]]$args$target
+  param_target <- res_list[[2]]$args$target
   param_target <- regmatches(param_target, regexpr("([^\\/]+$)",param_target))
   testthat::expect_equal(param_target, "efficiency")
   
   # check "data" (value of parameter)
-  testthat::expect_equal("1.000000", res_list[[3]]$args$data)
+  testthat::expect_equal("1.000000", res_list[[2]]$args$data)
 
   ## test other group for data
   # search "replace_matrix" action
