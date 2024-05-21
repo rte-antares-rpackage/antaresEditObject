@@ -276,6 +276,34 @@ test_that("Test the behaviour of createClusterST() if the ST cluster already exi
   unlink(x = opts$studyPath, recursive = TRUE)
 })
 
+test_that("Get warning when storage_parameters incorrect", {
+  
+  ant_version <- "8.6.0"
+  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  createArea(area)
+  suppressWarnings(opts <- setSimulationPath(opts$studyPath, simulation = "input"))
+  
+  val <- 0.7
+  val_mat <- matrix(val, 8760)
+  cl_name <- "test_warning_storage"
+  
+  wrong_storage_parameters <- storage_values_default()
+  wrong_storage_parameters$initiallevel <- 0.8 #different of 0.5
+  
+  expect_warning(createClusterST(area = area, 
+                                 cluster_name = cl_name, 
+                                 storage_parameters = wrong_storage_parameters, 
+                                 PMAX_injection = val_mat, 
+                                 PMAX_withdrawal = val_mat, 
+                                 inflows = val_mat, 
+                                 lower_rule_curve = val_mat, 
+                                 upper_rule_curve = val_mat, 
+                                 opts = opts), 
+                 regexp = "`initiallevel` value will be replaced by 0.5")
+
+})
 
 # API ----
 

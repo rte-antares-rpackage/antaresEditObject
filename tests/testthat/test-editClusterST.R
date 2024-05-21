@@ -112,6 +112,18 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                                                     "reservoircapacity")])
   testthat::expect_equal(list_params, value_to_test)
   
+  # add parameters to storage_parameters to get warning.
+  
+  wrong_list_params <- list_params
+  wrong_list_params$initiallevel <- 0.8
+  wrong_list_params$initialleveloptim <- FALSE
+  
+  expect_warning(  editClusterST(area = area_test, 
+                                 cluster_name = name_cluster_test, 
+                                 storage_parameters = wrong_list_params,
+                                 opts = opts_test, 
+                                 add_prefix = FALSE), 
+                 regexp = "`initiallevel` value will be replaced by 0.5")
  
   ## edit DATA ----
   val <- 0.007
