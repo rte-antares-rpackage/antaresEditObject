@@ -16,15 +16,20 @@ sapply(studies, function(study) {
   )
   
   ###Write params
-  bc <- antaresRead::readBindingConstraints()
-  bc <- bc[["myconstraint"]]
+  # properties acces
+  path_bc_ini <- file.path("input", "bindingconstraints", "bindingconstraints")
+  bc <- readIni(pathIni = path_bc_ini)
+  bc <- bc[[length(bc)]]
   editBindingConstraint("myconstraint", enabled = TRUE)
-  bc2 <- antaresRead::readBindingConstraints()
-  bc2 <- bc2[["myconstraint"]]
+  
+  # properties acces
+  # list .ini files
+  bc2 <- readIni(pathIni = path_bc_ini)
+  
+  bc2 <- bc2[[length(bc2)]]
   expect_true(bc2$enabled)
+  
   bc2$enabled <- FALSE
-  bc$values <- data.frame(bc$values)
-  bc2$values <- data.frame(bc2$values)
   expect_true(identical(bc, bc2))
   editBindingConstraint("myconstraint", coefficients = c("a%b" = 10))
   
@@ -42,7 +47,6 @@ sapply(studies, function(study) {
   ##Write values
   
   expect_true(sum(bc$myconstraint$values) == 0)
-  bc$myconstraint$timeStep
   editBindingConstraint("myconstraint", values = matrix(data = rep(1, 8760 * 3), ncol = 3))
   bc <- antaresRead::readBindingConstraints()
   expect_true(sum(bc$myconstraint$values) > 0 )
