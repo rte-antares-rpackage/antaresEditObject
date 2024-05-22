@@ -42,4 +42,3 @@ setup_study_last <- function(dir_path){
          study_temp_path,
          envir = globalenv())
 }
-

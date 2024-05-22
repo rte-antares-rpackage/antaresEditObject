@@ -2,7 +2,7 @@ context("Function editBindingConstraint")
 
 test_that("editBindingConstraint tests", {
   sapply(studies, function(study) {
-    
+  
     setup_study(study, sourcedir)
     opts <- antaresRead::setSimulationPath(studyPath, "input")
     
@@ -16,15 +16,20 @@ test_that("editBindingConstraint tests", {
     )
     
     ###Write params
-    bc <- antaresRead::readBindingConstraints()
-    bc <- bc[["myconstraint"]]
+    # properties acces
+    path_bc_ini <- file.path("input", "bindingconstraints", "bindingconstraints")
+    bc <- readIni(pathIni = path_bc_ini)
+    bc <- bc[[length(bc)]]
     editBindingConstraint("myconstraint", enabled = TRUE)
-    bc2 <- antaresRead::readBindingConstraints()
-    bc2 <- bc2[["myconstraint"]]
-    expect_true(bc2$properties$enabled)
-    bc2$properties$enabled <- FALSE
-    bc$values <- data.frame(bc$values)
-    bc2$values <- data.frame(bc2$values)
+    
+    # properties acces
+    # list .ini files
+    bc2 <- readIni(pathIni = path_bc_ini)
+    
+    bc2 <- bc2[[length(bc2)]]
+    expect_true(bc2$enabled)
+    
+    bc2$enabled <- FALSE
     expect_true(identical(bc, bc2))
     editBindingConstraint("myconstraint", coefficients = c("a%b" = 10))
     
@@ -42,7 +47,6 @@ test_that("editBindingConstraint tests", {
     ##Write values
     
     expect_true(sum(bc$myconstraint$values) == 0)
-    bc$myconstraint$properties$timeStep
     editBindingConstraint("myconstraint", values = matrix(data = rep(1, 8760 * 3), ncol = 3))
     bc <- antaresRead::readBindingConstraints()
     expect_true(sum(bc$myconstraint$values) > 0 )
@@ -51,7 +55,7 @@ test_that("editBindingConstraint tests", {
     # remove temporary study
     unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
     
-  })
+    })
 })
 
 

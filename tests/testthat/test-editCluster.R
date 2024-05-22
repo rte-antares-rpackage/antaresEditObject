@@ -52,15 +52,17 @@ sapply(studies, function(study) {
 
 
 # v860 ----
-# global params for structure v8.6 
-setup_study_last(sourcedir_last_study)
-opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
-
 test_that("Edit cluster with pollutants params (new feature v8.6)",{
   
+  opts_test <-createStudy(path = tempdir(), 
+              study_name = "edit-cluster", 
+              antares_version = "8.6.0")
+  area_test="gr"
+  opts_test <- createArea(name = area_test,opts = opts_test)
+
   bad_pollutants_param <- "not_a_list"
   testthat::expect_error(createCluster(
-    area = getAreas()[1],
+    area = area_test,
     cluster_name = "mycluster_pollutant",
     group = "Other",
     unitcount = as.integer(1),
@@ -75,8 +77,8 @@ test_that("Edit cluster with pollutants params (new feature v8.6)",{
     "op4"= 0.25, "op5"= 0.25, "co2"= NULL
   )
   
-  opts_test <- createCluster(
-    area = getAreas()[1], 
+  opts_test<- createCluster(
+    area = area_test, 
     cluster_name = "mycluster_pollutant",
     group = "Other",
     unitcount = 1,
@@ -86,14 +88,14 @@ test_that("Edit cluster with pollutants params (new feature v8.6)",{
     `market-bid-cost` = 0.010000, 
     list_pollutants = pollutants_params,
     time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
-    prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4), 
+    prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4),
     opts = opts_test
   )
   
   res_cluster <- antaresRead::readClusterDesc(opts = opts_test)
   
   # NULL as to effect to delete parameters
-  opts_test <- editCluster(area = getAreas()[1], 
+  opts_test <- editCluster(area = area_test, 
               cluster_name = levels(res_cluster$cluster)[1], 
               list_pollutants = list(
                 "nh3"= 0.07, 

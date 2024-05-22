@@ -97,77 +97,80 @@ sapply(studies, function(study) {
 
 
 # v860 ----
-# global params for structure v8.6 
-setup_study_last(sourcedir_last_study)
-opts_test <- antaresRead::setSimulationPath(study_latest_version, "input")
-
 test_that("Create cluster with pollutants params (new feature v8.6)",{
+  # INIT STUDY 
+  suppressWarnings(
+    createStudy(path = tempdir(), 
+                study_name = "test_pollutants", 
+                antares_version = "8.6.0"))
+  
+  createArea(name = "test")
   
   test_that("Create cluster default call (new feature v8.6)",{
-    
-    createCluster(
-      area = getAreas()[1], 
-      cluster_name = "cluster_default",
-      opts = opts_test)
+    # default call now create without pollutants
+    createCluster(area = getAreas()[1],
+                  cluster_name = "cluster_default",
+                  overwrite = TRUE)
     
     res_cluster <- antaresRead::readClusterDesc()
-    res_cluster_default <- res_cluster[cluster %in% 
-                                         paste0(getAreas()[1], "_cluster_default"),]
     
     pollutants_names <- names(antaresEditObject::list_pollutants_values())
     
-    values_default <- res_cluster_default[, .SD, .SDcols = pollutants_names]
-    
     # check default values 
-    testthat::expect_equal(all(is.na(values_default)), TRUE)
+    testthat::expect_false(all(
+      pollutants_names %in% names(res_cluster)))
   })
   
-  bad_pollutants_param <- "not_a_list"
-  testthat::expect_error(createCluster(
-    area = getAreas()[1],
-    cluster_name = "bad_cluster",
-    group = "Other",
-    unitcount = as.integer(1),
-    nominalcapacity = 100,
-    list_pollutants = bad_pollutants_param,
-    opts = opts_test), regexp = "'list_pollutants' must be a 'list'")
-  
-  pollutants_params <- list(
-    "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
-    "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,
-    "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, 
-    "op4"= 0.25, "op5"= 0.25, "co2"= NULL
-  )
-  
-  createCluster(
-    area = getAreas()[1], 
-    cluster_name = "mycluster_pollutant",
-    group = "Other",
-    unitcount = 1,
-    nominalcapacity = 8000,
-    `min-down-time` = 0,
-    `marginal-cost` = 0.010000,
-    `market-bid-cost` = 0.010000, 
-    list_pollutants = pollutants_params,
-    time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
-    prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4), 
-    opts = opts_test
-  )
-  
-  res_cluster <- antaresRead::readClusterDesc()
-  
-  # check if cluster is created
-  testthat::expect_true(paste(getAreas()[1], "mycluster_pollutant", sep = "_") %in% 
-                levels(res_cluster$cluster))
-  
-  names_pollutants <- names(pollutants_params)
-  
-  # check if pollutants is read well
-  testthat::expect_true(all(names_pollutants %in% 
-                              names(res_cluster)))
+  test_that("Create cluster with bad parameter pollutant",{
+    bad_pollutants_param <- "not_a_list"
+    
+    testthat::expect_error(
+      createCluster(area = getAreas()[1],
+                    cluster_name = "bad_cluster",
+                    group = "Other",
+                    unitcount = as.integer(1),
+                    nominalcapacity = 100,
+                    list_pollutants = bad_pollutants_param), 
+      regexp = "'list_pollutants' must be a 'list'")
+  })
+ 
+  test_that("Create cluster with parameter pollutant",{
+    pollutants_params <- list(
+      "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, 
+      "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,
+      "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, 
+      "op4"= 0.25, "op5"= 0.25, "co2"= NULL
+    )
+    
+    createCluster(
+      area = getAreas()[1], 
+      cluster_name = "mycluster_pollutant",
+      group = "Other",
+      unitcount = 1,
+      nominalcapacity = 8000,
+      `min-down-time` = 0,
+      `marginal-cost` = 0.010000,
+      `market-bid-cost` = 0.010000, 
+      list_pollutants = pollutants_params,
+      time_series = matrix(rep(c(0, 8000), each = 24*364), ncol = 2),
+      prepro_modulation = matrix(rep(c(1, 1, 1, 0), each = 24*365), ncol = 4))
+    
+    res_cluster <- antaresRead::readClusterDesc()
+    
+    # check if cluster is created
+    testthat::expect_true(paste(getAreas()[1], "mycluster_pollutant", sep = "_") %in% 
+                            levels(res_cluster$cluster))
+    
+    names_pollutants <- names(pollutants_params)
+    
+    # check if pollutants is read well
+    testthat::expect_true(all(names_pollutants %in% 
+                                names(res_cluster)))
+  })
   
   # remove temporary study
-  unlink(x = opts_test$studyPath, recursive = TRUE)
+  deleteStudy(opts = simOptions())
+  testthat::expect_true(TRUE)
 })
 
 
