@@ -147,9 +147,11 @@ createClusterST <- function(area,
   
   # check value for initiallevel
   
-  if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
-    warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
-    storage_parameters$initiallevel <- 0.5
+  if ("initiallevel" %in% names(storage_parameters) & "initialleveloptim" %in% names(storage_parameters)){
+    if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
+      warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
+      storage_parameters$initiallevel <- 0.5
+    }
   }
   
   
