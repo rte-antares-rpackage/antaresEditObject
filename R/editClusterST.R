@@ -70,11 +70,6 @@ editClusterST <- function(area,
   
   if(!is.null(storage_parameters)){
     assertthat::assert_that(inherits(storage_parameters, "list"))
-    
-    if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
-      warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
-      storage_parameters$initiallevel <- 0.5
-    }
 
     # static name of list parameters 
     names_parameters <- names(storage_values_default())
@@ -85,6 +80,12 @@ editClusterST <- function(area,
     
     # check values parameters
     .st_mandatory_params(list_values = storage_parameters)
+    
+    # check value for initiallevel
+    if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
+      warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
+      storage_parameters$initiallevel <- 0.5
+    }
     
     # check list of parameters
     params_cluster <- hyphenize_names(storage_parameters)
