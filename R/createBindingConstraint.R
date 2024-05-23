@@ -332,33 +332,37 @@ createBindingConstraint <- function(name,
     body_terms <- body$coeffs
     body$coeffs <- NULL
     
-    # extract areas/cluster (links or thermal)
-    terms_values <- strsplit(x = names(body_terms), split = "%|\\.")
-    
-    is_dot <- grepl(x = names(body_terms), 
-                    pattern = "\\.")
-    
-    # build list 
-    if(is_dot)
-      data_list <- list(area=terms_values[[1]][1],
-                        cluster=terms_values[[1]][2])
-    else
-      data_list <- list(area1=terms_values[[1]][1],
-                        area2=terms_values[[1]][2])
-    
-    if(length(body_terms[[1]])>1)
-      body_terms <- list(weight=body_terms[[1]][1],
-                         offset=body_terms[[1]][2],
-                         data=data_list)
-    else
-      body_terms <- list(weight=body_terms[[1]][1],
-                         data=data_list)
+    body_terms <- lapply(seq(length(body_terms)), function(x){
+      # extract areas/cluster (links or thermal)
+      name_coeff <- names(body_terms[x])
+      term_coeff <- body_terms[x]
+      terms_values <- strsplit(x = name_coeff, split = "%|\\.")
+      
+      is_dot <- grepl(x = name_coeff, 
+                      pattern = "\\.")
+      
+      # build list 
+      if(is_dot)
+        data_list <- list(area=terms_values[[1]][1],
+                          cluster=terms_values[[1]][2])
+      else
+        data_list <- list(area1=terms_values[[1]][1],
+                          area2=terms_values[[1]][2])
+      
+      if(length(term_coeff[[1]])>1)
+        body_terms <- list(weight=term_coeff[[1]][1],
+                           offset=term_coeff[[1]][2],
+                           data=data_list)
+      else
+        body_terms <- list(weight=term_coeff[[1]][1],
+                           data=data_list)
+    })
     
     # make json file
     body_terms <- jsonlite::toJSON(body_terms,
                                    auto_unbox = TRUE)
   }
-  
+
   # make json file
   body <- jsonlite::toJSON(body,
                            auto_unbox = TRUE)
@@ -381,7 +385,7 @@ createBindingConstraint <- function(name,
              endpoint = file.path(opts$study_id, 
                                   "bindingconstraints", 
                                   result$id, 
-                                  "term"), 
+                                  "terms"), 
              body = body_terms, 
              encode = "raw")
   
