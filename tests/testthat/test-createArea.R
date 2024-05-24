@@ -529,3 +529,4 @@ test_that(".split_nodalOptimization_by_target() has the expected behaviour", {
   expect_true(length(res[["toIniAreas"]]) == 1)
   expect_true(names(res[["toIniAreas"]]) == "spilledenergycost")
 })
+
