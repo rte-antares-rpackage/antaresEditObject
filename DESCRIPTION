@@ -52,5 +52,4 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Remotes:  
-    rte-antares-rpackage/antaresRead@develop
+
