@@ -4,14 +4,23 @@
 \alias{storage_values_default}
 \title{Short Term Storage Property List}
 \usage{
-storage_values_default()
+storage_values_default(opts = antaresRead::simOptions())
+}
+\arguments{
+\item{opts}{List of simulation parameters returned by the function
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
+An updated list containing various information about the simulation.
+
 a named list
 }
 \description{
 Short Term Storage Property List
 }
 \examples{
+\dontrun{
+
 storage_values_default()
+}
 }

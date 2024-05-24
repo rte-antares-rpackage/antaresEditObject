@@ -350,14 +350,14 @@ createClusterST <- function(area,
 
 #' Short Term Storage Property List
 #'
-#'
+#' @template opts
 #' @return a named list
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' 
-#' storage_values_default(opts = opts)
+#' storage_values_default()
 #' }
 storage_values_default <- function(opts = antaresRead::simOptions()) {
   lst_parameters <- list(efficiency = 1,
