@@ -72,7 +72,7 @@ editClusterST <- function(area,
     assertthat::assert_that(inherits(storage_parameters, "list"))
     
     # static name of list parameters 
-    names_parameters <- names(storage_values_default())
+    names_parameters <- names(storage_values_default(opts = opts))
     
     if(!all(names(storage_parameters) %in% names_parameters))
       stop(append("Parameter 'st-storage' must be named with the following elements: ", 
@@ -80,6 +80,16 @@ editClusterST <- function(area,
     
     # check values parameters
     .st_mandatory_params(list_values = storage_parameters)
+    
+    # Check 880 rule for storage_parameters
+    if (opts$antaresVersion >= 880){
+      if ("initiallevel" %in% names(storage_parameters) & "initialleveloptim" %in% names(storage_parameters)){
+        if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
+          warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
+          storage_parameters$initiallevel <- 0.5
+        }
+      }
+    }
     
     # check list of parameters
     params_cluster <- hyphenize_names(storage_parameters)

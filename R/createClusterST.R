@@ -77,7 +77,7 @@
 createClusterST <- function(area,
                             cluster_name, 
                             group = "Other1",
-                            storage_parameters = storage_values_default(),
+                            storage_parameters = NULL,
                             PMAX_injection = NULL,
                             PMAX_withdrawal = NULL,
                             inflows = NULL,
@@ -130,13 +130,19 @@ createClusterST <- function(area,
       stop("Cluster already exists. Edit it with editClusterST().")
     }
   }
+  
+  # Default value for storage_parameters
+  if (is.null(storage_parameters)){
+    storage_parameters <- storage_values_default(opts = opts)
+  } 
+  
   ##
   # check parameters (ini file)
   ##
   assertthat::assert_that(inherits(storage_parameters, "list"))
   
     # static name of list parameters 
-  names_parameters <- names(storage_values_default())
+  names_parameters <- names(storage_values_default(opts = opts))
   
   if(!all(names(storage_parameters) %in% names_parameters))
     stop(append("Parameter 'st-storage' must be named with the following elements: ", 
@@ -144,6 +150,16 @@ createClusterST <- function(area,
 
     # check values parameters
   .st_mandatory_params(list_values = storage_parameters)
+  
+  # Check 880 rule for storage_parameters
+  if (opts$antaresVersion >= 880){
+    if ("initiallevel" %in% names(storage_parameters) & "initialleveloptim" %in% names(storage_parameters)){
+      if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
+        warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
+        storage_parameters$initiallevel <- 0.5
+      }
+    }
+  }
   
   
   # DATA parameters : default value + name txt file
@@ -339,13 +355,22 @@ createClusterST <- function(area,
 #' @export
 #'
 #' @examples
-#' storage_values_default()
-storage_values_default <- function() {
-  list(efficiency = 1,
+#' \dontrun{
+#' 
+#' storage_values_default(opts = opts)
+#' }
+storage_values_default <- function(opts = antaresRead::simOptions()) {
+  lst_parameters <- list(efficiency = 1,
        reservoircapacity = 0,
        initiallevel = 0,
        withdrawalnominalcapacity = 0,
        injectionnominalcapacity = 0,
        initialleveloptim = FALSE)
+  
+  if (opts$antaresVersion >= 880){
+    lst_parameters$initiallevel <- 0.5
+    lst_parameters$enabled <- TRUE
+  }
+  return(lst_parameters)
 }
 

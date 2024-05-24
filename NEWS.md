@@ -30,8 +30,10 @@ NEW FEATURES :
   - no longer deletes a binding constraint
 * `removeLink()` : control the existence of a link a in a binding constraint coefficient before deletion
 * `removeCluster()` : control the existence of a cluster a in a binding constraint coefficient before deletion
-* `createClusterST()` : add a control to check if a cluster exists before running actions.
-* `editClusterST()` : add a control to check if a cluster exists before running actions.
+* `createClusterST()` / `editClusterST()` : 
+  - add a control to check if a cluster exists before running actions.
+  - warning if the value is different of default value when `initialleveloptim` = FALSE and `initiallevel` different of 0.5. Switch to 0.5 in this case.
+  * `storage_values_default()` : If antaresVersion >= 8.8.0, change `initiallevel` default value to 0.5 and add `enabled` to list of parameters with default value equal to TRUE.
 * `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
 * Update documentation for scenarioBuilder : user must enable/disable `custom-scenario` property in `generaldata.ini` by himself
 
