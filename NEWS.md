@@ -1,4 +1,15 @@
 
+# antaresEditObject 0.6.4 
+
+BREAKING CHANGES :
+* Add UTF-8 encoding argument in `.getJobs()`
+* Unit tests no longer call the study in the antaresRead package for versions > 8.0.0
+
+BUGFIXES :
+* `createArea()`/`editArea()` : in API mode, split data in nodalOptimization argument to write it in the expected files
+* `editArea()` : not delete one of the two economic options if only one must be edited
+* Avoid data deletion in API mode for `editArea()`
+
 
 # antaresEditObject 0.6.3
 

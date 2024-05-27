@@ -2,7 +2,7 @@
 
 context("Function createBindingConstraint")
 
-
+# v710----
 sapply(studies, function(study) {
   
   setup_study(study, sourcedir)

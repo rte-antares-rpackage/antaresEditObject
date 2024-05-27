@@ -1,12 +1,12 @@
 
 test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   # global params for structure v8.6 ----
-  setup_study_860(sourcedir860)
-  opts_test <- antaresRead::setSimulationPath(study_temp_path, "input")
-  
-  # areas tests 
-  area_test = getAreas()[1]
-  
+  opts_test <-createStudy(path = tempdir(), 
+              study_name = "edit-cluster-st", 
+              antares_version = "8.6.0")
+  area_test = "be"
+  opts_test <- createArea(name = area_test, opts = opts_test)
+
   ## 
   # INIT : create tests clusters
   ##
@@ -76,9 +76,10 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
     # check update "group"
   st_clusters <- readClusterSTDesc(opts = opts_test)
   group_test <- st_clusters[cluster %in% name_cluster_test, 
-                            .SD, 
-                            .SDcols= "group"]
-  testthat::expect_equal("Other2", group_test$group)
+                            .SD, .SDcols= "group"]
+  testthat::expect_equal("Other2", as.character(group_test$group))
+
+  
   
     # edit values (only 2 parameters)
   name_cluster_test <- levels(st_clusters$cluster)[2]
@@ -96,6 +97,7 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                              opts = opts_test, 
                              add_prefix = FALSE)
   
+  
   st_clusters <- readClusterSTDesc(opts = opts_test)
   value_to_test <- st_clusters[cluster %in% name_cluster_test, 
                                .SD, 
@@ -104,7 +106,7 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                                           "reservoircapacity")]
   
   # test value group is default
-  testthat::expect_equal("Other1", value_to_test$group)
+  testthat::expect_equal("Other1", as.character(value_to_test$group))
   
   # test parameters are updated
   value_to_test <- as.list(value_to_test[, .SD, 
