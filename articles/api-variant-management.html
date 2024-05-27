@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4</span>
       </span>
     </div>
 
@@ -188,12 +188,15 @@ their documentation:</p>
 <p>Create a new area:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area01"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area02"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area02"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_area",</span></span>
@@ -215,14 +218,15 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Create a second area with some default parameters:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"area04"</span>, </span>
 <span>  filtering <span class="op">=</span> <span class="fu"><a href="../reference/filteringOptions.html">filteringOptions</a></span><span class="op">(</span>filter_synthesis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>, <span class="st">"daily"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_area",</span></span>
@@ -260,13 +264,15 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>You can also edit an area or remove it:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area000"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co"># editArea(name = "area000", ...)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># editArea(name = "area000", ...)</span></span>
 <span><span class="fu"><a href="../reference/removeArea.html">removeArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area000"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">remove_area</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">remove_area</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "remove_area",</span></span>
@@ -280,16 +286,18 @@ their documentation:</p>
 <h3 id="create-a-link">Create a link<a class="anchor" aria-label="anchor" href="#create-a-link"></a>
 </h3>
 <p>Create a new link between two areas like this:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area01"</span>, to <span class="op">=</span> <span class="st">"area02"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_link</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area01"</span>, to <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area01"</span>, to <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_link</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
@@ -307,7 +315,7 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Edit an existing link with:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/editLink.html">editLink</a></span><span class="op">(</span></span>
 <span>  from <span class="op">=</span> <span class="st">"area01"</span>, </span>
 <span>  to <span class="op">=</span> <span class="st">"area02"</span>,</span>
@@ -316,8 +324,9 @@ their documentation:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
@@ -335,11 +344,12 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Remove a link with:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/removeLink.html">removeLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area01"</span>, to <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Link doesn't exist</span></span>
-<span><span class="co">#&gt; NULL</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
@@ -354,14 +364,15 @@ their documentation:</p>
 <h3 id="create-a-cluster">Create a cluster<a class="anchor" aria-label="anchor" href="#create-a-cluster"></a>
 </h3>
 <p>Create a new cluster with:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createCluster.html">createCluster</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area01"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus01"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
@@ -372,7 +383,7 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>With more parameters:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createCluster.html">createCluster</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area01"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus02"</span>,</span>
@@ -398,8 +409,9 @@ their documentation:</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_cluster",</span></span>
@@ -426,7 +438,7 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Edit a cluster with:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createCluster.html">createCluster</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area02"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus02"</span></span>
@@ -438,19 +450,21 @@ their documentation:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Remove a cluster with:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createCluster.html">createCluster</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area02"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus000"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/removeCluster.html">removeCluster</a></span><span class="op">(</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/removeCluster.html">removeCluster</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area02"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus000"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">remove_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">remove_cluster</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "remove_cluster",</span></span>
@@ -465,7 +479,7 @@ their documentation:</p>
 <h3 id="create-a-binding-constraint">Create a binding constraint<a class="anchor" aria-label="anchor" href="#create-a-binding-constraint"></a>
 </h3>
 <p>Create a new binding constraint with:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/create-binding-constraint.html">createBindingConstraint</a></span><span class="op">(</span></span>
 <span>  name <span class="op">=</span> <span class="st">"myconstraint"</span>,</span>
 <span>  values <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -474,8 +488,9 @@ their documentation:</p>
 <span>  operator <span class="op">=</span> <span class="st">"both"</span>,</span>
 <span>  coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"area01%area02"</span> <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_binding_constraint</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_binding_constraint</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_binding_constraint",</span></span>
@@ -501,10 +516,11 @@ their documentation:</p>
 <h3 id="update-settings">Update settings<a class="anchor" aria-label="anchor" href="#update-settings"></a>
 </h3>
 <p>Update general settings:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/updateGeneralSettings.html">updateGeneralSettings</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="st">"Adequacy"</span>, generate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"thermal"</span>, <span class="st">"hydro"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "update_config",</span></span>
@@ -522,10 +538,11 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Update input settings:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/updateInputSettings.html">updateInputSettings</a></span><span class="op">(</span>import <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hydro"</span>, <span class="st">"thermal"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "update_config",</span></span>
@@ -536,14 +553,15 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Update optimization settings:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings</a></span><span class="op">(</span></span>
 <span>  simplex.range <span class="op">=</span> <span class="st">"week"</span>,</span>
 <span>  power.fluctuations <span class="op">=</span> <span class="st">"minimize ramping"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "update_config",</span></span>
@@ -561,14 +579,15 @@ their documentation:</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Update output settings:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/updateOutputSettings.html">updateOutputSettings</a></span><span class="op">(</span></span>
 <span>  synthesis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  storenewset <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  archives <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"load"</span>, <span class="st">"wind"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "update_config",</span></span>
@@ -584,23 +603,24 @@ their documentation:</p>
 </h3>
 <p>Read data from scenario builder (here’s it’s empty since we’re
 mocking the API):</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">readScenarioBuilder</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; list()</span></span></code></pre></div>
 <p>Create new data to use as scenario builder, since we’re mocking the
 API parameters must be set explicitly, otherwise thez are retrieved from
 the study.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_scenario</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scenario-builder.html">scenarioBuilder</a></span><span class="op">(</span>n_scenario <span class="op">=</span> <span class="fl">3</span>, areas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"area01"</span>, <span class="st">"area02"</span><span class="op">)</span>, n_mc <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">my_scenario</span></span>
 <span><span class="co">#&gt;        [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
 <span><span class="co">#&gt; area01 "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"  </span></span>
 <span><span class="co">#&gt; area02 "1"  "2"  "3"  "1"  "2"  "3"  "1"  "2"  "3"  "1"</span></span></code></pre></div>
 <p>Then you can update the scenario builder itself:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">my_scenario</span>, series <span class="op">=</span> <span class="st">"load"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "update_config",</span></span>
@@ -615,10 +635,11 @@ the study.</p>
 <h3 id="other-functions">Other functions<a class="anchor" aria-label="anchor" href="#other-functions"></a>
 </h3>
 <p>Write input time series:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/writeInputTS.html">writeInputTS</a></span><span class="op">(</span><span class="st">"area01"</span>, type <span class="op">=</span> <span class="st">"solar"</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">8760</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">8760</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
@@ -629,10 +650,11 @@ the study.</p>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Write water values:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/writeWaterValues.html">writeWaterValues</a></span><span class="op">(</span><span class="st">"area01"</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">365</span><span class="op">*</span><span class="fl">101</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">365</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>

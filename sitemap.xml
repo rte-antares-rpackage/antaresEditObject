@@ -133,10 +133,25 @@
     <loc>/reference/dicoOptimizationSettings.html</loc>
   </url>
   <url>
+    <loc>/reference/dot-api_command_execute_edit_area.html</loc>
+  </url>
+  <url>
     <loc>/reference/dot-dailyToWeekly.html</loc>
   </url>
   <url>
     <loc>/reference/dot-hourlyToOther.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-initializeLinksArea.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-initializeRenewablesArea.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-initializeThermalArea.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-split_nodalOptimization_by_target.html</loc>
   </url>
   <url>
     <loc>/reference/editArea.html</loc>
