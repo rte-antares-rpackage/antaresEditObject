@@ -286,7 +286,7 @@ editBindingConstraint <- function(name,
   if (is.null(body$time_step))
     stop("You must provide `timeStep` argument with API.", 
          call. = FALSE)
-  if (is.null(body$time_step))
+  if (is.null(body$operator))
     stop("You must provide `operator` argument with API.", 
          call. = FALSE)
   
