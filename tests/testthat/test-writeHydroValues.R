@@ -2,7 +2,6 @@ context("Function writeHydroValues")
 
 #WriteHydroValues does not depend on antaresVersion.
 # waterValues ----
-# global params for structure v8.6
 opts_test <-createStudy(path = tempdir(), 
                         study_name = "write-hydro-values", 
                         antares_version = "8.6.0")
@@ -32,7 +31,7 @@ test_that("Write hydro values, 'waterValues' case", {
                                             
   expect_equal(antaresRead:::fread_antares(opts = opts_test,
                                            file = file.path(opts_test$inputPath, "hydro", "common", "capacity",
-                                                           paste0("waterValues_", tolower(area), ".txt"))),
+                                                           paste0("waterValues_", tolower(area), ".txt"))), 
                as.data.table(m_water))
  
 
@@ -112,6 +111,7 @@ test_that("writeHydroValues, reservoir/maxpower/inflowPattern/creditmodulations 
                      type = file_type,
                      data = m_data ,
                      overwrite = TRUE)
+
  ###################################ICIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     #values_file <- file.path(study_temp_path, "input", "hydro", "common", "capacity",
      #                        paste0(file_type, "_", tolower(area), ".txt"))
