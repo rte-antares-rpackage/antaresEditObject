@@ -282,7 +282,7 @@ test_that("Test the behaviour of createClusterST() if the ST cluster already exi
 test_that("Test warning when storage_parameters incorrect", {
   
   ant_version <- "8.8.0"
-  st_test <- paste0("my_study_860_", paste0(sample(letters,5),collapse = ""))
+  st_test <- "my_study_880"
   suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
   area <- "zone51"
   createArea(area)

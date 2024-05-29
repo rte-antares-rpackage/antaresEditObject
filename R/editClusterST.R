@@ -79,17 +79,8 @@ editClusterST <- function(area,
                   paste0(names_parameters, collapse= ", ")))
     
     # check values parameters
-    .st_mandatory_params(list_values = storage_parameters)
-    
-    # Check 880 rule for storage_parameters
-    if (opts$antaresVersion >= 880){
-      if ("initiallevel" %in% names(storage_parameters) & "initialleveloptim" %in% names(storage_parameters)){
-        if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
-          warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
-          storage_parameters$initiallevel <- 0.5
-        }
-      }
-    }
+    .st_mandatory_params(list_values = storage_parameters,
+                         opts = opts)
     
     # check list of parameters
     params_cluster <- hyphenize_names(storage_parameters)

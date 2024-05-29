@@ -149,17 +149,8 @@ createClusterST <- function(area,
                 paste0(names_parameters, collapse= ", ")))
 
     # check values parameters
-  .st_mandatory_params(list_values = storage_parameters)
-  
-  # Check 880 rule for storage_parameters
-  if (opts$antaresVersion >= 880){
-    if ("initiallevel" %in% names(storage_parameters) & "initialleveloptim" %in% names(storage_parameters)){
-      if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
-        warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
-        storage_parameters$initiallevel <- 0.5
-      }
-    }
-  }
+  .st_mandatory_params(list_values = storage_parameters,
+                       opts = opts)
   
   
   # DATA parameters : default value + name txt file
@@ -300,34 +291,41 @@ createClusterST <- function(area,
 
 # check parameters (`list`)
 #' @return `list`
-.st_mandatory_params <- function(list_values){
+.st_mandatory_params <- function(list_values,
+                                 opts = antaresRead::simOptions()){
   .is_ratio(list_values$efficiency, 
             "efficiency")
   
   .check_capacity(list_values$reservoircapacity, 
                   "reservoircapacity")
-  # if(!list_values$reservoircapacity >= 0)
-  #   stop("reservoircapacity must be >= 0",
-  #        call. = FALSE)
   
   .is_ratio(list_values$initiallevel, 
             "initiallevel")
   
   .check_capacity(list_values$withdrawalnominalcapacity, 
                   "withdrawalnominalcapacity")
-  # if(!list_values$withdrawalnominalcapacity >= 0)
-  #   stop("withdrawalnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
   .check_capacity(list_values$injectionnominalcapacity, 
                   "injectionnominalcapacity")
-  # if(!list_values$injectionnominalcapacity >= 0)
-  #   stop("injectionnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
   if(!is.null(list_values$initialleveloptim))
     assertthat::assert_that(inherits(list_values$initialleveloptim, 
                                    "logical"))
+  
+  # Check 880 rule for storage_parameters
+  if (opts$antaresVersion >= 880){
+    
+    if(!is.null(list_values$enabled))
+      assertthat::assert_that(inherits(list_values$enabled, 
+                                       "logical"))
+    
+    if ("initiallevel" %in% names(storage_parameters) & "initialleveloptim" %in% names(storage_parameters)){
+      if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
+        warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
+        storage_parameters$initiallevel <- 0.5
+      }
+    }
+  }
 }
 
 .is_ratio <- function(x, mess){

@@ -13,7 +13,7 @@ BUGFIXES :
 
 NEW FEATURES :
 
-* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
+* Complete function `deleteStudy()` with new parameter **simulation** to delete a simulation in an Antares study.
 * New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
 * Add `importZipStudyWeb()` to allow the user to import a local study in Antares Web
 
@@ -22,8 +22,8 @@ NEW FEATURES :
 * `setPlaylist()` optimized for the API mode
   - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()`
 * `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
-* `createCluster()` parameter `list_pollutants` default value to NULL.
-* `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
+* `createCluster()` parameter **list_pollutants** default value to NULL.
+* `createBindingConstraint()` parameter **coefficients** must be alphabetically ordered.
 * `.createCluster()` default matrix in API mode.
 * `removeArea()` :
   - control the existence of an area in a binding constraint coefficient before deletion
@@ -32,20 +32,21 @@ NEW FEATURES :
 * `removeCluster()` : control the existence of a cluster a in a binding constraint coefficient before deletion
 * `createClusterST()` / `editClusterST()` : 
   - add a control to check if a cluster exists before running actions.
-  - warning if the value is different of default value when `initialleveloptim` = FALSE and `initiallevel` different of 0.5. Switch to 0.5 in this case.
-  * `storage_values_default()` : If antaresVersion >= 8.8.0, change `initiallevel` default value to 0.5 and add `enabled` to list of parameters with default value equal to TRUE.
+  * If antaresVersion >= 8.8.0 :
+    - warning when **initialleveloptim** == FALSE and **initiallevel** different of 0.5. Switch to 0.5 in this case.
+    -`storage_values_default()` : Change **initiallevel** default value to 0.5 and add **enabled** to list of parameters with default value equal to TRUE.
 * `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
-* Update documentation for scenarioBuilder : user must enable/disable `custom-scenario` property in `generaldata.ini` by himself
+* Update documentation for scenarioBuilder : user must enable/disable **custom-scenario** property in `generaldata.ini` by himself
 
 
 BUGFIXES : 
 
-* Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
+* Fix `filter_synthesis` and **filter_year_by_year** parameters of `editLink()` in API mode
 * Fix `setPlaylist()` works in API and local mode with weights.
 * Fix `getPlaylist()` works in API and local mode with weights.
 * Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
-* Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
-* `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
+* Fix `createCluster()` and `editCluster()` parameter **list_pollutants** stop if Antares Version < 8.6.0
+* `getJobs()` no longer returns duplicates and displays the two new columns **owner_id** and **owner_name**.
 * Allow the user to set symbol or full name as argument series in `updateScenarioBuilder()`
 * `scenarioBuilder()` matrix has the same row repeated if the area is not rand
 * Fix `createLink()` to update opts in API mode.
@@ -75,7 +76,7 @@ BUGFIXES :
 * `createArea()` integrate "st-storage".
 * `removeArea()`  integrate "st-storage".
 * `writeInputTS()` integrate "mingen" data and dependency between "mod.txt" and "mingen.txt" data.
-* `createCluster()` / `editCluster()` have new parameter `list_pollutants` for list of pollutants.
+* `createCluster()` / `editCluster()` have new parameter **list_pollutants** for list of pollutants.
 
 
 NEW FEATURES (Antares v8.6) :
