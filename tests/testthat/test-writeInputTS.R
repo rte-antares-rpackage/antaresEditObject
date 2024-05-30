@@ -218,16 +218,17 @@ test_that("create mingen file with one or empty column dimension of mod.txt file
   
   opts <- simOptions()
   # check dimensions of mod.txt for every areas
-  path_file_mod <- file.path(opts$inputPath, "hydro", "series", 
-                             getAreas(), 
+  path_file_mod <- file.path(opts$inputPath, "hydro", "series",
+                             getAreas(),
                              "mod.txt")
   
-  list_dim <- lapply(path_file_mod, function(x){
+ 
+   list_dim <- lapply(path_file_mod, function(x){
     # read
     file <- fread(file = x)
     dim_file <- dim(file)[2]
   })
-  
+
   names(list_dim) <- getAreas()
   
   ## trivial case 
@@ -262,12 +263,12 @@ test_that("create mingen file with one or empty column dimension of mod.txt file
   area_1 <- getAreas()[list_dim==1][1]
   
   # write for an area with file mod.txt NULL or nb columns == 1
-  writeInputTS(area = area_1, type = "mingen", 
+  writeInputTS(area = area_1, type = "mingen",
                data = M_mingen , overwrite = TRUE, opts = opts)
-  
+
   # use antaresRead to test
   read_ts_file <- readInputTS(mingen = "all", opts = opts)
-  
+
   # tests correct reading data
   # check col name "mingen"
   testthat::expect_true("mingen" %in% names(read_ts_file))

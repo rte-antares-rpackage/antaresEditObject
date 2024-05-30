@@ -30,4 +30,5 @@ New result: ERROR
 Failure ('test-createCluster.R:76:5'): Remove all clusters ──────────────────
 `antaresRead::readClusterDesc()` did not throw an error.
 
-
+## antaresEditObject 0.6.4 
+Patch version to break abusive dependencies with antaresRead in tests
