@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -70,6 +70,36 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.0" id="antareseditobject-070">antaresEditObject 0.7.0<small>2024-05-30</small><a class="anchor" aria-label="anchor" href="#antareseditobject-070"></a></h2>
+<blockquote>
+<p>Second-member coupling constraint scenarios</p>
+</blockquote>
+<p>NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :</p>
+<ul><li>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> / <code><a href="../reference/createBindingConstraint.html">createBindingConstraintBulk()</a></code>
+<ul><li>New parameters <code>group</code><br></li>
+<li>Parameter <code>values</code> is now list of <code>data.frame</code>
+</li>
+</ul></li>
+<li>
+<code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code>
+<ul><li>New parameters <code>group</code><br></li>
+<li>Parameter <code>values</code> is now list of <code>data.frame</code>
+</li>
+</ul></li>
+<li>
+<code><a href="../reference/removeBindingConstraint.html">removeBindingConstraint()</a></code> can now delete coupling constraints from the <code>group</code> parameter.</li>
+<li>
+<code><a href="../reference/scenario-builder.html">scenarioBuilder()</a></code> has 3 new parameters dedicated to use with binding constraints.</li>
+<li>
+<code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code> adds coupling constraints to the <code>scenariobuilder.dat</code> file.</li>
+</ul><div class="section level4">
+<h4 id="breaking-changes--0-7-0">Breaking changes :<a class="anchor" aria-label="anchor" href="#breaking-changes--0-7-0"></a></h4>
+<ul><li>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> is available with <strong>offset</strong> parameter in API mode</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.4" id="antareseditobject-064">antaresEditObject 0.6.4<small>2024-05-24</small><a class="anchor" aria-label="anchor" href="#antareseditobject-064"></a></h2>
 <p>BREAKING CHANGES : * Add UTF-8 encoding argument in <code>.getJobs()</code> * Unit tests no longer call the study in the antaresRead package for versions &gt; 8.0.0</p>
 <p>BUGFIXES : * <code><a href="../reference/createArea.html">createArea()</a></code>/<code><a href="../reference/editArea.html">editArea()</a></code> : in API mode, split data in nodalOptimization argument to write it in the expected files * <code><a href="../reference/editArea.html">editArea()</a></code> : not delete one of the two economic options if only one must be edited * Avoid data deletion in API mode for <code><a href="../reference/editArea.html">editArea()</a></code></p>
@@ -92,7 +122,7 @@
 <li>
 <code><a href="../reference/createCluster.html">createCluster()</a></code> parameter <code>list_pollutants</code> default value to NULL.</li>
 <li>
-<code><a href="../reference/create-binding-constraint.html">createBindingConstraint()</a></code> parameter <code>coefficients</code> must be alphabetically ordered.</li>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> parameter <code>coefficients</code> must be alphabetically ordered.</li>
 <li>
 <code>.createCluster()</code> default matrix in API mode.</li>
 <li>
@@ -262,7 +292,7 @@
 <li>Antares v830 : <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> function to activate Adequacy Patch and set parameters. + <code><a href="../reference/createArea.html">createArea()</a></code> and <code><a href="../reference/editArea.html">editArea()</a></code> support for new adequacy_patch.ini file.</li>
 <li>Antares v820 : <code><a href="../reference/createLink.html">createLink()</a></code> and <code><a href="../reference/editLink.html">editLink()</a></code> have a new argument <code>tsLink</code> allowing to write transmission capacities time-series.</li>
 <li>
-<code><a href="../reference/create-binding-constraint.html">createBindingConstraintBulk()</a></code> allow to create multiple binding constraints at once.</li>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraintBulk()</a></code> allow to create multiple binding constraints at once.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h4>
@@ -271,7 +301,7 @@
 <div class="section level4">
 <h4 id="variant-management-with-api-0-4-0">Variant management with API<a class="anchor" aria-label="anchor" href="#variant-management-with-api-0-4-0"></a></h4>
 <p>This release include some new features to interact with Antares Web.</p>
-<ul><li>Main functions are now compatible to interact with a variant through the API: <code><a href="../reference/createArea.html">createArea()</a></code>, <code><a href="../reference/editArea.html">editArea()</a></code>, <code><a href="../reference/removeArea.html">removeArea()</a></code>, <code><a href="../reference/createLink.html">createLink()</a></code>, <code><a href="../reference/editLink.html">editLink()</a></code>, <code><a href="../reference/removeLink.html">removeLink()</a></code>, <code><a href="../reference/createCluster.html">createCluster()</a></code>, <code><a href="../reference/editCluster.html">editCluster()</a></code>, <code><a href="../reference/removeCluster.html">removeCluster()</a></code>, <code><a href="../reference/create-binding-constraint.html">createBindingConstraint()</a></code>, <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code>, <code><a href="../reference/removeBindingConstraint.html">removeBindingConstraint()</a></code>, <code><a href="../reference/createDistrict.html">createDistrict()</a></code>, <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>, <code><a href="../reference/updateInputSettings.html">updateInputSettings()</a></code>, <code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code>, <code><a href="../reference/updateOutputSettings.html">updateOutputSettings()</a></code>, <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code>, <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code>, <code><a href="../reference/scenario-builder.html">readScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">clearScenarioBuilder()</a></code>, <code><a href="../reference/writeWaterValues.html">writeWaterValues()</a></code>, <code><a href="../reference/createDSR.html">createDSR()</a></code>, <code><a href="../reference/createPSP.html">createPSP()</a></code>.</li>
+<ul><li>Main functions are now compatible to interact with a variant through the API: <code><a href="../reference/createArea.html">createArea()</a></code>, <code><a href="../reference/editArea.html">editArea()</a></code>, <code><a href="../reference/removeArea.html">removeArea()</a></code>, <code><a href="../reference/createLink.html">createLink()</a></code>, <code><a href="../reference/editLink.html">editLink()</a></code>, <code><a href="../reference/removeLink.html">removeLink()</a></code>, <code><a href="../reference/createCluster.html">createCluster()</a></code>, <code><a href="../reference/editCluster.html">editCluster()</a></code>, <code><a href="../reference/removeCluster.html">removeCluster()</a></code>, <code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code>, <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code>, <code><a href="../reference/removeBindingConstraint.html">removeBindingConstraint()</a></code>, <code><a href="../reference/createDistrict.html">createDistrict()</a></code>, <code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code>, <code><a href="../reference/updateInputSettings.html">updateInputSettings()</a></code>, <code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code>, <code><a href="../reference/updateOutputSettings.html">updateOutputSettings()</a></code>, <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code>, <code><a href="../reference/writeInputTS.html">writeInputTS()</a></code>, <code><a href="../reference/scenario-builder.html">readScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code>, <code><a href="../reference/scenario-builder.html">clearScenarioBuilder()</a></code>, <code><a href="../reference/writeWaterValues.html">writeWaterValues()</a></code>, <code><a href="../reference/createDSR.html">createDSR()</a></code>, <code><a href="../reference/createPSP.html">createPSP()</a></code>.</li>
 <li>New functions to use or create variants: <code><a href="../reference/variant.html">useVariant()</a></code>, <code><a href="../reference/variant.html">createVariant()</a></code>.</li>
 <li>New function to create studies on AntaREST server: <code><a href="../reference/create-study.html">createStudyAPI()</a></code>.</li>
 <li>New function to search studies on AntaREST server: <code><a href="../reference/searchStudy.html">searchStudy()</a></code>.</li>

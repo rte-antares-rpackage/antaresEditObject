@@ -18,7 +18,7 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.6.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
       </span>
     </div>
 
@@ -78,11 +78,14 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scenarioBuilder</span><span class="op">(</span></span>
-<span>  <span class="va">n_scenario</span>,</span>
+<span>  n_scenario <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  n_mc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  areas <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  areas_rand <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group_bc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group_bc_rand <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  coef_hydro_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -130,8 +133,20 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
 <dd><p>Areas for which to use <code>"rand"</code>.</p></dd>
 
 
+<dt>group_bc</dt>
+<dd><p><code>character</code> Bindgind constraints's groups names to use.</p></dd>
+
+
+<dt>group_bc_rand</dt>
+<dd><p><code>character</code> Bindgind constraints which to use <code>"rand"</code>.</p></dd>
+
+
 <dt>coef_hydro_levels</dt>
 <dd><p>Hydro levels coefficients.</p></dd>
+
+
+<dt>mode</dt>
+<dd><p><code>character</code> "bc" to edit binding constraints.</p></dd>
 
 
 <dt>opts</dt>
@@ -150,7 +165,7 @@ Read, create, update &amp;amp; deduplicate scenario builder."><!-- mathjax --><s
 <dt>ldata</dt>
 <dd><p>A <code>matrix</code> obtained with <code>scenarioBuilder</code>,
 or a named list of matrices obtained with <code>scenarioBuilder</code>, names must be
-'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.</p></dd>
+'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.</p></dd>
 
 
 <dt>series</dt>
@@ -185,6 +200,7 @@ Default is to read existing links and update them all.</p></dd>
 <ul><li><p><code>series = "ntc"</code> is only available with Antares &gt;= 8.2.0.</p></li>
 <li><p>For <code>series = "hl"</code>, each value must be between 0 and 1.</p></li>
 <li><p>User must enable/disable <code>custom-scenario</code> property in <code>settings/generaldata.ini</code> by himself.</p></li>
+<li><p><code>series = "bc"</code> is only available with Antares &gt;= 8.7.0.</p></li>
 </ul><p>For a single matrix, value of series can be :</p><ul><li><p>h or hydro</p></li>
 <li><p>hl or hydrolevels</p></li>
 <li><p>l or load</p></li>
@@ -237,6 +253,17 @@ Default is to read existing links and update them all.</p></dd>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a scenario builder matrix with </span></span></span>
+<span class="r-in"><span> <span class="co"># bindings constraints groups (study version &gt;= 8.7.0)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Use parameter "mode" with "bc"   </span></span></span>
+<span class="r-in"><span><span class="va">sbuilder</span> <span class="op">&lt;-</span> <span class="fu">scenarioBuilder</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_scenario <span class="op">=</span> <span class="fl">51</span>,</span></span>
+<span class="r-in"><span>  n_mc <span class="op">=</span> <span class="fl">2040</span>,</span></span>
+<span class="r-in"><span>  group_bc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"my_bc_1"</span>, <span class="st">"my_bc_2"</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>  group_bc_rand <span class="op">=</span> <span class="st">"my_bc_2"</span>,</span></span>
+<span class="r-in"><span>  mode <span class="op">=</span> <span class="st">"bc"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Read previous scenario builder</span></span></span>
 <span class="r-in"><span><span class="co"># in a matrix format</span></span></span>
 <span class="r-in"><span><span class="va">prev_sb</span> <span class="op">&lt;-</span> <span class="fu">readScenarioBuilder</span><span class="op">(</span><span class="op">)</span></span></span>
@@ -250,6 +277,8 @@ Default is to read existing links and update them all.</p></dd>
 <span class="r-in"><span><span class="co"># equivalent as</span></span></span>
 <span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>l <span class="op">=</span> <span class="va">sbuilder</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># for binding constraints (study version &gt;= 8.7.0)</span></span></span>
+<span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"bc"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># update several series</span></span></span>
 <span class="r-in"><span></span></span>

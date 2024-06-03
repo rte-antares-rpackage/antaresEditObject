@@ -46,6 +46,9 @@
     <loc>/reference/adequacyOptions.html</loc>
   </url>
   <url>
+    <loc>/reference/antaresEditObject-package.html</loc>
+  </url>
+  <url>
     <loc>/reference/antaresRead-reexports.html</loc>
   </url>
   <url>
@@ -88,13 +91,13 @@
     <loc>/reference/copyStudyWeb.html</loc>
   </url>
   <url>
-    <loc>/reference/create-binding-constraint.html</loc>
-  </url>
-  <url>
     <loc>/reference/create-study.html</loc>
   </url>
   <url>
     <loc>/reference/createArea.html</loc>
+  </url>
+  <url>
+    <loc>/reference/createBindingConstraint.html</loc>
   </url>
   <url>
     <loc>/reference/createCluster.html</loc>
@@ -194,6 +197,9 @@
   </url>
   <url>
     <loc>/reference/get_type_check_mingen_vs_maxpower_to_trigger.html</loc>
+  </url>
+  <url>
+    <loc>/reference/group_values_check.html</loc>
   </url>
   <url>
     <loc>/reference/importZipStudyWeb.html</loc>
