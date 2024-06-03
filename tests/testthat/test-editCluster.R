@@ -52,7 +52,6 @@ sapply(studies, function(study) {
 
 
 # v860 ----
-
 test_that("Edit cluster with pollutants params (new feature v8.6)",{
   
   opts_test <-createStudy(path = tempdir(), 

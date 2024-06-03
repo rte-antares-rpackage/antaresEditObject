@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.6.4
+Version: 0.7.0
 Authors@R: c(
     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
@@ -45,7 +45,8 @@ Imports:
     parallel,
     future,
     plyr,
-    yaml
+    yaml,
+    lifecycle
 Suggests: 
     testthat,
     covr,
