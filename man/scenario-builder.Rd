@@ -10,11 +10,14 @@
 \title{Read, create, update & deduplicate scenario builder}
 \usage{
 scenarioBuilder(
-  n_scenario,
+  n_scenario = 1,
   n_mc = NULL,
   areas = NULL,
   areas_rand = NULL,
+  group_bc = NULL,
+  group_bc_rand = NULL,
   coef_hydro_levels = NULL,
+  mode = NULL,
   opts = antaresRead::simOptions()
 )
 
@@ -52,7 +55,13 @@ deduplicateScenarioBuilder(
 
 \item{areas_rand}{Areas for which to use \code{"rand"}.}
 
+\item{group_bc}{\code{character} Bindgind constraints's groups names to use.}
+
+\item{group_bc_rand}{\code{character} Bindgind constraints which to use \code{"rand"}.}
+
 \item{coef_hydro_levels}{Hydro levels coefficients.}
+
+\item{mode}{\code{character} "bc" to edit binding constraints.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -63,7 +72,7 @@ deduplicateScenarioBuilder(
 
 \item{ldata}{A \code{matrix} obtained with \code{scenarioBuilder},
 or a named list of matrices obtained with \code{scenarioBuilder}, names must be
-'l', 'h', 'w', 's', 't', 'r', 'ntc' or 'hl', depending on the series to update.}
+'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.}
 
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
 
@@ -90,6 +99,7 @@ Read, create, update & deduplicate scenario builder.
 \item \code{series = "ntc"} is only available with Antares >= 8.2.0.
 \item For \code{series = "hl"}, each value must be between 0 and 1.
 \item User must enable/disable \code{custom-scenario} property in \code{settings/generaldata.ini} by himself.
+\item \code{series = "bc"} is only available with Antares >= 8.7.0.
 }
 
 For a single matrix, value of series can be :
@@ -141,6 +151,17 @@ sbuilder <- scenarioBuilder(
   )
 )
 
+# Create a scenario builder matrix with 
+ # bindings constraints groups (study version >= 8.7.0)
+  # Use parameter "mode" with "bc"   
+sbuilder <- scenarioBuilder(
+  n_scenario = 51,
+  n_mc = 2040,
+  group_bc = c("my_bc_1", "my_bc_2"), 
+  group_bc_rand = "my_bc_2",
+  mode = "bc"
+)
+
 # Read previous scenario builder
 # in a matrix format
 prev_sb <- readScenarioBuilder()
@@ -154,6 +175,8 @@ updateScenarioBuilder(ldata = sbuilder, series = "load") # can be l instead of l
 # equivalent as
 updateScenarioBuilder(ldata = list(l = sbuilder))
 
+# for binding constraints (study version >= 8.7.0)
+updateScenarioBuilder(ldata = sbuilder, series = "bc")
 
 # update several series
 

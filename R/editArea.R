@@ -13,8 +13,8 @@
 #' 
 #' @export
 #' 
-#' @importFrom antaresRead simOptions setSimulationPath
-#' @importFrom utils read.table write.table
+#' @importFrom antaresRead simOptions setSimulationPath readIniFile
+#' @importFrom utils modifyList
 #' @importFrom assertthat assert_that
 #' @importFrom grDevices col2rgb
 #'
@@ -51,106 +51,60 @@ editArea <- function(name,
                      adequacy = NULL,
                      opts = antaresRead::simOptions()) {
   
-  assertthat::assert_that(inherits(opts, "simOptions"))
+  assert_that(inherits(opts, "simOptions"))
   validate_area_name(name)
   # name of the area can contain upper case in areas/list.txt (and use in graphics)
   # (and use in graphics) but not in the folder name (and use in all other case)
-  list_name <- name
   name <- tolower(name)
   
+  check_area_name(name, opts)
+  
+  is_830 <- opts$antaresVersion >= 830
+  nodal_by_targets <- .split_nodalOptimization_by_target(nodalOptimization)
+  nodalOptimization <- nodal_by_targets[["toIniOptimization"]]
+  nodalThermal <- nodal_by_targets[["toIniAreas"]]
+   
   # API block
   if (is_api_study(opts)) {
     
-    if (!is.null(nodalOptimization)) {
-      cmd <- api_command_generate(
-        action = "update_config", 
-        target = sprintf("input/areas/%s/optimization/nodal optimization", name),
-        data = nodalOptimization
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update area's nodal optimization option: {msg_api}"),
-        cli_command_registered("update_config")
-      )
-    }
-    
-    if (!is.null(filtering)) {
-      cmd <- api_command_generate(
-        action = "update_config", 
-        target = sprintf("input/areas/%s/optimization/filtering", name),
-        data = filtering
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update area's filtering option: {msg_api}"),
-        cli_command_registered("update_config")
-      )
-    }
-    
-    if (opts$antaresVersion >= 830){
-      if (!is.null(adequacy)) {
-        cmd <- api_command_generate(
-          action = "update_config", 
-          target = sprintf("input/areas/%s/adequacy_patch/adequacy-patch", name),
-          data = adequacy
-        )
-        api_command_register(cmd, opts = opts)
-        `if`(
-          should_command_be_executed(opts), 
-          api_command_execute(cmd, opts = opts, text_alert = "Update area's adequacy patch mode: {msg_api}"),
-          cli_command_registered("update_config")
-        )
-      }
+    .api_command_execute_edit_area(name = name, new_values = nodalOptimization, type = "nodalOptimization", opts = opts)
+    .api_command_execute_edit_area(name = name, new_values = nodalThermal, type = "nodalThermal", opts = opts)
+    .api_command_execute_edit_area(name = name, new_values = filtering, type = "filtering", opts = opts)
+    if (is_830) {
+      .api_command_execute_edit_area(name = name, new_values = adequacy, type = "adequacy", opts = opts)
     }
     
     return(invisible(opts))
   }
-  
-  v7 <- is_antares_v7(opts)
-  
-  check_area_name(name, opts)
   
   if (opts$mode != "Input") 
     stop("You can initialize an area only in 'Input' mode")
   
   # Input path
   inputPath <- opts$inputPath
-  assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
-  infoIni <- readIniFile(file.path(inputPath, "areas", name, "optimization.ini"))
+  assert_that(!is.null(inputPath) && file.exists(inputPath))
   
+  # input/areas/<area>/optimization.ini
+  optimization_area_path <- file.path(inputPath, "areas", name, "optimization.ini")
+  infoIni <- readIniFile(file = optimization_area_path)
   
-  nodalOptimizationThermal <- nodalOptimization[names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
-  nodalOptimization <- nodalOptimization[!names(nodalOptimization) %in% c("unserverdenergycost", "spilledenergycost")]
   if (!is.null(nodalOptimization)) {
-    for (i in names(nodalOptimization)) {
-      infoIni$`nodal optimization`[[i]] <- nodalOptimization[[i]]
+    for (property in names(nodalOptimization)) {
+      infoIni$`nodal optimization`[[property]] <- nodalOptimization[[property]]
     }
   }
   
   if (!is.null(filtering)) {
-    for (i in names(filtering)) {
-      infoIni$filtering[[i]] <- filtering[[i]]
+    for (property in names(filtering)) {
+      infoIni$filtering[[property]] <- filtering[[property]]
     }
   }
   
-  # optimization ini file
-  writeIni(
-    listData = infoIni ,
-    pathIni = file.path(inputPath, "areas", name, "optimization.ini"),
-    overwrite = TRUE
-  )
+  writeIni(listData = infoIni, pathIni = optimization_area_path, overwrite = TRUE)
   
-  color_loc_ini <- readIniFile(file.path(inputPath, "areas", name, "ui.ini"))
-  
-  names(color_loc_ini)
-  
-  if (!is.null(localization)) {
-    localization <- as.character(localization)
-    color_loc_ini$ui$x <- localization[1]
-    color_loc_ini$ui$y <- localization[2]
-  }
+  # input/areas/<area>/ui.ini
+  ui_area_path <- file.path(inputPath, "areas", name, "ui.ini")
+  color_loc_ini <- readIniFile(file = ui_area_path)
   
   if (!is.null(localization)) {
     localization <- as.character(localization)
@@ -167,45 +121,37 @@ editArea <- function(name,
     color_loc_ini$layerColor = list(`0` = as.vector(grDevices::col2rgb(color)))
   }
   
-  writeIni(
-    listData = color_loc_ini,
-    pathIni = file.path(inputPath, "areas", name, "ui.ini"),
-    overwrite = TRUE
-  )
+  writeIni(listData = color_loc_ini, pathIni = ui_area_path, overwrite = TRUE)
   
-  if (!is.null(nodalOptimizationThermal)) {
-    
+  # input/thermal/areas.ini
+  if (!is.null(nodalThermal)) {
     
     thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
-    if (file.exists(thermal_areas_path)) {
-      thermal_areas <- readIniFile(file = thermal_areas_path)
-    } else {
-      thermal_areas <- list()
-    }
-    thermal_areas$unserverdenergycost[[name]] <- nodalOptimizationThermal[["unserverdenergycost"]]
-    thermal_areas$spilledenergycost[[name]] <- nodalOptimizationThermal[["spilledenergycost"]]
-    writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
+    assert_that(file.exists(thermal_areas_path), msg = "File input/thermal/areas.ini does not exist.")
+    thermal_areas <- readIniFile(file = thermal_areas_path)
     
+    LnodalThermal <- list()
+    for (property in names(nodalThermal)) {
+      LnodalThermal[[property]][[name]] <- nodalThermal[[property]]
+    }
+    
+    writeIni(listData = modifyList(x = thermal_areas, val = LnodalThermal), pathIni = thermal_areas_path, overwrite = TRUE)
   }
   
-  # adequacy patch ini file
-  if (opts$antaresVersion >= 830){
-    adequacyIni <- readIniFile(file.path(inputPath, "areas", name, "adequacy_patch.ini"))
+  # input/areas/<area>/adequacy_patch.ini
+  if (is_830) {
+    adequacy_area_path <- file.path(inputPath, "areas", name, "adequacy_patch.ini")
+    adequacyIni <- readIniFile(file = adequacy_area_path)
     
     if (!is.null(adequacy)) {
-      for (i in names(adequacy)) {
-        adequacyIni$`adequacy-patch`[[i]] <- adequacy[[i]]
+      for (property in names(adequacy)) {
+        adequacyIni$`adequacy-patch`[[property]] <- adequacy[[property]]
       }
     }
     
-    writeIni(
-      listData = adequacyIni ,
-      pathIni = file.path(inputPath, "areas", name, "adequacy_patch.ini"),
-      overwrite = TRUE
-    )
+    writeIni(listData = adequacyIni, pathIni = adequacy_area_path, overwrite = TRUE)
   }
-
- 
+  
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
@@ -215,248 +161,67 @@ editArea <- function(name,
 }
 
 
-# OLD 
-# ## Hydro  
-# 
-# # capacity
-# con <- file(description = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", name, ".txt")), open = "wt")
-# writeLines(text = character(0), con = con)
-# close(con)
-# 
-# reservoir <- matrix(data = rep(c(0, 0.5, 1), each = 12), ncol = 3)
-# utils::write.table(
-#   x = reservoir, row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt"))
-# )
-# 
-# if (v7) {
-#   creditmodulations <- matrix(data = rep(1, 202), nrow = 2)
-#   utils::write.table(
-#     x = creditmodulations, row.names = FALSE, col.names = FALSE, sep = "\t",
-#     file = file.path(inputPath, "hydro", "common", "capacity", paste0("creditmodulations_", name, ".txt"))
-#   )
-#   
-#   inflowPattern <- matrix(data = rep(1, 365), ncol = 1)
-#   utils::write.table(
-#     x = inflowPattern, row.names = FALSE, col.names = FALSE, sep = "\t",
-#     file = file.path(inputPath, "hydro", "common", "capacity", paste0("inflowPattern_", name, ".txt"))
-#   )
-#   
-#   maxpower <- matrix(data = rep(c(0, 24, 0, 24), each = 365), ncol = 4)
-#   utils::write.table(
-#     x = maxpower, row.names = FALSE, col.names = FALSE, sep = "\t",
-#     file = file.path(inputPath, "hydro", "common", "capacity", paste0("maxpower_", name, ".txt"))
-#   )
-#   
-#   reservoir <- matrix(data = rep(c("0", "0.500", "1"), each = 365), ncol = 3)
-#   utils::write.table(
-#     x = reservoir, row.names = FALSE, col.names = FALSE, sep = "\t", quote = FALSE,
-#     file = file.path(inputPath, "hydro", "common", "capacity", paste0("reservoir_", name, ".txt"))
-#   )
-#   
-#   con <- file(description = file.path(inputPath, "hydro", "common", "capacity", paste0("waterValues_", name, ".txt")), open = "wt")
-#   writeLines(text = character(0), con = con)
-#   close(con)
-# }
-# 
-# # prepro
-# # dir
-# dir.create(path = file.path(inputPath, "hydro", "prepro", name), showWarnings = FALSE)
-# 
-# con <- file(description = file.path(inputPath, "hydro", "prepro", name, "energy.txt"), open = "wt")
-# writeLines(text = character(0), con = con)
-# close(con)
-# 
-# writeIni(
-#   listData = list(`prepro` = list(`intermonthly-correlation` = 0.5)),
-#   pathIni = file.path(inputPath, "hydro", "prepro", name, "prepro.ini"),
-#   overwrite = overwrite
-# )
-# 
-# # series
-# # dir
-# dir.create(path = file.path(inputPath, "hydro", "series", name), showWarnings = FALSE)
-# 
-# con <- file(description = file.path(inputPath, "hydro", "series", name, "mod.txt"), open = "wt")
-# writeLines(text = character(0), con = con)
-# close(con)
-# 
-# con <- file(description = file.path(inputPath, "hydro", "series", name, "ror.txt"), open = "wt")
-# writeLines(text = character(0), con = con)
-# close(con)
-# 
-# 
-# 
-# ## Links  
-# # dir
-# dir.create(path = file.path(inputPath, "links", name), showWarnings = FALSE)
-# writeIni(
-#   listData = list(),
-#   pathIni = file.path(inputPath, "links", name, "properties.ini"),
-#   overwrite = overwrite
-# )
-# 
-# 
-# 
-# ## Load  
-# 
-# # prepro
-# # dir
-# dir.create(path = file.path(inputPath, "load", "prepro", name), showWarnings = FALSE)
-# 
-# conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
-# utils::write.table(
-#   x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "load", "prepro", name, "conversion.txt")
-# )
-# 
-# data <- matrix(data = c(rep(1, 2*12), rep(0, 12), rep(1, 3*12)), nrow = 12)
-# utils::write.table(
-#   x = data, row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "load", "prepro", name, "data.txt")
-# )
-# 
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "load", "prepro", name, "k.txt")
-# )
-# 
-# writeIni(
-#   listData = list(),
-#   pathIni = file.path(inputPath, "load", "prepro", name, "settings.ini"),
-#   overwrite = overwrite
-# )
-# 
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "load", "prepro", name, "translation.txt")
-# )
-# 
-# # series
-# write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "load", "series", paste0("load_", name, ".txt"))
-# )
-# 
-# 
-# 
-# ## Misc-gen  
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "misc-gen", paste0("miscgen-", name, ".txt"))
-# )
-# 
-# 
-# ## Reserves  
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "reserves", paste0(name, ".txt"))
-# )
-# 
-# 
-# ## Solar  
-# 
-# # prepro
-# # dir
-# dir.create(path = file.path(inputPath, "solar", "prepro", name), showWarnings = FALSE)
-# 
-# conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
-# utils::write.table(
-#   x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "solar", "prepro", name, "conversion.txt")
-# )
-# 
-# data <- matrix(data = c(rep(1, 2*12), rep(0, 12), rep(1, 3*12)), nrow = 12)
-# utils::write.table(
-#   x = data, row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "solar", "prepro", name, "data.txt")
-# )
-# 
-# write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "solar", "prepro", name, "k.txt")
-# )
-# 
-# writeIni(
-#   listData = list(),
-#   pathIni = file.path(inputPath, "solar", "prepro", name, "settings.ini"),
-#   overwrite = overwrite
-# )
-# 
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "solar", "prepro", name, "translation.txt")
-# )
-# 
-# # series
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "solar", "series", paste0("solar_", name, ".txt"))
-# )
-# 
-# 
-# ## Thermal  
-# 
-# # dir
-# dir.create(path = file.path(inputPath, "thermal", "clusters", name), showWarnings = FALSE)
-# 
-# writeIni(
-#   listData = list(),
-#   pathIni = file.path(inputPath, "thermal", "clusters", name, "list.ini"),
-#   overwrite = overwrite
-# )
-# 
-# # thermal/areas ini file
-# thermal_areas_path <- file.path(inputPath, "thermal", "areas.ini")
-# if (file.exists(thermal_areas_path)) {
-#   thermal_areas <- readIniFile(file = thermal_areas_path)
-# } else {
-#   thermal_areas <- list()
-# }
-# thermal_areas$unserverdenergycost[[name]] <- nodalOptimization[["unserverdenergycost"]]
-# thermal_areas$spilledenergycost[[name]] <- nodalOptimization[["spilledenergycost"]]
-# writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
-# 
-# 
-# 
-# ## Wind  
-# 
-# # prepro
-# # dir
-# dir.create(path = file.path(inputPath, "wind", "prepro", name), showWarnings = FALSE)
-# 
-# conversion <- matrix(data = c(-9999999980506447872,	0,	9999999980506447872, 0, 0, 0), nrow = 2, byrow = TRUE)
-# utils::write.table(
-#   x = conversion, row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "wind", "prepro", name, "conversion.txt")
-# )
-# 
-# data <- matrix(data = c(rep(1, 2*12), rep(0, 12), rep(1, 3*12)), nrow = 12)
-# write.table(
-#   x = data, row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "wind", "prepro", name, "data.txt")
-# )
-# 
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "wind", "prepro", name, "k.txt")
-# )
-# 
-# writeIni(
-#   listData = list(),
-#   pathIni = file.path(inputPath, "wind", "prepro", name, "settings.ini"),
-#   overwrite = overwrite
-# )
-# 
-# write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "wind", "prepro", name, "translation.txt")
-# )
-# 
-# # series
-# utils::write.table(
-#   x = character(0), row.names = FALSE, col.names = FALSE, sep = "\t",
-#   file = file.path(inputPath, "wind", "series", paste0("wind_", name, ".txt"))
-# )
+.generate_params_editArea <- function() {
+  
+  param_editArea <- list("nodalOptimization" = list("target" = "input/areas/%s/optimization/nodal optimization/%s",
+                                                    "message" = "Update area's nodal optimization option: {msg_api}"
+                                                    ),
+                         "nodalThermal" = list("target" = "input/thermal/areas/%s/%s",
+                                               "message" = "Update area's energy cost option: {msg_api}"
+                                               ),
+                         "filtering" = list("target" = "input/areas/%s/optimization/filtering/%s",
+                                            "message" = "Update area's filtering option: {msg_api}"
+                                            ),
+                         "adequacy" = list("target" = "input/areas/%s/adequacy_patch/adequacy-patch/%s",
+                                           "message" = "Update area's adequacy patch mode: {msg_api}"
+                                           )
+                         )
+
+  return(param_editArea)
+}
 
 
+
+#' Edit area's parameters in API mode.
+#'
+#' @param name Name of the area to edit.
+#' @param new_values Values of the parameters to edit.
+#' @param type Type of edition.
+#'
+#' @template opts
+#'
+#' @importFrom assertthat assert_that
+#'
+.api_command_execute_edit_area <- function(name, new_values, type, opts) {
+  
+  assert_that(type %in% c("nodalOptimization", "nodalThermal", "filtering", "adequacy"))
+  
+  if (!is.null(new_values)) {
+    params <- .generate_params_editArea()
+    params_type <- params[[type]]
+    
+    actions <- lapply(
+      X = seq_along(new_values),
+      FUN = function(i) {
+        property <- names(new_values)[i]
+        if (type == "nodalThermal") {
+          url_elements <- c(property, name)
+        } else {
+          url_elements <- c(name, property)
+        }
+        list(
+          target = sprintf(params_type[["target"]], url_elements[1], url_elements[2]),
+          data = new_values[[i]]
+        )
+      }
+    )
+    actions <- setNames(actions, rep("update_config", length(actions)))
+    cmd <- do.call(api_commands_generate, actions)
+    api_command_register(cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts),
+      api_command_execute(cmd, opts = opts, text_alert = params_type[["message"]]),
+      cli_command_registered("update_config")
+    )
+  }
+}

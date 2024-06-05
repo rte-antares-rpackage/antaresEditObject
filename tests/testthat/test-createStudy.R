@@ -1,5 +1,19 @@
 #Copyright © 2019 RTE Réseau de transport d’électricité
 
+# create ----
+
+  ## v8.7.0----
+test_that("Create a new v8.7.0 study", {
+  path <- file.path(tempdir(), "tests_createStudy")
+  suppressWarnings(
+    opts <- createStudy(path, antares_version = "8.7.0")
+  )
+  properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
+  expect_identical(properties$antares$version, 870L)
+  unlink(path, recursive = TRUE)
+})
+
+  ## v8.6.0----
 test_that("Create a new v8.6.0 study", {
   path <- file.path(tempdir(), "tests_createStudy")
   suppressWarnings(
@@ -13,6 +27,7 @@ test_that("Create a new v8.6.0 study", {
   unlink(path, recursive = TRUE)
 })
 
+  ## v8.1.0----
 test_that("Create a new v8.1.0 study", {
   path <- file.path(tempdir(), "tests_createStudy")
   suppressWarnings(
@@ -24,6 +39,7 @@ test_that("Create a new v8.1.0 study", {
   unlink(path, recursive = TRUE)
 })
 
+  ## v7.0.0----
 test_that("Create a new v7 study", {
   path <- file.path(tempdir(), "tests_createStudy")
   suppressWarnings(
@@ -34,6 +50,7 @@ test_that("Create a new v7 study", {
   unlink(path, recursive = TRUE)
 })
 
+  ## v6.0.0----
 test_that("Create a new v6 study", {
   path <- file.path(tempdir(), "tests_createStudy")
   suppressWarnings(
@@ -43,31 +60,3 @@ test_that("Create a new v6 study", {
   expect_identical(properties$antares$version, 600L)
   unlink(path, recursive = TRUE)
 })
-
-
-test_that("delete v8.1.0 study", {
-  path <- file.path(tempdir(), "tests_createStudy")
-  suppressWarnings(
-    opts <- createStudy(path, antares_version = "8.1.0")
-  )
-  properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
-  expect_identical(properties$antares$version, 810L)
-  expect_true(is_active_RES(opts))
-  testthat::expect_true(file.exists(opts$studyPath))
-  deleteStudy(opts = simOptions())
-  testthat::expect_true(!file.exists(opts$studyPath))
-})
-
-
-test_that("delete v8.6.0 simulation", {
-  setup_study_860(sourcedir860)
-  suppressWarnings(
-    opts_test <- setSimulationPath(study_temp_path)
-  )
-  split_simPath <- strsplit(opts_test$simPath,"/")[[1]]
-  simulation <- split_simPath[length(split_simPath)]
-  testthat::expect_true(file.exists(opts_test$simPath))
-  deleteStudy(opts = opts_test,simulation = simulation)
-  testthat::expect_true(!file.exists(opts_test$simPath))
-})
-

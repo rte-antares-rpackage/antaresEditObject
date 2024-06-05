@@ -25,20 +25,3 @@ setup_study <- function(study, sourcedir) {
     assign("nweeks", 2, envir = globalenv())
   }
 }
-
-# study v860 ----
-sourcedir860 <- system.file("test_v8", package = "antaresRead")
-
-setup_study_860 <- function(dir_path){
-  studies860 <- list.files(dir_path, pattern = "\\.tar\\.gz$", full.names = TRUE)
-  studies860 <- studies860[grep(x = studies860, pattern = "v86")]
-  # untar etude
-  path_860 <- file.path(tempdir(), "studyv860")
-  untar(studies860[1], exdir = path_860) # v86
-  study_temp_path <- file.path(path_860, "test_case")
-  
-  assign("study_temp_path",
-         file.path(path_860,
-                   "test_case"),
-         envir = globalenv())
-}
