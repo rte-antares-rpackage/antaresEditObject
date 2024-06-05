@@ -2,12 +2,11 @@
 test_that("Edit a link filters", {
   
   pasteVectorItemsWithComma <- function(x) paste(x,collapse=", ")
-  
-  setup_study_860(sourcedir860)
-  suppressWarnings(
-    opts_test <- setSimulationPath(study_temp_path,simulation="input")
-  )
-  
+
+  opts_test <-createStudy(path = tempdir(), 
+                          study_name = "edit-link", 
+                          antares_version = "8.6.0")
+
   opts_test <- createArea(name="area1",opts=opts_test)
   opts_test <- createArea(name="area2",opts=opts_test)
   opts_test <- createLink(from="area1",to="area2",opts=opts_test)
