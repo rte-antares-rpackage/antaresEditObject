@@ -18,7 +18,8 @@ NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :
  
 ### Breaking changes  :  
 
-* `createBindingConstraint()` is available with **offset** parameter in API mode 
+* `createBindingConstraint()` is available with **offset** parameter in API mode
+* delete `antaresRead-reexports.R` and adjust scripts to have a clean package
 
 
 # antaresEditObject 0.6.4 (development)
