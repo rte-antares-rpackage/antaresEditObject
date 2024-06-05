@@ -149,8 +149,8 @@ createClusterST <- function(area,
                 paste0(names_parameters, collapse= ", ")))
 
     # check values parameters
-  .st_mandatory_params(list_values = storage_parameters,
-                       opts = opts)
+  storage_parameters = .st_mandatory_params(list_values = storage_parameters,
+                                            opts = opts)
   
   
   # DATA parameters : default value + name txt file
@@ -319,13 +319,14 @@ createClusterST <- function(area,
       assertthat::assert_that(inherits(list_values$enabled, 
                                        "logical"))
     
-    if ("initiallevel" %in% names(storage_parameters) & "initialleveloptim" %in% names(storage_parameters)){
-      if (storage_parameters$initiallevel != 0.5 & !storage_parameters$initialleveloptim) {
+    if ("initiallevel" %in% names(list_values) & "initialleveloptim" %in% names(list_values)){
+      if (list_values$initiallevel != 0.5 & !list_values$initialleveloptim) {
         warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
-        storage_parameters$initiallevel <- 0.5
+        list_values$initiallevel <- 0.5
       }
     }
   }
+  return(list_values)
 }
 
 .is_ratio <- function(x, mess){
