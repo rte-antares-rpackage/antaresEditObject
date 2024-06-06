@@ -54,5 +54,5 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Remotes: 
-    rte-antares-rpackage/antaresRead@develop
+    rte-antares-rpackage/antaresRead@ant1777/dimbcgroup
 

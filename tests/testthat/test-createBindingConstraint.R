@@ -361,9 +361,8 @@ test_that("createBindingConstraint (default group value) v8.7", {
       enabled = FALSE,
       timeStep = "daily",
       operator = "both",
-      coefficients = c("at%fr" = 1), 
-      opts = opts_test
-    ), regexp = "Put right columns dimension"
+      coefficients = c("at%fr" = 1)), 
+    regexp = "Put right columns dimension"
   )
   
 })
@@ -399,9 +398,7 @@ testthat::test_that("createBindingConstraint with new group v8.7",{
     timeStep = "hourly",
     operator = "less", 
     group = name_group,
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    coefficients = c("at%fr" = 1))
   
   # ADD binding with multi cols
   df_multi_col <- scenar_values["lt"]
@@ -571,12 +568,57 @@ test_that("createBindingConstraintBulk v8.7", {
   
   # tests
   testthat::expect_true("constraints_bulk1" %in% 
-                          names(readBindingConstraints(opts = opts_test)))
+                          names(readBindingConstraints()))
   testthat::expect_true("constraints_bulk10" %in% 
-                          names(readBindingConstraints(opts = opts_test)))
+                          names(readBindingConstraints()))
+  
+  
+  
+  test_that("test bad dimension object INPUT v8.7", {
+    bad_object <-  list(
+      name = paste0("constraints_bulkBAD"),
+      id = paste0("constraints_bulkBAD"), 
+      values = scenar_values_daily, 
+      enabled = FALSE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk",
+      overwrite = TRUE
+    )
+    
+    bad_object <- append(list(bad_object), bindings_constraints)
+    
+    expect_error(
+      createBindingConstraintBulk(bad_object), 
+      regexp = "Problem dimension with group"
+    )
+    
+  })
   
 })
 
+
+
+test_that("test bad dimension object INPUT v8.7", {
+  bad_object <-  list(
+    name = paste0("constraints_bulkBAD"), 
+    id = paste0("constraints_bulkBAD"),
+    values = scenar_values_daily, 
+    enabled = FALSE, 
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = list("at%fr" = 1),
+    group= "group_bulk",
+    overwrite = TRUE
+  )
+  
+  expect_error(
+    createBindingConstraintBulk(list(bad_object)), 
+    regexp = "Problem dimension with group"
+  )
+  
+})
 
 # remove temporary study ----
 deleteStudy()
