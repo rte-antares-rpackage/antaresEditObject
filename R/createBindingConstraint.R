@@ -1,3 +1,5 @@
+utils::globalVariables(c('V2', 'dim_study', 'dim_input', 'name_group'))
+
 #' @title Create a binding constraint
 #' 
 #' @description 
@@ -5,7 +7,6 @@
 #' `r lifecycle::badge("experimental")` 
 #' 
 #' Create a new binding constraint in an Antares study.
-#' `createBindingConstraintBulk()` allow to create multiple constraints at once.
 #' 
 #'
 #' @param name The name for the binding constraint.
@@ -72,28 +73,6 @@
 #'     "area1%area3" = "2%3")
 #' )
 #' 
-#' # Create multiple constraints
-#' 
-#' # Prepare data for constraints 
-#' bindings_constraints <- lapply(
-#'   X = seq_len(100),
-#'   FUN = function(i) {
-#'     # use arguments of createBindingConstraint()
-#'     # all arguments must be provided !
-#'     list(
-#'       name = paste0("constraints", i), 
-#'       id = paste0("constraints", i), 
-#'       values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
-#'       enabled = FALSE, 
-#'       timeStep = "hourly",
-#'       operator = "both",
-#'       coefficients = list("area1%area2" = 1),
-#'       overwrite = TRUE
-#'     )
-#'   }
-#' )
-#' # create all constraints
-#' createBindingConstraintBulk(bindings_constraints)
 #' 
 #' # >= v8.7.0 :
 #' 
@@ -120,27 +99,6 @@
 #'                         values = values_data, 
 #'                         overwrite = TRUE)      
 #'                         
-#' # create multiple constraints
-#' bindings_constraints <- lapply(
-#'   X = seq_len(10),
-#'   FUN = function(i) {
-#'     # use arguments of createBindingConstraint()
-#'     # all arguments must be provided !
-#'     list(
-#'       name = paste0("constraints_bulk", i), 
-#'       id = paste0("constraints_bulk", i), 
-#'       values = values_data, 
-#'       enabled = FALSE, 
-#'       timeStep = "hourly",
-#'       operator = "both",
-#'       coefficients = list("at%fr" = 1),
-#'       group= "group_bulk",
-#'      overwrite = TRUE
-#'    )
-#'   }
-#' )
-#'  
-#' createBindingConstraintBulk(bindings_constraints)  
 #' }
 createBindingConstraint <- function(name, 
                                     id = tolower(name),
@@ -231,8 +189,8 @@ createBindingConstraint <- function(name,
           call. = FALSE)
       
       # v870 : check group and values
-      # no check for add BC with NULL values
-      group_values_check(group_value = group, 
+        # no check for add BC with NULL values
+      group_values_meta_check(group_value = group, 
                          values_data = values,
                          operator_check = operator,
                          output_operator = values_operator,
@@ -519,9 +477,10 @@ createBindingConstraint_ <- function(bindingConstraints,
 }
 
 
-
 #' @title Check dimension of time series for binding constraints
-#' @description Only needed for study version >= 870
+#' @description Only needed for study version >= 870  
+#' 
+#' Dimension of groups are compared with meta parameter `binding` returned by [antaresRead::simOptions()]
 #' @param group_value `character` name of group
 #' @param values_data `list` values used by the constraint
 #' @param operator_check `character` parameter "operator"
@@ -530,7 +489,7 @@ createBindingConstraint_ <- function(bindingConstraints,
 #' @template opts
 #' @export 
 #' @keywords internal
-group_values_check <- function(group_value, 
+group_values_meta_check <- function(group_value, 
                                values_data,
                                operator_check,
                                output_operator,
@@ -545,82 +504,48 @@ group_values_check <- function(group_value,
       return()
   }
   
+  # check dimension of new group (INPUT)
+  if(operator_check%in%"both"){
+    lt_dim <- dim(values_data$lt)[2]
+    gt_dim <- dim(values_data$gt)[2]
+    if(lt_dim!=gt_dim)
+      stop("dimension of values are not similar ",
+           call. = FALSE)
+    p_col_new <- lt_dim
+  }else
+    p_col_new <- dim(values_data[[output_operator]])[2]
   
-  # read existing binding constraint
-  # /!\/!\ function return "default values" (vector of 0)
-  existing_bc <- readBindingConstraints(opts = opts)
-  
-  # study with no BC or virgin study
-  if(is.null(existing_bc))
+  # check meta 
+    # study with no BC or virgin study
+  if(is.null(opts$binding)){
+    cat("\nThere is no binding constraint in this study\n")
     return()
-  
-  ##
-  # group creation
-  ##
-  
-  # check existing group Versus new group 
-  existing_groups <- unlist(
-    lapply(existing_bc, 
-           function(x){
-             x[["properties"]][["group"]]})
-  )
-  search_group_index <- grep(pattern = group_value, 
-                             x = existing_groups)
-  
-  # new group ? 
-  new_group <- identical(search_group_index, 
-                         integer(0))
-  if(new_group)
-    message("New group ", "'", group_value, "'", " will be created")
-  
-  # check dimension values existing group Versus new group 
-  if(!new_group){
-    # check dimension of existing group
-    p_col <- sapply(existing_bc[search_group_index], 
-                    function(x){
-                      op <- x[["properties"]][["operator"]]
-                      if(!op %in%"both")
-                        dim(x[["values"]])[2]
-                      else{
-                        lt_dim <- dim(x[["values"]][["less"]])[2]
-                        gt_dim <- dim(x[["values"]][["greater"]])[2]
-                        if(lt_dim!=gt_dim)
-                          stop("dimension of values are not similar for constraint : ", 
-                               x$properties$id, call. = FALSE)
-                        lt_dim
-                      }
-                    })
-    
-    # keep dimension >1 
-    names(p_col) <- NULL
-    if(identical(p_col[p_col>1], 
-                 integer(0))){
-      message("actual dimension of group : ", group_value, " is NULL or 1")
-      return(NULL) # continue process to write data
-    }else
-      p_col <- unique(p_col[p_col>1])
-    message("actual dimension of group : ", group_value, " is ", p_col)
-    
-    # check dimension of new group
-    if(operator_check%in%"both"){
-      lt_dim <- dim(values_data$lt)[2]
-      gt_dim <- dim(values_data$gt)[2]
-      if(lt_dim!=gt_dim)
-        stop("dimension of values are not similar ",
-             call. = FALSE)
-      p_col_new <- lt_dim
-    }else
-      p_col_new <- dim(values_data[[output_operator]])[2]
-    
-    # # no values provided
-    # if(is.null(p_col_new))
-    #  p_col_new <- 0
-    
-    if(p_col!=p_col_new) # & p_col!=0
-      stop(paste0("Put right columns dimension : ", 
-                  p_col, " for existing 'group' : ", 
-                  group_value), call. = FALSE)
   }
+  
+  # read dimension
+  dim_bc_group <- opts$binding 
+  
+  # group already exists ? 
+    # no duplicate groups in the study
+  is_exists <- grepl(pattern = group_value, 
+                     x = dim_bc_group[, .SD, .SDcols = 1])
+  
+  if(!is_exists){
+    cat("\nNew/existing group : ", 
+        paste0("'", group_value, "'"), 
+        " will be created/updated with dimension : ",
+        paste0("[", p_col_new, "]"),
+        "\n")
+    return()
+  }
+  
+  # dimension of existing group
+  p_col <- dim_bc_group[name_group%in%group_value][["dim"]]
+  
+  if(p_col!=p_col_new) # & p_col!=0
+    stop(paste0("Put right columns dimension : ", 
+                p_col, " for existing 'group' : ", 
+                group_value), call. = FALSE)
 }
 
 # v870
@@ -738,16 +663,92 @@ group_values_check <- function(group_value,
   }
 }
 
-
+#' @title Create multiple binding constraint at once.
+#' @description
 #' `r lifecycle::badge("experimental")` 
+#' `r antaresEditObject:::badge_api_no()` 
 #' @param constraints A `list` of several named `list` containing data to create binding constraints.
 #'  **Warning** all arguments for creating a binding constraints must be provided, see examples.
+#' @template opts
+#' @family binding constraints functions
+#' 
+#' @details 
+#' According to Antares version, usage may vary :
+#' 
+#' **>= v8.7.0** :  
+#'  - For each constraint name, one file .txt containing `<id>_lt.txt, <id>_gt.txt, <id>_eq.txt`.  
+#' 
+#'  - Parameter `values` must be named `list` ("lt", "gt", "eq") containing `data.frame` scenarized.  
+#' 
+#'  - Add parameter `group` in input list `constraints`
+#' 
+#' see example section below.
 #' @export
 #' 
-#' @rdname createBindingConstraint
+#' @examples
+#' \dontrun{
+#' # For Study version < v8.7.0
+#' # Create multiple constraints
+#' 
+#' # Prepare data for constraints 
+#' bindings_constraints <- lapply(
+#'   X = seq_len(100),
+#'   FUN = function(i) {
+#'     # use arguments of createBindingConstraint()
+#'     # all arguments must be provided !
+#'     list(
+#'       name = paste0("constraints", i), 
+#'       id = paste0("constraints", i), 
+#'       values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+#'       enabled = FALSE, 
+#'       timeStep = "hourly",
+#'       operator = "both",
+#'       coefficients = list("area1%area2" = 1),
+#'       overwrite = TRUE
+#'     )
+#'   }
+#' )
+#' # create all constraints
+#' createBindingConstraintBulk(bindings_constraints)
+#' 
+#' # For Study version >= v8.7.0 (add parameter `group`)
+#' 
+#' # data values (hourly)
+#' df <- matrix(data = rep(0, 8760 * 3), ncol = 3)
+#' values_data <- list(lt=df, 
+#'                     gt= df)   
+#' 
+#' # create multiple constraints
+#' bindings_constraints <- lapply(
+#'   X = seq_len(10),
+#'   FUN = function(i) {
+#'     # use arguments of createBindingConstraint()
+#'     # all arguments must be provided !
+#'     list(
+#'       name = paste0("constraints_bulk", i), 
+#'       id = paste0("constraints_bulk", i), 
+#'       values = values_data, 
+#'       enabled = FALSE, 
+#'       timeStep = "hourly",
+#'       operator = "both",
+#'       coefficients = list("at%fr" = 1),
+#'       group= "group_bulk",
+#'      overwrite = TRUE
+#'    )
+#'   }
+#' )
+#'  
+#' createBindingConstraintBulk(bindings_constraints)  
+#' }
+#' 
 createBindingConstraintBulk <- function(constraints,
                                         opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # check object dimension values only for versions >=8.7.0
+  if(opts$antaresVersion>=870)
+    .check_bulk_object_dim(constraints = constraints, 
+                           opts = opts)
   ## Ini file
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
@@ -781,4 +782,49 @@ createBindingConstraintBulk <- function(constraints,
 }
 
 
+# control group dimensions in bulk object
+  # control object with study
+.check_bulk_object_dim <- function(constraints,
+                                   opts = antaresRead::simOptions()){
+  assertthat::assert_that(inherits(constraints, "list"))
+  
+  # check input object
+  all_dim_group <- do.call("rbind", lapply(constraints, function(x){
+    data.table(name_group <- x$group,
+      dim_group <- dim(x$values[[1]])[2])})
+    )
+  
+  # no duplicated 
+  all_dim_group <- unique(all_dim_group)
+  select_dim <- all_dim_group[V2>1]
+  
+  # count
+  t_df <- table(select_dim)
+  check_row <- rowSums(t_df)
+  
+  if(any(check_row>1))
+    stop("Problem dimension with group : ", 
+         paste0(names(check_row[check_row>1]), sep = " "), 
+         call. = FALSE)
+  
+  # check input object with study
+  if(is.null(opts$binding))
+    return()
+  else{
+    merge_groups <- merge.data.table(x = opts$binding, 
+                     y = select_dim, 
+                     by.x ="name_group", 
+                     by.y = "V1")
+    
+    names(merge_groups) <- c("name_group", "dim_study", "dim_input")
+    
+    # check diff 
+    diff_dim <- merge_groups[dim_study!=dim_input]
+    
+    if(nrow(diff_dim)>0)
+      stop("Problem dimension with group in Study: ", 
+           paste0(diff_dim$name_group, sep = " "), 
+           call. = FALSE)
+  }
+}
 

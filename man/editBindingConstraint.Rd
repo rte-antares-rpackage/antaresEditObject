@@ -115,6 +115,7 @@ editBindingConstraint(name = "myconstraint",
 }
 \seealso{
 Other binding constraints functions: 
+\code{\link{createBindingConstraintBulk}()},
 \code{\link{createBindingConstraint}()},
 \code{\link{removeBindingConstraint}()}
 }
