@@ -226,6 +226,36 @@ sapply(studies, function(study) {
     expect_warning(removeBindingConstraint(name = "myimaginaryconstraint"))
   })
   
+  ## bulk ----
+  test_that("createBindingConstraintBulk v710", {
+    # Prepare data for constraints 
+    bindings_constraints <- lapply(
+      X = seq_len(5),
+      FUN = function(i) {
+        # use arguments of createBindingConstraint()
+        # all arguments must be provided !
+        list(
+          name = paste0("constraints_bulk", i), 
+          id = paste0("constraints_bulk", i), 
+          values = matrix(data = rep(1, 8760 * 3), ncol = 3), 
+          enabled = FALSE, 
+          timeStep = "hourly",
+          operator = "both",
+          coefficients = list("a%b" = 1),
+          overwrite = TRUE
+        )
+      }
+    )
+    # create all constraints
+    createBindingConstraintBulk(bindings_constraints)
+    
+    # tests
+    testthat::expect_true("constraints_bulk1" %in% 
+                            names(readBindingConstraints()))
+    testthat::expect_true("constraints_bulk5" %in% 
+                            names(readBindingConstraints()))
+  })
+  
   
   # remove temporary study
   unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
@@ -600,7 +630,7 @@ test_that("createBindingConstraintBulk v8.7", {
 
 
 
-test_that("test bad dimension object INPUT v8.7", {
+test_that("test bad dimension object with existing object in study v8.7", {
   bad_object <-  list(
     name = paste0("constraints_bulkBAD"), 
     id = paste0("constraints_bulkBAD"),
