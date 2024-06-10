@@ -172,11 +172,11 @@ editBindingConstraint <- function(name,
     
     # check group values
     if(!is.null(values))
-      group_values_check(group_value = group, 
-                       values_data = values,
-                       operator_check = operator,
-                       output_operator = values_operator,
-                       opts = opts)
+      group_values_meta_check(group_value = group, 
+                              values_data = values,
+                              operator_check = operator,
+                              output_operator = values_operator,
+                              opts = opts)
     
   }
     
