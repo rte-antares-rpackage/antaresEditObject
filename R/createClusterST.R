@@ -148,9 +148,11 @@ createClusterST <- function(area,
     stop(append("Parameter 'st-storage' must be named with the following elements: ", 
                 paste0(names_parameters, collapse= ", ")))
 
-    # check values parameters
-  storage_parameters = .st_mandatory_params(list_values = storage_parameters,
-                                            opts = opts)
+  # check values parameters
+  storage_parameters <- .st_mandatory_params(list_values = storage_parameters,
+                                             area = area,
+                                             cluster_name = cluster_name,
+                                             opts = opts)
   
   
   # DATA parameters : default value + name txt file
@@ -320,7 +322,7 @@ createClusterST <- function(area,
       assertthat::assert_that(inherits(list_values$enabled, 
                                        "logical"))
     if(file.exists(file.path(opts$studyPath,"input","st-storage","clusters",area,"list.ini"))){
-      ini = readIni(pathIni = file.path("input","st-storage","clusters",area), opts = opts)
+      ini = readIni(pathIni = file.path("input","st-storage","clusters",area,"list"), opts = opts)
       initialleveloptim_ini = ini[[cluster_name]][["initialleveloptim"]]
     } else {
       initialleveloptim_ini = FALSE
