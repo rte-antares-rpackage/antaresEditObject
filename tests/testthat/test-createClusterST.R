@@ -11,7 +11,6 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
   area_test_clust = "al" 
   createArea(name = area_test_clust)
   
-  
   # study parameters
   # version ? == is ST study compatibility
   # valid groups ?
@@ -28,7 +27,7 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
                          regexp = "Input data for")
   
   # cluster already exist in given area, with same name and group
-  
+
   createClusterST(area_test_clust, 
                   cluster_test_name, group_test_name,
                   add_prefix = TRUE)
@@ -48,11 +47,11 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
   opts_test <- createClusterST(area_test_clust, 
                                "cluster1") 
   
-  
   namecluster_check <- paste(area_test_clust, "cluster1", sep = "_")
   testthat::expect_true(namecluster_check %in% 
                           levels(readClusterSTDesc(opts = opts_test)$cluster))
   
+
   # check default parameters(names + values)
   info_clusters <- readClusterSTDesc()
   info_clusters <- info_clusters[cluster %in% namecluster_check, ]
@@ -107,16 +106,15 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
   # 
   real_names_cols <- unlist(lapply(storage_value, `[[`, 2), use.names = FALSE)
   names(storage_value) <- real_names_cols
-  
   df_ref_default_value <- data.table::setDT(lapply(storage_value, `[[`, 1), )
   df_ref_default_value <- melt(df_ref_default_value,
                                variable.name = "name_file",
                                value.name = "mean",
                                variable.factor = FALSE)
-  
+
   # Sort by name_file
   df_ref_default_value <- df_ref_default_value[base::order(df_ref_default_value$name_file)]
-  
+
   # mean of default TS created
   test_txt_value <- st_ts[area %in% area_test_clust,
                           list(mean=mean(`st-storage`)),
@@ -170,7 +168,6 @@ test_that("Create short-term storage cluster (new feature v8.6)",{
                            levels(readClusterSTDesc(opts = opts_test)$cluster))
   #Delete study
   unlink(opts_test$studyPath, recursive = TRUE)
-  
 })
 
 
