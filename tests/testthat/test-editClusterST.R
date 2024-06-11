@@ -114,19 +114,59 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                                                     "reservoircapacity")])
   testthat::expect_equal(list_params, value_to_test)
   
-  ### bad edit values. v8.8.0 ----
+  ### new rules edit list.ini. v8.8.0 ----
   
   opts_test$antaresVersion <- 880
-  wrong_list_params <- list_params
-  wrong_list_params$initiallevel <- 0.8
-  wrong_list_params$initialleveloptim <- FALSE
-  
+  list_params$initiallevel <- 0.8
+
+  #initialleveloptim does not exist
   expect_warning(  editClusterST(area = area_test, 
                                  cluster_name = name_cluster_test, 
-                                 storage_parameters = wrong_list_params,
+                                 storage_parameters = list_params,
                                  opts = opts_test, 
                                  add_prefix = FALSE), 
                    regexp = "`initiallevel` value will be replaced by 0.5")
+  
+  list_params$initialleveloptim <- FALSE
+  
+  #initialleveloptim exist but FALSE
+  expect_warning(  editClusterST(area = area_test, 
+                                 cluster_name = name_cluster_test, 
+                                 storage_parameters = list_params,
+                                 opts = opts_test, 
+                                 add_prefix = FALSE), 
+                   regexp = "`initiallevel` value will be replaced by 0.5")
+  
+  #initialleveloptim TRUE
+  list_params$initialleveloptim <- TRUE
+  editClusterST(area = area_test, 
+                cluster_name = name_cluster_test, 
+                storage_parameters = list_params,
+                opts = opts_test, 
+                add_prefix = FALSE)
+  
+  st_clusters <- readClusterSTDesc(opts = opts_test)
+  value_to_test <- st_clusters[cluster %in% name_cluster_test, 
+                                .SD, 
+                                .SDcols= "initiallevel"]
+  testthat::expect_equal(0.8, value_to_test$initiallevel)
+  
+  #initialleveloptim not in list_params but in list.ini equal TRUE
+  list_params$initialleveloptim <- NULL
+  list_params$initiallevel <- 0.3
+  editClusterST(area = area_test, 
+                cluster_name = name_cluster_test, 
+                storage_parameters = list_params,
+                opts = opts_test, 
+                add_prefix = FALSE)
+  
+  st_clusters <- readClusterSTDesc(opts = opts_test)
+  value_to_test <- st_clusters[cluster %in% name_cluster_test, 
+                                .SD, 
+                                .SDcols= "initiallevel"]
+  testthat::expect_equal(0.3, value_to_test$initiallevel)
+  
+  
   opts_test$antaresVersion <- 860
   
  
