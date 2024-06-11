@@ -3,6 +3,7 @@
 context("Function scenarioBuilder")
 
 # v710 ----
+
 sapply(studies, function(study) {
   
   setup_study(study, sourcedir)
@@ -11,6 +12,24 @@ sapply(studies, function(study) {
   
   test_that("scenarioBuilder works", {
     
+    # default call
+    testthat::expect_warning(
+      sbuilder <- scenarioBuilder(),
+      regexp = "'n_scenario' parameter set to default value {1}"
+      )
+    
+    # error call with bc (>=v870)
+    testthat::expect_error(
+      sbuilder <- scenarioBuilder(group_bc = "test"),
+      regexp = "Parameter 'group_bc' is only"
+    )
+    
+    testthat::expect_error(
+      sbuilder <- scenarioBuilder(group_bc_rand = "test"),
+      regexp = "Parameter 'group_bc_rand' is only"
+    )
+    
+    # standard
     sbuilder <- scenarioBuilder(
       n_scenario = 2,
       n_mc = 2,
@@ -234,6 +253,7 @@ sapply(studies, function(study) {
 
 # v820 ----
 # hydro ----
+
 test_that("scenarioBuilder() for hl with inconsistent number of areas or hydro levels coefficients (error expected)", {
   
   ant_version <- "8.2.0"
@@ -393,7 +413,7 @@ test_that("updateScenarioBuilder() works as expected for ntc part", {
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
   ant_version <- "8.2.0"
   suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
-
+  
   nbyears <- 10
   updateGeneralSettings(nbyears = nbyears, opts = simOptions())
   
@@ -414,35 +434,34 @@ test_that("updateScenarioBuilder() works as expected for ntc part", {
         MARGIN = 1,
         function(row){
           createLink(as.character(row[1]),as.character(row[2]), opts = simOptions())
-          }
-      )
-
+        }
+  )
+  
   suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
   
   my_scenario <- scenarioBuilder(n_scenario = 2, n_mc = nbyears, opts = opts)
   updateScenarioBuilder(my_scenario, series = "ntc", links = as.character(getLinks(opts = opts)))
-
+  
   sb <- readScenarioBuilder(ruleset = "Default Ruleset", as_matrix = TRUE, opts = opts)
-
+  
   expect_true(inherits(sb, what = "list"))
   expect_true("ntc" %in% names(sb))
   expect_true(inherits(sb[["ntc"]], what = "matrix"))
-
+  
   sb_matrix_ntc_expected <- structure(
     c(rep(c(rep(1L,10),rep(2L,10)),5)),
     .Dim = c(10L,10L),
     .Dimnames = list(c("zone1%zone2", "zone1%zone3", "zone1%zone4", "zone1%zone5", "zone2%zone3",
                        "zone2%zone4", "zone2%zone5", "zone3%zone4", "zone3%zone5", "zone4%zone5"
-                       ),
-                     NULL
-                     )
+    ),
+    NULL
+    )
   )
-
+  
   expect_identical(sb[["ntc"]], sb_matrix_ntc_expected)
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
-
 
 # argument series l or load OK ----
 test_that("updateScenarioBuilder() has the same behaviour for one single matrix with argument series l or load", {
@@ -511,4 +530,104 @@ test_that("updateScenarioBuilder() has error if names of list or argument series
                regexp = "Each of your list names must be in the following list")
   
   unlink(x = opts$studyPath, recursive = TRUE)
+})
+
+# v870 ----
+test_that("scenarioBuilder works with binding constraint (v870)", {
+  # study test creation ----
+  # read script to generate study v8.7.0
+  sourcedir_last_study <- system.file("study_test_generator/generate_test_study_870.R", 
+                                      package = "antaresEditObject")
+  
+  # create study
+  source(file = sourcedir_last_study)
+  opts_test <- simOptions()
+  
+  ## no group rand ----
+  sbuilder <- scenarioBuilder(
+    n_scenario = opts_test$parameters$general$nbyears,
+    n_mc = 10,
+    group_bc = c("group_test", "default"), 
+    group_bc_rand = NULL,
+    mode = "bc",
+    opts = opts_test
+  )
+  
+  # Update scenario builder
+  # for binding constraints series
+  updateScenarioBuilder(ldata = sbuilder, series = "bc")
+  
+  # Read scenario builder
+  # in a matrix format
+  prev_sb <- readScenarioBuilder(as_matrix = TRUE)
+  
+  # test
+  testthat::expect_equal(names(prev_sb), "bc")
+  testthat::expect_equal(rownames(prev_sb$bc), c("default",
+                                                 "group_test"))
+  
+  ## with group rand ----
+  sbuilder <- scenarioBuilder(
+    n_scenario = opts_test$parameters$general$nbyears,
+    n_mc = 10,
+    group_bc = c("group_test", "default"), 
+    group_bc_rand = "default",
+    mode = "bc",
+    opts = opts_test
+  )
+  
+  # Update scenario builder
+  # for binding constraints series
+  updateScenarioBuilder(ldata = sbuilder, series = "bc")
+  
+  # Read scenario builder
+  # in a matrix format
+  prev_sb <- readScenarioBuilder(as_matrix = TRUE)
+  
+  # test
+  testthat::expect_equal(names(prev_sb), "bc")
+  testthat::expect_equal(rownames(prev_sb$bc), 
+                         "group_test")
+  
+  # clear
+  clearScenarioBuilder()
+  
+  ## no bc mode ----
+  # (classic mode of operation)
+  sbuilder <- scenarioBuilder()
+  
+  # Update scenario builder
+  # for binding constraints series
+  updateScenarioBuilder(ldata = sbuilder, series = "t")
+  
+  # Read scenario builder
+  # in a matrix format
+  prev_sb <- readScenarioBuilder(as_matrix = TRUE)
+  
+  # test
+  testthat::expect_equal(names(prev_sb), "t")
+  
+  ## parameter n_mc NULL ----
+  # (classic mode of operation)
+  sbuilder <- scenarioBuilder(
+    n_scenario = opts_test$parameters$general$nbyears,
+    n_mc = NULL,
+    group_bc = c("group_test", "default"), 
+    group_bc_rand = NULL,
+    mode = "bc")
+  
+  # Update scenario builder
+  # for binding constraints series
+  updateScenarioBuilder(ldata = sbuilder, series = "bc")
+  
+  # Read scenario builder
+  # in a matrix format
+  prev_sb <- readScenarioBuilder(as_matrix = TRUE)
+  
+  # test
+  value_default_n_mc <- opts_test$parameters$general$nbyears
+  testthat::expect_equal(prev_sb$bc[1, drop = FALSE], rep(value_default_n_mc))
+  
+  # remove temporary study
+  deleteStudy()
 })
