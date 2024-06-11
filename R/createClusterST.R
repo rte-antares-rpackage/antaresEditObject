@@ -292,6 +292,8 @@ createClusterST <- function(area,
 # check parameters (`list`)
 #' @return `list`
 .st_mandatory_params <- function(list_values,
+                                 area,
+                                 cluster_name,
                                  opts = antaresRead::simOptions()){
   .is_ratio(list_values$efficiency, 
             "efficiency")
@@ -309,18 +311,27 @@ createClusterST <- function(area,
                   "injectionnominalcapacity")
   
   if(!is.null(list_values$initialleveloptim))
-    assertthat::assert_that(inherits(list_values$initialleveloptim, 
-                                   "logical"))
-  
+    assertthat::assert_that(inherits(list_values$initialleveloptim,
+                                     "logical"))
   # Check 880 rule for storage_parameters
   if (opts$antaresVersion >= 880){
     
     if(!is.null(list_values$enabled))
       assertthat::assert_that(inherits(list_values$enabled, 
                                        "logical"))
+    if(file.exists(file.path(opts$studyPath,"input","st-storage","clusters",area,"list.ini"))){
+      ini = readIni(pathIni = file.path("input","st-storage","clusters",area), opts = opts)
+      initialleveloptim_ini = ini[[cluster_name]][["initialleveloptim"]]
+    } else {
+      initialleveloptim_ini = FALSE
+    }
+    #TRUE IF TRUE, FALSE OTHERWISE
+    is_initialleveloptim_TRUE = any(list_values$initialleveloptim,
+                                    initialleveloptim_ini)
     
-    if ("initiallevel" %in% names(list_values) & "initialleveloptim" %in% names(list_values)){
-      if (list_values$initiallevel != 0.5 & !list_values$initialleveloptim) {
+    
+    if ("initiallevel" %in% names(list_values) & list_values$initiallevel != 0.5){
+      if(!is_initialleveloptim_TRUE){
         warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
         list_values$initiallevel <- 0.5
       }
@@ -360,11 +371,11 @@ createClusterST <- function(area,
 #' }
 storage_values_default <- function(opts = antaresRead::simOptions()) {
   lst_parameters <- list(efficiency = 1,
-       reservoircapacity = 0,
-       initiallevel = 0,
-       withdrawalnominalcapacity = 0,
-       injectionnominalcapacity = 0,
-       initialleveloptim = FALSE)
+                         reservoircapacity = 0,
+                         initiallevel = 0,
+                         withdrawalnominalcapacity = 0,
+                         injectionnominalcapacity = 0,
+                         initialleveloptim = FALSE)
   
   if (opts$antaresVersion >= 880){
     lst_parameters$initiallevel <- 0.5
@@ -372,4 +383,3 @@ storage_values_default <- function(opts = antaresRead::simOptions()) {
   }
   return(lst_parameters)
 }
-

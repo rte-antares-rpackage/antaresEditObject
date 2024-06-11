@@ -79,8 +79,10 @@ editClusterST <- function(area,
                   paste0(names_parameters, collapse= ", ")))
     
     # check values parameters
-    storage_parameters = .st_mandatory_params(list_values = storage_parameters,
-                                              opts = opts)
+    storage_parameters <- .st_mandatory_params(list_values = storage_parameters,
+                                               area = area,
+                                               cluster_name = cluster_name,
+                                               opts = opts)
     
     # check list of parameters
     params_cluster <- hyphenize_names(storage_parameters)
