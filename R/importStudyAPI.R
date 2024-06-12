@@ -54,6 +54,8 @@ copyStudyWeb <- function(opts = antaresRead::simOptions(), host, token,
 #' @param host Host of AntaREST server API.
 #' @param token API personnal access token.
 #' @param zipfile_name Name of the zipfile of the study.
+#' @param delete_zipfile Should the zipfile be deleted after upload.
+#' @param folder_destination Folder of the study in Antares Web.
 #'
 #' @template opts
 #'
@@ -62,26 +64,36 @@ copyStudyWeb <- function(opts = antaresRead::simOptions(), host, token,
 #' 
 #' @export
 #'
-importZipStudyWeb <- function(host, token, zipfile_name, opts = antaresRead::simOptions()) {
+importZipStudyWeb <- function(host, token, zipfile_name, delete_zipfile = TRUE, folder_destination = NULL, opts = antaresRead::simOptions()) {
   
-  # Build the destination folder
-  dir_study <- unlist(strsplit(opts$studyPath, split = .Platform$file.sep))
-  dir_study <- dir_study[seq(length(dir_study) - 1)]
-  dir_study <- do.call("file.path", as.list(dir_study))
+  # Dstination folder
+  dir_study <- dirname(opts$studyPath)
   
   # Zip the study
   zipfile <- backupStudy(zipfile_name, what = "study", opts = opts, extension = ".zip") 
+  zipfile_path <- file.path(dir_study, zipfile)
   
   # Import the study
   studyId <- api_post(
     opts = list(host = host, token = token),
     endpoint = "_import",
     default_endpoint = "v1/studies",
-    body = list(study = upload_file(file.path(dir_study, zipfile))),
+    body = list(study = upload_file(zipfile_path)),
     encode = "multipart"
   )
   
   opts <- setSimulationPathAPI(host = host, token = token, study_id = studyId, simulation = "input")
+  # Move the study
+  if (!is.null(folder_destination)) {
+    api_put(opts = opts,
+            endpoint = file.path(paste0(opts$study_id, "/move?folder_dest=", folder_destination)),
+            default_endpoint = "v1/studies"
+            )
+  }
+  
+  if (delete_zipfile) {
+    file.remove(zipfile_path)
+  }
   
   return(invisible(opts))
 }

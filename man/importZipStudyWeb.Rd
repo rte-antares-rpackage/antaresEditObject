@@ -4,7 +4,14 @@
 \alias{importZipStudyWeb}
 \title{Import a local study to Antares Web}
 \usage{
-importZipStudyWeb(host, token, zipfile_name, opts = antaresRead::simOptions())
+importZipStudyWeb(
+  host,
+  token,
+  zipfile_name,
+  delete_zipfile = TRUE,
+  folder_destination = NULL,
+  opts = antaresRead::simOptions()
+)
 }
 \arguments{
 \item{host}{Host of AntaREST server API.}
@@ -12,6 +19,10 @@ importZipStudyWeb(host, token, zipfile_name, opts = antaresRead::simOptions())
 \item{token}{API personnal access token.}
 
 \item{zipfile_name}{Name of the zipfile of the study.}
+
+\item{delete_zipfile}{Should the zipfile be deleted after upload.}
+
+\item{folder_destination}{Folder of the study in Antares Web.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
