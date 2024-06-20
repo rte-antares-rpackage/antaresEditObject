@@ -51,6 +51,7 @@ removeBindingConstraint(group = group_to_delete)
 }
 \seealso{
 Other binding constraints functions: 
+\code{\link{createBindingConstraintBulk}()},
 \code{\link{createBindingConstraint}()},
 \code{\link{editBindingConstraint}()}
 }

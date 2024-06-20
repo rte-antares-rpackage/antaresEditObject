@@ -1,6 +1,18 @@
-# antaresEditObject 0.7.0 (development)
+# antaresEditObject 0.7.1 (development)
 
-> Second-member coupling constraint scenarios
+### Breaking changes  :  
+
+* `createBindingConstraint()` / `editBindingConstraint()` uses metadata to check the group size of time series.
+* `createBindingConstraintBulk()` checks consistency of groups passed as parameters and consistency with the study.
+
+NEW FEATURES (Antares v8.8) :
+
+* `updateOptimizationSettings()` allows the user to update solver.log property
+
+
+# antaresEditObject 0.7.0 
+
+> Scenarized RHS for binding constraints
 
 NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :  
 
