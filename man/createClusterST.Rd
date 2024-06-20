@@ -8,7 +8,7 @@ createClusterST(
   area,
   cluster_name,
   group = "Other1",
-  storage_parameters = storage_values_default(),
+  storage_parameters = NULL,
   PMAX_injection = NULL,
   PMAX_withdrawal = NULL,
   inflows = NULL,

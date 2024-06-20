@@ -77,7 +77,7 @@
 createClusterST <- function(area,
                             cluster_name, 
                             group = "Other1",
-                            storage_parameters = storage_values_default(),
+                            storage_parameters = NULL,
                             PMAX_injection = NULL,
                             PMAX_withdrawal = NULL,
                             inflows = NULL,
@@ -130,20 +130,29 @@ createClusterST <- function(area,
       stop("Cluster already exists. Edit it with editClusterST().")
     }
   }
+  
+  # Default value for storage_parameters
+  if (is.null(storage_parameters)){
+    storage_parameters <- storage_values_default(opts = opts)
+  } 
+  
   ##
   # check parameters (ini file)
   ##
   assertthat::assert_that(inherits(storage_parameters, "list"))
   
     # static name of list parameters 
-  names_parameters <- names(storage_values_default())
+  names_parameters <- names(storage_values_default(opts = opts))
   
   if(!all(names(storage_parameters) %in% names_parameters))
     stop(append("Parameter 'st-storage' must be named with the following elements: ", 
                 paste0(names_parameters, collapse= ", ")))
 
-    # check values parameters
-  .st_mandatory_params(list_values = storage_parameters)
+  # check values parameters
+  storage_parameters <- .st_mandatory_params(list_values = storage_parameters,
+                                             area = area,
+                                             cluster_name = cluster_name,
+                                             opts = opts)
   
   
   # DATA parameters : default value + name txt file
@@ -284,34 +293,53 @@ createClusterST <- function(area,
 
 # check parameters (`list`)
 #' @return `list`
-.st_mandatory_params <- function(list_values){
+.st_mandatory_params <- function(list_values,
+                                 area,
+                                 cluster_name,
+                                 opts = antaresRead::simOptions()){
   .is_ratio(list_values$efficiency, 
             "efficiency")
   
   .check_capacity(list_values$reservoircapacity, 
                   "reservoircapacity")
-  # if(!list_values$reservoircapacity >= 0)
-  #   stop("reservoircapacity must be >= 0",
-  #        call. = FALSE)
   
   .is_ratio(list_values$initiallevel, 
             "initiallevel")
   
   .check_capacity(list_values$withdrawalnominalcapacity, 
                   "withdrawalnominalcapacity")
-  # if(!list_values$withdrawalnominalcapacity >= 0)
-  #   stop("withdrawalnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
   .check_capacity(list_values$injectionnominalcapacity, 
                   "injectionnominalcapacity")
-  # if(!list_values$injectionnominalcapacity >= 0)
-  #   stop("injectionnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
   if(!is.null(list_values$initialleveloptim))
-    assertthat::assert_that(inherits(list_values$initialleveloptim, 
-                                   "logical"))
+    assertthat::assert_that(inherits(list_values$initialleveloptim,
+                                     "logical"))
+  # Check 880 rule for storage_parameters
+  if (opts$antaresVersion >= 880){
+    
+    if(!is.null(list_values$enabled))
+      assertthat::assert_that(inherits(list_values$enabled, 
+                                       "logical"))
+    if(file.exists(file.path(opts$studyPath,"input","st-storage","clusters",area,"list.ini"))){
+      ini = readIni(pathIni = file.path("input","st-storage","clusters",area,"list"), opts = opts)
+      initialleveloptim_ini = ini[[cluster_name]][["initialleveloptim"]]
+    } else {
+      initialleveloptim_ini = FALSE
+    }
+    #TRUE IF TRUE, FALSE OTHERWISE
+    is_initialleveloptim_TRUE = any(list_values$initialleveloptim,
+                                    initialleveloptim_ini)
+    
+    
+    if ("initiallevel" %in% names(list_values) & list_values$initiallevel != 0.5){
+      if(!is_initialleveloptim_TRUE){
+        warning("`initiallevel` value will be replaced by 0.5 because `initialleveloptim` = FALSE.")
+        list_values$initiallevel <- 0.5
+      }
+    }
+  }
+  return(list_values)
 }
 
 .is_ratio <- function(x, mess){
@@ -334,18 +362,26 @@ createClusterST <- function(area,
 
 #' Short Term Storage Property List
 #'
-#'
+#' @template opts
 #' @return a named list
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' 
 #' storage_values_default()
-storage_values_default <- function() {
-  list(efficiency = 1,
-       reservoircapacity = 0,
-       initiallevel = 0,
-       withdrawalnominalcapacity = 0,
-       injectionnominalcapacity = 0,
-       initialleveloptim = FALSE)
+#' }
+storage_values_default <- function(opts = antaresRead::simOptions()) {
+  lst_parameters <- list(efficiency = 1,
+                         reservoircapacity = 0,
+                         initiallevel = 0,
+                         withdrawalnominalcapacity = 0,
+                         injectionnominalcapacity = 0,
+                         initialleveloptim = FALSE)
+  
+  if (opts$antaresVersion >= 880){
+    lst_parameters$initiallevel <- 0.5
+    lst_parameters$enabled <- TRUE
+  }
+  return(lst_parameters)
 }
-

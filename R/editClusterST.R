@@ -72,14 +72,17 @@ editClusterST <- function(area,
     assertthat::assert_that(inherits(storage_parameters, "list"))
     
     # static name of list parameters 
-    names_parameters <- names(storage_values_default())
+    names_parameters <- names(storage_values_default(opts = opts))
     
     if(!all(names(storage_parameters) %in% names_parameters))
       stop(append("Parameter 'st-storage' must be named with the following elements: ", 
                   paste0(names_parameters, collapse= ", ")))
     
     # check values parameters
-    .st_mandatory_params(list_values = storage_parameters)
+    storage_parameters <- .st_mandatory_params(list_values = storage_parameters,
+                                               area = area,
+                                               cluster_name = cluster_name,
+                                               opts = opts)
     
     # check list of parameters
     params_cluster <- hyphenize_names(storage_parameters)
