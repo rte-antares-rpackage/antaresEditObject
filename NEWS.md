@@ -4,10 +4,13 @@
 
 * `createBindingConstraint()` / `editBindingConstraint()` uses metadata to check the group size of time series.
 * `createBindingConstraintBulk()` checks consistency of groups passed as parameters and consistency with the study.
+* delete `antaresRead-reexports.R` and adjust scripts to have a clean package
+
 
 NEW FEATURES (Antares v8.8) :
 
 * `updateOptimizationSettings()` allows the user to update solver.log property
+
 
 
 # antaresEditObject 0.7.0 
@@ -31,7 +34,6 @@ NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :
 ### Breaking changes  :  
 
 * `createBindingConstraint()` is available with **offset** parameter in API mode
-* delete `antaresRead-reexports.R` and adjust scripts to have a clean package
 
 
 # antaresEditObject 0.6.4 (development)
