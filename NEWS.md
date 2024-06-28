@@ -11,6 +11,9 @@ NEW FEATURES (Antares v8.8) :
 
 * `updateOptimizationSettings()` allows the user to update solver.log property
 
+BUGFIXES :  
+
+* `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
 
 
 # antaresEditObject 0.7.0 
