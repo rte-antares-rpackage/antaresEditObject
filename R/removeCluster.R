@@ -139,8 +139,7 @@ removeClusterST <- function(area,
     if (!api_study | (api_study && !api_mocked)) {
       bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(area, ".", cluster_name), opts = opts)
       if (!identical(bc_not_remove, character(0))) {
-        message("The following binding constraints have the cluster to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
-        stop("Can not remove the cluster ", cluster_name, " in the area ", area, ".")
+        warning("The following binding constraints have the cluster to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
       }
     }
   }
