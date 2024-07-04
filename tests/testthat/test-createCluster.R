@@ -226,9 +226,8 @@ test_that("removeCluster() : cluster is not removed if it is referenced in a bin
   
   suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
   
-  expect_error(removeCluster(area = "zone1", cluster_name = "nuclear", add_prefix = TRUE, opts = opts), regexp = "Can not remove the cluster")
-  removeBindingConstraint(name = "bc_nuclear", opts = opts)
-  expect_no_error(removeCluster(area = "zone1", cluster_name = "nuclear", add_prefix = TRUE, opts = opts))
+  expect_warning(removeCluster(area = "zone1", cluster_name = "nuclear", add_prefix = TRUE, opts = opts),
+                 regexp = "The following binding constraints have the cluster to remove as a coefficient :")
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })

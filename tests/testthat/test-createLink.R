@@ -291,12 +291,12 @@ test_that("removeLink() : link is not removed if it is referenced in a binding c
   
   suppressWarnings(opts <- setSimulationPath(path = opts$studyPath, simulation = "input"))
   
-  expect_error(removeLink(from = "zone1", to = "zone2", opts = opts), regexp = "Can not remove the link")
-  removeBindingConstraint(name = "bc_zone1", opts = opts)
-  expect_no_error(removeLink(from = "zone1", to = "zone2", opts = opts))
+  expect_warning(removeLink(from = "zone1", to = "zone2", opts = opts),
+                 regexp = "The following binding constraints have the link to remove as a coefficient :")
   
   # createLink() with overwrite to TRUE calls removeLink()
-  expect_error(createLink(from = "zone2", to = "zone3", overwrite = TRUE, opts = opts), regexp = "Can not remove the link")
+  expect_warning(createLink(from = "zone2", to = "zone3", overwrite = TRUE, opts = opts),
+                 regexp = "The following binding constraints have the link to remove as a coefficient :")
   
   pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
@@ -307,7 +307,8 @@ test_that("removeLink() : link is not removed if it is referenced in a binding c
   names(bindingConstraints[[bc_char]])[names(bindingConstraints[[bc_char]]) == "zone4%zone5"] <- "zone5%zone4"
   
   writeIni(listData = bindingConstraints, pathIni = pathIni, overwrite = TRUE)
-  expect_error(removeLink(from = "zone4", to = "zone5", opts = opts), regexp = "Can not remove the link")
+  expect_warning(removeLink(from = "zone4", to = "zone5", opts = opts),
+                 regexp = "The following binding constraints have the link to remove as a coefficient :")
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })

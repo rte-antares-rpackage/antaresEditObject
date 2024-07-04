@@ -5,6 +5,18 @@
 * `createBindingConstraint()` / `editBindingConstraint()` uses metadata to check the group size of time series.
 * `createBindingConstraintBulk()` checks consistency of groups passed as parameters and consistency with the study.
 * `importZipStudyWeb()` can delete the zipfile and move the study in Antares Web to another folder
+* delete `antaresRead-reexports.R` and adjust scripts to have a clean package
+* `removeArea()` : send a warning instead of a stop if an area is referenced in a binding constraint coefficient
+* `removeLink()` : send a warning instead of a stop if a link is referenced in a binding constraint coefficient
+* `removeCluster()` : send a warning instead of a stop if a cluster is referenced in a binding constraint coefficient
+
+NEW FEATURES (Antares v8.8) :
+
+* `updateOptimizationSettings()` allows the user to update solver.log property
+
+BUGFIXES :  
+
+* `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
 
 
 # antaresEditObject 0.7.0 
@@ -27,7 +39,7 @@ NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :
  
 ### Breaking changes  :  
 
-* `createBindingConstraint()` is available with **offset** parameter in API mode 
+* `createBindingConstraint()` is available with **offset** parameter in API mode
 
 
 # antaresEditObject 0.6.4 (development)

@@ -380,8 +380,7 @@ cpt_timstamp <- function(Year,
       "Saturday",
       "Sunday")
   wd <- opts$firstWeekday
-  fj <-
-    antaresEditObject::readIniFile(file.path(opts$studyPath, "settings", "generaldata.ini"))
+  fj <- readIniFile(file.path(opts$studyPath, "settings", "generaldata.ini"))
   fj <- fj$general$january.1st
   fd <- which(wd == dw)
   fj <- which(fj == dw)
