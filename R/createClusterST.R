@@ -30,7 +30,7 @@
 #'  - lower-rule-curve.txt
 #'  - upper-rule-curve.txt
 #'  
-#' @seealso [editClusterST()] to edit existing clusters, [readClusterSTDesc()] to read cluster,
+#' @seealso [editClusterST()] to edit existing clusters, [antaresRead::readClusterSTDesc()] to read cluster,
 #' [removeClusterST()] to remove clusters.
 #' 
 #' @export
