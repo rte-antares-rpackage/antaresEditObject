@@ -108,42 +108,24 @@ createClusterST <- function(area,
       " you should be using one of: ", paste(st_storage_group, collapse = ", ")
     )
   
-  # check area existing in current study
-  area <- tolower(area)
+  # check area exsiting in current study
   check_area_name(area, opts)  
+  area <- tolower(area)
   
-  # To avoid failure in an unit test (API is mocked) we add this block
-  api_study <- is_api_study(opts)
-  if (api_study && is_api_mocked(opts)) {
-    cluster_exists <- FALSE
-  } else {
-    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
-  }
-  
-  if (!api_study) {
-    if (cluster_exists & !overwrite) {
-      stop("Cluster already exists. Overwrite it with overwrite option or edit it with editClusterST().")
-    }
-  }
-  if (api_study) {
-    if (cluster_exists) {
-      stop("Cluster already exists. Edit it with editClusterST().")
-    }
-  }
   ##
   # check parameters (ini file)
   ##
   assertthat::assert_that(inherits(storage_parameters, "list"))
   
-    # static name of list parameters 
-  names_parameters <- names(storage_values_default())
+  # static name of list parameters 
+  names_parameters <- names(storage_values_default(opts = opts))
   
   if(!all(names(storage_parameters) %in% names_parameters))
     stop(append("Parameter 'st-storage' must be named with the following elements: ", 
                 paste0(names_parameters, collapse= ", ")))
-
-    # check values parameters
-  .st_mandatory_params(list_values = storage_parameters)
+  
+  # check values parameters
+  .st_mandatory_params(list_values = storage_parameters, opts = opts)
   
   
   # DATA parameters : default value + name txt file
@@ -162,12 +144,13 @@ createClusterST <- function(area,
   
   # check syntax ini parameters
   params_cluster <- hyphenize_names(storage_parameters)
-  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
+  if (add_prefix)
+    cluster_name <- paste(area, cluster_name, sep = "_")
   params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
   
   ################# -
   # API block
-  if (api_study) {
+  if (is_api_study(opts)) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     params_cluster$name <- cluster_name
@@ -177,14 +160,14 @@ createClusterST <- function(area,
       area_id = area,
       parameters = params_cluster
     )
-
+    
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts),
       api_command_execute(cmd, opts = opts, text_alert = "{.emph create_st_storage}: {msg_api}"),
       cli_command_registered("create_st_storage")
     )
-
+    
     for (i in names(storage_value)){
       if (!is.null(get(i))) {
         # format name for API 
@@ -209,11 +192,11 @@ createClusterST <- function(area,
         )
       }
     }
-
+    
     return(invisible(opts))
   }
   ########################## -
-
+  
   
   ##
   # parameters traitements
@@ -222,25 +205,31 @@ createClusterST <- function(area,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  # named list for writing ini file
-  # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
-  
   # path to ini file containing clusters' name and parameters
   path_clusters_ini <- file.path(inputPath, "st-storage", "clusters", tolower(area), "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
-    ind_cluster <- which(tolower(names(previous_params)) %in% tolower(cluster_name))[1]
-    previous_params[[ind_cluster]] <- params_cluster
-    names(previous_params)[[ind_cluster]] <- cluster_name
-  } else {
-    previous_params[[cluster_name]] <- params_cluster
+  # already exists ? 
+  if (tolower(cluster_name) %in% tolower(names(previous_params)) 
+      & !overwrite)
+    stop(paste(cluster_name, "already exist"))
+    
+  # overwrite
+  if(overwrite){
+    if(tolower(cluster_name) %in% tolower(names(previous_params))){
+      ind_cluster <- which(tolower(names(previous_params)) %in% 
+                             tolower(cluster_name))[1]
+      previous_params[[ind_cluster]] <- params_cluster
+      names(previous_params)[[ind_cluster]] <- cluster_name
+    }
   }
+    
+  # add properties 
+  previous_params[[cluster_name]] <- params_cluster
   
-  # params_cluster <- c(previous_params, params_cluster)
-  
+  # write properties (all properties are overwritten)
   writeIni(
     listData = previous_params,
     pathIni = path_clusters_ini,
@@ -278,40 +267,35 @@ createClusterST <- function(area,
   })
   
   invisible(res)
-
+  
 }
 
 
 # check parameters (`list`)
-#' @return `list`
-.st_mandatory_params <- function(list_values){
-  .is_ratio(list_values$efficiency, 
+.st_mandatory_params <- function(list_values, opts){
+  .is_ratio(list_values[["efficiency"]], 
             "efficiency")
   
-  .check_capacity(list_values$reservoircapacity, 
+  .check_capacity(list_values[["reservoircapacity"]], 
                   "reservoircapacity")
-  # if(!list_values$reservoircapacity >= 0)
-  #   stop("reservoircapacity must be >= 0",
-  #        call. = FALSE)
   
-  .is_ratio(list_values$initiallevel, 
+  .is_ratio(list_values[["initiallevel"]], 
             "initiallevel")
   
-  .check_capacity(list_values$withdrawalnominalcapacity, 
+  .check_capacity(list_values[["withdrawalnominalcapacity"]], 
                   "withdrawalnominalcapacity")
-  # if(!list_values$withdrawalnominalcapacity >= 0)
-  #   stop("withdrawalnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
-  .check_capacity(list_values$injectionnominalcapacity, 
+  .check_capacity(list_values[["injectionnominalcapacity"]], 
                   "injectionnominalcapacity")
-  # if(!list_values$injectionnominalcapacity >= 0)
-  #   stop("injectionnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
-  if(!is.null(list_values$initialleveloptim))
-    assertthat::assert_that(inherits(list_values$initialleveloptim, 
-                                   "logical"))
+  if(!is.null(list_values[["initialleveloptim"]]))
+    assertthat::assert_that(inherits(list_values[["initialleveloptim"]], 
+                                     "logical"))
+  
+  if (opts$antaresVersion >= 880)
+    if(!is.null(list_values[["enabled"]]))
+      assertthat::assert_that(inherits(list_values[["enabled"]], 
+                                       "logical"))
 }
 
 .is_ratio <- function(x, mess){
@@ -334,18 +318,29 @@ createClusterST <- function(area,
 
 #' Short Term Storage Property List
 #'
+#' @description
+#' Default values are returned according to study version
 #'
+#' @template opts
 #' @return a named list
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' storage_values_default()
-storage_values_default <- function() {
-  list(efficiency = 1,
-       reservoircapacity = 0,
-       initiallevel = 0,
-       withdrawalnominalcapacity = 0,
-       injectionnominalcapacity = 0,
-       initialleveloptim = FALSE)
+#' }
+storage_values_default <- function(opts = simOptions()) {
+  lst_parameters <- list(efficiency = 1,
+                         reservoircapacity = 0,
+                         initiallevel = 0,
+                         withdrawalnominalcapacity = 0,
+                         injectionnominalcapacity = 0,
+                         initialleveloptim = FALSE)
+  
+  if (opts$antaresVersion >= 880){
+    lst_parameters$initiallevel <- 0.5
+    lst_parameters$enabled <- TRUE
+  }
+  
+  return(lst_parameters)
 }
-

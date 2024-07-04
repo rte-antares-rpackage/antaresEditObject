@@ -46,7 +46,7 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                                        group = "Other1",
                                        add_prefix = FALSE, 
                                        opts = opts_test), 
-                         regexp = "'casper' does not exist")
+                         regexp = "'casper' doesn't exist")
   
   ## default edition cluster ----
     # if all parameters are NULL => no edition of ini and data .txt
