@@ -103,6 +103,6 @@ createClusterST(area = "my_area",
 
 }
 \seealso{
-\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[=readClusterSTDesc]{readClusterSTDesc()}} to read cluster,
+\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[antaresRead:readClusterDesc]{antaresRead::readClusterSTDesc()}} to read cluster,
 \code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
 }
