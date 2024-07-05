@@ -283,6 +283,8 @@ test_that("Create short-term storage cluster (new feature v8.8.0)",{
   # "enabled" must be present with TRUE values default 
   testthat::expect_true("enabled"%in%names(read_prop))
   testthat::expect_true(read_prop$enabled[1]%in%TRUE)
+  
+  deleteStudy()
   })
 
 

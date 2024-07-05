@@ -1,4 +1,5 @@
 
+# v860 ----
 test_that("edit st-storage clusters (only for study >= v8.6.0" , {
   # global params for structure v8.6 ----
   opts_test <-createStudy(path = tempdir(), 
@@ -235,4 +236,41 @@ test_that("API Command test for editClusterST", {
   testthat::expect_true(all(unlist(names_file_api) %in% 
                               names_file_list))
 })
+
+# v880 ----
+test_that("Edit short-term storage cluster (new feature v8.8.0)",{
+  ## basics errors cases ----
+  suppressWarnings(
+    createStudy(path = tempdir(), 
+                study_name = "st-storage880", 
+                antares_version = "8.8.0"))
+  
+  # default area with st cluster
+  area_test_clust = "al" 
+  createArea(name = area_test_clust)
+  
+  # default 
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "default")
+  
+  # edit 
+  list_params <- storage_values_default()
+  list_params$efficiency <- 0.5
+  list_params$reservoircapacity <- 50
+  list_params$enabled <- FALSE
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = "default", 
+                storage_parameters = list_params)
+  
+  # read properties 
+  st_params <- readClusterSTDesc()
+  
+  # "enabled" must be present 
+  testthat::expect_true("enabled"%in%names(st_params))
+  testthat::expect_true(st_params$enabled[1]%in%FALSE)
+  
+  deleteStudy()
+})
+
 

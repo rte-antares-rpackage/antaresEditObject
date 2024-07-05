@@ -153,6 +153,17 @@ createClusterST <- function(area,
   if (is_api_study(opts)) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
+    
+    # /!\ temporary solution /!\ 
+      # as the endpoint does not return an error if the cluster already exist 
+    if(!is_api_mocked(opts)){
+      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+      assertthat::assert_that(cluster_exists, 
+                              msg = paste0("Cluster '", 
+                                           cluster_name, 
+                                           "' already exist. It can not be created."))
+    }
+    
     params_cluster$name <- cluster_name
     
     cmd <- api_command_generate(
