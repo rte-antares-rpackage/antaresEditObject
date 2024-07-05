@@ -4,6 +4,7 @@
 
 * `createBindingConstraint()` / `editBindingConstraint()` uses metadata to check the group size of time series.
 * `createBindingConstraintBulk()` checks consistency of groups passed as parameters and consistency with the study.
+* `importZipStudyWeb()` can delete the zipfile and move the study in Antares Web to another folder
 * delete `antaresRead-reexports.R` and adjust scripts to have a clean package
 * `removeArea()` : send a warning instead of a stop if an area is referenced in a binding constraint coefficient
 * `removeLink()` : send a warning instead of a stop if a link is referenced in a binding constraint coefficient
