@@ -159,7 +159,9 @@ createClusterST <- function(area,
       # as the endpoint does not return an error if the cluster already exist 
     if(!is_api_mocked(opts)){
       exists <- FALSE
-      clusters <- readClusterSTDesc(opts = opts)
+      suppressWarnings(
+        clusters <- readClusterSTDesc(opts = opts)
+      )
       if (nrow(clusters) > 0) {
         clusters_filtered <- clusters[clusters$area == tolower(area) & 
                                         clusters$cluster == cluster_name,]
