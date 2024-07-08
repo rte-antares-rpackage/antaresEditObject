@@ -94,8 +94,14 @@ editClusterST <- function(area,
     # /!\ temporary solution /!\ 
       # as the endpoint does not return an error if the cluster does not exist 
     if(!is_api_mocked(opts)){
-      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
-      assertthat::assert_that(cluster_exists, 
+      exists <- FALSE
+      clusters <- readClusterSTDesc(opts = opts)
+      if (nrow(clusters) > 0) {
+        clusters_filtered <- clusters[clusters$area == tolower(area) & 
+                                        clusters$cluster == cluster_name,]
+        exists <- nrow(clusters_filtered) > 0
+      }
+      assertthat::assert_that(exists, 
                               msg = paste0("Cluster '", 
                                            cluster_name, 
                                            "' does not exist. It can not be edited."))
