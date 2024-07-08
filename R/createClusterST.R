@@ -146,7 +146,8 @@ createClusterST <- function(area,
   params_cluster <- hyphenize_names(storage_parameters)
   if (add_prefix)
     cluster_name <- paste(area, cluster_name, sep = "_")
-  params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
+  params_cluster <- c(list(name = cluster_name, group = group),
+                      params_cluster)
   
   ################# -
   # API block
@@ -157,11 +158,15 @@ createClusterST <- function(area,
     # /!\ temporary solution /!\ 
       # as the endpoint does not return an error if the cluster already exist 
     if(!is_api_mocked(opts)){
-      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
-      assertthat::assert_that(cluster_exists, 
-                              msg = paste0("Cluster '", 
-                                           cluster_name, 
-                                           "' already exist. It can not be created."))
+      exists <- FALSE
+      clusters <- readClusterSTDesc(opts = opts)
+      if (nrow(clusters) > 0) {
+        clusters_filtered <- clusters[clusters$area == tolower(area) & 
+                                        clusters$cluster == cluster_name,]
+        exists <- nrow(clusters_filtered) > 0
+      }
+      if(exists) 
+        stop("Cluster already exists. Edit it with editClusterST().")
     }
     
     params_cluster$name <- cluster_name
