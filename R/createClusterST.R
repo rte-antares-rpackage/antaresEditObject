@@ -20,7 +20,7 @@
 #' @template opts
 #' @note   
 #' To write parameters to the `list.ini` file. You have function `storage_values_default()` who is called by default.
-#' This function return `list` containing six parameters for cluster `st-storage`.
+#' This function return `list` containing properties according study version for cluster `st-storage`.
 #' See example section.
 #' 
 #' To write data (.txt file), you have parameter for each output file :   
