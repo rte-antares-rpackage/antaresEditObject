@@ -38,15 +38,6 @@ editClusterST <- function(area,
   check_active_ST(opts, check_dir = TRUE)
   check_area_name(area, opts)
   
-  api_study <- is_api_study(opts)
-  # To avoid failure in an unit test (API is mocked) we add this block
-  if (api_study && is_api_mocked(opts)) {
-    cluster_exists <- TRUE
-  } else {
-    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
-  }
-  cl_name_msg <- generate_cluster_name(area, cluster_name, add_prefix)
-  assertthat::assert_that(cluster_exists, msg = paste0("Cluster '", cl_name_msg, "' does not exist. It can not be edited."))
   # statics groups
   st_storage_group <- c("PSP_open", 
                         "PSP_closed", 
@@ -72,14 +63,14 @@ editClusterST <- function(area,
     assertthat::assert_that(inherits(storage_parameters, "list"))
     
     # static name of list parameters 
-    names_parameters <- names(storage_values_default())
+    names_parameters <- names(storage_values_default(opts = opts))
     
     if(!all(names(storage_parameters) %in% names_parameters))
       stop(append("Parameter 'st-storage' must be named with the following elements: ", 
                   paste0(names_parameters, collapse= ", ")))
     
     # check values parameters
-    .st_mandatory_params(list_values = storage_parameters)
+    .st_mandatory_params(list_values = storage_parameters, opts = opts)
     
     # check list of parameters
     params_cluster <- hyphenize_names(storage_parameters)
@@ -96,9 +87,27 @@ editClusterST <- function(area,
     params_cluster$group <- NULL
   
   ##### API block ----
-  if (api_study) {
+  if (is_api_study(opts)) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
+    
+    # /!\ temporary solution /!\ 
+      # as the endpoint does not return an error if the cluster does not exist 
+    if(!is_api_mocked(opts)){
+      exists <- FALSE
+      suppressWarnings(
+        clusters <- readClusterSTDesc(opts = opts)
+      )
+      if (nrow(clusters) > 0) {
+        clusters_filtered <- clusters[clusters$area == tolower(area) & 
+                                        clusters$cluster == cluster_name,]
+        exists <- nrow(clusters_filtered) > 0
+      }
+      assertthat::assert_that(exists, 
+                              msg = paste0("Cluster '", 
+                                           cluster_name, 
+                                           "' does not exist. It can not be edited."))
+    }
     
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
@@ -161,6 +170,15 @@ editClusterST <- function(area,
     # read previous content of ini
     previous_params <- readIniFile(file = path_clusters_ini)
     
+    if (!tolower(cluster_name) %in% tolower(names(previous_params)))
+      stop(
+        "'", 
+        cluster_name, 
+        "' doesn't exist, it can't be edited. You can create cluster with createCluster().",
+        call. = FALSE
+      )
+    
+    
     # select existing cluster
     ind_cluster <- which(tolower(names(previous_params)) %in% 
                            tolower(cluster_name))[1]
@@ -176,13 +194,9 @@ editClusterST <- function(area,
     )
   }
   
-  
-  
-  
   ##
   # check DATA (series/)
   ##
-  
   
   # datas associated with cluster
   path_txt_file <- file.path(opts$inputPath, 

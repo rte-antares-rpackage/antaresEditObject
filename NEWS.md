@@ -12,7 +12,9 @@
 
 NEW FEATURES (Antares v8.8) :
 
-* `updateOptimizationSettings()` allows the user to update solver.log property
+* `updateOptimizationSettings()` allows the user to update solver.log property  
+* `createClusterST()` / `editClusterST()` use new parameters and default values
+
 
 BUGFIXES :  
 
