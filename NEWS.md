@@ -19,6 +19,7 @@ NEW FEATURES (Antares v8.8) :
 BUGFIXES :  
 
 * `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
+* side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()` 
 
 
 # antaresEditObject 0.7.0 
