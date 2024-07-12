@@ -354,7 +354,7 @@ test_that("createBindingConstraint (default group value) v8.7", {
   path_file_bc <- paste0(file.path(path_bc, "myconstraint"), 
                          operator_bc, ".txt")
   
-  # read .txt
+  # read .txt (test values)
   res <- lapply(path_file_bc, 
          antaresRead:::fread_antares, 
          opts = opts_test)
@@ -381,6 +381,22 @@ test_that("createBindingConstraint (default group value) v8.7", {
   testthat::expect_equal(bc$myconstraint2$properties$group, "default")
   testthat::expect_equal(dim(scenar_values$lt)[2], 
                          dim(bc$myconstraint2$values$less)[2])
+  
+  # for both
+  operator_bc <- c("_lt", "_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "myconstraint2"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files (test real value)
+    # test just first values cause code convert 8760 to 8784 with 0
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values$lt)))
   
   ### error dim ----
     # add BC with daily values (different columns dimension ERROR) 

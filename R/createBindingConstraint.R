@@ -444,22 +444,28 @@ createBindingConstraint_ <- function(bindingConstraints,
   # Write values
   # v870
   if(opts$antaresVersion>=870){
-    # names_order_ts <- c("lt", "gt", "eq")
+    # make name file + path file + code file 
+      # to write values matching operator
     name_file <- paste0(id, "_", output_operator, ".txt")
-    
     up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
     
-    lapply(up_path, function(x, df_ts= values, vect_path= up_path){
+    df <- data.frame(
+      name_file = name_file,
+      code_file = output_operator,
+      path_file =  up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
+    )
+    
+    lapply(seq(nrow(df)), function(x, df_ts= values, vect_path= up_path){
       if(identical(df_ts, character(0)))
         fwrite(x = data.table::as.data.table(df_ts), 
-               file = x, 
+               file = df[x, "path_file"], 
                col.names = FALSE, 
                row.names = FALSE, 
                sep = "\t")
       else{
-        index <- grep(x = vect_path, pattern = x)
-        fwrite(x = data.table::as.data.table(df_ts[[index]]), 
-               file = x, 
+        target_name <- df[x, "code_file"]
+        fwrite(x = data.table::as.data.table(df_ts[[target_name]]), 
+               file = df[x, "path_file"], 
                col.names = FALSE, 
                row.names = FALSE, 
                sep = "\t")
