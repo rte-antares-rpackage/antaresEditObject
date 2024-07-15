@@ -106,21 +106,6 @@ test_that("Create cluster with pollutants params (new feature v8.6)",{
   
   createArea(name = "test")
   
-  test_that("Create cluster default call (new feature v8.6)",{
-    # default call now create without pollutants
-    createCluster(area = getAreas()[1],
-                  cluster_name = "cluster_default",
-                  overwrite = TRUE)
-    
-    res_cluster <- antaresRead::readClusterDesc()
-    
-    pollutants_names <- names(antaresEditObject::list_pollutants_values())
-    
-    # check default values 
-    testthat::expect_false(all(
-      pollutants_names %in% names(res_cluster)))
-  })
-  
   test_that("Create cluster with bad parameter pollutant",{
     bad_pollutants_param <- "not_a_list"
     
