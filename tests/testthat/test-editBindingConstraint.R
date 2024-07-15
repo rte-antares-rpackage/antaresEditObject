@@ -82,13 +82,14 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
     values = scenar_values_hourly,
     enabled = TRUE,
     timeStep = "hourly",
-    operator = "both",
+    operator = "greater",
     overwrite = TRUE,
     coefficients = data_terms)
 
   # PS : in this study, "default" have 1 column dimension
   bc <- readBindingConstraints(opts = opts_test)
     
+  ### greater to both ----
   # edit properties + values (good dimension)
     # edit "greater" to "both"
   bc_names_v870 <- bc[[name_bc]]$properties$id
@@ -115,10 +116,92 @@ test_that("editBindingConstraint with 'default' group v8.7.0", {
   testthat::expect_true(filter_year %in% "daily")
   testthat::expect_true(filter_synthesis %in% "daily")
   
-  # test values
+  # test dim values
   dim_col_values_input <- dim(scenar_values_daily$lt)[2]
   dim_col_values_edited <- dim(bc_modified[[bc_names_v870]]$values$less)[2]
   testthat::expect_equal(dim_col_values_input, dim_col_values_edited)
+  
+  # test real values
+  # for both
+  operator_bc <- c("_lt", "_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, bc_names_v870), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files (test real value)
+  # test just first values cause code convert 8760 to 8784 with 0
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values_daily$lt)))
+  testthat::expect_equal(head(res[[2]]), 
+                         head(data.table::as.data.table(scenar_values_daily$gt)))
+  
+  
+  
+  ### greater to equal ----
+    # edit properties + values (good dimension)
+    # edit "both" to "equal"
+  bc_names_v870 <- bc[[name_bc]]$properties$id
+  editBindingConstraint(name = bc_names_v870, 
+                        values = scenar_values_daily, 
+                        timeStep = "daily",
+                        operator = "equal", 
+                        filter_year_by_year = "daily",
+                        filter_synthesis = "daily",
+                        coefficients = list("fr%it"= 7.45))
+  
+  # test real values
+  # for equal
+  operator_bc <- c("_eq")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, bc_names_v870), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files (test real value)
+  # test just first values cause code convert 8760 to 8784 with 0
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values_daily$eq)))
+  
+  ### equal to less ----
+    # edit properties + values (good dimension)
+    # edit "equal" to "less"
+  bc_names_v870 <- bc[[name_bc]]$properties$id
+  editBindingConstraint(name = bc_names_v870, 
+                        values = scenar_values_daily, 
+                        timeStep = "daily",
+                        operator = "less", 
+                        filter_year_by_year = "daily",
+                        filter_synthesis = "daily",
+                        coefficients = list("fr%it"= 7.45))
+  
+  # test real values
+  # for equal
+  operator_bc <- c("_lt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, bc_names_v870), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files (test real value)
+  # test just first values cause code convert 8760 to 8784 with 0
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values_daily$lt)))
+
+  
+  
   
   
   # edit properties + values (bad dimension)
