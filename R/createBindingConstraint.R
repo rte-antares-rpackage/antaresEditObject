@@ -452,10 +452,9 @@ createBindingConstraint_ <- function(bindingConstraints,
     df <- data.frame(
       name_file = name_file,
       code_file = output_operator,
-      path_file =  up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
-    )
+      path_file =  up_path)
     
-    lapply(seq(nrow(df)), function(x, df_ts= values, vect_path= up_path){
+    lapply(seq(nrow(df)), function(x, df_ts= values){
       if(identical(df_ts, character(0)))
         fwrite(x = data.table::as.data.table(df_ts), 
                file = df[x, "path_file"], 
