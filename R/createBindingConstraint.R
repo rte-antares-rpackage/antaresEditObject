@@ -134,9 +134,8 @@ createBindingConstraint <- function(name,
       identical(areas, sort(areas))
     })
     
-    if (!all(are_areas_sorted)) {
+    if (!all(are_areas_sorted)) 
       stop("The areas are not sorted alphabetically.", call. = FALSE)
-    }
   }
   
   # API block
@@ -454,21 +453,19 @@ createBindingConstraint_ <- function(bindingConstraints,
       code_file = output_operator,
       path_file =  up_path)
     
+    # write txt file(s)
     lapply(seq(nrow(df)), function(x, df_ts= values){
       if(identical(df_ts, character(0)))
-        fwrite(x = data.table::as.data.table(df_ts), 
-               file = df[x, "path_file"], 
-               col.names = FALSE, 
-               row.names = FALSE, 
-               sep = "\t")
+        data_content <- data.table::as.data.table(df_ts)
       else{
         target_name <- df[x, "code_file"]
-        fwrite(x = data.table::as.data.table(df_ts[[target_name]]), 
-               file = df[x, "path_file"], 
-               col.names = FALSE, 
-               row.names = FALSE, 
-               sep = "\t")
+        data_content <- data.table::as.data.table(df_ts[[target_name]])
       }
+      fwrite(x = data_content, 
+             file = df[x, "path_file"], 
+             col.names = FALSE, 
+             row.names = FALSE, 
+             sep = "\t")
     })
   }else{
     pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
@@ -523,7 +520,7 @@ group_values_meta_check <- function(group_value,
   # check meta 
     # study with no BC or virgin study
   if(is.null(opts$binding)){
-    cat("\nThere is no binding constraint in this study\n")
+    cat("\nThere were no binding constraints in this study\n")
     return()
   }
   
