@@ -791,10 +791,15 @@ createBindingConstraintBulk <- function(constraints,
   assertthat::assert_that(inherits(constraints, "list"))
   
   # check input object
-  all_dim_group <- do.call("rbind", lapply(constraints, function(x){
-    data.table(name_group <- x$group,
-      dim_group <- dim(x$values[[1]])[2])})
-    )
+  all_dim_group <- do.call("rbind", 
+                           c(lapply(constraints, function(x){
+                             data.table(name_group <- x$group,
+                                        dim_group <- dim(x$values[[1]])[2])}), 
+                             fill=TRUE))
+  
+  # no check dimension if NULL values
+  if(dim(all_dim_group)[2]<2)
+    return()
   
   # no duplicated 
   all_dim_group <- unique(all_dim_group)
