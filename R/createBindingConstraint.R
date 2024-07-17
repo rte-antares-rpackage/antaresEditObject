@@ -134,9 +134,8 @@ createBindingConstraint <- function(name,
       identical(areas, sort(areas))
     })
     
-    if (!all(are_areas_sorted)) {
+    if (!all(are_areas_sorted)) 
       stop("The areas are not sorted alphabetically.", call. = FALSE)
-    }
   }
   
   # API block
@@ -444,26 +443,29 @@ createBindingConstraint_ <- function(bindingConstraints,
   # Write values
   # v870
   if(opts$antaresVersion>=870){
-    # names_order_ts <- c("lt", "gt", "eq")
+    # make name file + path file + code file 
+      # to write values matching operator
     name_file <- paste0(id, "_", output_operator, ".txt")
-    
     up_path <- file.path(opts$inputPath, "bindingconstraints", name_file)
     
-    lapply(up_path, function(x, df_ts= values, vect_path= up_path){
+    df <- data.frame(
+      name_file = name_file,
+      code_file = output_operator,
+      path_file =  up_path)
+    
+    # write txt file(s)
+    lapply(seq(nrow(df)), function(x, df_ts= values){
       if(identical(df_ts, character(0)))
-        fwrite(x = data.table::as.data.table(df_ts), 
-               file = x, 
-               col.names = FALSE, 
-               row.names = FALSE, 
-               sep = "\t")
+        data_content <- data.table::as.data.table(df_ts)
       else{
-        index <- grep(x = vect_path, pattern = x)
-        fwrite(x = data.table::as.data.table(df_ts[[index]]), 
-               file = x, 
-               col.names = FALSE, 
-               row.names = FALSE, 
-               sep = "\t")
+        target_name <- df[x, "code_file"]
+        data_content <- data.table::as.data.table(df_ts[[target_name]])
       }
+      fwrite(x = data_content, 
+             file = df[x, "path_file"], 
+             col.names = FALSE, 
+             row.names = FALSE, 
+             sep = "\t")
     })
   }else{
     pathValues <- file.path(opts$inputPath, "bindingconstraints", paste0(id, ".txt"))
@@ -518,7 +520,7 @@ group_values_meta_check <- function(group_value,
   # check meta 
     # study with no BC or virgin study
   if(is.null(opts$binding)){
-    cat("\nThere is no binding constraint in this study\n")
+    cat("\nThere were no binding constraints in this study\n")
     return()
   }
   
