@@ -31,7 +31,7 @@ if it doesn't exist, it'll be created.}
 \item{...}{Other query parameters passed to POST request.}
 }
 \value{
-Result of \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}} or \code{\link[=setSimulationPathAPI]{setSimulationPathAPI()}} accordingly.
+Result of \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}} or \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPathAPI()}} accordingly.
 }
 \description{
 Create study on disk or with AntaREST server through the API.

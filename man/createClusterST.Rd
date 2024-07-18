@@ -55,7 +55,7 @@ Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 }
 \note{
 To write parameters to the \code{list.ini} file. You have function \code{storage_values_default()} who is called by default.
-This function return \code{list} containing six parameters for cluster \code{st-storage}.
+This function return \code{list} containing properties according study version for cluster \code{st-storage}.
 See example section.
 
 To write data (.txt file), you have parameter for each output file :
@@ -103,6 +103,6 @@ createClusterST(area = "my_area",
 
 }
 \seealso{
-\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[=readClusterSTDesc]{readClusterSTDesc()}} to read cluster,
+\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[antaresRead:readClusterDesc]{antaresRead::readClusterSTDesc()}} to read cluster,
 \code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
 }

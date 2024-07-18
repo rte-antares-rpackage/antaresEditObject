@@ -2,7 +2,6 @@
 % Please edit documentation in R/createBindingConstraint.R
 \name{createBindingConstraint}
 \alias{createBindingConstraint}
-\alias{createBindingConstraintBulk}
 \title{Create a binding constraint}
 \usage{
 createBindingConstraint(
@@ -19,8 +18,6 @@ createBindingConstraint(
   overwrite = FALSE,
   opts = antaresRead::simOptions()
 )
-
-createBindingConstraintBulk(constraints, opts = antaresRead::simOptions())
 }
 \arguments{
 \item{name}{The name for the binding constraint.}
@@ -51,9 +48,6 @@ weight or weight with offset.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
-
-\item{constraints}{A \code{list} of several named \code{list} containing data to create binding constraints.
-\strong{Warning} all arguments for creating a binding constraints must be provided, see examples.}
 }
 \value{
 An updated list containing various information about the simulation.
@@ -63,7 +57,6 @@ An updated list containing various information about the simulation.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Create a new binding constraint in an Antares study.
-\code{createBindingConstraintBulk()} allow to create multiple constraints at once.
 }
 \details{
 According to Antares version, usage may vary :
@@ -102,28 +95,6 @@ createBindingConstraint(
     "area1\%area3" = "2\%3")
 )
 
-# Create multiple constraints
-
-# Prepare data for constraints 
-bindings_constraints <- lapply(
-  X = seq_len(100),
-  FUN = function(i) {
-    # use arguments of createBindingConstraint()
-    # all arguments must be provided !
-    list(
-      name = paste0("constraints", i), 
-      id = paste0("constraints", i), 
-      values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
-      enabled = FALSE, 
-      timeStep = "hourly",
-      operator = "both",
-      coefficients = list("area1\%area2" = 1),
-      overwrite = TRUE
-    )
-  }
-)
-# create all constraints
-createBindingConstraintBulk(bindings_constraints)
 
 # >= v8.7.0 :
 
@@ -150,31 +121,11 @@ createBindingConstraint(name = "bc_example",
                         values = values_data, 
                         overwrite = TRUE)      
                         
-# create multiple constraints
-bindings_constraints <- lapply(
-  X = seq_len(10),
-  FUN = function(i) {
-    # use arguments of createBindingConstraint()
-    # all arguments must be provided !
-    list(
-      name = paste0("constraints_bulk", i), 
-      id = paste0("constraints_bulk", i), 
-      values = values_data, 
-      enabled = FALSE, 
-      timeStep = "hourly",
-      operator = "both",
-      coefficients = list("at\%fr" = 1),
-      group= "group_bulk",
-     overwrite = TRUE
-   )
-  }
-)
- 
-createBindingConstraintBulk(bindings_constraints)  
 }
 }
 \seealso{
 Other binding constraints functions: 
+\code{\link{createBindingConstraintBulk}()},
 \code{\link{editBindingConstraint}()},
 \code{\link{removeBindingConstraint}()}
 }

@@ -8,7 +8,7 @@
 #' @param study_name Name of the study.
 #' @param antares_version Antares number version.
 #'
-#' @return Result of [antaresRead::setSimulationPath()] or [setSimulationPathAPI()] accordingly.
+#' @return Result of [antaresRead::setSimulationPath()] or [antaresRead::setSimulationPathAPI()] accordingly.
 #' @export
 #' 
 #' @name create-study
