@@ -790,16 +790,18 @@ createBindingConstraintBulk <- function(constraints,
                                    opts = antaresRead::simOptions()){
   assertthat::assert_that(inherits(constraints, "list"))
   
-  # check input object
+  # check matrix number of columns by group
+  # In all_dim_group, group is column V1, number of columns is column V2
   all_dim_group <- do.call("rbind", 
                            c(lapply(constraints, function(x){
                              data.table(name_group <- x$group,
                                         dim_group <- dim(x$values[[1]])[2])}), 
-                             fill=TRUE))
+                             fill = TRUE))
   
-  # no check dimension if NULL values
-  if(dim(all_dim_group)[2]<2)
+  # If each matrix is NULL, there is no second dimension in the table
+  if (dim(all_dim_group)[2] < 2) {
     return()
+  }
   
   # no duplicated 
   all_dim_group <- unique(all_dim_group)
