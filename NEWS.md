@@ -21,7 +21,8 @@ BUGFIXES :
 * `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
 * `createBindingConstraint()` / `editBindingConstraint()` in TEXT mode, bad values in time series  
 * `createBindingConstraintBulk()` with no VALUES and with a mix 
-* side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()` 
+* side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()`
+* Enable control of matrix dimension in `.check_bulk_object_dim()` even if the values are not in first position in the list
 
 
 # antaresEditObject 0.7.0 
