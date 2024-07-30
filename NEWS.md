@@ -19,7 +19,8 @@ NEW FEATURES (Antares v8.8) :
 BUGFIXES :  
 
 * `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
-* `createBindingConstraint()` / `editBindingConstraint()` in TEXT mode, bad values in time series
+* `createBindingConstraint()` / `editBindingConstraint()` in TEXT mode, bad values in time series  
+* `createBindingConstraintBulk()` with no VALUES and with a mix 
 * side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()` 
 
 

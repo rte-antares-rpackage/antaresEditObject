@@ -721,5 +721,110 @@ test_that("test bad dimension object with existing object in study v8.7", {
   
 })
 
+test_that("test NULL VALUES in study v8.7", {
+  BC_NULL_VALUES <-  list(
+    name = paste0("constraints_bulkNULL"), 
+    id = paste0("constraints_bulkNULL"),
+    values = NULL, 
+    enabled = FALSE, 
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = list("at%fr" = 1),
+    group= "group_bulk",
+    overwrite = TRUE
+  )
+  
+  createBindingConstraintBulk(list(BC_NULL_VALUES))
+  
+  # tests
+  testthat::expect_true("constraints_bulkNULL" %in% 
+                          names(readBindingConstraints()))
+  
+  # read real value
+  operator_bc <- c("_lt", "_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "constraints_bulkNULL"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  res <- unlist(res)
+  
+  # txt files are empty
+  testthat::expect_equal(res, NULL)
+  
+})
+
+test_that("test mixed VALUES in study v8.7", {
+  BC_MIX_VALUES <-  list(
+    list(
+      name = paste0("constraints_bulkNULL"), 
+      id = paste0("constraints_bulkNULL"),
+      values = NULL, 
+      enabled = FALSE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk",
+      overwrite = TRUE
+      ),
+    list(
+      name = paste0("constraints_bulk_value"), 
+      id = paste0("constraints_bulk_value"),
+      values = scenar_values, 
+      enabled = FALSE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk",
+      overwrite = TRUE
+      ))
+  
+  createBindingConstraintBulk(BC_MIX_VALUES)
+  
+  # tests
+  testthat::expect_true(all(
+    c("constraints_bulkNULL", "constraints_bulk_value") %in% 
+      names(readBindingConstraints())))
+  
+  # read real value
+    # NULL
+  operator_bc <- c("_lt", "_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "constraints_bulkNULL"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  res <- unlist(res)
+  
+  # txt files are empty
+  testthat::expect_equal(res, NULL)
+  
+    # VALUE
+  operator_bc <- c("_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "constraints_bulk_value"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files 
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values$gt)))
+  
+  
+  
+})
+
 # remove temporary study ----
 deleteStudy()
