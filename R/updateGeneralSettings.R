@@ -102,7 +102,7 @@ updateGeneralSettings <- function(mode = NULL,
   if (lifecycle::is_present(custom.ts.numbers)) {
     lifecycle::deprecate_warn(when = "0.7.1",
                               what = "updateGeneralSettings(custom.ts.numbers = )",
-                              # with = "updateGeneralSettings(custom.scenario = )"
+                              with = "updateGeneralSettings(custom.scenario = )"
                               )
     custom.scenario <- custom.ts.numbers
   }
