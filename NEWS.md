@@ -24,6 +24,9 @@ BUGFIXES :
 * side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()` 
 
 
+OTHER UPDATES :
+* `updateGeneralSettings()` : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers 
+
 # antaresEditObject 0.7.0 
 
 > Scenarized RHS for binding constraints
