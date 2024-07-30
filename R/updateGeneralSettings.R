@@ -100,7 +100,10 @@ updateGeneralSettings <- function(mode = NULL,
   
   # Replace custom.ts.numbers argument by custom.scenario
   if (lifecycle::is_present(custom.ts.numbers)) {
-    lifecycle::deprecate_warn("0.6.4", "updateGeneralSettings(custom.ts.numbers = )", "updateGeneralSettings(custom.scenario = )")
+    lifecycle::deprecate_warn(when = "0.7.1",
+                              what = "updateGeneralSettings(custom.ts.numbers = )",
+                              # with = "updateGeneralSettings(custom.scenario = )"
+                              )
     custom.scenario <- custom.ts.numbers
   }
   
@@ -152,7 +155,7 @@ updateGeneralSettings <- function(mode = NULL,
   # Convert logical to a lower case character to match the default existing file
   new_params <- lapply(X = new_params,
                        FUN = function(new_param){
-                          if(inherits(x = new_param, what = "logical")) { 
+                          if (inherits(x = new_param, what = "logical")) { 
                             new_param <- tolower(as.character(new_param))
                           }
                           paste(as.character(new_param), collapse = ", ")
