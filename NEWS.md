@@ -21,7 +21,8 @@ BUGFIXES :
 * `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
 * `createBindingConstraint()` / `editBindingConstraint()` in TEXT mode, bad values in time series  
 * `createBindingConstraintBulk()` with no VALUES and with a mix 
-* side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()` 
+* side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()`
+* Fix bug for data.table to ensure that the variable name is not a column name in `check_cluster_name()` (API + DISK) and `createClusterST()`(API)
 
 
 OTHER UPDATES :

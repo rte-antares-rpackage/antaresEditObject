@@ -159,18 +159,17 @@ generate_cluster_name <- function(area, cluster_name, add_prefix) {
 }
 
 
-#' @importFrom antaresRead readClusterSTDesc
-check_cluster_name <- function(area, cluster_name, add_prefix, opts = antaresRead::simOptions()) {
+#' @importFrom antaresRead readClusterSTDesc simOptions
+check_cluster_name <- function(area_name, cluster_name, add_prefix, opts = simOptions()) {
   
   exists <- FALSE
   
   clusters <- readClusterSTDesc(opts = opts)
   if (nrow(clusters) > 0) {
-    cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
-    clusters_filtered <- clusters[clusters$area == tolower(area) & clusters$cluster == cluster_name,]
+    cluster_name <- generate_cluster_name(area = area_name, cluster_name = cluster_name, add_prefix = add_prefix)
+    clusters_filtered <- clusters[clusters$area == tolower(area_name) & clusters$cluster == cluster_name,]
     exists <- nrow(clusters_filtered) > 0
   }
     
   return(exists)
 }
-
