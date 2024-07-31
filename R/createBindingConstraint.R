@@ -168,7 +168,7 @@ createBindingConstraint <- function(name,
     if(is.null(group))
       group <- "default"
     
-    values_operator <- switch_to_list_name_operator_870(operator)
+    values_operator <- switch_to_list_name_operator_870(operator = operator)
     
     if(!is.null(values)){
       assertthat::assert_that(inherits(values, "list"))
@@ -755,7 +755,7 @@ createBindingConstraintBulk <- function(constraints,
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
   for (i in seq_along(constraints)) {
-    values_operator <- switch_to_list_name_operator_870(constraints[[i]][["operator"]])
+    values_operator <- switch_to_list_name_operator_870(operator = constraints[[i]][["operator"]])
     
     bindingConstraints <- do.call("createBindingConstraint_", c(
       constraints[[i]],
@@ -788,7 +788,7 @@ createBindingConstraintBulk <- function(constraints,
   # In all_dim_group, group is column V1, number of columns is column V2
   all_dim_group <- do.call("rbind", 
                            c(lapply(constraints, function(x){
-                               operator_symbol <- switch_to_list_name_operator_870(x[["operator"]])
+                               operator_symbol <- switch_to_list_name_operator_870(operator = x[["operator"]])
                                dim_matrix <- lapply(x[["values"]][which(names(x[["values"]]) %in% operator_symbol)], dim)
                                data.table(rep(x[["group"]], length(dim_matrix)), sapply(dim_matrix, "[[", 2))
                                }
