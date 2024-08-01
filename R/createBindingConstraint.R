@@ -42,7 +42,7 @@ utils::globalVariables(c('V2', 'dim_study', 'dim_input', 'name_group'))
 #' 
 #' @name createBindingConstraint
 #' 
-#' @importFrom antaresRead getLinks setSimulationPath
+#' @importFrom antaresRead getLinks setSimulationPath readIniFile
 #' @importFrom utils write.table
 #'
 #' @examples
@@ -168,11 +168,7 @@ createBindingConstraint <- function(name,
     if(is.null(group))
       group <- "default"
     
-    values_operator <- switch(operator,
-                              less = "lt",
-                              equal = "eq",
-                              greater = "gt",
-                              both = c("lt", "gt"))
+    values_operator <- switch_to_list_name_operator_870(operator = operator)
     
     if(!is.null(values)){
       assertthat::assert_that(inherits(values, "list"))
@@ -673,6 +669,8 @@ group_values_meta_check <- function(group_value,
 #'  **Warning** all arguments for creating a binding constraints must be provided, see examples.
 #' @template opts
 #' @family binding constraints functions
+#'
+#' @importFrom antaresRead getLinks setSimulationPath readIniFile
 #' 
 #' @details 
 #' According to Antares version, usage may vary :
@@ -745,24 +743,19 @@ group_values_meta_check <- function(group_value,
 #' 
 createBindingConstraintBulk <- function(constraints,
                                         opts = antaresRead::simOptions()) {
+  
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  # check object dimension values only for versions >=8.7.0
-  if(opts$antaresVersion>=870)
-    .check_bulk_object_dim(constraints = constraints, 
-                           opts = opts)
-  ## Ini file
-  pathIni <- file.path(opts$inputPath, "bindingconstraints/bindingconstraints.ini")
+  if(opts[["antaresVersion"]] >= 870) {
+    # check matrix dimension
+    .check_bulk_object_dim(constraints = constraints, opts = opts)
+  }
+  
+  pathIni <- file.path(opts$inputPath, "bindingconstraints", "bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
-  
-  
   for (i in seq_along(constraints)) {
-    values_operator <- switch(constraints[[i]]$operator,
-                              less = "lt",
-                              equal = "eq",
-                              greater = "gt",
-                              both = c("lt", "gt"))
+    values_operator <- switch_to_list_name_operator_870(operator = constraints[[i]][["operator"]])
     
     bindingConstraints <- do.call("createBindingConstraint_", c(
       constraints[[i]],
@@ -780,6 +773,7 @@ createBindingConstraintBulk <- function(constraints,
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
   })
+  
   invisible(res)
 }
 
@@ -792,35 +786,32 @@ createBindingConstraintBulk <- function(constraints,
   
   # check matrix number of columns by group
   # In all_dim_group, group is column V1, number of columns is column V2
-  all_dim_group <- do.call("rbind", 
-                           c(lapply(constraints, function(x){
-                             data.table(name_group <- x$group,
-                                        dim_group <- dim(x$values[[1]])[2])}), 
-                             fill = TRUE))
-  
+  matrix_dimension_by_constraint <- lapply(constraints, FUN = .compute_matrix_dimension_constraint)
+  all_dim_group <- do.call("rbind", c(matrix_dimension_by_constraint, fill = TRUE))
+
   # If each matrix is NULL, there is no second dimension in the table
   if (dim(all_dim_group)[2] < 2) {
     return()
   }
   
-  # no duplicated 
-  all_dim_group <- unique(all_dim_group)
-  select_dim <- all_dim_group[V2>1]
+  # Deduplicate rows and filter V2 > 1
+  select_dim <- unique(all_dim_group)[V2 > 1]
   
-  # count
-  t_df <- table(select_dim)
-  check_row <- rowSums(t_df)
+  # Detect duplicated groups
+  duplicated_groups <- select_dim[duplicated(select_dim$V1),]$V1
   
-  if(any(check_row>1))
+  if (!identical(duplicated_groups, character(0))) {
     stop("Problem dimension with group : ", 
-         paste0(names(check_row[check_row>1]), sep = " "), 
+         paste0(duplicated_groups, sep = " "), 
          call. = FALSE)
+  }
   
   # check input object with study
-  if(is.null(opts$binding))
+  if (is.null(opts[["binding"]])) {
     return()
+  }
   else{
-    merge_groups <- merge.data.table(x = opts$binding, 
+    merge_groups <- merge.data.table(x = opts[["binding"]], 
                      y = select_dim, 
                      by.x ="name_group", 
                      by.y = "V1")
@@ -830,10 +821,44 @@ createBindingConstraintBulk <- function(constraints,
     # check diff 
     diff_dim <- merge_groups[dim_study!=dim_input]
     
-    if(nrow(diff_dim)>0)
+    if (nrow(diff_dim) > 0) {
       stop("Problem dimension with group in Study: ", 
            paste0(diff_dim$name_group, sep = " "), 
            call. = FALSE)
+    }
   }
 }
 
+
+switch_to_list_name_operator_870 <- function(operator) {
+  
+  assertthat::assert_that(operator %in% c("less", "greater", "equal", "both"))
+  
+  operator_symbol <- switch(operator,
+                            "less" = "lt",
+                            "equal" = "eq",
+                            "greater" = "gt",
+                            "both" = c("lt", "gt")
+                            )
+  
+  return(operator_symbol)
+}
+
+# Compute the dimension of a matrix (if operatior is not "both") or 2 (if operatior is "both") in a constraint
+.compute_matrix_dimension_constraint <- function(constraint){
+  
+  assertthat::assert_that(inherits(constraint, "list"))
+  assertthat::assert_that(all(c("group", "operator", "values") %in% names(constraint)))
+  
+  res <- data.table()
+  
+  operator_symbol <- switch_to_list_name_operator_870(operator = constraint[["operator"]])
+  dim_matrix <- lapply(constraint[["values"]][which(names(constraint[["values"]]) %in% operator_symbol)], dim)
+  dim_matrix <- dim_matrix[!sapply(dim_matrix, is.null)]
+  nb_matrix <- length(dim_matrix)
+  if (nb_matrix > 0) {
+    res <- data.table(rep(constraint[["group"]], nb_matrix), sapply(dim_matrix, "[[", 2))
+  }
+  
+  return(res)
+}
