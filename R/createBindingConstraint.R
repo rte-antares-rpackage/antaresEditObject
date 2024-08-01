@@ -786,17 +786,9 @@ createBindingConstraintBulk <- function(constraints,
   
   # check matrix number of columns by group
   # In all_dim_group, group is column V1, number of columns is column V2
-  all_dim_group <- do.call("rbind", 
-                           c(lapply(constraints, function(x){
-                               operator_symbol <- switch_to_list_name_operator_870(operator = x[["operator"]])
-                               dim_matrix <- lapply(x[["values"]][which(names(x[["values"]]) %in% operator_symbol)], dim)
-                               data.table(rep(x[["group"]], length(dim_matrix)), sapply(dim_matrix, "[[", 2))
-                               }
-                            ), 
-                             fill = TRUE
-    )
-  )
-  
+  matrix_dimension_by_constraint <- lapply(constraints, FUN = .compute_matrix_dimension_constraint)
+  all_dim_group <- do.call("rbind", c(matrix_dimension_by_constraint, fill = TRUE))
+
   # If each matrix is NULL, there is no second dimension in the table
   if (dim(all_dim_group)[2] < 2) {
     return()
@@ -850,4 +842,23 @@ switch_to_list_name_operator_870 <- function(operator) {
                             )
   
   return(operator_symbol)
+}
+
+# Compute the dimension of a matrix (if operatior is not "both") or 2 (if operatior is "both") in a constraint
+.compute_matrix_dimension_constraint <- function(constraint){
+  
+  assertthat::assert_that(inherits(constraint, "list"))
+  assertthat::assert_that(all(c("group", "operator", "values") %in% names(constraint)))
+  
+  res <- data.table()
+  
+  operator_symbol <- switch_to_list_name_operator_870(operator = constraint[["operator"]])
+  dim_matrix <- lapply(constraint[["values"]][which(names(constraint[["values"]]) %in% operator_symbol)], dim)
+  dim_matrix <- dim_matrix[!sapply(dim_matrix, is.null)]
+  nb_matrix <- length(dim_matrix)
+  if (nb_matrix > 0) {
+    res <- data.table(rep(constraint[["group"]], nb_matrix), sapply(dim_matrix, "[[", 2))
+  }
+  
+  return(res)
 }
