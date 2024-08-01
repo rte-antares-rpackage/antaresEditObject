@@ -23,6 +23,7 @@ BUGFIXES :
 * `createBindingConstraintBulk()` with no VALUES and with a mix 
 * side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()`
 * Fix bug for data.table to ensure that the variable name is not a column name in `check_cluster_name()` (API + DISK) and `createClusterST()`(API)
+* Enable control of matrix dimension in `.check_bulk_object_dim()` even if the values are not in first position in the list
 
 
 OTHER UPDATES :

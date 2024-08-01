@@ -826,5 +826,121 @@ test_that("test mixed VALUES in study v8.7", {
   
 })
 
+
+test_that("Control of matrix dimension is not dependent of the order in the list of the values", {
+
+  val_cstr1 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(555, 8760 * 3), ncol = 3),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1)
+                    )
+  val_cstr2 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(777, 8760 * 5), ncol = 5)
+                    )
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()), 
+    regexp = "Problem dimension with group"
+  )
+
+  val_cstr1 <- list("lt" = matrix(data = rep(444, 8760 * 2), ncol = 2),
+                    "gt" = matrix(data = rep(555, 8760 * 3), ncol = 3),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1)
+                    )
+  val_cstr2 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(777, 8760 * 5), ncol = 5)
+                    )
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_both",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()), 
+    regexp = "Problem dimension with group"
+  )
+  
+  val_cstr1 <- list("gt" = NULL,
+                    "lt" = matrix(data = rep(555, 8760 * 3), ncol = 3),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1)
+                    )
+  val_cstr2 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(777, 8760 * 5), ncol = 5)
+                    )
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()), 
+    regexp = "Problem dimension with group"
+  )
+
+})
+
 # remove temporary study ----
 deleteStudy()
