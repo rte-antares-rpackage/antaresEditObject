@@ -127,7 +127,7 @@ removeClusterST <- function(area,
     if (api_study && api_mocked) {
       cluster_exists <- TRUE
     } else {
-      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+      cluster_exists <- check_cluster_name(area_name = area, cluster_name = cluster_name, add_prefix = add_prefix, opts = opts)
     }
     assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
   }

@@ -163,7 +163,8 @@ createClusterST <- function(area,
         clusters <- readClusterSTDesc(opts = opts)
       )
       if (nrow(clusters) > 0) {
-        clusters_filtered <- clusters[clusters$area == tolower(area) & 
+        area_filter <- area
+        clusters_filtered <- clusters[clusters$area == tolower(area_filter) & 
                                         clusters$cluster == cluster_name,]
         exists <- nrow(clusters_filtered) > 0
       }
