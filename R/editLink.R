@@ -44,14 +44,21 @@ editLink <- function(from,
                      opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
-
+  
+  if (!is.null(filter_synthesis)) {
+    filter_synthesis <- paste(filter_synthesis, collapse = ", ")
+  }
+  if (!is.null(filter_year_by_year)) {
+    filter_year_by_year <- paste(filter_year_by_year, collapse = ", ")
+  }
+  
   propertiesLink <- dropNulls(list(
     `hurdles-cost` = hurdles_cost,
     `transmission-capacities` = transmission_capacities,
     `asset-type` = asset_type,
     `display-comments` = display_comments,
-    `filter-synthesis` = paste(filter_synthesis,collapse = ", "),
-    `filter-year-by-year` = paste(filter_year_by_year,collapse = ", ")
+    `filter-synthesis` = filter_synthesis,
+    `filter-year-by-year` = filter_year_by_year
   ))
   
   # control areas name
