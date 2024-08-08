@@ -155,41 +155,28 @@ updateGeneralSettings <- function(mode = NULL,
   )
   
   new_params <- dropNulls(x = new_params)
-  # Convert logical to a lower case character to match the default existing file
-  new_params <- lapply(X = new_params,
-                       FUN = function(new_param){
-                          if (inherits(x = new_param, what = "logical")) { 
-                            new_param <- tolower(as.character(new_param))
-                          }
-                          paste(as.character(new_param), collapse = ", ")
-                        }
-                      )
+  new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
   names(new_params) <- sapply(names(new_params), dicoGeneralSettings, USE.NAMES = FALSE)  
   
   # API block
   if (is_api_study(opts)) {
-
+  
     writeIni(listData = new_params, pathIni = "settings/generaldata/general", opts = opts)
     
     return(update_api_opts(opts))
   }
   
-  # read current settings
-  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
+  generaldatapath <- file.path(opts[["studyPath"]], "settings", "generaldata.ini")
   generaldata <- readIniFile(file = generaldatapath)
   
-  # update general field
-  l_general <- generaldata$general
-  
+  l_general <- generaldata[["general"]]
   l_general <- modifyList(x = l_general, val = new_params)
-  generaldata$general <- l_general
+  generaldata[["general"]] <- l_general
   
-  # write
   writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
   
-  # Maj simulation
   suppressWarnings({
-    res <- setSimulationPath(path = opts$studyPath, simulation = "input")
+    res <- setSimulationPath(path = opts[["studyPath"]], simulation = "input")
   })
   
   invisible(res)

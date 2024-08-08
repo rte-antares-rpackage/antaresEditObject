@@ -173,3 +173,18 @@ check_cluster_name <- function(area_name, cluster_name, add_prefix, opts = simOp
     
   return(exists)
 }
+
+
+#' @title Format a value to a suitable format to rhs in an .ini file. 
+#'
+#' @param value The value to format.
+#'
+#' @return the formatted value
+.format_ini_rhs <- function(value){
+  # Convert logical to a lower case character to match the default existing file
+  if (inherits(x = value, what = "logical")) { 
+    value <- tolower(value)
+  }
+  
+  return(paste(as.character(value), collapse = ", "))
+}

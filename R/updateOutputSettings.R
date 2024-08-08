@@ -51,15 +51,8 @@ updateOutputSettings <- function(synthesis = NULL,
   )
   
   new_params <- dropNulls(x = new_params)
-  # Convert logical to a lower case character to match the default existing file
-  new_params <- lapply(X = new_params,
-                       FUN = function(new_param){
-                          if (inherits(x = new_param, what = "logical")) { 
-                            new_param <- tolower(as.character(new_param))
-                          }
-                          paste(as.character(new_param), collapse = ", ")
-                        }
-                      )
+  
+  new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
   names(new_params) <- sapply(names(new_params), dicoOutputSettings, USE.NAMES = FALSE)
   
   # API block
