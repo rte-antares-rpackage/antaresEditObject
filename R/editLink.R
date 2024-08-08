@@ -20,6 +20,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom stats setNames 
 #' @importFrom utils read.table write.table modifyList
+#' @importFrom data.table fwrite as.data.table
 #'
 #' @examples
 #' \dontrun{
@@ -44,14 +45,21 @@ editLink <- function(from,
                      opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
-
+  
+  if (!is.null(filter_synthesis)) {
+    filter_synthesis <- paste(filter_synthesis, collapse = ", ")
+  }
+  if (!is.null(filter_year_by_year)) {
+    filter_year_by_year <- paste(filter_year_by_year, collapse = ", ")
+  }
+  
   propertiesLink <- dropNulls(list(
     `hurdles-cost` = hurdles_cost,
     `transmission-capacities` = transmission_capacities,
     `asset-type` = asset_type,
     `display-comments` = display_comments,
-    `filter-synthesis` = paste(filter_synthesis,collapse = ", "),
-    `filter-year-by-year` = paste(filter_year_by_year,collapse = ", ")
+    `filter-synthesis` = filter_synthesis,
+    `filter-year-by-year` = filter_year_by_year
   ))
   
   # control areas name
@@ -118,7 +126,7 @@ editLink <- function(from,
         direct <- last_cols
         indirect <- first_cols
       }
-      tsLink <- data.table::as.data.table(tsLink)
+      tsLink <- as.data.table(tsLink)
     } else {
       warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
@@ -224,8 +232,8 @@ editLink <- function(from,
   
   if (!is.null(dataLink)) {
     if (v820) {
-      data.table::fwrite(
-        x = data.table::as.data.table(dataLink), 
+      fwrite(
+        x = as.data.table(dataLink), 
         row.names = FALSE, 
         col.names = FALSE,
         sep = "\t",
@@ -237,8 +245,8 @@ editLink <- function(from,
         dataLink[, 1:2] <- dataLink[, 2:1]
         dataLink[, 4:5] <- dataLink[, 5:4]
       }
-      data.table::fwrite(
-        x = data.table::as.data.table(dataLink),
+      fwrite(
+        x = as.data.table(dataLink),
         row.names = FALSE, 
         col.names = FALSE, 
         sep = "\t",
@@ -252,7 +260,7 @@ editLink <- function(from,
   if (!is.null(tsLink)) {
     if (v820) {
       dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
-      data.table::fwrite(
+      fwrite(
         x = tsLink[, .SD, .SDcols = direct], 
         row.names = FALSE, 
         col.names = FALSE,
@@ -260,7 +268,7 @@ editLink <- function(from,
         scipen = 12,
         file = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
       )
-      data.table::fwrite(
+      fwrite(
         x = tsLink[, .SD, .SDcols = indirect], 
         row.names = FALSE, 
         col.names = FALSE,

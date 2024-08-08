@@ -24,11 +24,13 @@ BUGFIXES :
 * side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()`
 * Fix bug for data.table to ensure that the variable name is not a column name in `check_cluster_name()` (API + DISK) and `createClusterST()`(API)
 * Enable control of matrix dimension in `.check_bulk_object_dim()` even if the values are not in first position in the list
+* `editLink()` : avoid *NULL* value (default) for arguments *filter_synthesis* and *filter_year_by_year* to write an empty string
 * `updateOutputSettings()` : in API mode, allow the user to edit the desired property
 
 
 OTHER UPDATES :
 * `updateGeneralSettings()` : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers 
+* `updateGeneralSettings()` : add thematic.trimming argument for edition 
 
 # antaresEditObject 0.7.0 
 
