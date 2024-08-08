@@ -181,7 +181,7 @@ updateGeneralSettings <- function(mode = NULL,
   # update general field
   l_general <- generaldata$general
   
-  l_general <- utils::modifyList(x = l_general, val = new_params)
+  l_general <- modifyList(x = l_general, val = new_params)
   generaldata$general <- l_general
   
   # write
@@ -194,6 +194,7 @@ updateGeneralSettings <- function(mode = NULL,
   
   invisible(res)
 }
+
 
 check_param_modal <- function(x, opts) {
   if (is.null(x))
@@ -243,6 +244,7 @@ check_param_RES <- function(x, opts) {
   return(x)
 }
 
+
 check_param_links <- function(x, opts) {
   if (is.null(x))
     return(NULL)
@@ -255,6 +257,7 @@ check_param_links <- function(x, opts) {
   }
   return(x)
 }
+
 
 #' Correspondence between arguments of \code{updateGeneralSettings} and actual Antares parameters.
 #' 
