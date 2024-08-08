@@ -20,6 +20,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom stats setNames 
 #' @importFrom utils read.table write.table modifyList
+#' @importFrom data.table fwrite as.data.table
 #'
 #' @examples
 #' \dontrun{
@@ -125,7 +126,7 @@ editLink <- function(from,
         direct <- last_cols
         indirect <- first_cols
       }
-      tsLink <- data.table::as.data.table(tsLink)
+      tsLink <- as.data.table(tsLink)
     } else {
       warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
@@ -231,8 +232,8 @@ editLink <- function(from,
   
   if (!is.null(dataLink)) {
     if (v820) {
-      data.table::fwrite(
-        x = data.table::as.data.table(dataLink), 
+      fwrite(
+        x = as.data.table(dataLink), 
         row.names = FALSE, 
         col.names = FALSE,
         sep = "\t",
@@ -244,8 +245,8 @@ editLink <- function(from,
         dataLink[, 1:2] <- dataLink[, 2:1]
         dataLink[, 4:5] <- dataLink[, 5:4]
       }
-      data.table::fwrite(
-        x = data.table::as.data.table(dataLink),
+      fwrite(
+        x = as.data.table(dataLink),
         row.names = FALSE, 
         col.names = FALSE, 
         sep = "\t",
@@ -259,7 +260,7 @@ editLink <- function(from,
   if (!is.null(tsLink)) {
     if (v820) {
       dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
-      data.table::fwrite(
+      fwrite(
         x = tsLink[, .SD, .SDcols = direct], 
         row.names = FALSE, 
         col.names = FALSE,
@@ -267,7 +268,7 @@ editLink <- function(from,
         scipen = 12,
         file = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
       )
-      data.table::fwrite(
+      fwrite(
         x = tsLink[, .SD, .SDcols = indirect], 
         row.names = FALSE, 
         col.names = FALSE,
