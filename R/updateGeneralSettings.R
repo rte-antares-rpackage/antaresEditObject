@@ -40,6 +40,7 @@
 #' @param refreshintervalsolar See Antares General Reference Guide (see link below).
 #' @param readonly See Antares General Reference Guide (see link below).
 #' @param geographic.trimming \code{logical} indicates whether to store the results for all time spans (FALSE) or for custom time spans (TRUE)
+#' @param thematic.trimming See Antares General Reference Guide (see link below).
 #' @template opts
 #' 
 #' @export
@@ -49,7 +50,7 @@
 #' @importFrom antaresRead setSimulationPath readIniFile
 #' @importFrom lifecycle is_present deprecate_warn deprecated
 #'
-#' @seealso \href{https://antares-simulator--2010.org.readthedocs.build/en/2010/reference-guide/18-parameters}{Antares General Reference Guide}
+#' @seealso \href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/}{Antares General Reference Guide}
 #' 
 #' @examples
 #' \dontrun{
@@ -94,6 +95,7 @@ updateGeneralSettings <- function(mode = NULL,
                                   refreshintervalsolar = NULL, 
                                   readonly = NULL,
                                   geographic.trimming = NULL,
+                                  thematic.trimming = NULL,
                                   opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
@@ -148,7 +150,8 @@ updateGeneralSettings <- function(mode = NULL,
     refreshintervalthermal = refreshintervalthermal,
     refreshintervalsolar = refreshintervalsolar,
     readonly = readonly,
-    geographic.trimming = geographic.trimming
+    geographic.trimming = geographic.trimming,
+    thematic.trimming = thematic.trimming
   )
   
   new_params <- dropNulls(x = new_params)
@@ -178,7 +181,7 @@ updateGeneralSettings <- function(mode = NULL,
   # update general field
   l_general <- generaldata$general
   
-  l_general <- utils::modifyList(x = l_general, val = new_params)
+  l_general <- modifyList(x = l_general, val = new_params)
   generaldata$general <- l_general
   
   # write
@@ -191,6 +194,7 @@ updateGeneralSettings <- function(mode = NULL,
   
   invisible(res)
 }
+
 
 check_param_modal <- function(x, opts) {
   if (is.null(x))
@@ -240,6 +244,7 @@ check_param_RES <- function(x, opts) {
   return(x)
 }
 
+
 check_param_links <- function(x, opts) {
   if (is.null(x))
     return(NULL)
@@ -253,6 +258,7 @@ check_param_links <- function(x, opts) {
   return(x)
 }
 
+
 #' Correspondence between arguments of \code{updateGeneralSettings} and actual Antares parameters.
 #' 
 #' @param arg An argument from function \code{updateGeneralSettings}.
@@ -264,8 +270,10 @@ check_param_links <- function(x, opts) {
 #' @examples 
 #' dicoGeneralSettings("year.by.year") # "year-by-year"
 dicoGeneralSettings <- function(arg) {
-  if (length(arg) > 1) 
+  
+  if (length(arg) > 1) { 
     stop("'arg' must be length one")
+  }
   
   antares_params <- as.list(
     c("mode", "horizon", "nbyears", "simulation.start", "simulation.end", 
@@ -275,7 +283,7 @@ dicoGeneralSettings <- function(arg) {
       "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
       "nbtimeseriessolar", "refreshtimeseries", "intra-modal", "inter-modal", 
       "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-      "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic-trimming")
+      "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic-trimming", "thematic-trimming")
   )
   names(antares_params) <- c("mode", "horizon", "nbyears", "simulation.start", "simulation.end", 
                              "january.1st", "first.month.in.year", "first.weekday", "leapyear", 
@@ -284,6 +292,6 @@ dicoGeneralSettings <- function(arg) {
                              "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
                              "nbtimeseriessolar", "refreshtimeseries", "intra.modal", "inter.modal", 
                              "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-                             "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic.trimming")
+                             "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic.trimming", "thematic.trimming")
   antares_params[[arg]]
 }

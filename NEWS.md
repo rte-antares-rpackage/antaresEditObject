@@ -29,6 +29,7 @@ BUGFIXES :
 
 OTHER UPDATES :
 * `updateGeneralSettings()` : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers 
+* `updateGeneralSettings()` : add thematic.trimming argument for edition 
 
 # antaresEditObject 0.7.0 
 

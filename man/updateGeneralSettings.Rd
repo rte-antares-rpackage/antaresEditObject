@@ -37,6 +37,7 @@ updateGeneralSettings(
   refreshintervalsolar = NULL,
   readonly = NULL,
   geographic.trimming = NULL,
+  thematic.trimming = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -108,6 +109,8 @@ Study_name/OUTPUT/simu_tag/Economy /mc-i-number}
 
 \item{geographic.trimming}{\code{logical} indicates whether to store the results for all time spans (FALSE) or for custom time spans (TRUE)}
 
+\item{thematic.trimming}{See Antares General Reference Guide (see link below).}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
@@ -132,5 +135,5 @@ updateGeneralSettings(generate = c("thermal", "hydro"))
 }
 }
 \seealso{
-\href{https://antares-simulator--2010.org.readthedocs.build/en/2010/reference-guide/18-parameters}{Antares General Reference Guide}
+\href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/}{Antares General Reference Guide}
 }
