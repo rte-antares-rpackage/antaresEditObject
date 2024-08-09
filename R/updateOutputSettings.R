@@ -8,16 +8,20 @@
 #'
 #' @param synthesis Logical. If TRUE, synthetic results will be stored in a
 #'   directory Study_name/OUTPUT/simu_tag/Economy/mc-all. If FALSE, No general
-#'   synthesis will be printed out.
-#' @param storenewset Logical. See Antares General Reference Guide.
-#' @param archives Character vector. Series to archive.
-#' @param result.format Character. Output format (txt-files or zip).
+#'   synthesis will be printed out. See Antares General Reference Guide (see link below).
+#' @param storenewset Logical. See Antares General Reference Guide (see link below).
+#' @param archives Character vector. Series to archive. See Antares General Reference Guide (see link below).
+#' @param result.format Character. Output format (txt-files or zip). See Antares General Reference Guide (see link below).
 #' 
 #' @template opts
 #' 
 #' @export
 #'
 #' @importFrom assertthat assert_that
+#' @importFrom utils modifyList
+#' @importFrom antaresRead readIniFile
+#'
+#' @seealso \href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/}{Antares General Reference Guide}
 #'
 #' @examples
 #' \dontrun{
@@ -39,43 +43,62 @@ updateOutputSettings <- function(synthesis = NULL,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  new_params <- list(
+    synthesis = synthesis,
+    storenewset = storenewset,
+    archives = archives,
+    result.format = result.format
+  )
+  
+  new_params <- dropNulls(x = new_params)
+  
+  new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
+  names(new_params) <- sapply(names(new_params), dicoOutputSettings, USE.NAMES = FALSE)
+  
   # API block
   if (is_api_study(opts)) {
     
-    writeIni(
-      listData = list(
-        synthesis = synthesis,
-        storenewset = storenewset,
-        archives = paste(archives, collapse = ", "),
-        `result-format` = result.format
-      ),
-      pathIni = "settings/generaldata/output",
-      opts = opts
-    )
+    writeIni(listData = new_params, pathIni = "settings/generaldata/output", opts = opts)
     
     return(update_api_opts(opts))
   }
   
-  pathIni <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  general <- readIniFile(file = pathIni)
+  generaldatapath <- file.path(opts[["studyPath"]], "settings", "generaldata.ini")
+  generaldata <- readIniFile(file = generaldatapath)
   
-  outputs <- general$output
-  if (!is.null(synthesis))
-    outputs$synthesis <- synthesis
-  if (!is.null(storenewset))
-    outputs$storenewset <- storenewset
-  if (!is.null(archives))
-    outputs$archives <- paste(archives, collapse = ", ")
-  if (!is.null(result.format))
-    outputs$`result-format` <- result.format
-  general$output <- outputs
+  l_output <- generaldata[["output"]]
+  l_output <- modifyList(x = l_output, val = new_params)
+  generaldata[["output"]] <- l_output
   
-  writeIni(listData = general, pathIni = pathIni, overwrite = TRUE)
-
-  # Maj simulation
+  writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
+  
   suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+    res <- setSimulationPath(path = opts[["studyPath"]], simulation = "input")
   })
   
   invisible(res)
+}
+
+
+#' Correspondence between arguments of \code{updateOutputSettings} and actual Antares parameters.
+#' 
+#' @param arg An argument from function \code{updateOutputSettings}.
+#'
+#' @return The corresponding Antares general parameter.
+#' 
+#' @export
+#' 
+#' @examples 
+#' dicoOutputSettings("result.format") # "result-format"
+dicoOutputSettings <- function(arg) {
+  
+  if (length(arg) > 1) { 
+    stop("'arg' must be length one")
+  }
+  
+  antares_params <- as.list(c("synthesis", "storenewset", "archives", "result-format"))
+  
+  names(antares_params) <- c("synthesis", "storenewset", "archives", "result.format")
+  
+  return(antares_params[[arg]])
 }
