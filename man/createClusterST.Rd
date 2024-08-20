@@ -56,6 +56,23 @@ Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 \note{
 To write parameters to the \code{list.ini} file. You have function \code{storage_values_default()} who is called by default.
 This function return \code{list} containing properties according study version for cluster \code{st-storage}.
+
+Study version >= "8.6.0" :
+\itemize{
+\item efficiency = 1  (\code{numeric} \{0;1\})
+\item reservoircapacity = 0  (\code{integer} >= 0)
+\item initiallevel = 0  (\code{numeric} \{0;1\})
+\item withdrawalnominalcapacity = 0  (\code{integer} >= 0)
+\item injectionnominalcapacity = 0  (\code{integer} >= 0)
+\item initialleveloptim = FALSE (\code{logical} TRUE/FALSE)
+}
+
+Study version >= "8.8.0" (update + new parameter) :
+\itemize{
+\item initiallevel = 0.5  (\code{numeric} \{0;1\})
+\item enabled = TRUE (\code{logical} TRUE/FALSE)
+}
+
 See example section.
 
 To write data (.txt file), you have parameter for each output file :

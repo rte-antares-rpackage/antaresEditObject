@@ -28,9 +28,14 @@ BUGFIXES :
 * `updateOutputSettings()` : in API mode, allow the user to edit the desired property
 
 
-OTHER UPDATES :
-* `updateGeneralSettings()` : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers 
-* `updateGeneralSettings()` : add thematic.trimming argument for edition 
+OTHER UPDATES :  
+
+* `updateGeneralSettings()` : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers  
+* `updateGeneralSettings()` : add thematic.trimming argument for edition  
+
+DOC :  
+
+* `createClusterST()` : update doc to discrabe st-storage list parameters + "Inflows" parameter
 
 # antaresEditObject 0.7.0 
 

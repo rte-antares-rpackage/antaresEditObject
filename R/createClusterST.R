@@ -20,7 +20,21 @@
 #' @template opts
 #' @note   
 #' To write parameters to the `list.ini` file. You have function `storage_values_default()` who is called by default.
-#' This function return `list` containing properties according study version for cluster `st-storage`.
+#' This function return `list` containing properties according study version for cluster `st-storage`.  
+#'   
+#' Study version >= "8.6.0" :  
+#'  - efficiency = 1  (`numeric` \{0;1\})  
+#'  - reservoircapacity = 0  (`integer` >= 0)  
+#'  - initiallevel = 0  (`numeric` \{0;1\})  
+#'  - withdrawalnominalcapacity = 0  (`integer` >= 0)  
+#'  - injectionnominalcapacity = 0  (`integer` >= 0)  
+#'  - initialleveloptim = FALSE (`logical` TRUE/FALSE)  
+#'    
+#'    
+#' Study version >= "8.8.0" (update + new parameter) :  
+#'  - initiallevel = 0.5  (`numeric` \{0;1\})  
+#'  - enabled = TRUE (`logical` TRUE/FALSE)  
+#'      
 #' See example section.
 #' 
 #' To write data (.txt file), you have parameter for each output file :   
