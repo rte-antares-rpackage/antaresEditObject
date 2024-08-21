@@ -32,7 +32,7 @@ createClusterST(
 
 \item{PMAX_withdrawal}{modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.}
 
-\item{inflows}{imposed withdrawals from the stock for other uses, The values are integer.}
+\item{inflows}{Algebraic deviation of the state of charge of the storage, which does not induce any power generation or consumption on the system.}
 
 \item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.}
 
@@ -56,6 +56,23 @@ Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 \note{
 To write parameters to the \code{list.ini} file. You have function \code{storage_values_default()} who is called by default.
 This function return \code{list} containing properties according study version for cluster \code{st-storage}.
+
+Study version >= "8.6.0" :
+\itemize{
+\item efficiency = 1  (\code{numeric} \{0;1\})
+\item reservoircapacity = 0  (\code{integer} >= 0)
+\item initiallevel = 0  (\code{numeric} \{0;1\})
+\item withdrawalnominalcapacity = 0  (\code{integer} >= 0)
+\item injectionnominalcapacity = 0  (\code{integer} >= 0)
+\item initialleveloptim = FALSE (\code{logical} TRUE/FALSE)
+}
+
+Study version >= "8.8.0" (update + new parameter) :
+\itemize{
+\item initiallevel = 0.5  (\code{numeric} \{0;1\})
+\item enabled = TRUE (\code{logical} TRUE/FALSE)
+}
+
 See example section.
 
 To write data (.txt file), you have parameter for each output file :

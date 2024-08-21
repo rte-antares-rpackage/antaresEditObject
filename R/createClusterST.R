@@ -11,7 +11,7 @@
 #' @param storage_parameters `list ` Parameters to write in the Ini file (see `Note`). 
 #' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
 #' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param inflows imposed withdrawals from the stock for other uses, The values are integer.
+#' @param inflows Algebraic deviation of the state of charge of the storage, which does not induce any power generation or consumption on the system.
 #' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
@@ -20,7 +20,21 @@
 #' @template opts
 #' @note   
 #' To write parameters to the `list.ini` file. You have function `storage_values_default()` who is called by default.
-#' This function return `list` containing properties according study version for cluster `st-storage`.
+#' This function return `list` containing properties according study version for cluster `st-storage`.  
+#'   
+#' Study version >= "8.6.0" :  
+#'  - efficiency = 1  (`numeric` \{0;1\})  
+#'  - reservoircapacity = 0  (`integer` >= 0)  
+#'  - initiallevel = 0  (`numeric` \{0;1\})  
+#'  - withdrawalnominalcapacity = 0  (`integer` >= 0)  
+#'  - injectionnominalcapacity = 0  (`integer` >= 0)  
+#'  - initialleveloptim = FALSE (`logical` TRUE/FALSE)  
+#'    
+#'    
+#' Study version >= "8.8.0" (update + new parameter) :  
+#'  - initiallevel = 0.5  (`numeric` \{0;1\})  
+#'  - enabled = TRUE (`logical` TRUE/FALSE)  
+#'      
 #' See example section.
 #' 
 #' To write data (.txt file), you have parameter for each output file :   
