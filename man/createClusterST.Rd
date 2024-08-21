@@ -32,7 +32,7 @@ createClusterST(
 
 \item{PMAX_withdrawal}{modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.}
 
-\item{inflows}{imposed withdrawals from the stock for other uses, The values are integer.}
+\item{inflows}{Algebraic deviation of the state of charge of the storage, which does not induce any power generation or consumption on the system.}
 
 \item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.}
 

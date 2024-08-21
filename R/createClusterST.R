@@ -11,7 +11,7 @@
 #' @param storage_parameters `list ` Parameters to write in the Ini file (see `Note`). 
 #' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
 #' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param inflows imposed withdrawals from the stock for other uses, The values are integer.
+#' @param inflows Algebraic deviation of the state of charge of the storage, which does not induce any power generation or consumption on the system.
 #' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
