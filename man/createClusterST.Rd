@@ -24,19 +24,21 @@ createClusterST(
 
 \item{cluster_name}{Name for the cluster, it will prefixed by area name, unless you set \code{add_prefix = FALSE}.}
 
-\item{group}{Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.}
+\item{group}{Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other".
+It corresponds to the type of stockage.}
 
 \item{storage_parameters}{\code{list } Parameters to write in the Ini file (see \code{Note}).}
 
-\item{PMAX_injection}{modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_injection}{Modulation of charging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
 
-\item{PMAX_withdrawal}{modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_withdrawal}{Modulation of discharging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
 
-\item{inflows}{Algebraic deviation of the state of charge of the storage, which does not induce any power generation or consumption on the system.}
+\item{inflows}{Algebraic deviation of the state of charge of the storage, which does not induce any power
+generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
 
-\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.}
+\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
 
-\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.}
+\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
 
 \item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
@@ -73,16 +75,11 @@ Study version >= "8.8.0" (update + new parameter) :
 \item enabled = TRUE (\code{logical} TRUE/FALSE)
 }
 
-See example section.
+⚠⚠⚠
 
-To write data (.txt file), you have parameter for each output file :
-\itemize{
-\item PMAX-injection.txt
-\item PMAX-withdrawal.txt
-\item inflows.txt
-\item lower-rule-curve.txt
-\item upper-rule-curve.txt
-}
+By default, these values don't allow you to have an active cluster (See example section.)
+
+⚠⚠⚠
 }
 \examples{
 \dontrun{
@@ -101,13 +98,19 @@ levels(readClusterSTDesc()$cluster)
 # > "my_area_my_cluster"
 
 # create cluster with custom parameter and data
+  # use the function to create your own list of parameters (no Antares optim)
+  # if you want optim (my_parameters$initialleveloptim <- TRUE)
 my_parameters <- storage_values_default()
 my_parameters$efficiency <- 0.5
+my_parameters$initiallevel <- 10
+my_parameters$withdrawalnominalcapacity <- 100
+my_parameters$injectionnominalcapacity <- 1000
 my_parameters$reservoircapacity <- 10000
 
-
+  # time series 
 inflow_data <- matrix(3, 8760)
 ratio_data <- matrix(0.7, 8760)
+
 createClusterST(area = "my_area", 
                 "my_cluster",
                 storage_parameters = my_parameters,
@@ -120,6 +123,6 @@ createClusterST(area = "my_area",
 
 }
 \seealso{
-\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[antaresRead:readClusterDesc]{antaresRead::readClusterSTDesc()}} to read cluster,
-\code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
+All the functions needed to manage a storage cluster,
+\code{\link[antaresRead:readClusterDesc]{antaresRead::readClusterSTDesc()}}, \code{\link[=editClusterST]{editClusterST()}}, \code{\link[=removeClusterST]{removeClusterST()}}.
 }

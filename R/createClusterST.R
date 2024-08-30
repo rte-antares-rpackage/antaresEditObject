@@ -7,13 +7,15 @@
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
-#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.
+#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". 
+#' It corresponds to the type of stockage.
 #' @param storage_parameters `list ` Parameters to write in the Ini file (see `Note`). 
-#' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param inflows Algebraic deviation of the state of charge of the storage, which does not induce any power generation or consumption on the system.
-#' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.
-#' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.
+#' @param PMAX_injection Modulation of charging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
+#' @param PMAX_withdrawal Modulation of discharging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
+#' @param inflows Algebraic deviation of the state of charge of the storage, which does not induce any power 
+#' generation or consumption on the system `numeric` \{<0;>0\} (8760*1).
+#' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
+#' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite Logical, overwrite the cluster or not.
 #' 
@@ -34,18 +36,16 @@
 #' Study version >= "8.8.0" (update + new parameter) :  
 #'  - initiallevel = 0.5  (`numeric` \{0;1\})  
 #'  - enabled = TRUE (`logical` TRUE/FALSE)  
-#'      
-#' See example section.
-#' 
-#' To write data (.txt file), you have parameter for each output file :   
-#'  - PMAX-injection.txt 
-#'  - PMAX-withdrawal.txt
-#'  - inflows.txt
-#'  - lower-rule-curve.txt
-#'  - upper-rule-curve.txt
 #'  
-#' @seealso [editClusterST()] to edit existing clusters, [antaresRead::readClusterSTDesc()] to read cluster,
-#' [removeClusterST()] to remove clusters.
+#' &#9888;&#9888;&#9888;  
+#' 
+#' By default, these values don't allow you to have an active cluster (See example section.)  
+#' 
+#' &#9888;&#9888;&#9888;      
+#' 
+#'  
+#' @seealso All the functions needed to manage a storage cluster, 
+#' [antaresRead::readClusterSTDesc()], [editClusterST()], [removeClusterST()].
 #' 
 #' @export
 #' 
@@ -71,13 +71,19 @@
 #' # > "my_area_my_cluster"
 #' 
 #' # create cluster with custom parameter and data
+#'   # use the function to create your own list of parameters (no Antares optim)
+#'   # if you want optim (my_parameters$initialleveloptim <- TRUE)
 #' my_parameters <- storage_values_default()
 #' my_parameters$efficiency <- 0.5
+#' my_parameters$initiallevel <- 10
+#' my_parameters$withdrawalnominalcapacity <- 100
+#' my_parameters$injectionnominalcapacity <- 1000
 #' my_parameters$reservoircapacity <- 10000
 #' 
-#' 
+#'   # time series 
 #' inflow_data <- matrix(3, 8760)
 #' ratio_data <- matrix(0.7, 8760)
+#' 
 #' createClusterST(area = "my_area", 
 #'                 "my_cluster",
 #'                 storage_parameters = my_parameters,
