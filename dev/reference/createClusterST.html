@@ -106,7 +106,8 @@ Create a new ST-storage cluster for &amp;gt;= v8.6.0 Antares studies."><meta nam
 
 
 <dt id="arg-group">group<a class="anchor" aria-label="anchor" href="#arg-group"></a></dt>
-<dd><p>Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.</p></dd>
+<dd><p>Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other".
+It corresponds to the type of stockage.</p></dd>
 
 
 <dt id="arg-storage-parameters">storage_parameters<a class="anchor" aria-label="anchor" href="#arg-storage-parameters"></a></dt>
@@ -114,23 +115,24 @@ Create a new ST-storage cluster for &amp;gt;= v8.6.0 Antares studies."><meta nam
 
 
 <dt id="arg-pmax-injection">PMAX_injection<a class="anchor" aria-label="anchor" href="#arg-pmax-injection"></a></dt>
-<dd><p>modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.</p></dd>
+<dd><p>Modulation of charging capacity on an 8760-hour basis. <code>numeric</code> {0;1} (8760*1).</p></dd>
 
 
 <dt id="arg-pmax-withdrawal">PMAX_withdrawal<a class="anchor" aria-label="anchor" href="#arg-pmax-withdrawal"></a></dt>
-<dd><p>modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.</p></dd>
+<dd><p>Modulation of discharging capacity on an 8760-hour basis. <code>numeric</code> {0;1} (8760*1).</p></dd>
 
 
 <dt id="arg-inflows">inflows<a class="anchor" aria-label="anchor" href="#arg-inflows"></a></dt>
-<dd><p>Algebraic deviation of the state of charge of the storage, which does not induce any power generation or consumption on the system.</p></dd>
+<dd><p>Algebraic deviation of the state of charge of the storage, which does not induce any power
+generation or consumption on the system <code>numeric</code> {&lt;0;&gt;0} (8760*1).</p></dd>
 
 
 <dt id="arg-lower-rule-curve">lower_rule_curve<a class="anchor" aria-label="anchor" href="#arg-lower-rule-curve"></a></dt>
-<dd><p>This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.</p></dd>
+<dd><p>This is the lower limit for filling the stock imposed each hour. <code>numeric</code> {0;1} (8760*1).</p></dd>
 
 
 <dt id="arg-upper-rule-curve">upper_rule_curve<a class="anchor" aria-label="anchor" href="#arg-upper-rule-curve"></a></dt>
-<dd><p>This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.</p></dd>
+<dd><p>This is the upper limit for filling the stock imposed each hour. <code>numeric</code> {0;1} (8760*1).</p></dd>
 
 
 <dt id="arg-add-prefix">add_prefix<a class="anchor" aria-label="anchor" href="#arg-add-prefix"></a></dt>
@@ -162,17 +164,14 @@ This function return <code>list</code> containing properties according study ver
 <li><p>initialleveloptim = FALSE (<code>logical</code> TRUE/FALSE)</p></li>
 </ul><p>Study version &gt;= "8.8.0" (update + new parameter) :</p><ul><li><p>initiallevel = 0.5  (<code>numeric</code> {0;1})</p></li>
 <li><p>enabled = TRUE (<code>logical</code> TRUE/FALSE)</p></li>
-</ul><p>See example section.</p>
-<p>To write data (.txt file), you have parameter for each output file :</p><ul><li><p>PMAX-injection.txt</p></li>
-<li><p>PMAX-withdrawal.txt</p></li>
-<li><p>inflows.txt</p></li>
-<li><p>lower-rule-curve.txt</p></li>
-<li><p>upper-rule-curve.txt</p></li>
-</ul></div>
+</ul><p>⚠⚠⚠</p>
+<p>By default, these values don't allow you to have an active cluster (See example section.)</p>
+<p>⚠⚠⚠</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="editClusterST.html">editClusterST()</a></code> to edit existing clusters, <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">antaresRead::readClusterSTDesc()</a></code> to read cluster,
-<code><a href="removeCluster.html">removeClusterST()</a></code> to remove clusters.</p></div>
+    <div class="dont-index"><p>All the functions needed to manage a storage cluster,
+<code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">antaresRead::readClusterSTDesc()</a></code>, <code><a href="editClusterST.html">editClusterST()</a></code>, <code><a href="removeCluster.html">removeClusterST()</a></code>.</p></div>
     </div>
 
     <div id="ref-examples">
@@ -193,13 +192,19 @@ This function return <code>list</code> containing properties according study ver
 <span class="r-in"><span><span class="co"># &gt; "my_area_my_cluster"</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create cluster with custom parameter and data</span></span></span>
+<span class="r-in"><span>  <span class="co"># use the function to create your own list of parameters (no Antares optim)</span></span></span>
+<span class="r-in"><span>  <span class="co"># if you want optim (my_parameters$initialleveloptim &lt;- TRUE)</span></span></span>
 <span class="r-in"><span><span class="va">my_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="storage_values_default.html">storage_values_default</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">efficiency</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span></span>
+<span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">initiallevel</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">withdrawalnominalcapacity</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">injectionnominalcapacity</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">reservoircapacity</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># time series </span></span></span>
 <span class="r-in"><span><span class="va">inflow_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8760</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ratio_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">8760</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">createClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"my_area"</span>, </span></span>
 <span class="r-in"><span>                <span class="st">"my_cluster"</span>,</span></span>
 <span class="r-in"><span>                storage_parameters <span class="op">=</span> <span class="va">my_parameters</span>,</span></span>
