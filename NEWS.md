@@ -26,6 +26,7 @@ BUGFIXES :
 * Enable control of matrix dimension in `.check_bulk_object_dim()` even if the values are not in first position in the list
 * `editLink()` : avoid *NULL* value (default) for arguments *filter_synthesis* and *filter_year_by_year* to write an empty string
 * `updateOutputSettings()` : in API mode, allow the user to edit the desired property
+* `setPlaylist()`: do not send NULL value if the weights are not provided in argument
 
 
 OTHER UPDATES :  

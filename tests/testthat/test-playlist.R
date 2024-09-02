@@ -84,3 +84,18 @@ test_that("Check if setPlaylist() is disabled when playlist = mcYear and enabled
   
   expect_false(opts$parameters$general$`user-playlist`)
 })
+
+
+test_that("Check the general behaviour of .format_playlist_weights()", {
+  
+  weights <- data.table("mcYears" = c(14,27,28), "weights" = c(1,2,3))
+  
+  res <- .format_playlist_weights(weights = NULL, api_mode = TRUE)
+  expect_null(res)
+  res <- .format_playlist_weights(weights = NULL, api_mode = FALSE)
+  expect_null(res)
+  res <- .format_playlist_weights(weights = weights, api_mode = TRUE)
+  expect_equal(res, "['13,1','26,2','27,3']")
+  res <- .format_playlist_weights(weights = weights, api_mode = FALSE)
+  expect_equal(res, c("playlist_year_weight" = "13,1.000000", "playlist_year_weight" = "26,2.000000","playlist_year_weight" = "27,3.000000"))
+})
