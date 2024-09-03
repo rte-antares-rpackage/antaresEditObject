@@ -1,4 +1,4 @@
-# antaresEditObject 0.7.1 (development)
+# antaresEditObject 0.7.1.9000
 
 ### Breaking changes  :  
 
@@ -57,10 +57,10 @@ NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :
  
 ### Breaking changes  :  
 
-* `createBindingConstraint()` is available with **offset** parameter in API mode
+* `createBindingConstraint()` is available with **offset** parameter in API mode 
 
 
-# antaresEditObject 0.6.4 (development)
+# antaresEditObject 0.6.4 
 
 BREAKING CHANGES :
 * Add UTF-8 encoding argument in `.getJobs()`
@@ -70,6 +70,7 @@ BUGFIXES :
 * `createArea()`/`editArea()` : in API mode, split data in nodalOptimization argument to write it in the expected files
 * `editArea()` : not delete one of the two economic options if only one must be edited
 * Avoid data deletion in API mode for `editArea()`
+
 
 # antaresEditObject 0.6.3
 

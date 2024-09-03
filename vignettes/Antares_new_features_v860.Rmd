@@ -20,7 +20,7 @@ data.table::setDTthreads(2)
 library(antaresEditObject)
 ```
 
-This thumbnail will present the new features in line with **Antares v8.6.0** (the link is [here](https://antares-simulator.readthedocs.io/en/latest/reference-guide/13-file-format/#v860))
+This thumbnail will present the new features in line with **Antares v8.6.0** (the link is [here](https://antares-simulator.readthedocs.io/en/stable/developer-guide/CHANGELOG/#branch-86x-end-of-support-062025))
 
 There are 3 new features :  
 
