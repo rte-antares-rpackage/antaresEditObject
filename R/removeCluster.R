@@ -127,7 +127,7 @@ removeClusterST <- function(area,
     if (api_study && api_mocked) {
       cluster_exists <- TRUE
     } else {
-      cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
+      cluster_exists <- check_cluster_name(area_name = area, cluster_name = cluster_name, add_prefix = add_prefix, opts = opts)
     }
     assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
   }
@@ -139,8 +139,7 @@ removeClusterST <- function(area,
     if (!api_study | (api_study && !api_mocked)) {
       bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(area, ".", cluster_name), opts = opts)
       if (!identical(bc_not_remove, character(0))) {
-        message("The following binding constraints have the cluster to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
-        stop("Can not remove the cluster ", cluster_name, " in the area ", area, ".")
+        warning("The following binding constraints have the cluster to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
       }
     }
   }

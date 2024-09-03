@@ -16,7 +16,8 @@ updateGeneralSettings(
   leapyear = NULL,
   year.by.year = NULL,
   derated = NULL,
-  custom.ts.numbers = NULL,
+  custom.scenario = NULL,
+  custom.ts.numbers = deprecated(),
   user.playlist = NULL,
   filtering = NULL,
   active.rules.scenario = NULL,
@@ -36,6 +37,7 @@ updateGeneralSettings(
   refreshintervalsolar = NULL,
   readonly = NULL,
   geographic.trimming = NULL,
+  thematic.trimming = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -65,45 +67,49 @@ Study_name/OUTPUT/simu_tag/Economy /mc-i-number}
 
 \item{derated}{See Antares General Reference Guide.}
 
-\item{custom.ts.numbers}{See Antares General Reference Guide.}
+\item{custom.scenario}{See Antares General Reference Guide (see link below). Replace custom.ts.numbers.}
 
-\item{user.playlist}{See Antares General Reference Guide.}
+\item{custom.ts.numbers}{See Antares General Reference Guide (see link below). Replaced by custom.scenario.}
 
-\item{filtering}{See Antares General Reference Guide.}
+\item{user.playlist}{See Antares General Reference Guide (see link below).}
 
-\item{active.rules.scenario}{See Antares General Reference Guide.}
+\item{filtering}{See Antares General Reference Guide (see link below).}
 
-\item{generate}{See Antares General Reference Guide.}
+\item{active.rules.scenario}{See Antares General Reference Guide (see link below).}
 
-\item{nbtimeseriesload}{See Antares General Reference Guide.}
+\item{generate}{See Antares General Reference Guide (see link below).}
 
-\item{nbtimeserieshydro}{See Antares General Reference Guide.}
+\item{nbtimeseriesload}{See Antares General Reference Guide (see link below).}
 
-\item{nbtimeserieswind}{See Antares General Reference Guide.}
+\item{nbtimeserieshydro}{See Antares General Reference Guide (see link below).}
 
-\item{nbtimeseriesthermal}{See Antares General Reference Guide.}
+\item{nbtimeserieswind}{See Antares General Reference Guide (see link below).}
 
-\item{nbtimeseriessolar}{See Antares General Reference Guide.}
+\item{nbtimeseriesthermal}{See Antares General Reference Guide (see link below).}
 
-\item{refreshtimeseries}{See Antares General Reference Guide.}
+\item{nbtimeseriessolar}{See Antares General Reference Guide (see link below).}
 
-\item{intra.modal}{See Antares General Reference Guide.}
+\item{refreshtimeseries}{See Antares General Reference Guide (see link below).}
 
-\item{inter.modal}{See Antares General Reference Guide.}
+\item{intra.modal}{See Antares General Reference Guide (see link below).}
 
-\item{refreshintervalload}{See Antares General Reference Guide.}
+\item{inter.modal}{See Antares General Reference Guide (see link below).}
 
-\item{refreshintervalhydro}{See Antares General Reference Guide.}
+\item{refreshintervalload}{See Antares General Reference Guide (see link below).}
 
-\item{refreshintervalwind}{See Antares General Reference Guide.}
+\item{refreshintervalhydro}{See Antares General Reference Guide (see link below).}
 
-\item{refreshintervalthermal}{See Antares General Reference Guide.}
+\item{refreshintervalwind}{See Antares General Reference Guide (see link below).}
 
-\item{refreshintervalsolar}{See Antares General Reference Guide.}
+\item{refreshintervalthermal}{See Antares General Reference Guide (see link below).}
 
-\item{readonly}{See Antares General Reference Guide.}
+\item{refreshintervalsolar}{See Antares General Reference Guide (see link below).}
+
+\item{readonly}{See Antares General Reference Guide (see link below).}
 
 \item{geographic.trimming}{\code{logical} indicates whether to store the results for all time spans (FALSE) or for custom time spans (TRUE)}
+
+\item{thematic.trimming}{See Antares General Reference Guide (see link below).}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -127,4 +133,7 @@ updateGeneralSettings(nbyears = 42)
 updateGeneralSettings(generate = c("thermal", "hydro"))
 
 }
+}
+\seealso{
+\href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/}{Antares General Reference Guide}
 }

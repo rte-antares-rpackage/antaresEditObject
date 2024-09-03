@@ -358,12 +358,12 @@ test_that("removeArea(): check that area is removed if it is not referenced in a
   
   # Area
   opts <- createArea(name = new_area, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  expect_no_warning(removeArea(name = new_area, opts = simOptions()))
   
   # Area + Link
   opts <- createArea(name = new_area, opts = simOptions())
   opts <- createLink(from = "zone1", to = new_area, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  expect_no_warning(removeArea(name = new_area, opts = simOptions()))
   
   # Area + Link + Binding Constraint
   opts <- createArea(name = new_area, opts = simOptions())
@@ -377,23 +377,20 @@ test_that("removeArea(): check that area is removed if it is not referenced in a
                                   coefficients = coefs,
                                   values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
                                   opts = simOptions())
-  expect_error(removeArea(name = new_area, opts = simOptions()),
-               regexp = paste0("Can not remove the area ", new_area)
+  expect_warning(removeArea(name = new_area, opts = simOptions()),
+               regexp = "The following binding constraints have the area to remove in a coefficient : "
   )
-  
-  removeBindingConstraint(name = name_bc, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
   
   new_area <- "zzone_bc_cluster"
   
   # Area
   opts <- createArea(name = new_area, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  expect_no_warning(removeArea(name = new_area, opts = simOptions()))
   
   # Area + Cluster
   opts <- createArea(name = new_area, opts = simOptions())
   opts <- createCluster(area = new_area, cluster_name = "nuclear", add_prefix = TRUE, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
+  expect_no_warning(removeArea(name = new_area, opts = simOptions()))
   
   # Area + Cluster + Binding Constraint
   opts <- createArea(name = new_area, opts = simOptions())
@@ -408,12 +405,11 @@ test_that("removeArea(): check that area is removed if it is not referenced in a
                                   coefficients = coefs,
                                   values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
                                   opts = simOptions())
-  expect_error(removeArea(name = new_area, opts = simOptions()),
-               regexp = paste0("Can not remove the area ", new_area)
+  expect_warning(removeArea(name = new_area, opts = simOptions()),
+                 regexp = "The following binding constraints have the area to remove in a coefficient : "
   )
   
   removeBindingConstraint(name = name_bc, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
   
   new_area <- "zzone_bc_cluster_link"
   
@@ -431,12 +427,11 @@ test_that("removeArea(): check that area is removed if it is not referenced in a
                                   coefficients = coefs,
                                   values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
                                   opts = simOptions())
-  expect_error(removeArea(name = new_area, opts = simOptions()),
-               regexp = paste0("Can not remove the area ", new_area)
+  expect_warning(removeArea(name = new_area, opts = simOptions()),
+                 regexp = "The following binding constraints have the area to remove in a coefficient : "
   )
   
   removeBindingConstraint(name = name_bc, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
   
   new_area <- "zzone_bc_cluster_link_2"
   
@@ -454,17 +449,14 @@ test_that("removeArea(): check that area is removed if it is not referenced in a
                                   coefficients = coefs,
                                   values = matrix(rep(0, nb_values_per_matrix), ncol = nb_cols_per_matrix),
                                   opts = simOptions())
-  expect_error(removeArea(name = new_area, opts = simOptions()),
-               regexp = paste0("Can not remove the area ", new_area)
+  expect_warning(removeArea(name = new_area, opts = simOptions()),
+                 regexp = "The following binding constraints have the area to remove in a coefficient : "
   )
-  
-  removeBindingConstraint(name = name_bc, opts = simOptions())
-  expect_no_error(removeArea(name = new_area, opts = simOptions()))
   
   # standard areas
   for (area in my_areas) {
-    expect_error(removeArea(name = area, opts = simOptions()),
-               regexp = paste0("Can not remove the area ", area)
+    expect_warning(removeArea(name = area, opts = simOptions()),
+                   regexp = "The following binding constraints have the area to remove in a coefficient : "
     )
   }
   

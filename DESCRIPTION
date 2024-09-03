@@ -1,7 +1,7 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.7.0
+Version: 0.7.1.9000
 Authors@R: c(
     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Frederic", "Breant", role = "aut"),
@@ -53,3 +53,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Remotes:  
+    github::rte-antares-rpackage/antaresRead

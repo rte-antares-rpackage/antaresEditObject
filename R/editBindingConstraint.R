@@ -172,11 +172,11 @@ editBindingConstraint <- function(name,
     
     # check group values
     if(!is.null(values))
-      group_values_check(group_value = group, 
-                       values_data = values,
-                       operator_check = operator,
-                       output_operator = values_operator,
-                       opts = opts)
+      group_values_meta_check(group_value = group, 
+                              values_data = values,
+                              operator_check = operator,
+                              output_operator = values_operator,
+                              opts = opts)
     
   }
     
@@ -241,13 +241,17 @@ editBindingConstraint <- function(name,
                            "bindingconstraints", 
                            name_file)
       
-      lapply(up_path, 
+      df <- data.frame(
+        name_file = name_file,
+        code_file = values_operator,
+        path_file =  up_path)
+      
+      lapply(seq(nrow(df)), 
              function(x, 
-                      df_ts= values, 
-                      vect_path= up_path){
-               index <- grep(x = vect_path, pattern = x)
-               fwrite(x = data.table::as.data.table(df_ts[[index]]), 
-                      file = x, 
+                      df_ts= values){
+               target_name <- df[x, "code_file"]
+               fwrite(x = data.table::as.data.table(df_ts[[target_name]]), 
+                      file = df[x, "path_file"], 
                       col.names = FALSE, 
                       row.names = FALSE, 
                       sep = "\t")

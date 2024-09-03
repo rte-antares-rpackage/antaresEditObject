@@ -17,6 +17,7 @@
 #' @param include.spinningreserve true or false
 #' @param include.primaryreserve true or false
 #' @param include.exportmps true or false (since v8.3.2 can take also : none, optim-1, optim-2, both-optims)
+#' @param solver.log true or false (available for version >= 8.8)
 #' @param power.fluctuations free modulations, minimize excursions or minimize ramping
 #' @param shedding.strategy share margins
 #' @param shedding.policy shave peaks or minimize duration
@@ -53,6 +54,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
                                        include.spinningreserve = NULL,
                                        include.primaryreserve = NULL,
                                        include.exportmps = NULL,
+                                       solver.log = NULL,
                                        power.fluctuations = NULL,
                                        shedding.strategy = NULL,
                                        shedding.policy = NULL,
@@ -104,7 +106,12 @@ updateOptimizationSettings <- function(simplex.range = NULL,
       assertthat::assert_that(include.exportmps %in% c("true", "false"))
     }
   }
-
+  if (!is.null(solver.log)){
+    if (opts$antaresVersion < 880){
+      stop("updateOptimizationSettings: solver.log parameter is only available if using Antares >= 8.8.0", call. = FALSE)
+    }  
+    assertthat::assert_that(solver.log %in% c("true", "false"))
+  }
   
   if (!is.null(power.fluctuations))
     assertthat::assert_that(
@@ -138,7 +145,8 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     include.strategicreserve = include.strategicreserve,
     include.spinningreserve = include.spinningreserve,
     include.primaryreserve = include.primaryreserve,
-    include.exportmps = include.exportmps
+    include.exportmps = include.exportmps,
+    solver.log = solver.log
   ))
   for (i in seq_along(new_params_optimization)) {
     new_params_optimization[[i]] <- as.character(new_params_optimization[[i]])
@@ -252,7 +260,8 @@ dicoOptimizationSettings <- function(arg) {
       "unit-commitment-mode",
       "number-of-cores-mode",
       "renewable-generation-modelling",
-      "day-ahead-reserve-management"
+      "day-ahead-reserve-management",
+      "solver-log"
     )
   )
   
@@ -275,7 +284,8 @@ dicoOptimizationSettings <- function(arg) {
     "unit.commitment.mode",
     "number.of.cores.mode",
     "renewable.generation.modelling",
-    "day.ahead.reserve.management"
+    "day.ahead.reserve.management",
+    "solver.log"
   )
   
   antares_params[[arg]]

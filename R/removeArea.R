@@ -215,14 +215,13 @@ checkRemovedArea <- function(area, all_files = TRUE, opts = antaresRead::simOpti
   # Cluster
   bc_not_remove_cluster <- character(0)
   clusters <- readClusterDesc(opts = opts)
-  clusters_area <- clusters[clusters$area == name, c("area", "cluster")]
+  clusters_area <- clusters[clusters$area == name,]
   if (nrow(clusters_area) > 0) {  
     bc_not_remove_cluster <- detect_pattern_in_binding_constraint(pattern = paste0(clusters_area$area, ".", clusters_area$cluster), opts = opts)
   }
   
   bc_not_remove <- union(bc_not_remove_cluster, bc_not_remove_link)
   if (!identical(bc_not_remove, character(0))) {
-    message("The following binding constraints have the area to remove in a coefficient : ", paste0(bc_not_remove, collapse = ", "))
-    stop("Can not remove the area ", name)
+    warning("The following binding constraints have the area to remove in a coefficient : ", paste0(bc_not_remove, collapse = ", "))
   }
 }

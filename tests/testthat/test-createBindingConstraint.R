@@ -226,6 +226,36 @@ sapply(studies, function(study) {
     expect_warning(removeBindingConstraint(name = "myimaginaryconstraint"))
   })
   
+  ## bulk ----
+  test_that("createBindingConstraintBulk v710", {
+    # Prepare data for constraints 
+    bindings_constraints <- lapply(
+      X = seq_len(5),
+      FUN = function(i) {
+        # use arguments of createBindingConstraint()
+        # all arguments must be provided !
+        list(
+          name = paste0("constraints_bulk", i), 
+          id = paste0("constraints_bulk", i), 
+          values = matrix(data = rep(1, 8760 * 3), ncol = 3), 
+          enabled = FALSE, 
+          timeStep = "hourly",
+          operator = "both",
+          coefficients = list("a%b" = 1),
+          overwrite = TRUE
+        )
+      }
+    )
+    # create all constraints
+    createBindingConstraintBulk(bindings_constraints)
+    
+    # tests
+    testthat::expect_true("constraints_bulk1" %in% 
+                            names(readBindingConstraints()))
+    testthat::expect_true("constraints_bulk5" %in% 
+                            names(readBindingConstraints()))
+  })
+  
   
   # remove temporary study
   unlink(x = file.path(pathstd, "test_case"), recursive = TRUE)
@@ -324,7 +354,7 @@ test_that("createBindingConstraint (default group value) v8.7", {
   path_file_bc <- paste0(file.path(path_bc, "myconstraint"), 
                          operator_bc, ".txt")
   
-  # read .txt
+  # read .txt (test values)
   res <- lapply(path_file_bc, 
          antaresRead:::fread_antares, 
          opts = opts_test)
@@ -352,6 +382,77 @@ test_that("createBindingConstraint (default group value) v8.7", {
   testthat::expect_equal(dim(scenar_values$lt)[2], 
                          dim(bc$myconstraint2$values$less)[2])
   
+  # for both
+  operator_bc <- c("_lt", "_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "myconstraint2"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files (test real value)
+    # test just first values cause code convert 8760 to 8784 with 0
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values$lt)))
+  testthat::expect_equal(head(res[[2]]), 
+                         head(data.table::as.data.table(scenar_values$gt)))
+  
+  # for greater 
+  createBindingConstraint(
+    name = "myconstraint_gr8ter",
+    values = scenar_values,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "greater",
+    coefficients = c("at%fr" = 1))
+  
+  bc <- readBindingConstraints()
+  
+  operator_bc <- c("_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "myconstraint_gr8ter"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files (test real value)
+  # test just first values cause code convert 8760 to 8784 with 0
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values$gt)))
+  
+  # for equal 
+  createBindingConstraint(
+    name = "myconstraint_equal",
+    values = scenar_values,
+    enabled = FALSE,
+    timeStep = "hourly",
+    operator = "equal",
+    coefficients = c("at%fr" = 1))
+  
+  bc <- readBindingConstraints()
+  
+  operator_bc <- c("_eq")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "myconstraint_equal"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files (test real value)
+  # test just first values cause code convert 8760 to 8784 with 0
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values$eq)))
+  
+  
   ### error dim ----
     # add BC with daily values (different columns dimension ERROR) 
   testthat::expect_error(
@@ -361,9 +462,8 @@ test_that("createBindingConstraint (default group value) v8.7", {
       enabled = FALSE,
       timeStep = "daily",
       operator = "both",
-      coefficients = c("at%fr" = 1), 
-      opts = opts_test
-    ), regexp = "Put right columns dimension"
+      coefficients = c("at%fr" = 1)), 
+    regexp = "Put right columns dimension"
   )
   
 })
@@ -399,9 +499,7 @@ testthat::test_that("createBindingConstraint with new group v8.7",{
     timeStep = "hourly",
     operator = "less", 
     group = name_group,
-    coefficients = c("at%fr" = 1), 
-    opts = opts_test
-  )
+    coefficients = c("at%fr" = 1))
   
   # ADD binding with multi cols
   df_multi_col <- scenar_values["lt"]
@@ -571,12 +669,278 @@ test_that("createBindingConstraintBulk v8.7", {
   
   # tests
   testthat::expect_true("constraints_bulk1" %in% 
-                          names(readBindingConstraints(opts = opts_test)))
+                          names(readBindingConstraints()))
   testthat::expect_true("constraints_bulk10" %in% 
-                          names(readBindingConstraints(opts = opts_test)))
+                          names(readBindingConstraints()))
+  
+  
+  
+  test_that("test bad dimension object INPUT v8.7", {
+    bad_object <-  list(
+      name = paste0("constraints_bulkBAD"),
+      id = paste0("constraints_bulkBAD"), 
+      values = scenar_values_daily, 
+      enabled = FALSE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk",
+      overwrite = TRUE
+    )
+    
+    bad_object <- append(list(bad_object), bindings_constraints)
+    
+    expect_error(
+      createBindingConstraintBulk(bad_object), 
+      regexp = "Problem dimension with group"
+    )
+    
+  })
   
 })
 
+
+
+test_that("test bad dimension object with existing object in study v8.7", {
+  bad_object <-  list(
+    name = paste0("constraints_bulkBAD"), 
+    id = paste0("constraints_bulkBAD"),
+    values = scenar_values_daily, 
+    enabled = FALSE, 
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = list("at%fr" = 1),
+    group= "group_bulk",
+    overwrite = TRUE
+  )
+  
+  expect_error(
+    createBindingConstraintBulk(list(bad_object)), 
+    regexp = "Problem dimension with group"
+  )
+  
+})
+
+test_that("test NULL VALUES in study v8.7", {
+  BC_NULL_VALUES <-  list(
+    name = paste0("constraints_bulkNULL"), 
+    id = paste0("constraints_bulkNULL"),
+    values = NULL, 
+    enabled = FALSE, 
+    timeStep = "hourly",
+    operator = "both",
+    coefficients = list("at%fr" = 1),
+    group= "group_bulk",
+    overwrite = TRUE
+  )
+  
+  createBindingConstraintBulk(list(BC_NULL_VALUES))
+  
+  # tests
+  testthat::expect_true("constraints_bulkNULL" %in% 
+                          names(readBindingConstraints()))
+  
+  # read real value
+  operator_bc <- c("_lt", "_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "constraints_bulkNULL"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  res <- unlist(res)
+  
+  # txt files are empty
+  testthat::expect_equal(res, NULL)
+  
+})
+
+test_that("test mixed VALUES in study v8.7", {
+  BC_MIX_VALUES <-  list(
+    list(
+      name = paste0("constraints_bulkNULL"), 
+      id = paste0("constraints_bulkNULL"),
+      values = NULL, 
+      enabled = FALSE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk",
+      overwrite = TRUE
+      ),
+    list(
+      name = paste0("constraints_bulk_value"), 
+      id = paste0("constraints_bulk_value"),
+      values = scenar_values, 
+      enabled = FALSE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk",
+      overwrite = TRUE
+      ))
+  
+  createBindingConstraintBulk(BC_MIX_VALUES)
+  
+  # tests
+  testthat::expect_true(all(
+    c("constraints_bulkNULL", "constraints_bulk_value") %in% 
+      names(readBindingConstraints())))
+  
+  # read real value
+    # NULL
+  operator_bc <- c("_lt", "_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "constraints_bulkNULL"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  res <- unlist(res)
+  
+  # txt files are empty
+  testthat::expect_equal(res, NULL)
+  
+    # VALUE
+  operator_bc <- c("_gt")
+  path_bc <- file.path(opts_test$inputPath, "bindingconstraints")
+  path_file_bc <- paste0(file.path(path_bc, "constraints_bulk_value"), 
+                         operator_bc, ".txt")
+  
+  # read .txt (test values)
+  res <- lapply(path_file_bc, 
+                antaresRead:::fread_antares, 
+                opts = opts_test)
+  
+  # txt files 
+  testthat::expect_equal(head(res[[1]]), 
+                         head(data.table::as.data.table(scenar_values$gt)))
+  
+  
+  
+})
+
+
+test_that("Control of matrix dimension is not dependent of the order in the list of the values", {
+
+  val_cstr1 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(555, 8760 * 3), ncol = 3),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1)
+                    )
+  val_cstr2 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(777, 8760 * 5), ncol = 5)
+                    )
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()), 
+    regexp = "Problem dimension with group"
+  )
+
+  val_cstr1 <- list("lt" = matrix(data = rep(444, 8760 * 2), ncol = 2),
+                    "gt" = matrix(data = rep(555, 8760 * 3), ncol = 3),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1)
+                    )
+  val_cstr2 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(777, 8760 * 5), ncol = 5)
+                    )
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_both",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()), 
+    regexp = "Problem dimension with group"
+  )
+  
+  val_cstr1 <- list("gt" = NULL,
+                    "lt" = matrix(data = rep(555, 8760 * 3), ncol = 3),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1)
+                    )
+  val_cstr2 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(777, 8760 * 5), ncol = 5)
+                    )
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "both",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("at%fr" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()), 
+    regexp = "Problem dimension with group"
+  )
+
+})
 
 # remove temporary study ----
 deleteStudy()

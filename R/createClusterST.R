@@ -7,31 +7,45 @@
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
-#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.
+#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". 
+#' It corresponds to the type of stockage.
 #' @param storage_parameters `list ` Parameters to write in the Ini file (see `Note`). 
-#' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param inflows imposed withdrawals from the stock for other uses, The values are integer.
-#' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.
-#' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.
+#' @param PMAX_injection Modulation of charging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
+#' @param PMAX_withdrawal Modulation of discharging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
+#' @param inflows Algebraic deviation of the state of charge of the storage, which does not induce any power 
+#' generation or consumption on the system `numeric` \{<0;>0\} (8760*1).
+#' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
+#' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite Logical, overwrite the cluster or not.
 #' 
 #' @template opts
 #' @note   
 #' To write parameters to the `list.ini` file. You have function `storage_values_default()` who is called by default.
-#' This function return `list` containing six parameters for cluster `st-storage`.
-#' See example section.
-#' 
-#' To write data (.txt file), you have parameter for each output file :   
-#'  - PMAX-injection.txt 
-#'  - PMAX-withdrawal.txt
-#'  - inflows.txt
-#'  - lower-rule-curve.txt
-#'  - upper-rule-curve.txt
+#' This function return `list` containing properties according study version for cluster `st-storage`.  
+#'   
+#' Study version >= "8.6.0" :  
+#'  - efficiency = 1  (`numeric` \{0;1\})  
+#'  - reservoircapacity = 0  (`integer` >= 0)  
+#'  - initiallevel = 0  (`numeric` \{0;1\})  
+#'  - withdrawalnominalcapacity = 0  (`integer` >= 0)  
+#'  - injectionnominalcapacity = 0  (`integer` >= 0)  
+#'  - initialleveloptim = FALSE (`logical` TRUE/FALSE)  
+#'    
+#'    
+#' Study version >= "8.8.0" (update + new parameter) :  
+#'  - initiallevel = 0.5  (`numeric` \{0;1\})  
+#'  - enabled = TRUE (`logical` TRUE/FALSE)  
 #'  
-#' @seealso [editClusterST()] to edit existing clusters, [readClusterSTDesc()] to read cluster,
-#' [removeClusterST()] to remove clusters.
+#' &#9888;&#9888;&#9888;  
+#' 
+#' By default, these values don't allow you to have an active cluster (See example section.)  
+#' 
+#' &#9888;&#9888;&#9888;      
+#' 
+#'  
+#' @seealso All the functions needed to manage a storage cluster, 
+#' [antaresRead::readClusterSTDesc()], [editClusterST()], [removeClusterST()].
 #' 
 #' @export
 #' 
@@ -57,13 +71,19 @@
 #' # > "my_area_my_cluster"
 #' 
 #' # create cluster with custom parameter and data
+#'   # use the function to create your own list of parameters (no Antares optim)
+#'   # if you want optim (my_parameters$initialleveloptim <- TRUE)
 #' my_parameters <- storage_values_default()
 #' my_parameters$efficiency <- 0.5
+#' my_parameters$initiallevel <- 10
+#' my_parameters$withdrawalnominalcapacity <- 100
+#' my_parameters$injectionnominalcapacity <- 1000
 #' my_parameters$reservoircapacity <- 10000
 #' 
-#' 
+#'   # time series 
 #' inflow_data <- matrix(3, 8760)
 #' ratio_data <- matrix(0.7, 8760)
+#' 
 #' createClusterST(area = "my_area", 
 #'                 "my_cluster",
 #'                 storage_parameters = my_parameters,
@@ -108,42 +128,24 @@ createClusterST <- function(area,
       " you should be using one of: ", paste(st_storage_group, collapse = ", ")
     )
   
-  # check area existing in current study
-  area <- tolower(area)
+  # check area exsiting in current study
   check_area_name(area, opts)  
+  area <- tolower(area)
   
-  # To avoid failure in an unit test (API is mocked) we add this block
-  api_study <- is_api_study(opts)
-  if (api_study && is_api_mocked(opts)) {
-    cluster_exists <- FALSE
-  } else {
-    cluster_exists <- check_cluster_name(area, cluster_name, add_prefix, opts)
-  }
-  
-  if (!api_study) {
-    if (cluster_exists & !overwrite) {
-      stop("Cluster already exists. Overwrite it with overwrite option or edit it with editClusterST().")
-    }
-  }
-  if (api_study) {
-    if (cluster_exists) {
-      stop("Cluster already exists. Edit it with editClusterST().")
-    }
-  }
   ##
   # check parameters (ini file)
   ##
   assertthat::assert_that(inherits(storage_parameters, "list"))
   
-    # static name of list parameters 
-  names_parameters <- names(storage_values_default())
+  # static name of list parameters 
+  names_parameters <- names(storage_values_default(opts = opts))
   
   if(!all(names(storage_parameters) %in% names_parameters))
     stop(append("Parameter 'st-storage' must be named with the following elements: ", 
                 paste0(names_parameters, collapse= ", ")))
-
-    # check values parameters
-  .st_mandatory_params(list_values = storage_parameters)
+  
+  # check values parameters
+  .st_mandatory_params(list_values = storage_parameters, opts = opts)
   
   
   # DATA parameters : default value + name txt file
@@ -162,14 +164,34 @@ createClusterST <- function(area,
   
   # check syntax ini parameters
   params_cluster <- hyphenize_names(storage_parameters)
-  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
-  params_cluster <- c(list(name = cluster_name, group = group),params_cluster)
+  if (add_prefix)
+    cluster_name <- paste(area, cluster_name, sep = "_")
+  params_cluster <- c(list(name = cluster_name, group = group),
+                      params_cluster)
   
   ################# -
   # API block
-  if (api_study) {
+  if (is_api_study(opts)) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
+    
+    # /!\ temporary solution /!\ 
+      # as the endpoint does not return an error if the cluster already exist 
+    if(!is_api_mocked(opts)){
+      exists <- FALSE
+      suppressWarnings(
+        clusters <- readClusterSTDesc(opts = opts)
+      )
+      if (nrow(clusters) > 0) {
+        area_filter <- area
+        clusters_filtered <- clusters[clusters$area == tolower(area_filter) & 
+                                        clusters$cluster == cluster_name,]
+        exists <- nrow(clusters_filtered) > 0
+      }
+      if(exists) 
+        stop("Cluster already exists. Edit it with editClusterST().")
+    }
+    
     params_cluster$name <- cluster_name
     
     cmd <- api_command_generate(
@@ -177,14 +199,14 @@ createClusterST <- function(area,
       area_id = area,
       parameters = params_cluster
     )
-
+    
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts),
       api_command_execute(cmd, opts = opts, text_alert = "{.emph create_st_storage}: {msg_api}"),
       cli_command_registered("create_st_storage")
     )
-
+    
     for (i in names(storage_value)){
       if (!is.null(get(i))) {
         # format name for API 
@@ -209,11 +231,11 @@ createClusterST <- function(area,
         )
       }
     }
-
+    
     return(invisible(opts))
   }
   ########################## -
-
+  
   
   ##
   # parameters traitements
@@ -222,25 +244,31 @@ createClusterST <- function(area,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  # named list for writing ini file
-  # params_cluster <- stats::setNames(object = list(params_cluster), nm = cluster_name)
-  
   # path to ini file containing clusters' name and parameters
   path_clusters_ini <- file.path(inputPath, "st-storage", "clusters", tolower(area), "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  if (tolower(cluster_name) %in% tolower(names(previous_params)) & overwrite){
-    ind_cluster <- which(tolower(names(previous_params)) %in% tolower(cluster_name))[1]
-    previous_params[[ind_cluster]] <- params_cluster
-    names(previous_params)[[ind_cluster]] <- cluster_name
-  } else {
-    previous_params[[cluster_name]] <- params_cluster
+  # already exists ? 
+  if (tolower(cluster_name) %in% tolower(names(previous_params)) 
+      & !overwrite)
+    stop(paste(cluster_name, "already exist"))
+    
+  # overwrite
+  if(overwrite){
+    if(tolower(cluster_name) %in% tolower(names(previous_params))){
+      ind_cluster <- which(tolower(names(previous_params)) %in% 
+                             tolower(cluster_name))[1]
+      previous_params[[ind_cluster]] <- params_cluster
+      names(previous_params)[[ind_cluster]] <- cluster_name
+    }
   }
+    
+  # add properties 
+  previous_params[[cluster_name]] <- params_cluster
   
-  # params_cluster <- c(previous_params, params_cluster)
-  
+  # write properties (all properties are overwritten)
   writeIni(
     listData = previous_params,
     pathIni = path_clusters_ini,
@@ -278,40 +306,35 @@ createClusterST <- function(area,
   })
   
   invisible(res)
-
+  
 }
 
 
 # check parameters (`list`)
-#' @return `list`
-.st_mandatory_params <- function(list_values){
-  .is_ratio(list_values$efficiency, 
+.st_mandatory_params <- function(list_values, opts){
+  .is_ratio(list_values[["efficiency"]], 
             "efficiency")
   
-  .check_capacity(list_values$reservoircapacity, 
+  .check_capacity(list_values[["reservoircapacity"]], 
                   "reservoircapacity")
-  # if(!list_values$reservoircapacity >= 0)
-  #   stop("reservoircapacity must be >= 0",
-  #        call. = FALSE)
   
-  .is_ratio(list_values$initiallevel, 
+  .is_ratio(list_values[["initiallevel"]], 
             "initiallevel")
   
-  .check_capacity(list_values$withdrawalnominalcapacity, 
+  .check_capacity(list_values[["withdrawalnominalcapacity"]], 
                   "withdrawalnominalcapacity")
-  # if(!list_values$withdrawalnominalcapacity >= 0)
-  #   stop("withdrawalnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
-  .check_capacity(list_values$injectionnominalcapacity, 
+  .check_capacity(list_values[["injectionnominalcapacity"]], 
                   "injectionnominalcapacity")
-  # if(!list_values$injectionnominalcapacity >= 0)
-  #   stop("injectionnominalcapacity must be >= 0",
-  #        call. = FALSE)
   
-  if(!is.null(list_values$initialleveloptim))
-    assertthat::assert_that(inherits(list_values$initialleveloptim, 
-                                   "logical"))
+  if(!is.null(list_values[["initialleveloptim"]]))
+    assertthat::assert_that(inherits(list_values[["initialleveloptim"]], 
+                                     "logical"))
+  
+  if (opts$antaresVersion >= 880)
+    if(!is.null(list_values[["enabled"]]))
+      assertthat::assert_that(inherits(list_values[["enabled"]], 
+                                       "logical"))
 }
 
 .is_ratio <- function(x, mess){
@@ -334,18 +357,29 @@ createClusterST <- function(area,
 
 #' Short Term Storage Property List
 #'
+#' @description
+#' Default values are returned according to study version
 #'
+#' @template opts
 #' @return a named list
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' storage_values_default()
-storage_values_default <- function() {
-  list(efficiency = 1,
-       reservoircapacity = 0,
-       initiallevel = 0,
-       withdrawalnominalcapacity = 0,
-       injectionnominalcapacity = 0,
-       initialleveloptim = FALSE)
+#' }
+storage_values_default <- function(opts = simOptions()) {
+  lst_parameters <- list(efficiency = 1,
+                         reservoircapacity = 0,
+                         initiallevel = 0,
+                         withdrawalnominalcapacity = 0,
+                         injectionnominalcapacity = 0,
+                         initialleveloptim = FALSE)
+  
+  if (opts$antaresVersion >= 880){
+    lst_parameters$initiallevel <- 0.5
+    lst_parameters$enabled <- TRUE
+  }
+  
+  return(lst_parameters)
 }
-
