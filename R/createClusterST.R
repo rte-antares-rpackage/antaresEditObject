@@ -37,11 +37,8 @@
 #'  - initiallevel = 0.5  (`numeric` \{0;1\})  
 #'  - enabled = TRUE (`logical` TRUE/FALSE)  
 #'  
-#' &#9888;&#9888;&#9888;  
-#' 
 #' By default, these values don't allow you to have an active cluster (See example section.)  
 #' 
-#' &#9888;&#9888;&#9888;      
 #' 
 #'  
 #' @seealso All the functions needed to manage a storage cluster, 
