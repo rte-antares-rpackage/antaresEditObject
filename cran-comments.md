@@ -32,3 +32,22 @@ Failure ('test-createCluster.R:76:5'): Remove all clusters ───────
 
 ## antaresEditObject 0.6.4 
 Patch version to break abusive dependencies with antaresRead in tests
+
+## antaresEditObject 0.7.2
+Fix Cran Error :  
+
+ - Check: PDF version of manual, Result: WARNING
+  LaTeX errors when creating PDF version.
+  This typically indicates Rd problems.
+  LaTeX errors found:
+  ! LaTeX Error: Unicode character (U+26A0)
+                 not set up for use with LaTeX.
+                 
+Fix local error (R CMD check antaresEditObject_0.7.1.tar.gz) :  
+
+ - When sourcing 'api-variant-management.R':
+Erreur : Cannot find the file(s): "../man/figures/badge_api_ok.svg"  
+
+
+This error did not appear on the CRAN
+
