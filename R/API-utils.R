@@ -251,3 +251,79 @@ transform_name_to_id <- function(name, lower = TRUE, id_dash = FALSE) {
   return(valid_id)
 }
 
+
+#' API methods
+#'
+#' @param opts Antares simulation options or a `list` with an `host = ` slot.
+#' @param endpoint API endpoint to interrogate, it will be added after `default_endpoint`.
+#'  Can be a full URL (by wrapping ìn [I()]), in that case `default_endpoint` is ignored.
+#' @param ... Additional arguments passed to API method ([PATCH()]).
+#' @param default_endpoint Default endpoint to use.
+#'
+#' @return Response from the API.
+#' @export
+#'
+#' @importFrom httr PATCH accept_json stop_for_status content add_headers
+#' @importFrom utils URLencode
+#'
+#' @examples
+#' \dontrun{
+#' # Simple example to update st-storages properties 
+#' 
+#' # read existing study 
+#' opts <- setSimulationPath("path_to_the_study", "input")
+#' 
+#' # make list of properties
+#' prop <- list(efficiency = 0.5,
+#'   reservoircapacity = 350, 
+#'   initialleveloptim = TRUE)
+#'   
+#' # convert to JSON
+#' body <- jsonlite::toJSON(prop,
+#'   auto_unbox = TRUE)   
+#'   
+#' # send to server (see /apidoc)
+#' api_patch(opts = opts, 
+#'   endpoint = file.path(opts$study_id, 
+#'                      "areas", 
+#'                       area,
+#'                      "storages",
+#'                      cluster_name), 
+#'  body = body, 
+#'  encode = "raw")   
+#'
+#' }
+api_patch <- function(opts, endpoint, ..., default_endpoint = "v1/studies") {
+  if (inherits(endpoint, "AsIs")) {
+    opts$host <- endpoint
+    endpoint <- NULL
+    default_endpoint <- NULL
+  }
+  
+  if (is.null(opts$host))
+    stop("No host provided in `opts`: use a valid simulation options object or explicitly provide a host with opts = list(host = ...)")
+  
+  if (!is.null(opts$token) && opts$token != "") 
+    config <- add_headers(Authorization = paste("Bearer ", 
+                                                opts$token), 
+                          Accept = "application/json")
+  else 
+    config <- add_headers(Accept = "application/json")
+  
+  # send request
+  result <- PATCH(
+    url = URLencode(paste(c(opts$host, default_endpoint, endpoint), collapse = "/")),
+    config = config,
+    ...
+  )
+  
+  # manage response
+  api_content <- content(result)
+  if(!is.null(names(api_content)))
+    api_content <- paste0("\n[Description] : ", api_content$description,
+                          "\n[Exception] : ", api_content$exception)
+  else
+    api_content <- NULL
+  stop_for_status(result, task = api_content)
+  content(result)
+}
