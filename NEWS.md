@@ -9,12 +9,14 @@
 * `removeArea()` : send a warning instead of a stop if an area is referenced in a binding constraint coefficient
 * `removeLink()` : send a warning instead of a stop if a link is referenced in a binding constraint coefficient
 * `removeCluster()` : send a warning instead of a stop if a cluster is referenced in a binding constraint coefficient
-* `createClusterST()` : updated with new endpoint API
+* `createClusterST()` : updated with new endpoint API (POST + PUT)
+* `editClusterST()` : updated with new endpoint API (PATCH + PUT)
 
 NEW FEATURES (Antares v8.8) :
 
 * `updateOptimizationSettings()` allows the user to update solver.log property  
 * `createClusterST()` / `editClusterST()` use new parameters and default values
+* Add new function `api_patch()` to put PATCH (httr) request to API 
 
 
 BUGFIXES :  
