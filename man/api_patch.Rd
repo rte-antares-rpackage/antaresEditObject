@@ -12,7 +12,7 @@ api_patch(opts, endpoint, ..., default_endpoint = "v1/studies")
 \item{endpoint}{API endpoint to interrogate, it will be added after \code{default_endpoint}.
 Can be a full URL (by wrapping ìn \code{\link[=I]{I()}}), in that case \code{default_endpoint} is ignored.}
 
-\item{...}{Additional arguments passed to API method (\code{\link[=PATCH]{PATCH()}}).}
+\item{...}{Additional arguments passed to API method (\code{\link[httr:PATCH]{httr::PATCH()}}).}
 
 \item{default_endpoint}{Default endpoint to use.}
 }

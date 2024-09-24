@@ -257,7 +257,7 @@ transform_name_to_id <- function(name, lower = TRUE, id_dash = FALSE) {
 #' @param opts Antares simulation options or a `list` with an `host = ` slot.
 #' @param endpoint API endpoint to interrogate, it will be added after `default_endpoint`.
 #'  Can be a full URL (by wrapping ìn [I()]), in that case `default_endpoint` is ignored.
-#' @param ... Additional arguments passed to API method ([PATCH()]).
+#' @param ... Additional arguments passed to API method ([httr::PATCH()]).
 #' @param default_endpoint Default endpoint to use.
 #'
 #' @return Response from the API.
