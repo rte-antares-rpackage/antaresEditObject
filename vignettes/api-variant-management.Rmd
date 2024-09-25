@@ -231,9 +231,9 @@ getVariantCommands(last = TRUE)
 ```
 
 
-Remove a cluster with:
+Remove a cluster with (`removeCluster()` has been updated with endpoint and no longer uses an api command ):
 
-```{r remove_cluster}
+```{r remove_cluster, eval=FALSE}
 createCluster(
   area = "area02", 
   cluster_name = "clus000"
