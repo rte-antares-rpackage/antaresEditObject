@@ -11,6 +11,7 @@
 * `removeCluster()` : send a warning instead of a stop if a cluster is referenced in a binding constraint coefficient
 * `createClusterST()` : updated with new endpoint API (POST + PUT)
 * `editClusterST()` : updated with new endpoint API (PATCH + PUT)
+* `removeCluster()`/`removeClusterRES()`/`removeClusterST()` updated with new endpoint API (DELETE)
 
 NEW FEATURES (Antares v8.8) :
 
@@ -24,8 +25,6 @@ BUGFIXES :
 * `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
 * `createBindingConstraint()` / `editBindingConstraint()` in TEXT mode, bad values in time series  
 * `createBindingConstraintBulk()` with no VALUES and with a mix 
-* side effects with `readClusterDesc()` / `readClusterResDesc()` / `readClusterSTDesc()`
-* Fix bug for data.table to ensure that the variable name is not a column name in `check_cluster_name()` (API + DISK) and `createClusterST()`(API)
 * Enable control of matrix dimension in `.check_bulk_object_dim()` even if the values are not in first position in the list
 * `editLink()` : avoid *NULL* value (default) for arguments *filter_synthesis* and *filter_year_by_year* to write an empty string
 * `updateOutputSettings()` : in API mode, allow the user to edit the desired property
