@@ -128,7 +128,7 @@
   # First merge
   alldaysYearTwo <- data.table(day = alldaysYearTwo, week2 = weekVector)
   alldaysYearTwo[, year2 := year(day)]
-  res <- merge(copy(dailydata)[, time := as.Date(time)], alldaysYearTwo, by.x = "time", by.y = "day", all.x = T)
+  res <- merge(copy(dailydata)[, time := as.Date(time)], alldaysYearTwo, by.x = "time", by.y = "day", all.x = TRUE)
   
   # Set up year One
   alldaysYearOne <- seq(as.Date(paste0(year-1,"-01-01")),as.Date(paste0(year-1,"-12-31")),by="1 day")
@@ -144,7 +144,7 @@
   # Second merge
   alldaysYearOne <- data.table(day = alldaysYearOne, week1 = weekVector)
   alldaysYearOne[, year1 := year(day)]
-  res <- merge(res, alldaysYearOne, by.x = "time", by.y = "day", all.x = T)
+  res <- merge(res, alldaysYearOne, by.x = "time", by.y = "day", all.x = TRUE)
   
   res[, `:=` (week = ifelse(is.na(week1),week2,week1),
               year = ifelse(is.na(year1),year2,year1))][, c("week1", "week2", "year1", "year2") := NULL]
@@ -156,12 +156,12 @@
   
   if (length(colForMean) > 0){
     resMean <- res[, lapply(.SD, function(x){round(mean(x),2)}),.SDcols = colForMean, by= agg_columns]
-    resFinal <- merge(resSum, resMean, by = agg_columns, sort = F)
+    resFinal <- merge(resSum, resMean, by = agg_columns, sort = FALSE)
   } else resFinal <- resSum
   
   if (length(colForMax) > 0){
     resMean <- res[, lapply(.SD, max),.SDcols = colForMax, by= agg_columns]
-    resFinal <- merge(resFinal, resMean, by = agg_columns, sort = F)
+    resFinal <- merge(resFinal, resMean, by = agg_columns, sort = FALSE)
   }
 
   resFinal[, timeId := week]
@@ -192,16 +192,16 @@ computeOtherFromHourlyYear <- function(mcYear,
                                        areas = "all",
                                        opts = simOptions(),
                                        timeStep = c("daily", "monthly", "annual", "weekly"), 
-                                       writeOutput = F){
+                                       writeOutput = FALSE){
   res <- list()
   #for the eval(parse(text))
   if (length(areas) == 1) selected <- ifelse(areas == "all", "areas", paste0("'",areas,"'")) 
   else if (type != "links") selected <- paste(list(areas), sep = ",")
-  else selected <- paste(list(getLinks(areas, internalOnly = T, opts = opts)),
+  else selected <- paste(list(getLinks(areas, internalOnly = TRUE, opts = opts)),
                          sep = ",")
   
   formula <- sprintf('readAntares(%s = %s, timeStep = "hourly",
-                            mcYears = mcYear, showProgress = F, opts = opts)', 
+                            mcYears = mcYear, showProgress = FALSE, opts = opts)', 
                      type, selected)  #read any type data
   hourlydata <- eval(parse(text = formula))
   if (type == "clustersRes" && length(hourlydata) > 1) hourlydata <- hourlydata$clustersRes
@@ -209,7 +209,7 @@ computeOtherFromHourlyYear <- function(mcYear,
   # Multi timestep at once
   # steps <- as.list(intersect(c("daily", "monthly", "annual"), timeStep))
   # res <- llply(steps, .hourlyToOther, hourlydata = hourlydata, type = type,
-  #              .parallel = T, .paropts = list(preschedule=TRUE))
+  #              .parallel = TRUE, .paropts = list(preschedule=TRUE))
   # names(res) <- paste0(steps,"data")
   
   # Separate timesteps
@@ -246,7 +246,7 @@ computeOtherFromHourlyYear <- function(mcYear,
     }
 
     lapply(res, writeOutputValues, opts = opts)
-    # llply(res, writeOutputValues, opts = opts, .parallel = T, .paropts = list(preschedule=TRUE))
+    # llply(res, writeOutputValues, opts = opts, .parallel = TRUE, .paropts = list(preschedule=TRUE))
   }
   
   res
@@ -283,12 +283,12 @@ computeOtherFromHourlyMulti <- function(opts = simOptions(),
                                         type = c("areas", "links", "clusters"),
                                         timeStep = c("daily", "monthly", "annual", "weekly"), 
                                         mcYears = simOptions()$mcYears,
-                                        writeOutput = F,
+                                        writeOutput = FALSE,
                                         nbcl = 8,
-                                        verbose = F){
+                                        verbose = FALSE){
   
   if (verbose){
-    handlers(global = T)
+    handlers(global = TRUE)
     handlers("progress")
   }
   
