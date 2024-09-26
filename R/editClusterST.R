@@ -91,65 +91,78 @@ editClusterST <- function(area,
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
-    # /!\ temporary solution /!\ 
-      # as the endpoint does not return an error if the cluster does not exist 
-    if(!is_api_mocked(opts)){
-      exists <- FALSE
-      suppressWarnings(
-        clusters <- readClusterSTDesc(opts = opts)
-      )
-      if (nrow(clusters) > 0) {
-        clusters_filtered <- clusters[clusters$area == tolower(area) & 
-                                        clusters$cluster == cluster_name,]
-        exists <- nrow(clusters_filtered) > 0
-      }
-      assertthat::assert_that(exists, 
-                              msg = paste0("Cluster '", 
-                                           cluster_name, 
-                                           "' does not exist. It can not be edited."))
+    ##
+    # PATCH for properties 
+    ##
+    # adapt parameter names
+    list_properties <- list("group" = params_cluster[["group"]],
+                            "name" = cluster_name,
+                            "injectionNominalCapacity" = params_cluster[["injectionnominalcapacity"]],
+                            "withdrawalNominalCapacity" = params_cluster[["withdrawalnominalcapacity"]],
+                            "reservoirCapacity" = params_cluster[["reservoircapacity"]],
+                            "efficiency" = params_cluster[["efficiency"]],
+                            "initialLevel" = params_cluster[["initiallevel"]],
+                            "initialLevelOptim" = params_cluster[["initialleveloptim"]],
+                            "enabled" = params_cluster[["enabled"]])
+    
+    list_properties <- dropNulls(list_properties)
+    
+    if(length(list_properties)>1){
+      # make json file
+      body <- jsonlite::toJSON(list_properties,
+                               auto_unbox = TRUE)
+      
+      # send request (without coeffs/term)
+      result <- api_patch(opts = opts, 
+                          endpoint = file.path(opts$study_id, 
+                                               "areas", 
+                                               area,
+                                               "storages",
+                                               cluster_name), 
+                          body = body, 
+                          encode = "raw")
+      
+      cli::cli_alert_success("Endpoint {.emph {'Edit ST-storage (properties)'}} {.emph 
+                      {.strong {cluster_name}}} success")
     }
     
-    # update parameters if something else than name
-    if (length(params_cluster) > 1) {
-      currPath <- "input/st-storage/clusters/%s/list/%s" 
-      writeIni(
-        listData = params_cluster,
-        pathIni = sprintf(currPath, area, cluster_name),
-        opts = opts
-      )
-    }
+    ##
+    # PUT for TS values
+    ##
+    # adapt list name TS 
+    list_value_ts <- list(pmax_injection = PMAX_injection,
+                          pmax_withdrawal = PMAX_withdrawal,
+                          inflows = inflows,
+                          lower_rule_curve = lower_rule_curve,
+                          upper_rule_curve = upper_rule_curve)
     
-    # update data
-    names_data_params <- c("PMAX_injection",
-                           "PMAX_withdrawal",
-                           "inflows",
-                           "lower_rule_curve",
-                           "upper_rule_curve")
+    list_value_ts <- dropNulls(list_value_ts)
     
-    for (i in names_data_params){
-      if (!is.null(get(i))) {
-        # format name for API 
-        data_param_name <- transform_name_to_id(i, id_dash = TRUE)
+    if(length(list_value_ts)!=0){
+      lapply(names(list_value_ts), function(x){
+        body = jsonlite::toJSON(list(data=list_value_ts[[x]],
+                                     index=0, 
+                                     columns=0),
+                                auto_unbox = FALSE)
         
-        currPath <- paste0("input/st-storage/series/%s/%s/",data_param_name)
-        cmd <- api_command_generate(
-          action = "replace_matrix",
-          target = sprintf(currPath, area, cluster_name),
-          matrix = get(i)
-        )
-        api_command_register(cmd, opts = opts)
-        `if`(
-          should_command_be_executed(opts),
-          api_command_execute(cmd, 
-                              opts = opts, 
-                              text_alert = paste0("Update ", 
-                                                  i, 
-                                                  " cluster's series: {msg_api}")),
-          cli_command_registered("replace_matrix")
-        )
-      }
+        endpoint <- file.path(opts$study_id, 
+                              "areas", 
+                              area, 
+                              "storages",
+                              cluster_name,
+                              "series", 
+                              x)
+        
+        # update
+        api_put(opts = opts, 
+                endpoint =  endpoint, 
+                body = body, 
+                encode = "raw")
+        
+        cli::cli_alert_success("Endpoint {.emph {'Edit ST-storage (TS value)'}} {.emph 
+                      {.strong {x}}} success")
+      })
     }
-    
     return(invisible(opts))
   }
   #####-

@@ -172,63 +172,78 @@ createClusterST <- function(area,
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
-    # /!\ temporary solution /!\ 
-      # as the endpoint does not return an error if the cluster already exist 
-    if(!is_api_mocked(opts)){
-      exists <- FALSE
-      suppressWarnings(
-        clusters <- readClusterSTDesc(opts = opts)
-      )
-      if (nrow(clusters) > 0) {
-        area_filter <- area
-        clusters_filtered <- clusters[clusters$area == tolower(area_filter) & 
-                                        clusters$cluster == cluster_name,]
-        exists <- nrow(clusters_filtered) > 0
-      }
-      if(exists) 
-        stop("Cluster already exists. Edit it with editClusterST().")
-    }
+    ##
+    # POST only for properties (creation with default TS values)
+    ##
     
-    params_cluster$name <- cluster_name
+    # adapt parameter names
+    list_properties <- list("group" = params_cluster[["group"]],
+                            "name" = cluster_name,
+                            "injectionNominalCapacity" = params_cluster[["injectionnominalcapacity"]],
+                            "withdrawalNominalCapacity" = params_cluster[["withdrawalnominalcapacity"]],
+                            "reservoirCapacity" = params_cluster[["reservoircapacity"]],
+                            "efficiency" = params_cluster[["efficiency"]],
+                            "initialLevel" = params_cluster[["initiallevel"]],
+                            "initialLevelOptim" = params_cluster[["initialleveloptim"]],
+                            "enabled" = params_cluster[["enabled"]])
     
-    cmd <- api_command_generate(
-      action = "create_st_storage",
-      area_id = area,
-      parameters = params_cluster
-    )
+    list_properties <- dropNulls(list_properties)
     
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts),
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_st_storage}: {msg_api}"),
-      cli_command_registered("create_st_storage")
-    )
+    # make json file
+    body <- jsonlite::toJSON(list_properties,
+                             auto_unbox = TRUE)
     
-    for (i in names(storage_value)){
-      if (!is.null(get(i))) {
-        # format name for API 
-        data_param_name <- transform_name_to_id(storage_value[[i]]$string, 
-                                                id_dash = TRUE)
+    # send request (without coeffs/term)
+    result <- api_post(opts = opts, 
+                       endpoint = file.path(opts$study_id, 
+                                            "areas", 
+                                            area,
+                                            "storages"), 
+                       body = body, 
+                       encode = "raw")
+    
+    cli::cli_alert_success("Endpoint {.emph {'Create ST-storage (properties)'}} {.emph 
+                      {.strong {cluster_name}}} success")
+    
+    ##
+    # PUT api call for each TS value
+    ##
+    
+    # adapt list name TS 
+    list_value_ts <- list(pmax_injection = PMAX_injection,
+                          pmax_withdrawal = PMAX_withdrawal,
+                          inflows = inflows,
+                          lower_rule_curve = lower_rule_curve,
+                          upper_rule_curve = upper_rule_curve)
+    
+    list_value_ts <- dropNulls(list_value_ts)
+    
+    if(length(list_value_ts)!=0){
+      lapply(names(list_value_ts), function(x){
+        body = jsonlite::toJSON(list(data=list_value_ts[[x]],
+                                     index=0, 
+                                     columns=0),
+                                auto_unbox = FALSE)
         
-        currPath <- paste0("input/st-storage/series/%s/%s/",data_param_name)
-        cmd <- api_command_generate(
-          action = "replace_matrix",
-          target = sprintf(currPath, area, cluster_name),
-          matrix = get(i)
-        )
-        api_command_register(cmd, opts = opts)
-        `if`(
-          should_command_be_executed(opts),
-          api_command_execute(cmd, 
-                              opts = opts, 
-                              text_alert = paste0("Writing ", 
-                                                  i, 
-                                                  " cluster's series: {msg_api}")),
-          cli_command_registered("replace_matrix")
-        )
-      }
+        endpoint <- file.path(opts$study_id, 
+                              "areas", 
+                              area, 
+                              "storages",
+                              cluster_name,
+                              "series", 
+                              x)
+        
+        # update
+        api_put(opts = opts, 
+                endpoint =  endpoint, 
+                body = body, 
+                encode = "raw")
+        
+        cli::cli_alert_success("Endpoint {.emph {'Create ST-storage (TS value)'}} {.emph 
+                      {.strong {x}}} success")
+      })
+     
     }
-    
     return(invisible(opts))
   }
   ########################## -
