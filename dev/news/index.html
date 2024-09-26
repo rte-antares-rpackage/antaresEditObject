@@ -86,11 +86,18 @@
 <code><a href="../reference/removeLink.html">removeLink()</a></code> : send a warning instead of a stop if a link is referenced in a binding constraint coefficient</li>
 <li>
 <code><a href="../reference/removeCluster.html">removeCluster()</a></code> : send a warning instead of a stop if a cluster is referenced in a binding constraint coefficient</li>
+<li>
+<code><a href="../reference/createClusterST.html">createClusterST()</a></code> : updated with new endpoint API (POST + PUT)</li>
+<li>
+<code><a href="../reference/editClusterST.html">editClusterST()</a></code> : updated with new endpoint API (PATCH + PUT)</li>
+<li>
+<code><a href="../reference/removeCluster.html">removeCluster()</a></code>/<code><a href="../reference/removeCluster.html">removeClusterRES()</a></code>/<code><a href="../reference/removeCluster.html">removeClusterST()</a></code> updated with new endpoint API (DELETE)</li>
 </ul><p>NEW FEATURES (Antares v8.8) :</p>
 <ul><li>
 <code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code> allows the user to update solver.log property<br></li>
 <li>
 <code><a href="../reference/createClusterST.html">createClusterST()</a></code> / <code><a href="../reference/editClusterST.html">editClusterST()</a></code> use new parameters and default values</li>
+<li>Add new function <code><a href="../reference/api_patch.html">api_patch()</a></code> to put PATCH (httr) request to API</li>
 </ul><p>BUGFIXES :</p>
 <ul><li>
 <code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> in API mode (for study &lt;v870) created with “hourly” timeStep all the time</li>
@@ -98,9 +105,6 @@
 <code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> / <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code> in TEXT mode, bad values in time series<br></li>
 <li>
 <code><a href="../reference/createBindingConstraintBulk.html">createBindingConstraintBulk()</a></code> with no VALUES and with a mix</li>
-<li>side effects with <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterDesc()</a></code> / <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterResDesc()</a></code> / <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc()</a></code>
-</li>
-<li>Fix bug for data.table to ensure that the variable name is not a column name in <code>check_cluster_name()</code> (API + DISK) and <code><a href="../reference/createClusterST.html">createClusterST()</a></code>(API)</li>
 <li>Enable control of matrix dimension in <code>.check_bulk_object_dim()</code> even if the values are not in first position in the list</li>
 <li>
 <code><a href="../reference/editLink.html">editLink()</a></code> : avoid <em>NULL</em> value (default) for arguments <em>filter_synthesis</em> and <em>filter_year_by_year</em> to write an empty string</li>
@@ -452,7 +456,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

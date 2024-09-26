@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   Antares_new_features_v860: Antares_new_features_v860.html
@@ -7,4 +7,4 @@ articles:
   api-variant-management: api-variant-management.html
   renewables-energy-sources: renewables-energy-sources.html
   scenario-builder: scenario-builder.html
-last_built: 2024-09-03T14:21Z
+last_built: 2024-09-26T14:02Z

@@ -436,29 +436,18 @@ their documentation:</p>
 <span>  unitcount <span class="op">=</span> <span class="fl">5L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Remove a cluster with:</p>
+<p>Remove a cluster with (<code><a href="../reference/removeCluster.html">removeCluster()</a></code> has been updated
+with endpoint and no longer uses an api command ):</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createCluster.html">createCluster</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area02"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus000"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/removeCluster.html">removeCluster</a></span><span class="op">(</span></span>
 <span>  area <span class="op">=</span> <span class="st">"area02"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus000"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">remove_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [</span></span>
-<span><span class="co">#&gt;   {</span></span>
-<span><span class="co">#&gt;     "action": "remove_cluster",</span></span>
-<span><span class="co">#&gt;     "args": {</span></span>
-<span><span class="co">#&gt;       "area_id": "area02",</span></span>
-<span><span class="co">#&gt;       "cluster_id": "area02_clus000"</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;   }</span></span>
-<span><span class="co">#&gt; ]</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="create-a-binding-constraint">Create a binding constraint<a class="anchor" aria-label="anchor" href="#create-a-binding-constraint"></a>
@@ -661,7 +650,7 @@ the study.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
