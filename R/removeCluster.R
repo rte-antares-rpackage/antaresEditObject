@@ -1,9 +1,10 @@
 #' @title Remove a cluster
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_ok()` (thermal clusters only)
+#' `r antaresEditObject:::badge_api_ok()` 
 #' 
-#' Remove a cluster, thermal RES (renewable energy source) or short-term storage, and all its data.
+#' Delete cluster(s), thermal, renewable (renewable energy source) or short-term storage, 
+#' along with all its data (properties + TS).
 #' 
 #'
 #' @inheritParams createCluster
@@ -75,38 +76,6 @@ removeClusterST <- function(area,
   )
 }
 
-
-.api_command_generate_remove_cluster <- function(area,
-                                                 cluster_name,
-                                                 cluster_type = c("thermal", "renewables", "st-storage")
-                                                ) {
-  
-  cluster_type <- match.arg(cluster_type)
-  
-  remove_action <- switch(cluster_type,
-                          "thermal" = "remove_cluster",
-                          "renewables" = "remove_renewables_cluster",
-                          "st-storage" = "remove_st_storage"
-                          )
-  
-  if (identical(cluster_type, "st-storage")) {
-    cmd <- api_command_generate(
-            action = remove_action,
-            area_id = area,
-            storage_id = cluster_name
-            )
-  } else {
-    cmd <- api_command_generate(
-            action = remove_action,
-            area_id = area,
-            cluster_id = cluster_name
-            )
-  }
-    
-  return(cmd)
-}
-
-
 .removeCluster <- function(area, 
                            cluster_name, 
                            add_prefix = TRUE,
@@ -118,29 +87,20 @@ removeClusterST <- function(area,
   area <- tolower(area)
   check_area_name(area, opts)
   api_study <- is_api_study(opts)
-  api_mocked <- is_api_mocked(opts)
   is_thermal <- identical(cluster_type, "thermal")
   
-  # check cluster short-term storage existence
-  if (identical(cluster_type,"st-storage")) {
-    # To avoid failure in an unit test (API is mocked) we add this block
-    if (api_study && api_mocked) {
-      cluster_exists <- TRUE
-    } else {
-      cluster_exists <- check_cluster_name(area_name = area, cluster_name = cluster_name, add_prefix = add_prefix, opts = opts)
-    }
-    assertthat::assert_that(cluster_exists, msg = "Cluster can not be removed. It does not exist.")
-  }
-  
+  # add prefix to cluster's name
   cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
   
   # check if the cluster can be removed safely, i.e. the cluster is not referenced in a binding constraint
   if (is_thermal) {
-    if (!api_study | (api_study && !api_mocked)) {
-      bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(area, ".", cluster_name), opts = opts)
-      if (!identical(bc_not_remove, character(0))) {
-        warning("The following binding constraints have the cluster to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
-      }
+    if (!api_study) {
+      bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(area, ".", cluster_name), 
+                                                            opts = opts)
+      if (!identical(bc_not_remove, character(0))) 
+        warning("The following binding constraints have the cluster to remove as a coefficient : ", 
+                paste0(bc_not_remove, collapse = ", "))
+      
     }
   }
   
@@ -148,14 +108,28 @@ removeClusterST <- function(area,
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
-    cmd <- .api_command_generate_remove_cluster(area, cluster_name, cluster_type)
-    
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = paste0("{.emph ", cmd$action, "}: {msg_api}")),
-      cli_command_registered(cmd$action)
+    # adapt type for api 
+    api_type <- switch(
+      cluster_type,
+      "thermal" = "clusters/thermal",
+      "renewables" = "clusters/renewable",
+      "st-storage" = "storages"
     )
+    
+    # body request
+    body <- jsonlite::toJSON(cluster_name)
+    
+    # delete
+    api_delete(opts = opts, 
+               endpoint =  file.path(opts$study_id, 
+                                     "areas", 
+                                     area, 
+                                     api_type), 
+               body = body,
+               encode = "raw")
+    
+    cli::cli_alert_success("Endpoint {.emph {'Delete Cluster'}} {.emph 
+                          [{cluster_type}] {.strong {cluster_name}}} success")
     
     return(invisible(opts))
   }
