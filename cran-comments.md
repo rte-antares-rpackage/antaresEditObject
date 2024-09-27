@@ -55,5 +55,6 @@ This error did not appear on the CRAN
 ### Re Submission 2
   
   - Fix TRUE and FALSE instead of T and F  
-  - `\dontrun{}` sections are needed because most of functions need to be apply on a study load on Global env (legacy code too)
+  - `\dontrun{}` sections are needed because most of functions need to be apply on a study load on Global env (legacy code too)  
+  - There is only a maintainer, contributors and RTE, which is the owner. (we use `use_gpl_license(version = 2, include_future = TRUE)`)
   
