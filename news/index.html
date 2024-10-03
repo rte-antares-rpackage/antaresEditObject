@@ -3,7 +3,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-news">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
       </span>
     </div>
 
@@ -31,7 +31,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -53,30 +53,83 @@
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/rte-antares-rpackage/antaresEditObject/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.7.1" id="antareseditobject-071">antaresEditObject 0.7.1<small>2024-09-27</small><a class="anchor" aria-label="anchor" href="#antareseditobject-071"></a></h2>
+<div class="section level4">
+<h4 id="breaking-changes--0-7-1">Breaking changes :<a class="anchor" aria-label="anchor" href="#breaking-changes--0-7-1"></a></h4>
+<ul><li>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> / <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code> uses metadata to check the group size of time series.</li>
+<li>
+<code><a href="../reference/createBindingConstraintBulk.html">createBindingConstraintBulk()</a></code> checks consistency of groups passed as parameters and consistency with the study.</li>
+<li>
+<code><a href="../reference/importZipStudyWeb.html">importZipStudyWeb()</a></code> can delete the zipfile and move the study in Antares Web to another folder</li>
+<li>delete <code>antaresRead-reexports.R</code> and adjust scripts to have a clean package</li>
+<li>
+<code><a href="../reference/removeArea.html">removeArea()</a></code> : send a warning instead of a stop if an area is referenced in a binding constraint coefficient</li>
+<li>
+<code><a href="../reference/removeLink.html">removeLink()</a></code> : send a warning instead of a stop if a link is referenced in a binding constraint coefficient</li>
+<li>
+<code><a href="../reference/removeCluster.html">removeCluster()</a></code> : send a warning instead of a stop if a cluster is referenced in a binding constraint coefficient</li>
+<li>
+<code><a href="../reference/createClusterST.html">createClusterST()</a></code> : updated with new endpoint API (POST + PUT)</li>
+<li>
+<code><a href="../reference/editClusterST.html">editClusterST()</a></code> : updated with new endpoint API (PATCH + PUT)</li>
+<li>
+<code><a href="../reference/removeCluster.html">removeCluster()</a></code>/<code><a href="../reference/removeCluster.html">removeClusterRES()</a></code>/<code><a href="../reference/removeCluster.html">removeClusterST()</a></code> updated with new endpoint API (DELETE)</li>
+</ul><p>NEW FEATURES (Antares v8.8) :</p>
+<ul><li>
+<code><a href="../reference/updateOptimizationSettings.html">updateOptimizationSettings()</a></code> allows the user to update solver.log property<br></li>
+<li>
+<code><a href="../reference/createClusterST.html">createClusterST()</a></code> / <code><a href="../reference/editClusterST.html">editClusterST()</a></code> use new parameters and default values</li>
+<li>Add new function <code><a href="../reference/api_patch.html">api_patch()</a></code> to put PATCH (httr) request to API</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> in API mode (for study &lt;v870) created with “hourly” timeStep all the time</li>
+<li>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> / <code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code> in TEXT mode, bad values in time series<br></li>
+<li>
+<code><a href="../reference/createBindingConstraintBulk.html">createBindingConstraintBulk()</a></code> with no VALUES and with a mix</li>
+<li>Enable control of matrix dimension in <code>.check_bulk_object_dim()</code> even if the values are not in first position in the list</li>
+<li>
+<code><a href="../reference/editLink.html">editLink()</a></code> : avoid <em>NULL</em> value (default) for arguments <em>filter_synthesis</em> and <em>filter_year_by_year</em> to write an empty string</li>
+<li>
+<code><a href="../reference/updateOutputSettings.html">updateOutputSettings()</a></code> : in API mode, allow the user to edit the desired property</li>
+<li>
+<code><a href="../reference/playlist.html">setPlaylist()</a></code>: do not send NULL value if the weights are not provided in argument</li>
+</ul><p>OTHER UPDATES :</p>
+<ul><li>
+<code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code> : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers<br></li>
+<li>
+<code><a href="../reference/updateGeneralSettings.html">updateGeneralSettings()</a></code> : add thematic.trimming argument for edition</li>
+</ul><p>DOC :</p>
+<ul><li>
+<code><a href="../reference/createClusterST.html">createClusterST()</a></code> : update doc to discrabe st-storage list parameters + “Inflows” parameter</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.0" id="antareseditobject-070">antaresEditObject 0.7.0<small>2024-05-30</small><a class="anchor" aria-label="anchor" href="#antareseditobject-070"></a></h2>
 <blockquote>
-<p>Second-member coupling constraint scenarios</p>
+<p>Scenarized RHS for binding constraints</p>
 </blockquote>
 <p>NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :</p>
 <ul><li>
-<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> / <code><a href="../reference/createBindingConstraint.html">createBindingConstraintBulk()</a></code>
+<code><a href="../reference/createBindingConstraint.html">createBindingConstraint()</a></code> / <code><a href="../reference/createBindingConstraintBulk.html">createBindingConstraintBulk()</a></code>
 <ul><li>New parameters <code>group</code><br></li>
 <li>Parameter <code>values</code> is now list of <code>data.frame</code>
 </li>
@@ -220,7 +273,7 @@
 <li>
 <code>api_command_execute()</code> displays an error message and causes the program to stop following an http error code. The error message is completed with the API error description</li>
 <li>
-<code><a href="../reference/playlist.html">getPlaylist()</a></code> is compatible with the new format returned by <code><a href="../reference/antaresRead-reexports.html">readIniAPI()</a></code>
+<code><a href="../reference/playlist.html">getPlaylist()</a></code> is compatible with the new format returned by <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/read-ini.html" class="external-link">readIniAPI()</a></code>
 </li>
 <li>
 <code><a href="../reference/removeCluster.html">removeClusterRES()</a></code> in API mode</li>
@@ -292,7 +345,7 @@
 <li>Antares v830 : <code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> function to activate Adequacy Patch and set parameters. + <code><a href="../reference/createArea.html">createArea()</a></code> and <code><a href="../reference/editArea.html">editArea()</a></code> support for new adequacy_patch.ini file.</li>
 <li>Antares v820 : <code><a href="../reference/createLink.html">createLink()</a></code> and <code><a href="../reference/editLink.html">editLink()</a></code> have a new argument <code>tsLink</code> allowing to write transmission capacities time-series.</li>
 <li>
-<code><a href="../reference/createBindingConstraint.html">createBindingConstraintBulk()</a></code> allow to create multiple binding constraints at once.</li>
+<code><a href="../reference/createBindingConstraintBulk.html">createBindingConstraintBulk()</a></code> allow to create multiple binding constraints at once.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h4>
@@ -401,19 +454,19 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Tatiana Vargas, Frederic Breant, Victor Perrier.</p>
+  <p></p><p>Developed by Tatiana Vargas.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
