@@ -75,11 +75,7 @@ Study version >= "8.8.0" (update + new parameter) :
 \item enabled = TRUE (\code{logical} TRUE/FALSE)
 }
 
-⚠⚠⚠
-
 By default, these values don't allow you to have an active cluster (See example section.)
-
-⚠⚠⚠
 }
 \examples{
 \dontrun{

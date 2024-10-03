@@ -2,7 +2,7 @@
 title: "Antares new features v8.6.0"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Antares_new_features_v860}
+  %\VignetteIndexEntry{Antares new features v8.6.0}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

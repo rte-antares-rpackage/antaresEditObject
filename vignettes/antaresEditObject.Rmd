@@ -2,7 +2,7 @@
 title: "User guide"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{antaresEditObject}
+  %\VignetteIndexEntry{User guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

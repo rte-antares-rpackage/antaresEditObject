@@ -1,11 +1,11 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.7.1.9000
+Version: 0.7.1
 Authors@R: c(
     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
-    person("Frederic", "Breant", role = "aut"),
-    person("Victor", "Perrier", role = c("aut")),
+    person("Frederic", "Breant", role = "ctb"),
+    person("Victor", "Perrier", role = c("ctb")),
     person("Baptiste", "Seguinot", role = "ctb"),
     person("Benoit", "Thieurmel", role = "ctb"),
     person("Titouan", "Robert", role = "ctb"),
@@ -21,7 +21,7 @@ Authors@R: c(
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.
     'Antares' is an open source power system generator, more information available here : <https://antares-simulator.org/>.
-License: GPL (>= 2) | file LICENSE
+License: GPL (>= 2)
 URL: https://github.com/rte-antares-rpackage/antaresEditObject, https://rte-antares-rpackage.github.io/antaresEditObject/
 BugReports: https://github.com/rte-antares-rpackage/antaresEditObject/issues
 Encoding: UTF-8
@@ -53,5 +53,3 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Remotes:  
-    github::rte-antares-rpackage/antaresRead

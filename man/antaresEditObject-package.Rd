@@ -20,14 +20,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Tatiana Vargas \email{tatiana.vargas@rte-france.com}
 
-Authors:
-\itemize{
-  \item Frederic Breant
-  \item Victor Perrier
-}
-
 Other contributors:
 \itemize{
+  \item Frederic Breant [contributor]
+  \item Victor Perrier [contributor]
   \item Baptiste Seguinot [contributor]
   \item Benoit Thieurmel [contributor]
   \item Titouan Robert [contributor]

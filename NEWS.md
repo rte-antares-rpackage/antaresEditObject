@@ -1,4 +1,4 @@
-# antaresEditObject 0.7.1.9000
+# antaresEditObject 0.7.1
 
 ### Breaking changes  :  
 
