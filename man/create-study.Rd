@@ -36,10 +36,25 @@ Result of \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationP
 \description{
 Create study on disk or with AntaREST server through the API.
 }
+\section{Warning}{
+
+From \strong{Antares version 9.0} onwards, versioning is only done with one number
+for the major version number and a two-digit number for the minor
+version number (e.g. 9.0, 9.12, 10.58, ...).
+}
+
 \examples{
 \dontrun{
 
-createStudy("path/to/simulation")
+# with default values 
+createStudy("path/to/simulation", 
+  study_name = "my_study", 
+  antares_version = "8.2.0")
+  
+# with Antares study version >= 9 (max 2 digits, ex : "9.15")  
+createStudy("path/to/simulation", 
+  study_name = "my_study", 
+  antares_version = "9.15")
 
 }
 }
