@@ -7,6 +7,11 @@
 #'  if it doesn't exist, it'll be created.
 #' @param study_name Name of the study.
 #' @param antares_version Antares number version.
+#' 
+#' @section Warning: 
+#' From **Antares version 9.0** onwards, versioning is only done with one number 
+#' for the major version number and a two-digit number for the minor 
+#' version number (e.g. 9.0, 9.12, 10.58, ...).
 #'
 #' @return Result of [antaresRead::setSimulationPath()] or [antaresRead::setSimulationPathAPI()] accordingly.
 #' @export
@@ -20,11 +25,23 @@
 #' @examples
 #' \dontrun{
 #' 
-#' createStudy("path/to/simulation")
+#' # with default values 
+#' createStudy("path/to/simulation", 
+#'   study_name = "my_study", 
+#'   antares_version = "8.2.0")
+#'   
+#' # with Antares study version >= 9 (max 2 digits, ex : "9.15")  
+#' createStudy("path/to/simulation", 
+#'   study_name = "my_study", 
+#'   antares_version = "9.15")
 #' 
 #' }
 createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0") {
   antares_version <- as.numeric_version(antares_version)
+  
+  # check format version >= 9
+  is_new_version <- .is_version_9(version = antares_version)
+  
   if (!dir.exists(path)) {
     dir.create(path = path, recursive = TRUE)
   } else {
@@ -35,6 +52,8 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
       }
     }
   }
+  
+  # choose template
   if (antares_version < as.numeric_version("6.5.0")) {
     file.copy(
       from = list.files(path = system.file("newStudy", package = "antaresEditObject"), full.names = TRUE),
@@ -51,15 +70,31 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
   } else {
     unzip(zipfile = system.file("template-antares/antares-study-v800.zip", package = "antaresEditObject"), exdir = path)
   }
-  antares <- paste(readLines(con = file.path(path, "study.antares")), collapse = "\n")
+  
+  # read ".antares" file to update
+  antares <- paste(readLines(con = file.path(path, "study.antares")), 
+                   collapse = "\n")
+  
+  # specific format from version 9
+  if(!is_new_version)
+    version_to_write <- gsub(pattern = ".", 
+                             replacement = "", 
+                             x = antares_version, 
+                             fixed = TRUE)
+  else
+    version_to_write <- antares_version
+
+  # template for file "study.antares"
   antares <- whisker::whisker.render(
     template = antares,
     data = list(
-      version = gsub(pattern = ".", replacement = "", x = antares_version, fixed = TRUE),
+      version = version_to_write,
       study_name = study_name,
       date_created = floor(as.numeric(Sys.time()))
     )
   )
+  
+  # write meta data
   writeLines(text = antares, con = file.path(path, "study.antares"))
   desktop <- paste(readLines(con = file.path(path, "Desktop.ini")), collapse = "\n")
   desktop <- whisker::whisker.render(
@@ -69,7 +104,11 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
     )
   )
   writeLines(text = desktop, con = file.path(path, "Desktop.ini"))
+  
+  # read study to create meta data object to return then
   opts <- setSimulationPath(path = path)
+  
+  # add specific directory and files according to version of study to create
   if (antares_version >= as.numeric_version("8.1.0")) {
     activateRES(opts = opts)
   }
@@ -166,5 +205,35 @@ deleteStudy <- function(opts = simOptions(), prompt_validation = FALSE, simulati
               ifelse(delete_simulation, 
                      "Simulation",
                      "Study")))
+}
+
+
+#' function that ensures the transition to 9
+#' @description basic tests on the version's writing format
+#' 
+#' @param version `character` (eg, "8.2.0" or "9.0")
+#' @return `logical` if version >=9
+#' @keywords internal
+.is_version_9 <- function(version){
+  # Split major and minor parts
+  antares_version_splitted <- unlist(
+    strsplit(
+      as.character(version), 
+      split = "\\."))
+  major <- antares_version_splitted[1]
+  
+  # check from version 9, minor max two digits 
+  is_new_version <- as.numeric(major)>=9
+  if(is_new_version){
+    minor <- antares_version_splitted[2]
+    if(length(antares_version_splitted)>2)
+      stop("From Antares version 9, put version like this : '9.0' or '9.12' or '10.25'", 
+           call. = FALSE)
+    if (nchar(minor) > 2) 
+      stop("Invalid antares_version format, good format is like '9.99' (two digits on minor)", 
+           call. = FALSE)
+  }
+  
+  return(is_new_version)
 }
 

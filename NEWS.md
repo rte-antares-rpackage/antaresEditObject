@@ -1,3 +1,13 @@
+> Copyright © 2016 RTE Reseau de transport d’electricite
+
+# antaresEditObject 0.8.0.9000
+(cf. Antares v9 changelog)
+
+NEW FEATURES (Antares v9.0) :  
+* `createStudy()` takes into account the new format of Antares studies (e.g. 9.0, 9.15 instead of 900, 915) 
+
+
+
 # antaresEditObject 0.7.1
 
 ### Breaking changes  :  
