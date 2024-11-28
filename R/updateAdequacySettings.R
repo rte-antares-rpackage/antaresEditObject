@@ -46,67 +46,67 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
                                    threshold_csr_variable_bounds_relaxation = NULL,
                                    opts = antaresRead::simOptions()) {
   
-  if (opts$antaresVersion < 830) stop("This function is only available for studies v8.3 or higher.")
-  
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  if (opts[["antaresVersion"]] < 830) {
+    stop("This function is only available for studies v8.3 or higher.")
+  }
+  api_study <- is_api_study(opts)
+  
+  new_params <- list(
+    "include_adq_patch" = include_adq_patch,
+    "set_to_null_ntc_from_physical_out_to_physical_in_for_first_step" = set_to_null_ntc_from_physical_out_to_physical_in_for_first_step,
+    "set_to_null_ntc_between_physical_out_for_first_step" = set_to_null_ntc_between_physical_out_for_first_step,
+    "include_hurdle_cost_csr" = include_hurdle_cost_csr,
+    "check_csr_cost_function" = check_csr_cost_function,
+    "enable_first_step" = enable_first_step,
+    "price_taking_order" = price_taking_order,
+    "threshold_initiate_curtailment_sharing_rule" = threshold_initiate_curtailment_sharing_rule,
+    "threshold_display_local_matching_rule_violations" = threshold_display_local_matching_rule_violations,
+    "threshold_csr_variable_bounds_relaxation" = threshold_csr_variable_bounds_relaxation
+  )
+  
+  new_params <- dropNulls(x = new_params)
+  
+  if (opts[["antaresVersion"]] < 850) {
+    properties_850 <- c("price_taking_order",
+                        "include_hurdle_cost_csr",
+                        "check_csr_cost_function",
+                        "threshold_initiate_curtailment_sharing_rule",
+                        "threshold_display_local_matching_rule_violations",
+                        "threshold_csr_variable_bounds_relaxation")
+    new_params <- new_params[!names(new_params) %in% properties_850]
+  }
+  
+  if (opts[["antaresVersion"]] < 860 | (opts[["antaresVersion"]] >= 860 & api_study)) {
+    # enable_first_step is necessary only for desktop application. Not used in API mode.
+    properties_860 <- c("enable_first_step")
+    new_params <- new_params[!names(new_params) %in% properties_860]
+  }
+  
+  new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
+  names(new_params) <- sapply(names(new_params), dicoAdequacySettings, USE.NAMES = FALSE)
+  
   # API block
-  if (is_api_study(opts)) {
+  if (api_study) {
     
-    writeIni(
-      listData = list(
-        `include-adq-patch` = include_adq_patch,
-        `set-to-null-ntc-from-physical-out-to-physical-in-for-first-step` = set_to_null_ntc_from_physical_out_to_physical_in_for_first_step,
-        `set-to-null-ntc-between-physical-out-for-first-step` = set_to_null_ntc_between_physical_out_for_first_step,
-        `price-taking-order` = price_taking_order,
-        `include-hurdle-cost-csr` = include_hurdle_cost_csr,
-        `check-csr-cost-function` = check_csr_cost_function,
-        `threshold-initiate-curtailment-sharing-rule` = threshold_initiate_curtailment_sharing_rule,
-        `threshold-display-local-matching-rule-violations` = threshold_display_local_matching_rule_violations,
-        `threshold-csr-variable-bounds-relaxation` = threshold_csr_variable_bounds_relaxation
-      ),
-      pathIni = "settings/generaldata/adequacy patch",
-      opts = opts
-    )
+    writeIni(listData = new_params, pathIni = "settings/generaldata/adequacy patch", opts = opts)
     
     return(update_api_opts(opts))
   }
   
-  pathIni <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  general <- readIniFile(file = pathIni)
+  generaldatapath <- file.path(opts[["studyPath"]], "settings", "generaldata.ini")
+  generaldata <- readIniFile(file = generaldatapath)
   
-  adequacy <- general$`adequacy patch`
-  if (!is.null(include_adq_patch))
-    adequacy$`include-adq-patch` <- include_adq_patch
-  if (!is.null(set_to_null_ntc_from_physical_out_to_physical_in_for_first_step))
-    adequacy$`set-to-null-ntc-from-physical-out-to-physical-in-for-first-step` <- set_to_null_ntc_from_physical_out_to_physical_in_for_first_step
-  if (!is.null(set_to_null_ntc_between_physical_out_for_first_step))
-    adequacy$`set-to-null-ntc-between-physical-out-for-first-step` <- set_to_null_ntc_between_physical_out_for_first_step
-  
-  if (opts$antaresVersion >= 850) {
-    if (!is.null(price_taking_order))
-      adequacy$`price-taking-order` <- price_taking_order
-    if (!is.null(include_hurdle_cost_csr))
-      adequacy$`include-hurdle-cost-csr` <- include_hurdle_cost_csr
-    if (!is.null(check_csr_cost_function))
-      adequacy$`check-csr-cost-function` <- check_csr_cost_function
-    if (!is.null(threshold_initiate_curtailment_sharing_rule))
-      adequacy$`threshold-initiate-curtailment-sharing-rule` <- threshold_initiate_curtailment_sharing_rule
-    if (!is.null(threshold_display_local_matching_rule_violations))
-      adequacy$`threshold-display-local-matching-rule-violations` <- threshold_display_local_matching_rule_violations
-    if (!is.null(threshold_csr_variable_bounds_relaxation))
-      adequacy$`threshold-csr-variable-bounds-relaxation` <- threshold_csr_variable_bounds_relaxation
+  if ("adequacy patch" %in% names(generaldata)) {
+    l_output <- generaldata[["adequacy patch"]]
+    l_output <- modifyList(x = l_output, val = new_params)
+  } else {
+    l_output <- new_params
   }
+  generaldata[["adequacy patch"]] <- l_output
   
-	# Necessary only for desktop application. Not used in API mode.
-  if (opts$antaresVersion >= 860) {
-    if (!is.null(enable_first_step)) {
-      adequacy$`enable-first-step` <- enable_first_step
-    }  
-  }
-  general$`adequacy patch` <- adequacy
-  
-  writeIni(listData = general, pathIni = pathIni, overwrite = TRUE)
+  writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
 
   # Maj simulation
   suppressWarnings({
@@ -151,4 +151,39 @@ convertConfigToAdq <- function(opts = simOptions(), path = "default"){
   lapply(setdiff(config$areas, config$excluded_areas),
          editArea, adequacy = adequacyOptions(adequacy_patch_mode = "inside"))
   if (length(pathOut) > 0) setSimulationPath(pathOut)
+}
+
+
+#' Correspondence between arguments of \code{updateAdequacySettings} and actual Antares parameters.
+#' 
+#' @param arg An argument from function \code{updateAdequacySettings}.
+#'
+#' @return The corresponding Antares general parameter.
+#' 
+#' @export
+#' 
+#' @examples 
+#' dicoAdequacySettings("threshold_initiate_curtailment_sharing_rule")
+dicoAdequacySettings <- function(arg) {
+  
+  if (length(arg) > 1) { 
+    stop("'arg' must be length one")
+  }
+  
+  antares_params <- as.list(c("include-adq-patch", "set-to-null-ntc-from-physical-out-to-physical-in-for-first-step",
+                             "set-to-null-ntc-between-physical-out-for-first-step", "include-hurdle-cost-csr",
+                             "check-csr-cost-function", "enable-first-step",
+                             "price-taking-order", "threshold-initiate-curtailment-sharing-rule",
+                             "threshold-display-local-matching-rule-violations", "threshold-csr-variable-bounds-relaxation"
+                             )
+                          )
+  
+  names(antares_params) <- c("include_adq_patch", "set_to_null_ntc_from_physical_out_to_physical_in_for_first_step",
+                             "set_to_null_ntc_between_physical_out_for_first_step", "include_hurdle_cost_csr",
+                             "check_csr_cost_function", "enable_first_step",
+                             "price_taking_order", "threshold_initiate_curtailment_sharing_rule",
+                             "threshold_display_local_matching_rule_violations", "threshold_csr_variable_bounds_relaxation"
+                             )
+  
+  return(antares_params[[arg]])
 }
