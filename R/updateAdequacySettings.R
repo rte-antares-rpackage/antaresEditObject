@@ -78,7 +78,7 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
   }
   
   if (opts[["antaresVersion"]] >= 860) {
-    if ("enable_first_step" %in% names(new_params) & new_params[["enable_first_step"]]) {
+    if ("enable_first_step" %in% names(new_params)) {
       message("Property enable_first_step is disabled for the moment. Set to FALSE.\n")
       new_params[["enable_first_step"]] <- FALSE
     }
