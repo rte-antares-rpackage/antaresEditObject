@@ -51,7 +51,6 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
   if (opts[["antaresVersion"]] < 830) {
     stop("This function is only available for studies v8.3 or higher.")
   }
-  api_study <- is_api_study(opts)
   
   new_params <- list(
     "include_adq_patch" = include_adq_patch,
@@ -78,10 +77,11 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
     new_params <- new_params[!names(new_params) %in% properties_850]
   }
   
-  if (opts[["antaresVersion"]] < 860 | (opts[["antaresVersion"]] >= 860 & api_study)) {
-    # enable_first_step is necessary only for desktop application. Not used in API mode.
-    properties_860 <- c("enable_first_step")
-    new_params <- new_params[!names(new_params) %in% properties_860]
+  if (opts[["antaresVersion"]] >= 860) {
+    if ("enable_first_step" %in% names(new_params) & new_params[["enable_first_step"]]) {
+      message("Property enable_first_step is disabled for the moment. Set to FALSE.\n")
+      new_params[["enable_first_step"]] <- FALSE
+    }
   }
   
   new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
@@ -91,8 +91,6 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
   
   invisible(res)
 }
-
-
 
 
 #' @title Read adequacy patch config.yml into Antares (v8.5+)
