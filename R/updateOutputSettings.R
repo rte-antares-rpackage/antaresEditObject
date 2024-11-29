@@ -51,30 +51,10 @@ updateOutputSettings <- function(synthesis = NULL,
   )
   
   new_params <- dropNulls(x = new_params)
-  
   new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
   names(new_params) <- sapply(names(new_params), dicoOutputSettings, USE.NAMES = FALSE)
   
-  # API block
-  if (is_api_study(opts)) {
-    
-    writeIni(listData = new_params, pathIni = "settings/generaldata/output", opts = opts)
-    
-    return(update_api_opts(opts))
-  }
-  
-  generaldatapath <- file.path(opts[["studyPath"]], "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  
-  l_output <- generaldata[["output"]]
-  l_output <- modifyList(x = l_output, val = new_params)
-  generaldata[["output"]] <- l_output
-  
-  writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
-  
-  suppressWarnings({
-    res <- setSimulationPath(path = opts[["studyPath"]], simulation = "input")
-  })
+  res <- update_generaldata_by_section(opts = opts, section = "output", new_params = new_params)
   
   invisible(res)
 }
