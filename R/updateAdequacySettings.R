@@ -87,31 +87,7 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
   new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
   names(new_params) <- sapply(names(new_params), dicoAdequacySettings, USE.NAMES = FALSE)
   
-  # API block
-  if (api_study) {
-    
-    writeIni(listData = new_params, pathIni = "settings/generaldata/adequacy patch", opts = opts)
-    
-    return(update_api_opts(opts))
-  }
-  
-  generaldatapath <- file.path(opts[["studyPath"]], "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  
-  if ("adequacy patch" %in% names(generaldata)) {
-    l_output <- generaldata[["adequacy patch"]]
-    l_output <- modifyList(x = l_output, val = new_params)
-  } else {
-    l_output <- new_params
-  }
-  generaldata[["adequacy patch"]] <- l_output
-  
-  writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
-
-  # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_generaldata_by_section(opts = opts, section = "adequacy patch", new_params = new_params)
   
   invisible(res)
 }
