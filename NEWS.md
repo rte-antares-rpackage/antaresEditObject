@@ -6,6 +6,9 @@
 NEW FEATURES (Antares v9.0) :  
 * `createStudy()` takes into account the new format of Antares studies (e.g. 9.0, 9.15 instead of 900, 915) 
 
+BUGFIXES :  
+
+* `updateAdequacySettings()` : in API mode do not send NULL value
 
 
 # antaresEditObject 0.7.1
