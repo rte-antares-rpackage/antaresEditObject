@@ -4,7 +4,12 @@
 (cf. Antares v9 changelog)
 
 NEW FEATURES (Antares v9.0) :  
+
 * `createStudy()` takes into account the new format of Antares studies (e.g. 9.0, 9.15 instead of 900, 915) 
+
+BUGFIXES :  
+
+* *[private function]* `api_command_execute()` manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).
 
 
 
