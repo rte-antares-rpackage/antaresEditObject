@@ -200,9 +200,38 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
   msg_api=" " # HACK /!\
   cli::cli_alert_success(paste0(text_alert, "success"))
   
-  # one more "PUT" "/generate" for variant only
+  # Snaphost /generate" for variant only
   if (is_variant(opts)) {
-    api_put(opts, paste0(opts$study_id, "/generate"))
+    variant_res <- api_put(opts, paste0(opts$study_id, "/generate"))
+    
+    # retrieve task information
+    result_task_id <- api_get(opts = opts, 
+                              endpoint = file.path("v1", "tasks", variant_res), 
+                              default_endpoint = NULL)
+    
+    while(is.null(result_task_id$result)) {
+      message("...Generate Snapshot task in progress...")
+      if(is.null(opts$sleep))
+        Sys.sleep(0.5)
+      else
+        Sys.sleep(opts$sleep)
+      result_task_id <- api_get(opts = opts, 
+                                endpoint = file.path("v1", "tasks", variant_res), 
+                                default_endpoint = NULL)
+    }
+    
+    # test if task is terminated with success
+    result_task_id_log <- result_task_id$result
+    
+    status <- isTRUE(result_task_id_log$success)
+    
+    details_command <- jsonlite::fromJSON(result_task_id_log$return_value, 
+                                          simplifyVector = FALSE)
+    
+    if(status)
+      message(paste0("Snapshot generated for : ", details_command$details[[1]]$name))
+    else
+      stop(paste0("Not success for task : ", details_command$details[[1]]$name))
     return(invisible(TRUE))
   }
 }
