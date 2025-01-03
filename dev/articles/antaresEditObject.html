@@ -106,7 +106,7 @@
 <p>First it’s necessary to load the package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="co"># CRAN limite CPU usage</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/openmp-utils.html" class="external-link">setDTthreads</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/openmp-utils.html" class="external-link">setDTthreads</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span></code></pre></div>
 <p>You need to set the path to an Antares study in “input” mode:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -289,11 +289,11 @@ following commands :</p>
 <span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>linkCapacity <span class="op">=</span> <span class="va">my_link</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Sort the data to ensure its reliability</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span> </span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># Reshape to wide format : writeInputTS expects a 8760 * N matrix </span></span>
 <span><span class="va">metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"transCapacityDirect"</span>, <span class="st">"transCapacityIndirect"</span><span class="op">)</span></span>
-<span><span class="va">ts_input_reformatted</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/dcast.data.table.html" class="external-link">dcast</a></span><span class="op">(</span><span class="va">ts_input</span>,</span>
+<span><span class="va">ts_input_reformatted</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/dcast.data.table.html" class="external-link">dcast</a></span><span class="op">(</span><span class="va">ts_input</span>,</span>
 <span>                                          <span class="va">timeId</span> <span class="op">~</span> <span class="va">tsId</span>,</span>
 <span>                                          value.var <span class="op">=</span> <span class="va">metrics</span></span>
 <span>                                          <span class="op">)</span></span>
@@ -314,11 +314,11 @@ following commands :</p>
 <span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="va">ts_input</span><span class="op">[</span><span class="va">cluster</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">my_area</span>,<span class="st">"_"</span>,<span class="va">my_cluster</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Sort the data to ensure its reliability</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Reshape to wide format : writeInputTS expects a 8760 * N matrix </span></span>
 <span><span class="va">metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ThermalAvailabilities"</span><span class="op">)</span></span>
-<span><span class="va">ts_input_reformatted</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/dcast.data.table.html" class="external-link">dcast</a></span><span class="op">(</span><span class="va">ts_input</span>,</span>
+<span><span class="va">ts_input_reformatted</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/dcast.data.table.html" class="external-link">dcast</a></span><span class="op">(</span><span class="va">ts_input</span>,</span>
 <span>                                          <span class="va">timeId</span> <span class="op">~</span> <span class="va">tsId</span>,</span>
 <span>                                          value.var <span class="op">=</span> <span class="va">metrics</span></span>
 <span>                                          <span class="op">)</span></span>
@@ -337,11 +337,11 @@ following commands :</p>
 <span><span class="va">ts_input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>ror <span class="op">=</span> <span class="va">my_area</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Sort the data to ensure its reliability</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">ts_input</span>, cols <span class="op">=</span> <span class="st">"tsId"</span>, <span class="st">"timeId"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Reshape to wide format : writeInputTS expects a 8760 * N matrix </span></span>
 <span><span class="va">metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ror"</span><span class="op">)</span></span>
-<span><span class="va">ts_input_reformatted</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/dcast.data.table.html" class="external-link">dcast</a></span><span class="op">(</span><span class="va">ts_input</span>,</span>
+<span><span class="va">ts_input_reformatted</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/dcast.data.table.html" class="external-link">dcast</a></span><span class="op">(</span><span class="va">ts_input</span>,</span>
 <span>                                          <span class="va">timeId</span> <span class="op">~</span> <span class="va">tsId</span>,</span>
 <span>                                          value.var <span class="op">=</span> <span class="va">metrics</span></span>
 <span><span class="op">)</span></span>
