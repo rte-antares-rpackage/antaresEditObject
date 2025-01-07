@@ -151,6 +151,9 @@ editBindingConstraint <- function(name,
   
   # Marginal price granularity (v8.3.2)
   if (opts$antaresVersion >= 832){
+    iniParams <- append(iniParams, 
+                        list(`filter-year-by-year` = bc_update$`filter-year-by-year`,
+                             `filter-synthesis` = bc_update$`filter-synthesis`))
     if(!is.null(filter_year_by_year))
       iniParams$`filter-year-by-year` <- filter_year_by_year
     if(!is.null(filter_synthesis))
@@ -164,19 +167,23 @@ editBindingConstraint <- function(name,
     else
       group <- "default"
     
-    values_operator <- switch(operator,
-                              less = "lt",
-                              equal = "eq",
-                              greater = "gt",
-                              both = c("lt", "gt"))
-    
-    # check group values
-    if(!is.null(values))
+    # check group values (depend of "operator")
+    if(!is.null(values)){
+      if(!is.null(operator))
+        values_operator <- switch(operator,
+                                  less = "lt",
+                                  equal = "eq",
+                                  greater = "gt",
+                                  both = c("lt", "gt"))
+      else
+        stop("To modify the 'values' you must enter the 'operator' parameter (e.g operator = \"both\")")
+      
       group_values_meta_check(group_value = group, 
                               values_data = values,
                               operator_check = operator,
                               output_operator = values_operator,
                               opts = opts)
+    }
     
   }
     
