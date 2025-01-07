@@ -36,7 +36,7 @@ test_that("editBindingConstraint v710", {
   
 })
 
-# v870 ----
+# v870 Scenarized RHS ----
 
 # read script to generate study v8.7.0
 sourcedir_last_study <- system.file("study_test_generator/generate_test_study_870.R", 
@@ -65,6 +65,56 @@ eq_data <- matrix(data = rep(3, 365 * n), ncol = n)
 scenar_values_daily <- list(lt= lt_data,
                              gt= gt_data, 
                              eq= eq_data)
+
+## default group ----
+test_that("editBindingConstraint paramater one by one", {
+  
+  name_bc <- "bc_minimal"
+  createBindingConstraint(name = name_bc)
+  
+  # read 
+  bc_read <- readBindingConstraints()
+  
+  # edit nothing
+  editBindingConstraint(name = name_bc)
+  
+  # read updated
+  bc_read_updated <- readBindingConstraints()
+  
+  # test if is identical 
+  testthat::expect_equal(bc_read, bc_read_updated)
+  
+  # edit  ["values"] (created by default with "both")
+    # "operator" muy be filled 
+    testthat::expect_error(
+      editBindingConstraint(name = name_bc, 
+                            values = scenar_values_hourly[c("lt", "gt")]), 
+      regexp = "To modify the 'values' you must enter the 'operator'"
+    )
+  
+  editBindingConstraint(name = name_bc, 
+                        operator = "both",
+                        values = scenar_values_hourly[c("lt", "gt")])
+  
+  # read updated
+  bc_read_updated <- readBindingConstraints()
+  
+  # test dim
+  dim_bc <- dim(bc_read_updated$bc_minimal$values$less)
+  testthat::expect_equal(dim_bc[2], 10)
+  
+  # edit  ["enabled "] (TRUE by default)
+  editBindingConstraint(name = name_bc, 
+                        enabled = FALSE)
+  
+  # read updated
+  bc_read_updated <- readBindingConstraints()
+  
+  testthat::expect_equal(bc_read_updated$bc_minimal$properties$enabled, FALSE)
+  
+ 
+  
+})
 
 ## default group ----
 test_that("editBindingConstraint with 'default' group v8.7.0", {

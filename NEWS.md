@@ -7,6 +7,13 @@ NEW FEATURES (Antares v9.0) :
 
 * `createStudy()` takes into account the new format of Antares studies (e.g. 9.0, 9.15 instead of 900, 915)  
 
+BUGFIXES :  
+
+* `editBindingConstraint()` :  
+  - `operator` parameter set to NULL, by default, no longer causes an error.  
+  - To add values, the `operator` parameter is now required.  
+  - For a study version >= 832, the `filter-year-by-year` and `filter-synthesis` properties are retained in the .ini file if they are not modified. 
+
 
 GITHUB ACTIONS :  
 
