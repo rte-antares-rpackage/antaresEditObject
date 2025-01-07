@@ -75,6 +75,14 @@
 <p>NEW FEATURES (Antares v9.0) :</p>
 <ul><li>
 <code><a href="../reference/create-study.html">createStudy()</a></code> takes into account the new format of Antares studies (e.g. 9.0, 9.15 instead of 900, 915)</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>
+<code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code> :
+<ul><li>
+<code>operator</code> parameter set to NULL, by default, no longer causes an error.<br></li>
+<li>To add values, the <code>operator</code> parameter is now required.<br></li>
+<li>For a study version &gt;= 832, the <code>filter-year-by-year</code> and <code>filter-synthesis</code> properties are retained in the .ini file if they are not modified.</li>
+</ul></li>
 </ul><p>GITHUB ACTIONS :</p>
 <ul><li>Actions artifacts v3 is closing down, update to v4<br></li>
 <li>test-coverage.yaml updated</li>
