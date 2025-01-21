@@ -46,77 +46,51 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
                                    threshold_csr_variable_bounds_relaxation = NULL,
                                    opts = antaresRead::simOptions()) {
   
-  if (opts$antaresVersion < 830) stop("This function is only available for studies v8.3 or higher.")
-  
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  # API block
-  if (is_api_study(opts)) {
-    
-    writeIni(
-      listData = list(
-        `include-adq-patch` = include_adq_patch,
-        `set-to-null-ntc-from-physical-out-to-physical-in-for-first-step` = set_to_null_ntc_from_physical_out_to_physical_in_for_first_step,
-        `set-to-null-ntc-between-physical-out-for-first-step` = set_to_null_ntc_between_physical_out_for_first_step,
-        `price-taking-order` = price_taking_order,
-        `include-hurdle-cost-csr` = include_hurdle_cost_csr,
-        `check-csr-cost-function` = check_csr_cost_function,
-        `threshold-initiate-curtailment-sharing-rule` = threshold_initiate_curtailment_sharing_rule,
-        `threshold-display-local-matching-rule-violations` = threshold_display_local_matching_rule_violations,
-        `threshold-csr-variable-bounds-relaxation` = threshold_csr_variable_bounds_relaxation
-      ),
-      pathIni = "settings/generaldata/adequacy patch",
-      opts = opts
-    )
-    
-    return(update_api_opts(opts))
+  if (opts[["antaresVersion"]] < 830) {
+    stop("This function is only available for studies v8.3 or higher.")
   }
   
-  pathIni <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  general <- readIniFile(file = pathIni)
+  new_params <- list(
+    "include_adq_patch" = include_adq_patch,
+    "set_to_null_ntc_from_physical_out_to_physical_in_for_first_step" = set_to_null_ntc_from_physical_out_to_physical_in_for_first_step,
+    "set_to_null_ntc_between_physical_out_for_first_step" = set_to_null_ntc_between_physical_out_for_first_step,
+    "include_hurdle_cost_csr" = include_hurdle_cost_csr,
+    "check_csr_cost_function" = check_csr_cost_function,
+    "enable_first_step" = enable_first_step,
+    "price_taking_order" = price_taking_order,
+    "threshold_initiate_curtailment_sharing_rule" = threshold_initiate_curtailment_sharing_rule,
+    "threshold_display_local_matching_rule_violations" = threshold_display_local_matching_rule_violations,
+    "threshold_csr_variable_bounds_relaxation" = threshold_csr_variable_bounds_relaxation
+  )
   
-  adequacy <- general$`adequacy patch`
-  if (!is.null(include_adq_patch))
-    adequacy$`include-adq-patch` <- include_adq_patch
-  if (!is.null(set_to_null_ntc_from_physical_out_to_physical_in_for_first_step))
-    adequacy$`set-to-null-ntc-from-physical-out-to-physical-in-for-first-step` <- set_to_null_ntc_from_physical_out_to_physical_in_for_first_step
-  if (!is.null(set_to_null_ntc_between_physical_out_for_first_step))
-    adequacy$`set-to-null-ntc-between-physical-out-for-first-step` <- set_to_null_ntc_between_physical_out_for_first_step
+  new_params <- dropNulls(x = new_params)
   
-  if (opts$antaresVersion >= 850) {
-    if (!is.null(price_taking_order))
-      adequacy$`price-taking-order` <- price_taking_order
-    if (!is.null(include_hurdle_cost_csr))
-      adequacy$`include-hurdle-cost-csr` <- include_hurdle_cost_csr
-    if (!is.null(check_csr_cost_function))
-      adequacy$`check-csr-cost-function` <- check_csr_cost_function
-    if (!is.null(threshold_initiate_curtailment_sharing_rule))
-      adequacy$`threshold-initiate-curtailment-sharing-rule` <- threshold_initiate_curtailment_sharing_rule
-    if (!is.null(threshold_display_local_matching_rule_violations))
-      adequacy$`threshold-display-local-matching-rule-violations` <- threshold_display_local_matching_rule_violations
-    if (!is.null(threshold_csr_variable_bounds_relaxation))
-      adequacy$`threshold-csr-variable-bounds-relaxation` <- threshold_csr_variable_bounds_relaxation
+  if (opts[["antaresVersion"]] < 850) {
+    properties_850 <- c("price_taking_order",
+                        "include_hurdle_cost_csr",
+                        "check_csr_cost_function",
+                        "threshold_initiate_curtailment_sharing_rule",
+                        "threshold_display_local_matching_rule_violations",
+                        "threshold_csr_variable_bounds_relaxation")
+    new_params <- new_params[!names(new_params) %in% properties_850]
   }
   
-	# Necessary only for desktop application. Not used in API mode.
-  if (opts$antaresVersion >= 860) {
-    if (!is.null(enable_first_step)) {
-      adequacy$`enable-first-step` <- enable_first_step
-    }  
+  if (opts[["antaresVersion"]] >= 860) {
+    if ("enable_first_step" %in% names(new_params)) {
+      message("Property enable_first_step is disabled for the moment. Set to FALSE.\n")
+      new_params[["enable_first_step"]] <- FALSE
+    }
   }
-  general$`adequacy patch` <- adequacy
   
-  writeIni(listData = general, pathIni = pathIni, overwrite = TRUE)
-
-  # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
+  names(new_params) <- sapply(names(new_params), dicoAdequacySettings, USE.NAMES = FALSE)
+  
+  res <- update_generaldata_by_section(opts = opts, section = "adequacy patch", new_params = new_params)
   
   invisible(res)
 }
-
-
 
 
 #' @title Read adequacy patch config.yml into Antares (v8.5+)
@@ -151,4 +125,35 @@ convertConfigToAdq <- function(opts = simOptions(), path = "default"){
   lapply(setdiff(config$areas, config$excluded_areas),
          editArea, adequacy = adequacyOptions(adequacy_patch_mode = "inside"))
   if (length(pathOut) > 0) setSimulationPath(pathOut)
+}
+
+
+#' Correspondence between arguments of \code{updateAdequacySettings} and actual Antares parameters.
+#' 
+#' @param arg An argument from function \code{updateAdequacySettings}.
+#'
+#' @return The corresponding Antares general parameter.
+#'
+dicoAdequacySettings <- function(arg) {
+  
+  if (length(arg) > 1) { 
+    stop("'arg' must be length one")
+  }
+  
+  antares_params <- as.list(c("include-adq-patch", "set-to-null-ntc-from-physical-out-to-physical-in-for-first-step",
+                             "set-to-null-ntc-between-physical-out-for-first-step", "include-hurdle-cost-csr",
+                             "check-csr-cost-function", "enable-first-step",
+                             "price-taking-order", "threshold-initiate-curtailment-sharing-rule",
+                             "threshold-display-local-matching-rule-violations", "threshold-csr-variable-bounds-relaxation"
+                             )
+                          )
+  
+  names(antares_params) <- c("include_adq_patch", "set_to_null_ntc_from_physical_out_to_physical_in_for_first_step",
+                             "set_to_null_ntc_between_physical_out_for_first_step", "include_hurdle_cost_csr",
+                             "check_csr_cost_function", "enable_first_step",
+                             "price_taking_order", "threshold_initiate_curtailment_sharing_rule",
+                             "threshold_display_local_matching_rule_violations", "threshold_csr_variable_bounds_relaxation"
+                             )
+  
+  return(antares_params[[arg]])
 }

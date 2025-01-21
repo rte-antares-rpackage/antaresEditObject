@@ -172,3 +172,35 @@ generate_cluster_name <- function(area, cluster_name, add_prefix) {
   
   return(paste(as.character(value), collapse = ", "))
 }
+
+#' @title Update a specific section in generaldata.ini file
+#'
+#' @template opts
+#' @param section The section to update.
+#' @param new_params The values to write in the section.
+#'
+#' @importFrom antaresRead readIniFile
+update_generaldata_by_section <- function(opts, section, new_params) {
+  
+  if (is_api_study(opts = opts)) {
+    
+    writeIni(listData = new_params, pathIni = sprintf("settings/generaldata/%s", section), opts = opts)
+    
+  } else {
+  
+    generaldatapath <- file.path(opts[["studyPath"]], "settings", "generaldata.ini")
+    generaldata <- readIniFile(file = generaldatapath)
+    
+    if (section %in% names(generaldata)) {
+      l_section <- generaldata[[section]]
+      l_section <- modifyList(x = l_section, val = new_params)
+    } else {
+      l_section <- new_params
+    }
+    generaldata[[section]] <- l_section
+    
+    writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
+  }
+  
+  return(update_opts(opts = opts))
+}

@@ -25,6 +25,9 @@ BUGFIXES :
 
 * *[private function]* `api_command_execute()` manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).
 
+BUGFIXES :  
+
+* `updateAdequacySettings()` : in API mode do not send NULL value
 
 
 # antaresEditObject 0.7.1
