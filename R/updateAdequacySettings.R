@@ -133,11 +133,7 @@ convertConfigToAdq <- function(opts = simOptions(), path = "default"){
 #' @param arg An argument from function \code{updateAdequacySettings}.
 #'
 #' @return The corresponding Antares general parameter.
-#' 
-#' @export
-#' 
-#' @examples 
-#' dicoAdequacySettings("threshold_initiate_curtailment_sharing_rule")
+#'
 dicoAdequacySettings <- function(arg) {
   
   if (length(arg) > 1) { 

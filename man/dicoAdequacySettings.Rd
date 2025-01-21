@@ -15,6 +15,3 @@ The corresponding Antares general parameter.
 \description{
 Correspondence between arguments of \code{updateAdequacySettings} and actual Antares parameters.
 }
-\examples{
-dicoAdequacySettings("threshold_initiate_curtailment_sharing_rule")
-}
