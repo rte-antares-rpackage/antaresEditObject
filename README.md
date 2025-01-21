@@ -11,8 +11,8 @@
 [![cranlogs](https://cranlogs.r-pkg.org/badges/antaresEditObject)](https://cran.r-project.org/package=antaresEditObject)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![R-CMD-check](https://github.com/rte-antares-rpackage/antaresEditObject/workflows/R-CMD-check/badge.svg)](https://github.com/rte-antares-rpackage/antaresEditObject/actions)
-[![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/antaresEditObject/branch/master/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresEditObject?branch=master)
+[![R-CMD-check](https://github.com/rte-antares-rpackage/antaresEditObject/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rte-antares-rpackage/antaresEditObject/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/antaresEditObject/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresEditObject)
 <!-- badges: end -->
 
 
