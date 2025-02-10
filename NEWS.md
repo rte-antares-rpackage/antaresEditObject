@@ -12,22 +12,16 @@ BUGFIXES :
 * `editBindingConstraint()` :  
   - `operator` parameter set to NULL, by default, no longer causes an error.  
   - To add values, the `operator` parameter is now required.  
-  - For a study version >= 832, the `filter-year-by-year` and `filter-synthesis` properties are retained in the .ini file if they are not modified. 
+  - For a study version >= 832, the `filter-year-by-year` and `filter-synthesis` properties are retained in the .ini file if they are not modified.  
+* *[private function]* `api_command_execute()` manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).  
+  - You can use global parameter `verbose` to `TRUE` (#274 `antaresRead`) to display diagnostic messages (`getOption("antares")`)
+* `updateAdequacySettings()` : in API mode do not send NULL value
 
 
 GITHUB ACTIONS :  
 
 * Actions artifacts v3 is closing down, update to v4  
 * test-coverage.yaml updated 
-
-
-BUGFIXES :  
-
-* *[private function]* `api_command_execute()` manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).
-
-BUGFIXES :  
-
-* `updateAdequacySettings()` : in API mode do not send NULL value
 
 
 # antaresEditObject 0.7.1

@@ -210,7 +210,9 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
                               default_endpoint = NULL)
     
     while(is.null(result_task_id$result)) {
-      message("...Generate Snapshot task in progress...")
+      if(!is.null(opts$verbose))
+        if(opts$verbose)
+          message("...Generate Snapshot task in progress...")
       if(is.null(opts$sleep))
         Sys.sleep(0.5)
       else
@@ -222,14 +224,17 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
     
     # test if task is terminated with success
     result_task_id_log <- result_task_id$result
-    
     status <- isTRUE(result_task_id_log$success)
-    
     details_command <- jsonlite::fromJSON(result_task_id_log$return_value, 
                                           simplifyVector = FALSE)
     
-    if(status)
-      message(paste0("Snapshot generated for : ", details_command$details[[1]]$name))
+    if(status){
+      if(!is.null(opts$verbose))
+        if(opts$verbose)
+          message(paste0("Snapshot generated for : ", 
+                         details_command$details[[1]]$name))
+    }
+      
     else
       stop(paste0("Not success for task : ", details_command$details[[1]]$name))
     return(invisible(TRUE))
