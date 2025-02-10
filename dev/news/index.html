@@ -81,17 +81,17 @@
 <ul><li>
 <code>operator</code> parameter set to NULL, by default, no longer causes an error.<br></li>
 <li>To add values, the <code>operator</code> parameter is now required.<br></li>
-<li>For a study version &gt;= 832, the <code>filter-year-by-year</code> and <code>filter-synthesis</code> properties are retained in the .ini file if they are not modified.</li>
+<li>For a study version &gt;= 832, the <code>filter-year-by-year</code> and <code>filter-synthesis</code> properties are retained in the .ini file if they are not modified.<br></li>
 </ul></li>
+<li>
+<em>[private function]</em> <code>api_command_execute()</code> manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).
+<ul><li>You can use global parameter <code>verbose</code> to <code>TRUE</code> (<a href="https://github.com/rte-antares-rpackage/antaresEditObject/issues/274" class="external-link">#274</a> <code>antaresRead</code>) to display diagnostic messages (<code>getOption("antares")</code>)</li>
+</ul></li>
+<li>
+<code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> : in API mode do not send NULL value</li>
 </ul><p>GITHUB ACTIONS :</p>
 <ul><li>Actions artifacts v3 is closing down, update to v4<br></li>
 <li>test-coverage.yaml updated</li>
-</ul><p>BUGFIXES :</p>
-<ul><li>
-<em>[private function]</em> <code>api_command_execute()</code> manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).</li>
-</ul><p>BUGFIXES :</p>
-<ul><li>
-<code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> : in API mode do not send NULL value</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.1" id="antareseditobject-071">antaresEditObject 0.7.1<small>2024-09-27</small><a class="anchor" aria-label="anchor" href="#antareseditobject-071"></a></h2>
