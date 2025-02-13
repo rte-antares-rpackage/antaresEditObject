@@ -1,6 +1,6 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
-# antaresEditObject 0.8.0.9000
+# antaresEditObject 0.9.0
 (cf. Antares v9 changelog)
 
 NEW FEATURES (Antares v9.0) :  
