@@ -21,7 +21,7 @@
 #' @importFrom utils modifyList
 #' @importFrom antaresRead readIniFile
 #'
-#' @seealso \href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/}{Antares General Reference Guide}
+#' @seealso {Antares General Reference Guide}
 #'
 #' @examples
 #' \dontrun{

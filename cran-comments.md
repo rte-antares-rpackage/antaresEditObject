@@ -58,3 +58,15 @@ This error did not appear on the CRAN
   - `\dontrun{}` sections are needed because most of functions need to be apply on a study load on Global env (legacy code too)  
   - There is only a maintainer, contributors and RTE, which is the owner. (we use `use_gpl_license(version = 2, include_future = TRUE)`)
   
+
+## antaresEditObject 0.9.0 
+
+### Re Submission and check doc with command below
+
+```r
+devtools::check(manual = TRUE,
+                remote = TRUE,
+                incoming = TRUE)
+```
+No more "Found the following (possibly) invalid URLs"
+
