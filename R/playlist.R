@@ -1,8 +1,11 @@
 
 #' @title Get the playlist of an Antares study
-#'  `r antaresEditObject:::badge_api_ok()`
+#'  
 #'
-#' @description \code{getPlaylist} gives the identifier of the MC years which
+#' @description 
+#' `r antaresEditObject:::badge_api_ok()`
+#' 
+#' \code{getPlaylist} gives the identifier of the MC years which
 #' will be simulated in the Antares study, taking into account the potential use of a
 #' playlist which can skip some MC years
 #'
