@@ -43,6 +43,7 @@
 <url><loc>/reference/create_scb_referential_series_type.html</loc></url>
 <url><loc>/reference/deleteStudy.html</loc></url>
 <url><loc>/reference/detect_pattern_in_binding_constraint.html</loc></url>
+<url><loc>/reference/dicoAdequacySettings.html</loc></url>
 <url><loc>/reference/dicoGeneralSettings.html</loc></url>
 <url><loc>/reference/dicoOptimizationSettings.html</loc></url>
 <url><loc>/reference/dicoOutputSettings.html</loc></url>
@@ -54,6 +55,7 @@
 <url><loc>/reference/dot-initializeLinksArea.html</loc></url>
 <url><loc>/reference/dot-initializeRenewablesArea.html</loc></url>
 <url><loc>/reference/dot-initializeThermalArea.html</loc></url>
+<url><loc>/reference/dot-is_version_9.html</loc></url>
 <url><loc>/reference/dot-split_nodalOptimization_by_target.html</loc></url>
 <url><loc>/reference/editArea.html</loc></url>
 <url><loc>/reference/editBindingConstraint.html</loc></url>
@@ -95,6 +97,7 @@
 <url><loc>/reference/updateInputSettings.html</loc></url>
 <url><loc>/reference/updateOptimizationSettings.html</loc></url>
 <url><loc>/reference/updateOutputSettings.html</loc></url>
+<url><loc>/reference/update_generaldata_by_section.html</loc></url>
 <url><loc>/reference/variant-commands.html</loc></url>
 <url><loc>/reference/variant.html</loc></url>
 <url><loc>/reference/write-ini.html</loc></url>

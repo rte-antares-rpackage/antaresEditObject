@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1 data-toc-skip>Scenario Builder</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/v0.7.1/vignettes/scenario-builder.Rmd" class="external-link"><code>vignettes/scenario-builder.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/master/vignettes/scenario-builder.Rmd" class="external-link"><code>vignettes/scenario-builder.Rmd</code></a></small>
       <div class="hidden name"><code>scenario-builder.Rmd</code></div>
 
     </div>
@@ -101,7 +101,7 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="co"># CRAN limite CPU usage</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/openmp-utils.html" class="external-link">setDTthreads</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/openmp-utils.html" class="external-link">setDTthreads</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: antaresRead</span></span></code></pre></div>
 <p>First let’s create a new study with some areas and clusters:</p>
@@ -138,21 +138,21 @@
 <span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getAreas.html" class="external-link">getAreas</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "ceres" "earth" "moon"  "titan"</span></span>
 <span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterDesc</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      area  group     cluster   co2 enabled fixed-cost     gen-ts law.forced</span></span>
+<span><span class="co">#&gt;      area  group     cluster   co2 enabled fixed.cost     gen.ts law.forced</span></span>
 <span><span class="co">#&gt;    &lt;char&gt; &lt;char&gt;      &lt;fctr&gt; &lt;num&gt;  &lt;lgcl&gt;      &lt;num&gt;     &lt;char&gt;     &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:  earth  Other     america     0    TRUE          0 Use Global    Uniform</span></span>
 <span><span class="co">#&gt; 2:  earth  Other      africa     0    TRUE          0 Use Global    Uniform</span></span>
 <span><span class="co">#&gt; 3:  earth  Other      europe     0    TRUE          0 Use Global    Uniform</span></span>
 <span><span class="co">#&gt; 4:   moon  Other tranquility     0    TRUE          0 Use Global    Uniform</span></span>
 <span><span class="co">#&gt; 5:   moon  Other    serenety     0    TRUE          0 Use Global    Uniform</span></span>
-<span><span class="co">#&gt;    law.planned marginal-cost market-bid-cost min-down-time min-stable-power</span></span>
+<span><span class="co">#&gt;    law.planned marginal.cost market.bid.cost min.down.time min.stable.power</span></span>
 <span><span class="co">#&gt;         &lt;char&gt;         &lt;num&gt;           &lt;num&gt;         &lt;num&gt;            &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1:     Uniform             0               0             1                0</span></span>
 <span><span class="co">#&gt; 2:     Uniform             0               0             1                0</span></span>
 <span><span class="co">#&gt; 3:     Uniform             0               0             1                0</span></span>
 <span><span class="co">#&gt; 4:     Uniform             0               0             1                0</span></span>
 <span><span class="co">#&gt; 5:     Uniform             0               0             1                0</span></span>
-<span><span class="co">#&gt;    min-up-time must-run nominalcapacity spinning spread-cost startup-cost</span></span>
+<span><span class="co">#&gt;    min.up.time must.run nominalcapacity spinning spread.cost startup.cost</span></span>
 <span><span class="co">#&gt;          &lt;num&gt;   &lt;lgcl&gt;           &lt;num&gt;    &lt;num&gt;       &lt;num&gt;        &lt;num&gt;</span></span>
 <span><span class="co">#&gt; 1:           1    FALSE               0        0           0            0</span></span>
 <span><span class="co">#&gt; 2:           1    FALSE               0        0           0            0</span></span>
@@ -269,7 +269,7 @@ to each clusters in the area :</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scenario-builder.html">updateScenarioBuilder</a></span><span class="op">(</span></span>
 <span>  ldata <span class="op">=</span> <span class="va">my_scenario</span>, </span>
 <span>  series <span class="op">=</span> <span class="st">"thermal"</span>,</span>
-<span>  clusters_areas <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
+<span>  clusters_areas <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span></span>
 <span>    area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"earth"</span>, <span class="st">"earth"</span><span class="op">)</span>,</span>
 <span>    cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"africa"</span>, <span class="st">"europe"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>

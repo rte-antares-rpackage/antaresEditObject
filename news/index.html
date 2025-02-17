@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -66,9 +66,33 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/v0.7.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.9.0" id="antareseditobject-090">antaresEditObject 0.9.0<small>2025-02-14</small><a class="anchor" aria-label="anchor" href="#antareseditobject-090"></a></h2>
+<p>(cf. Antares v9 changelog)</p>
+<p>NEW FEATURES (Antares v9.0) :</p>
+<ul><li>
+<code><a href="../reference/create-study.html">createStudy()</a></code> takes into account the new format of Antares studies (e.g. 9.0, 9.15 instead of 900, 915)</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>
+<code><a href="../reference/editBindingConstraint.html">editBindingConstraint()</a></code> :
+<ul><li>
+<code>operator</code> parameter set to NULL, by default, no longer causes an error.<br></li>
+<li>To add values, the <code>operator</code> parameter is now required.<br></li>
+<li>For a study version &gt;= 832, the <code>filter-year-by-year</code> and <code>filter-synthesis</code> properties are retained in the .ini file if they are not modified.<br></li>
+</ul></li>
+<li>
+<em>[private function]</em> <code>api_command_execute()</code> manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).
+<ul><li>You can use global parameter <code>verbose</code> to <code>TRUE</code> (<a href="https://github.com/rte-antares-rpackage/antaresRead/pull/274" class="external-link">#274</a> <code>antaresRead</code>) to display diagnostic messages (<code>getOption("antares")</code>)</li>
+</ul></li>
+<li>
+<code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> : in API mode do not send NULL value</li>
+</ul><p>GITHUB ACTIONS :</p>
+<ul><li>Actions artifacts v3 is closing down, update to v4<br></li>
+<li>test-coverage.yaml updated</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.7.1" id="antareseditobject-071">antaresEditObject 0.7.1<small>2024-09-27</small><a class="anchor" aria-label="anchor" href="#antareseditobject-071"></a></h2>
 <div class="section level4">
@@ -154,9 +178,18 @@
 </div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.4" id="antareseditobject-064">antaresEditObject 0.6.4<small>2024-05-24</small><a class="anchor" aria-label="anchor" href="#antareseditobject-064"></a></h2>
-<p>BREAKING CHANGES : * Add UTF-8 encoding argument in <code>.getJobs()</code> * Unit tests no longer call the study in the antaresRead package for versions &gt; 8.0.0</p>
-<p>BUGFIXES : * <code><a href="../reference/createArea.html">createArea()</a></code>/<code><a href="../reference/editArea.html">editArea()</a></code> : in API mode, split data in nodalOptimization argument to write it in the expected files * <code><a href="../reference/editArea.html">editArea()</a></code> : not delete one of the two economic options if only one must be edited * Avoid data deletion in API mode for <code><a href="../reference/editArea.html">editArea()</a></code></p>
-</div>
+<p>BREAKING CHANGES :</p>
+<ul><li>Add UTF-8 encoding argument in <code>.getJobs()</code>
+</li>
+<li>Unit tests no longer call the study in the antaresRead package for versions &gt; 8.0.0</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>
+<code><a href="../reference/createArea.html">createArea()</a></code>/<code><a href="../reference/editArea.html">editArea()</a></code> : in API mode, split data in nodalOptimization argument to write it in the expected files</li>
+<li>
+<code><a href="../reference/editArea.html">editArea()</a></code> : not delete one of the two economic options if only one must be edited</li>
+<li>Avoid data deletion in API mode for <code><a href="../reference/editArea.html">editArea()</a></code>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.6.3" id="antareseditobject-063">antaresEditObject 0.6.3<small>2024-04-29</small><a class="anchor" aria-label="anchor" href="#antareseditobject-063"></a></h2>
 <p>NEW FEATURES :</p>

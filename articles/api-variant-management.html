@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresEditObject</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
       <h1 data-toc-skip>Variant management with API</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/v0.7.1/vignettes/api-variant-management.Rmd" class="external-link"><code>vignettes/api-variant-management.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/master/vignettes/api-variant-management.Rmd" class="external-link"><code>vignettes/api-variant-management.Rmd</code></a></small>
       <div class="hidden name"><code>api-variant-management.Rmd</code></div>
 
     </div>
@@ -101,7 +101,7 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span> <span class="co"># CRAN limite CPU usage</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/openmp-utils.html" class="external-link">setDTthreads</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/openmp-utils.html" class="external-link">setDTthreads</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresEditObject" class="external-link">antaresEditObject</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: antaresRead</span></span></code></pre></div>
 <p>The API behind <a href="https://antares-web.readthedocs.io/en/latest/" class="external-link">Antares Web</a>
@@ -180,7 +180,7 @@ at all time with:</p>
 <p>Below are listed all functions from {antaresEditObject} that can be
 used with the API. These functions will include the following badge in
 their documentation:</p>
-<p><img src="figures%2Fbadge_api_ok.svg"><!-- --></p>
+<p><img src="https://img.shields.io/badge/Antares%20API-OK-green"></p>
 <div class="section level3">
 <h3 id="create-an-area">Create an area<a class="anchor" aria-label="anchor" href="#create-an-area"></a>
 </h3>
