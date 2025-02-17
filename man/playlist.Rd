@@ -4,8 +4,7 @@
 \alias{playlist}
 \alias{getPlaylist}
 \alias{setPlaylist}
-\title{Get the playlist of an Antares study
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}}
+\title{Get the playlist of an Antares study}
 \usage{
 getPlaylist(opts = antaresRead::simOptions())
 
@@ -29,6 +28,8 @@ setPlaylist(playlist, weights = NULL, opts = antaresRead::simOptions())
 }
 }
 \description{
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
+
 \code{getPlaylist} gives the identifier of the MC years which
 will be simulated in the Antares study, taking into account the potential use of a
 playlist which can skip some MC years

@@ -135,5 +135,5 @@ updateGeneralSettings(generate = c("thermal", "hydro"))
 }
 }
 \seealso{
-\href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/}{Antares General Reference Guide}
+{Antares General Reference Guide}
 }
