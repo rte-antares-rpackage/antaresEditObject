@@ -2,6 +2,12 @@
 
 # antaresEditObject 0.9.2.9000
 (cf. Antares v9.1 changelog)
+
+### Breaking changes  :  
+  - `createClusterST()` : parameter `group` is now dynamic and have no restriction
+
+  
+  
 (cf. Antares v9.2 changelog)
 
 # antaresEditObject 0.9.0

@@ -183,6 +183,57 @@ test_that("Edit short-term storage cluster (new feature v8.8.0)",{
   testthat::expect_true("enabled"%in%names(st_params))
   testthat::expect_true(st_params$enabled[1]%in%FALSE)
   
+  # test restrictions on 'group' parameter
+  testthat::test_that("static 'group",{
+    testthat::expect_warning(
+      editClusterST(area = area_test_clust, 
+                      cluster_name = "default", 
+                      group = "not_allowed"), 
+      regexp = paste0(
+        "Group: '", "not_allowed", "' is not a valid name recognized by Antares,"
+      )
+    )
+    
+  })
+  
+  deleteStudy()
+})
+
+
+# >=9.1 ---- 
+testthat::test_that("Allow dynamic `group`",{
+  suppressWarnings(
+    createStudy(path = tempdir(), 
+                study_name = "st-storage9.2", 
+                antares_version = "9.2"))
+  
+  # default area with st cluster
+  area_test_clust = "al" 
+  createArea(name = area_test_clust)
+  
+  # create 
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "dynamic_grp", 
+                  group = "toto")
+  
+  # edit
+  editClusterST(area = area_test_clust, 
+                cluster_name = "dynamic_grp", 
+                group = "titi")
+  
+  # read properties
+  opts_ <- simOptions()
+  st_path <- file.path("input",
+                       "st-storage", 
+                       "clusters", 
+                       area_test_clust, 
+                       "list")
+  
+  st_file <- readIni(pathIni = st_path)
+  
+  # group has no restrictions
+  testthat::expect_equal(st_file[[names(st_file)]][["group"]], "toto")
+  
   deleteStudy()
 })
 
