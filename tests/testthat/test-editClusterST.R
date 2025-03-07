@@ -41,7 +41,7 @@ test_that("edit st-storage clusters (only for study >= v8.6.0" , {
                                        group = "new group", 
                                        add_prefix = FALSE, 
                                        opts = opts_test), 
-                         regexp = "is not a valid group recognized by Antares")
+                         regexp = "is not a valid name recognized by Antares")
   testthat::expect_error(editClusterST(area = area_test, 
                                        cluster_name = "casper", 
                                        group = "Other1",
@@ -185,7 +185,7 @@ test_that("Edit short-term storage cluster (new feature v8.8.0)",{
   
   # test restrictions on 'group' parameter
   testthat::test_that("static 'group",{
-    testthat::expect_warning(
+    testthat::expect_error(
       editClusterST(area = area_test_clust, 
                       cluster_name = "default", 
                       group = "not_allowed"), 
@@ -232,7 +232,7 @@ testthat::test_that("Allow dynamic `group`",{
   st_file <- readIni(pathIni = st_path)
   
   # group has no restrictions
-  testthat::expect_equal(st_file[[names(st_file)]][["group"]], "toto")
+  testthat::expect_equal(st_file[[names(st_file)]][["group"]], "titi")
   
   deleteStudy()
 })

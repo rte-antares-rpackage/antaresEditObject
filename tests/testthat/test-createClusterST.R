@@ -197,7 +197,7 @@ test_that("Create short-term storage cluster (new feature v8.8.0)",{
   
   # test restrictions on 'group' parameter
   testthat::test_that("static 'group",{
-    testthat::expect_warning(
+    testthat::expect_error(
       createClusterST(area = area_test_clust, 
                       cluster_name = "bad_group", 
                       group = "not_allowed"), 

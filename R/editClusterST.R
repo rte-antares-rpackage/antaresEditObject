@@ -38,21 +38,8 @@ editClusterST <- function(area,
   check_active_ST(opts, check_dir = TRUE)
   check_area_name(area, opts)
   
-  # statics groups
-  st_storage_group <- c("PSP_open", 
-                        "PSP_closed", 
-                        "Pondage", 
-                        "Battery",
-                        paste0("Other", 
-                               seq(1,5)))
-  
-  # check valid group
-  if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
-    stop(
-      "Group: '", group, "' is not a valid group recognized by Antares,",
-      " you should be using one of: ", 
-      paste(st_storage_group, collapse = ", "), call. = FALSE
-    )
+  # check 'group'
+  .check_group_st(group = group, opts = opts)
   
   ##
   # check parameters (ini file)

@@ -4,7 +4,9 @@
 (cf. Antares v9.1 changelog)
 
 ### Breaking changes  :  
-  - `createClusterST()` : parameter `group` is now dynamic and have no restriction
+  - `createClusterST()`/`editClusterST()` : parameter `group` is now dynamic and have no restriction  
+    - `createClusterST()` : for a study < 9.1, execution will be STOP if `group` is not included in list (see doc)  
+
 
   
   
