@@ -200,7 +200,7 @@ test_that("Edit short-term storage cluster (new feature v8.8.0)",{
 })
 
 
-# >=9.1 ---- 
+# >=9.2 ---- 
 testthat::test_that("Allow dynamic `group`",{
   suppressWarnings(
     createStudy(path = tempdir(), 

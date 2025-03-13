@@ -386,12 +386,12 @@ storage_values_default <- function(opts = simOptions()) {
 
 
 #' function to check 'group' parameter according to version study
-#' no check 'group' for version >= 9.1 
+#' no check 'group' for version >= 9.2
 #' it is used in editClusterST()
 #' @noRd
 .check_group_st <- function(group, opts){
-  # `group` is dynamic (>=v9.1)
-  if(opts$antaresVersion<910){
+  # `group` is dynamic (>=v9.2)
+  if(opts$antaresVersion<920){
     # statics groups
     st_storage_group <- c("PSP_open", 
                           "PSP_closed", 

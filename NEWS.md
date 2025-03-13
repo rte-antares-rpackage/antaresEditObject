@@ -1,16 +1,14 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
 # antaresEditObject 0.9.2.9000
-(cf. Antares v9.1 changelog)
+(cf. Antares v9.2 changelog)
 
 ### Breaking changes  :  
   - `createClusterST()`/`editClusterST()` : parameter `group` is now dynamic and have no restriction  
-    - `createClusterST()` : for a study < 9.1, execution will be STOP if `group` is not included in list (see doc)  
-
+    - `createClusterST()` : for a study < 9.2, execution will be STOP if `group` is not included in list (see doc)  
 
   
-  
-(cf. Antares v9.2 changelog)
+
 
 # antaresEditObject 0.9.0
 (cf. Antares v9 changelog)
