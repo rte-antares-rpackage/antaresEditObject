@@ -1,6 +1,6 @@
 development:
   mode: auto
-destination: docs
+destination: docs/release920
 template:
   params:
     bootswatch: readable
