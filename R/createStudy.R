@@ -9,9 +9,9 @@
 #' @param antares_version Antares number version.
 #' 
 #' @section Warning: 
-#' From **Antares version 9.0** onwards, versioning is only done with one number 
+#' From **Antares version 9.2** onwards, versioning is only done with one number 
 #' for the major version number and a two-digit number for the minor 
-#' version number (e.g. 9.0, 9.12, 10.58, ...).
+#' version number (e.g. 9.2, 9.35, 10.58, ...).
 #'
 #' @return Result of [antaresRead::setSimulationPath()] or [antaresRead::setSimulationPathAPI()] accordingly.
 #' @export
@@ -30,10 +30,10 @@
 #'   study_name = "my_study", 
 #'   antares_version = "8.2.0")
 #'   
-#' # with Antares study version >= 9 (max 2 digits, ex : "9.15")  
+#' # with Antares study version >= 9.2 (max 2 digits, ex : "9.25")  
 #' createStudy("path/to/simulation", 
 #'   study_name = "my_study", 
-#'   antares_version = "9.15")
+#'   antares_version = "9.25")
 #' 
 #' }
 createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0") {

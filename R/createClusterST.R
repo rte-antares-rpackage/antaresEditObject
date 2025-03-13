@@ -110,20 +110,8 @@ createClusterST <- function(area,
   # check study version
   check_active_ST(opts = opts)
   
-  # statics groups
-  st_storage_group <- c("PSP_open", 
-                        "PSP_closed", 
-                        "Pondage", 
-                        "Battery",
-                        paste0("Other", 
-                               seq(1,5)))
-  
   # check group
-  if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
-    warning(
-      "Group: '", group, "' is not a valid name recognized by Antares,",
-      " you should be using one of: ", paste(st_storage_group, collapse = ", ")
-    )
+  .check_group_st(group = group, opts = opts)
   
   # check area exsiting in current study
   check_area_name(area, opts)  
@@ -394,4 +382,30 @@ storage_values_default <- function(opts = simOptions()) {
   }
   
   return(lst_parameters)
+}
+
+
+#' function to check 'group' parameter according to version study
+#' no check 'group' for version >= 9.2
+#' it is used in editClusterST()
+#' @noRd
+.check_group_st <- function(group, opts){
+  # `group` is dynamic (>=v9.2)
+  if(opts$antaresVersion<920){
+    # statics groups
+    st_storage_group <- c("PSP_open", 
+                          "PSP_closed", 
+                          "Pondage", 
+                          "Battery",
+                          paste0("Other", 
+                                 seq(1,5)))
+    
+    # check group
+    if (!is.null(group) && !tolower(group) %in% tolower(st_storage_group))
+      stop(
+        "Group: '", group, "' is not a valid name recognized by Antares,",
+        " you should be using one of: ", paste(st_storage_group, collapse = ", "), 
+        call. = FALSE
+      )
+  }
 }
