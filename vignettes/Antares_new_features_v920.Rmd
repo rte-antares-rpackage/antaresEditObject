@@ -1,0 +1,94 @@
+---
+title: "Antares new features v9.2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Antares new features v9.2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(antaresEditObject)
+```
+
+This article will present the new features in line with **Antares v9.2** (cf  [Antares Simulator](https://antares-simulator.readthedocs.io/en/latest/user-guide/04-migration-guides/#v920))
+
+**New features** :  
+
+> For 'st-storages', Parameter `group` is now dynamic and have no restriction for user  
+
+
+## Create new study v9.2
+
+```{r init}
+dir_path <- tempdir()
+suppressWarnings(
+  createStudy(path = dir_path, 
+            study_name = "test920", 
+            antares_version = "9.2")
+)
+
+```
+
+For Antares Simulator, format version is now "9.2". For packages, we make the adjustment and we keep "920". 
+
+**Check version of my current study** : 
+
+```{r}
+current_study_opts <- simOptions()
+current_study_opts$antaresVersion
+```
+
+
+## Create area 
+
+We just need create *areas* to create *st-storages*. 
+```{r areas}
+createArea(name = "fr")
+createArea(name = "it")
+```
+
+## Short term storage
+
+We can create new clusters, st-storage (from v8.6), with function `createClusterST()`. You can see function documentation with `?createClusterST`.  
+
+By default you can call function only with two parameters (`area`, `cluster_name`). 
+
+### No restriction on group names
+
+Default `group` is still "Other1" and now you can **create/edit** your own group name (*only for version study >= 9.2*).
+
+```{r st-storage}
+# creation
+createClusterST(area = "fr", 
+                cluster_name = "test_storage", 
+                group = "my_own_group")
+
+createClusterST(area = "it", 
+                cluster_name = "test_storage", 
+                group = "my_own_group_again")
+
+# edit group of existing st-storage cluster
+editClusterST(area = "fr", 
+              cluster_name = "test_storage", 
+              group = "my_own_group_Pondage")
+
+# read cluster properties 
+tab <- readClusterSTDesc()
+rmarkdown::paged_table(tab)
+```
+
+```{r delete study, include=FALSE}
+# Delete study
+unlink(current_study_opts$studyPath, 
+       recursive = TRUE)
+# clean global options
+options(antares = NULL)
+```

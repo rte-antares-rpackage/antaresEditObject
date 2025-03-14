@@ -5,7 +5,12 @@
 
 ### Breaking changes  :  
   - `createClusterST()`/`editClusterST()` : parameter `group` is now dynamic and have no restriction  
-    - `createClusterST()` : for a study < 9.2, execution will be STOP if `group` is not included in list (see doc)  
+  - `createClusterST()` : for a study < 9.2, execution will be STOP if `group` is not included in list (see doc)  
+    
+
+### DOC :  
+
+A new article exposing new features of Antares Simulator v9.2 is available [here](https://rte-antares-rpackage.github.io/antaresEditObject/release920/dev/articles/Antares_new_features_v92.html)
 
   
 
