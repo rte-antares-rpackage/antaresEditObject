@@ -5,7 +5,8 @@
 on:
   push:
     branches: [release/9.2]
-  pull_request: [master, release/9.2]
+  pull_request: 
+    branches: [master, release/9.2]
   
   release:
     types: [published]
