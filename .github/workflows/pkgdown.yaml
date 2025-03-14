@@ -1,9 +1,11 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+
+# /!\/!\/!\ only release workflow
 on:
   push:
     branches: [release/9.2]
-  pull_request:
+  pull_request: [release/9.2]
   
   release:
     types: [published]

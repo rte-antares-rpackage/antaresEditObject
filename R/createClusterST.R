@@ -281,23 +281,25 @@ createClusterST <- function(area,
     recursive = TRUE, showWarnings = FALSE
   )
   
+  # write every TS values
   for (name in names(storage_value)){
-    if (is.null(get(name))) {
-      k <- matrix(storage_value[[name]]$N,8760)
-      
-      fwrite(
-        x = k, row.names = FALSE, col.names = FALSE, sep = "\t",
-        file = file.path(inputPath, "st-storage", "series", tolower(area), tolower(cluster_name), paste0(storage_value[[name]]$string, ".txt"))
-      )
-    } else {
-      # write data 
-      fwrite(
-        x = get(name), row.names = FALSE, col.names = FALSE, sep = "\t",
-        file = file.path(inputPath, "st-storage", "series", tolower(area), 
-                         tolower(cluster_name), 
-                         paste0(storage_value[[name]]$string, ".txt"))
-      )
+    if (is.null(get(name))) 
+      # to suppress messages in fwrite "conversion... matrix in data.table"
+      data_values <- as.data.table(
+        matrix(storage_value[[name]]$N,8760))
+    else {
+      # to suppress messages in fwrite "conversion... matrix in data.table"
+      data_values <- get(name)
+      if(!"data.table" %in% class(data_values))
+        as.data.table(data_values)
     }
+    # write data 
+    fwrite(
+      x = data_values, row.names = FALSE, col.names = FALSE, sep = "\t",
+      file = file.path(inputPath, "st-storage", "series", 
+                       tolower(area), 
+                       tolower(cluster_name), 
+                       paste0(storage_value[[name]]$string, ".txt")))
   }
   
   # Update simulation options object
