@@ -337,6 +337,17 @@ createClusterST <- function(area,
     if(!is.null(list_values[["enabled"]]))
       assertthat::assert_that(inherits(list_values[["enabled"]], 
                                        "logical"))
+  
+  if (opts$antaresVersion >= 920){
+    .is_ratio(list_values[["efficiencywithdrawal"]], 
+              "efficiencywithdrawal")
+    if(!is.null(list_values[["penalize-variation-injection"]]))
+      assertthat::assert_that(inherits(list_values[["penalize-variation-injection"]], 
+                                       "logical"))
+    if(!is.null(list_values[["penalize-variation-withdrawal"]]))
+      assertthat::assert_that(inherits(list_values[["penalize-variation-withdrawal"]], 
+                                       "logical"))
+  }
 }
 
 .is_ratio <- function(x, mess){
@@ -379,10 +390,15 @@ storage_values_default <- function(opts = simOptions()) {
                          initialleveloptim = FALSE)
   
   if (opts$antaresVersion >= 880){
-    lst_parameters$initiallevel <- 0.5
-    lst_parameters$enabled <- TRUE
+    lst_parameters[["initiallevel"]] <- 0.5
+    lst_parameters[["enabled"]] <- TRUE
   }
   
+  if (opts$antaresVersion >= 920){
+    lst_parameters[["efficiencywithdrawal"]] <- 1
+    lst_parameters[["penalize-variation-injection"]] <- FALSE
+    lst_parameters[["penalize-variation-withdrawal"]] <- FALSE
+  }
   return(lst_parameters)
 }
 
