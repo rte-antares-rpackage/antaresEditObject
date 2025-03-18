@@ -7,8 +7,8 @@
 #'
 #' @param area The area where to create the cluster.
 #' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
-#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". 
-#' It corresponds to the type of stockage.
+#' @param group Group of the cluster, one of : *{PSP_open, PSP_closed, Pondage, Battery, Other}*. 
+#' It corresponds to the type of stockage (**dynamic name for Antares version >= 9.2**).
 #' @param storage_parameters `list ` Parameters to write in the Ini file (see `Note`). 
 #' @param PMAX_injection Modulation of charging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
 #' @param PMAX_withdrawal Modulation of discharging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
@@ -16,8 +16,15 @@
 #' generation or consumption on the system `numeric` \{<0;>0\} (8760*1).
 #' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
 #' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
+#' @param cost_injection NULL
+#' @param cost_withdrawal NULL
+#' @param cost_level NULL
+#' @param cost_variation_injection NULL
+#' @param cost_variation_withdrawal NULL
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite Logical, overwrite the cluster or not.
+#' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
+#' @param overwrite `logical`, overwrite the cluster or not.
 #' 
 #' @template opts
 #' @note   
@@ -100,6 +107,11 @@ createClusterST <- function(area,
                             inflows = NULL,
                             lower_rule_curve = NULL,
                             upper_rule_curve = NULL,
+                            cost_injection = NULL,
+                            cost_withdrawal = NULL,
+                            cost_level = NULL,
+                            cost_variation_injection = NULL,
+                            cost_variation_withdrawal = NULL,
                             add_prefix = TRUE, 
                             overwrite = FALSE,
                             opts = antaresRead::simOptions()) {
@@ -133,18 +145,30 @@ createClusterST <- function(area,
   .st_mandatory_params(list_values = storage_parameters, opts = opts)
   
   
-  # DATA parameters : default value + name txt file
+  # TS DATA parameters : default value + name txt file
   storage_value <- list(PMAX_injection = list(N=1, string = "PMAX-injection"),
                         PMAX_withdrawal = list(N=1, string = "PMAX-withdrawal"),
                         inflows = list(N=0, string = "inflows"),
                         lower_rule_curve = list(N=0, string = "lower-rule-curve"),
                         upper_rule_curve = list(N=1, string = "upper-rule-curve"))
   
-  # check data 
+  if (opts$antaresVersion >= 920){
+    # add new TS
+    list_value_920 <- list(
+      cost_injection = list(N=0, string = "cost-injection"),
+      cost_withdrawal = list(N=0, string = "cost-withdrawal"),
+      cost_level = list(N=0, string = "cost-level"),
+      cost_variation_injection = list(N=0, string = "cost-variation-injection"),
+      cost_variation_withdrawal = list(N=0, string = "cost-variation-withdrawal"))
+    
+    storage_value <- append(storage_value, list_value_920)
+  }
+  
+  # check dim data 
   for (name in names(storage_value)){
-    if (!(is.null(dim(get(name))) || (identical(dim(get(name)), c(8760L, 1L))))){
-      stop(paste0("Input data for ", name, " must be 8760*1"))
-    } 
+    if (!is.null(dim(get(name))))
+      if (!identical(dim(get(name)), c(8760L, 1L)))
+        stop(paste0("Input data for ", name, " must be 8760*1"))
   }
   
   # check syntax ini parameters
@@ -291,7 +315,7 @@ createClusterST <- function(area,
       # to suppress messages in fwrite "conversion... matrix in data.table"
       data_values <- get(name)
       if(!"data.table" %in% class(data_values))
-        as.data.table(data_values)
+        data_values <- as.data.table(data_values)
     }
     # write data 
     fwrite(

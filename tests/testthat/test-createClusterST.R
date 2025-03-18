@@ -246,7 +246,7 @@ testthat::test_that("New features v9.2",{
   })
   
   
-  # TEST new properties created well
+  # ALL TEST about new properties 
   testthat::test_that("New properties",{
     testthat::test_that("Default values",{
       
@@ -360,6 +360,110 @@ testthat::test_that("New features v9.2",{
         target_prop[setdiff(names(target_prop), 
                             c("name", "group"))], 
         all_params)
+    })
+    
+  })
+  
+  # ALL TEST about TS values
+  testthat::test_that("New TS Values",{
+    testthat::test_that("Default TS dim and values",{
+      # default with new parameters 
+      createClusterST(area = area_test_clust, 
+                      cluster_name = "default_ts")
+      
+      # read series 
+      list_value_920 <- list(
+        cost_injection = list(N=0, string = "cost-injection"),
+        cost_withdrawal = list(N=0, string = "cost-withdrawal"),
+        cost_level = list(N=0, string = "cost-level"),
+        cost_variation_injection = list(N=0, string = "cost-variation-injection"),
+        cost_variation_withdrawal = list(N=0, string = "cost-variation-withdrawal"))
+      
+      names_files <- unlist(lapply(list_value_920, 
+                            function(x)x[["string"]]), 
+                            use.names = FALSE)
+      opts_ <- simOptions()
+      path_ts <- file.path(opts_$inputPath, 
+                           "st-storage",
+                           "series",
+                           area_test_clust,
+                           "al_default_ts",
+                           paste0(names_files, 
+                                  ".txt"))
+      
+      files_series <- lapply(path_ts, 
+                             data.table::fread) 
+      
+      # test dim all equal
+      dim_files_series <- sapply(files_series, 
+                                 dim) 
+      testthat::expect_equal(mean(dim_files_series[1,]), 8760)
+      testthat::expect_equal(mean(dim_files_series[2,]), 1)
+      
+      # test all value equal to 0 
+      values_files_series <- sapply(files_series, 
+                                    sum)
+      testthat::expect_equal(sum(values_files_series), 0)
+    })
+    
+    testthat::test_that("Wrong dim TS",{
+      # like 8.6, these TS are dim [8760;1]
+      bad_ts <- matrix(3, 8760*2, ncol = 2)
+      
+      # default with bad TS (just test 2 param)
+      testthat::expect_error(
+        createClusterST(area = area_test_clust, 
+                        cluster_name = "wrong_ts_dim", 
+                        cost_injection = bad_ts), 
+        regexp = "Input data for cost_injection must be 8760\\*1"
+      )
+      testthat::expect_error(
+        createClusterST(area = area_test_clust, 
+                        cluster_name = "wrong_ts_dim", 
+                        cost_withdrawal = bad_ts), 
+        regexp = "Input data for cost_withdrawal must be 8760\\*1"
+      )
+    })
+    
+    testthat::test_that("Add right TS values",{
+      good_ts <- matrix(0.7, 8760)
+      
+      # default with new optional TS
+      createClusterST(area = area_test_clust, 
+                      cluster_name = "good_ts_value", 
+                      cost_injection = good_ts, 
+                      cost_withdrawal = good_ts, 
+                      cost_level = good_ts, 
+                      cost_variation_injection = good_ts,
+                      cost_variation_withdrawal = good_ts,overwrite = TRUE)
+      
+      # read series 
+      list_value_920 <- list(
+        cost_injection = list(N=0, string = "cost-injection"),
+        cost_withdrawal = list(N=0, string = "cost-withdrawal"),
+        cost_level = list(N=0, string = "cost-level"),
+        cost_variation_injection = list(N=0, string = "cost-variation-injection"),
+        cost_variation_withdrawal = list(N=0, string = "cost-variation-withdrawal"))
+      
+      names_files <- unlist(lapply(list_value_920, 
+                                   function(x)x[["string"]]), 
+                            use.names = FALSE)
+      opts_ <- simOptions()
+      path_ts <- file.path(opts_$inputPath, 
+                           "st-storage",
+                           "series",
+                           area_test_clust,
+                           "al_good_ts_value",
+                           paste0(names_files, 
+                                  ".txt"))
+      
+      files_series <- lapply(path_ts, 
+                             data.table::fread) 
+    
+      # test all value not equal to 0 (default)
+      values_files_series <- sapply(files_series, 
+                                    sum)
+      testthat::expect_true(sum(values_files_series)>0)
     })
     
   })

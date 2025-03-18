@@ -14,6 +14,11 @@ createClusterST(
   inflows = NULL,
   lower_rule_curve = NULL,
   upper_rule_curve = NULL,
+  cost_injection = NULL,
+  cost_withdrawal = NULL,
+  cost_level = NULL,
+  cost_variation_injection = NULL,
+  cost_variation_withdrawal = NULL,
   add_prefix = TRUE,
   overwrite = FALSE,
   opts = antaresRead::simOptions()
@@ -24,8 +29,8 @@ createClusterST(
 
 \item{cluster_name}{Name for the cluster, it will prefixed by area name, unless you set \code{add_prefix = FALSE}.}
 
-\item{group}{Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other".
-It corresponds to the type of stockage.}
+\item{group}{Group of the cluster, one of : \emph{{PSP_open, PSP_closed, Pondage, Battery, Other}}.
+It corresponds to the type of stockage (\strong{dynamic name for Antares version >= 9.2}).}
 
 \item{storage_parameters}{\code{list } Parameters to write in the Ini file (see \code{Note}).}
 
@@ -40,9 +45,19 @@ generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
 
 \item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
 
+\item{cost_injection}{NULL}
+
+\item{cost_withdrawal}{NULL}
+
+\item{cost_level}{NULL}
+
+\item{cost_variation_injection}{NULL}
+
+\item{cost_variation_withdrawal}{NULL}
+
 \item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
-\item{overwrite}{Logical, overwrite the cluster or not.}
+\item{overwrite}{\code{logical}, overwrite the cluster or not.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
