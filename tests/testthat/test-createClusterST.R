@@ -435,7 +435,7 @@ testthat::test_that("New features v9.2",{
                       cost_withdrawal = good_ts, 
                       cost_level = good_ts, 
                       cost_variation_injection = good_ts,
-                      cost_variation_withdrawal = good_ts,overwrite = TRUE)
+                      cost_variation_withdrawal = good_ts)
       
       # read series 
       list_value_920 <- list(
