@@ -201,7 +201,7 @@ test_that("Edit short-term storage cluster (new feature v8.8.0)",{
 
 
 # >=9.2 ---- 
-testthat::test_that("Allow dynamic `group`",{
+testthat::test_that("New features v9.2",{
   suppressWarnings(
     createStudy(path = tempdir(), 
                 study_name = "st-storage9.2", 
@@ -211,30 +211,140 @@ testthat::test_that("Allow dynamic `group`",{
   area_test_clust = "al" 
   createArea(name = area_test_clust)
   
-  # create 
-  createClusterST(area = area_test_clust, 
+  
+  # dynamic groups
+  testthat::test_that("Allow dynamic `group`",{
+    # create 
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "dynamic_grp", 
+                    group = "toto")
+    
+    # edit
+    editClusterST(area = area_test_clust, 
                   cluster_name = "dynamic_grp", 
-                  group = "toto")
+                  group = "titi")
+    
+    # read properties
+    opts_ <- simOptions()
+    st_path <- file.path("input",
+                         "st-storage", 
+                         "clusters", 
+                         area_test_clust, 
+                         "list")
+    
+    st_file <- readIni(pathIni = st_path)
+    
+    # group has no restrictions
+    testthat::expect_equal(st_file[[names(st_file)]][["group"]], "titi")
+  })
   
-  # edit
-  editClusterST(area = area_test_clust, 
-                cluster_name = "dynamic_grp", 
-                group = "titi")
+  testthat::test_that("Edit new properties",{
+    # wrong type/values not eccepted
+    testthat::test_that("Wrong type/values",{
+      
+      # "efficiencywithdrawal" with bad type
+      # type
+      edit_params <- list("efficiencywithdrawal" = TRUE)
+      
+      # create default
+      createClusterST(area = area_test_clust, 
+                      cluster_name = "edit_wrong_prop")
+      
+      testthat::expect_error(
+        editClusterST(area = area_test_clust, 
+                        cluster_name = "edit_wrong_prop", 
+                        storage_parameters = edit_params), 
+        regexp = "x does not inherit from class numeric"
+      )
+      
+      # value
+      edit_params <- list("efficiencywithdrawal" = 2.89)
+      
+      testthat::expect_error(
+        editClusterST(area = area_test_clust, 
+                        cluster_name = "edit_wrong_prop", 
+                        storage_parameters = edit_params), 
+        regexp = "efficiencywithdrawal must be in range 0-1"
+      )
+      
+      # "penalize-variation-injection"
+      # type
+      edit_params <- list("penalize-variation-injection" = 0.9)
+      
+      testthat::expect_error(
+        editClusterST(area = area_test_clust, 
+                        cluster_name = "edit_wrong_prop", 
+                        storage_parameters = edit_params), 
+        regexp = "does not inherit from class logical"
+      )
+      
+      # NO TEST value (only TRUE/FALSE)
+      
+      
+      # "penalize-variation-withdrawal"
+      all_params <- storage_values_default()
+      
+      # type
+      edit_params <- list("penalize-variation-withdrawal" = "area")
+      
+      testthat::expect_error(
+        editClusterST(area = area_test_clust, 
+                        cluster_name = "edit_wrong_prop", 
+                        storage_parameters = edit_params), 
+        regexp = "does not inherit from class logical"
+      )
+      
+      # NO TEST value (only TRUE/FALSE)
+    })
+    
+    # edit new properties
+    testthat::test_that("Edit right values",{
+      # add new parameters 
+      all_params <- list(
+        "efficiencywithdrawal" = 0.9,
+        `penalize-variation-injection` = TRUE,
+        `penalize-variation-withdrawal` = TRUE
+      )
+      
+      # default with new parameters 
+      createClusterST(area = area_test_clust, 
+                      cluster_name = "new_properties")
+      
+      # Edit with new parameters 
+      editClusterST(area = area_test_clust, 
+                    cluster_name = "new_properties", 
+                    storage_parameters = all_params)
+      
+      # read prop
+      path_st_ini <- file.path("input", 
+                               "st-storage", 
+                               "clusters", 
+                               area_test_clust,
+                               "list")
+      
+      read_ini <- antaresRead::readIni(path_st_ini)
+      target_prop <- read_ini[[paste(area_test_clust, 
+                                     "new_properties",
+                                     sep = "_")]]
+      
+      # test params created if equal with .ini readed 
+      testthat::expect_equal(
+        target_prop[names(all_params)], 
+        all_params)
+    })
+  })
   
-  # read properties
-  opts_ <- simOptions()
-  st_path <- file.path("input",
-                       "st-storage", 
-                       "clusters", 
-                       area_test_clust, 
-                       "list")
   
-  st_file <- readIni(pathIni = st_path)
   
-  # group has no restrictions
-  testthat::expect_equal(st_file[[names(st_file)]][["group"]], "titi")
+  # ALL TEST about TS values
+  testthat::test_that("New TS Values",{
+    
+  })
+  
   
   deleteStudy()
 })
+  
+
 
 

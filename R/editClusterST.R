@@ -5,21 +5,19 @@
 #' 
 #' Edit parameters and time series of an existing `st-storage` cluster (Antares studies >= v8.6.0).
 #' 
-#' @param area The area where to create the cluster.
-#' @param cluster_name Name for the cluster, it will prefixed by area name, unless you set `add_prefix = FALSE`.
-#' @param group Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.
-#' @param storage_parameters Parameters to write in the Ini file. 
-#' @param PMAX_injection modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param PMAX_withdrawal modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.
-#' @param inflows imposed withdrawals from the stock for other uses, The values are integer.
-#' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.
-#' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.
-#' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
-#' 
+#' @inheritParams createClusterST
 #' @template opts
 #' 
-#' @seealso [createClusterST()] to edit existing clusters, [removeClusterST()] to remove clusters.
+#' @note
+#' Put only properties or TS value you want to edit (see `examples` section).
 #' 
+#' @seealso [createClusterST()], [removeClusterST()]
+#' 
+#' @examples
+#' \dontrun{
+#' # TODO
+#' print(2+2)
+#' }
 #' @export
 editClusterST <- function(area,
                           cluster_name, 
@@ -30,6 +28,11 @@ editClusterST <- function(area,
                           inflows = NULL,
                           lower_rule_curve = NULL,
                           upper_rule_curve = NULL,
+                          cost_injection = NULL,
+                          cost_withdrawal = NULL,
+                          cost_level = NULL,
+                          cost_variation_injection = NULL,
+                          cost_variation_withdrawal = NULL,
                           add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
 

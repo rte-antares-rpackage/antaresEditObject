@@ -22,12 +22,14 @@
 #' @param cost_variation_injection NULL
 #' @param cost_variation_withdrawal NULL
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
-#' @param overwrite Logical, overwrite the cluster or not.
-#' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite `logical`, overwrite the cluster or not.
 #' 
 #' @template opts
-#' @note   
+#' 
+#' @name createClusterST
+#' 
+#' @section note:
+#'    
 #' To write parameters to the `list.ini` file. You have function `storage_values_default()` who is called by default.
 #' This function return `list` containing properties according study version for cluster `st-storage`.  
 #'   

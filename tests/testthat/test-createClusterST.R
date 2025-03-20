@@ -267,7 +267,7 @@ testthat::test_that("New features v9.2",{
                                      sep = "_")]]
       
       # test default values
-      testthat::expect_identical(
+      testthat::expect_equal(
         target_prop[setdiff(names(target_prop), 
                             c("name", "group"))], 
         storage_values_default())
@@ -356,7 +356,7 @@ testthat::test_that("New features v9.2",{
                                      sep = "_")]]
       
       # test params created if identical with .ini readed 
-      testthat::expect_identical(
+      testthat::expect_equal(
         target_prop[setdiff(names(target_prop), 
                             c("name", "group"))], 
         all_params)

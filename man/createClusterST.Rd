@@ -70,7 +70,9 @@ An updated list containing various information about the simulation.
 
 Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 }
-\note{
+\section{note}{
+
+
 To write parameters to the \code{list.ini} file. You have function \code{storage_values_default()} who is called by default.
 This function return \code{list} containing properties according study version for cluster \code{st-storage}.
 
@@ -92,6 +94,7 @@ Study version >= "8.8.0" (update + new parameter) :
 
 By default, these values don't allow you to have an active cluster (See example section.)
 }
+
 \examples{
 \dontrun{
 
