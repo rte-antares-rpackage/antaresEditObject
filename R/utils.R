@@ -146,14 +146,15 @@ detect_pattern_in_binding_constraint <- function(pattern, opts = antaresRead::si
   return(bc_not_remove)
 }
 
-
+# standardize : tolower params + manage prefix
 generate_cluster_name <- function(area, cluster_name, add_prefix) {
-  
   cluster_name <- tolower(cluster_name)
+  area <- tolower(area)
   
-  if (add_prefix) {
-    cluster_name <- paste(tolower(area), cluster_name, sep = "_")
-  }
+  if (add_prefix) 
+    cluster_name <- paste(area, 
+                          cluster_name, 
+                          sep = "_")
   
   return(cluster_name)
 }
