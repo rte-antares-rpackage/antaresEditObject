@@ -36,16 +36,23 @@ editClusterST <- function(area,
                           add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
 
-  # basic checks
+  ## check study opts parameters ----
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  ## check study version ----
   check_active_ST(opts, check_dir = TRUE)
+  
+  ##  check area ----
   check_area_name(area, opts)
   
-  # check 'group'
+  ## tolower area----
+  area <- tolower(area)
+  
+  ## check 'group'----
   .check_group_st(group = group, opts = opts)
   
   ##
-  # check parameters (ini file)
+  ## check parameters ----
   ##
   params_cluster <- NULL
   
@@ -62,21 +69,41 @@ editClusterST <- function(area,
     # check values parameters
     .st_mandatory_params(list_values = storage_parameters, opts = opts)
     
-    # check list of parameters
+    ### Standardize cluster name  ----
     params_cluster <- hyphenize_names(storage_parameters)
   }
   
-  # make list of parameters
-  area <- tolower(area)
-  if(!(is.null(params_cluster)&&is.null(group))){
-    cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
-    params_cluster <- c(list(name = cluster_name, group = group), 
-                        params_cluster)
-  }
+  ## cluster name prefix ----
+  if (add_prefix)
+    cluster_name <- generate_cluster_name(area, 
+                                          cluster_name, 
+                                          add_prefix)
+  
+  # all properties of cluster standardized
+  params_cluster <- c(list(name = cluster_name, 
+                           group = group),
+                      params_cluster)
+  
+  
+  
+  # delete it (for writeIni())
   if(is.null(group))
     params_cluster$group <- NULL
   
-  ##### API block ----
+  ## check dim data ----
+  
+  # According to Antares Version 
+    # default values associated with TS + .txt names files
+  list_local_values_params <- .default_values_st_TS(opts = opts)
+  
+  # check every ts parameter
+  for (name in names(list_local_values_params)){
+    if (!is.null(dim(get(name))))
+      if (!identical(dim(get(name)), c(8760L, 1L)))
+        stop(paste0("Input data for ", name, " must be 8760*1"))
+  }
+  
+  ## API block ----
   if (is_api_study(opts)) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
@@ -85,15 +112,16 @@ editClusterST <- function(area,
     # PATCH for properties 
     ##
     # adapt parameter names
-    list_properties <- list("group" = params_cluster[["group"]],
-                            "name" = cluster_name,
-                            "injectionNominalCapacity" = params_cluster[["injectionnominalcapacity"]],
-                            "withdrawalNominalCapacity" = params_cluster[["withdrawalnominalcapacity"]],
-                            "reservoirCapacity" = params_cluster[["reservoircapacity"]],
-                            "efficiency" = params_cluster[["efficiency"]],
-                            "initialLevel" = params_cluster[["initiallevel"]],
-                            "initialLevelOptim" = params_cluster[["initialleveloptim"]],
-                            "enabled" = params_cluster[["enabled"]])
+    list_properties <- list(
+      "group" = params_cluster[["group"]],
+      "name" = cluster_name,
+      "injectionNominalCapacity" = params_cluster[["injectionnominalcapacity"]],
+      "withdrawalNominalCapacity" = params_cluster[["withdrawalnominalcapacity"]],
+      "reservoirCapacity" = params_cluster[["reservoircapacity"]],
+      "efficiency" = params_cluster[["efficiency"]],
+      "initialLevel" = params_cluster[["initiallevel"]],
+      "initialLevelOptim" = params_cluster[["initialleveloptim"]],
+      "enabled" = params_cluster[["enabled"]])
     
     list_properties <- dropNulls(list_properties)
     
@@ -155,8 +183,8 @@ editClusterST <- function(area,
     }
     return(invisible(opts))
   }
-  #####-
   
+  ## write properties ----
   # path to ini file
   path_clusters_ini <- file.path(opts$inputPath, 
                                  "st-storage", 
@@ -167,7 +195,8 @@ editClusterST <- function(area,
     stop("'", cluster_name, "' in area '", area, "' doesn't seems to exist.")
   
   # only edition if parameters are no NULL
-  if(is.null(params_cluster))
+  is_null_parameter <- all(names(params_cluster)%in%"name")
+  if(is_null_parameter)
     warning("No edition for 'list.ini' file", call. = FALSE)
   else{
     # read previous content of ini
@@ -197,61 +226,49 @@ editClusterST <- function(area,
     )
   }
   
-  ##
-  # check DATA (series/)
-  ##
   
-  # datas associated with cluster
+  ## write TS ----
+  
+  ##
+  # Write TS PART ("series/")
+  ##
+
+  # Path folder for TS
   path_txt_file <- file.path(opts$inputPath, 
                              "st-storage", 
                              "series", 
                              tolower(area), 
                              tolower(cluster_name))
   
-  # PMAX_injection
-  if(!is.null(PMAX_injection)){
-    fwrite(
-      x = PMAX_injection, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(path_txt_file, 
-                       paste0("PMAX-injection", ".txt"))
-    )
-  }
+  # list of params of TS 
+  list_local_params <- list(PMAX_injection = PMAX_injection,
+                         PMAX_withdrawal =  PMAX_withdrawal,
+                         inflows =  inflows ,
+                         lower_rule_curve =  lower_rule_curve,
+                         upper_rule_curve =  upper_rule_curve,
+                         cost_injection =  cost_injection,
+                         cost_withdrawal =  cost_withdrawal,
+                         cost_level =  cost_level,
+                         cost_variation_injection =  cost_variation_injection,
+                         cost_variation_withdrawal =  cost_variation_withdrawal)
   
-  # PMAX_withdrawal
-  if(!is.null(PMAX_withdrawal)){
-    fwrite(
-      x = PMAX_withdrawal, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(path_txt_file, 
-                       paste0("PMAX-withdrawal", ".txt"))
-    )
-  }
-  
-  # inflows
-  if(!is.null(inflows)){
-    fwrite(
-      x = inflows, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(path_txt_file, 
-                       paste0("inflows", ".txt"))
-    )
-  }
-  
-  # lower_rule_curve
-  if(!is.null(lower_rule_curve)){
-    fwrite(
-      x = lower_rule_curve, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(path_txt_file, 
-                       paste0("lower-rule-curve", ".txt"))
-    )
-  }
-  
-  # upper_rule_curve 
-  if(!is.null(upper_rule_curve)){
-    fwrite(
-      x = upper_rule_curve, row.names = FALSE, col.names = FALSE, sep = "\t",
-      file = file.path(path_txt_file, 
-                       paste0("upper-rule-curve", ".txt"))
-    )
-  }
+  # write TS
+  lapply(names(list_local_params), function(x_val){
+    if(!is.null(list_local_params[[x_val]])){
+      # name file
+      name_file <- list_local_values_params[[x_val]][["string"]]
+      # write disk
+      fwrite(
+        x = list_local_params[[x_val]], 
+        row.names = FALSE, 
+        col.names = FALSE, 
+        sep = "\t",
+        file = file.path(path_txt_file, 
+                         paste0(name_file, 
+                                ".txt"))
+      )
+    }
+  })
   
   # Maj simulation
   suppressWarnings({
@@ -259,5 +276,4 @@ editClusterST <- function(area,
   })
   
   invisible(res)
-  
 }

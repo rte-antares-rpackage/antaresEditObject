@@ -339,6 +339,68 @@ testthat::test_that("New features v9.2",{
   # ALL TEST about TS values
   testthat::test_that("New TS Values",{
     
+    testthat::test_that("Wrong dim TS",{
+      # like 8.6, these TS are dim [8760;1]
+      bad_ts <- matrix(3, 8760*2, ncol = 2)
+      
+      # create default
+      createClusterST(area = area_test_clust, 
+                      cluster_name = "edit_wrong_ts")
+      
+      # default with bad TS (just test 2 param)
+      testthat::expect_error(
+        editClusterST(area = area_test_clust, 
+                        cluster_name = "edit_wrong_ts", 
+                        cost_injection = bad_ts), 
+        regexp = "Input data for cost_injection must be 8760\\*1"
+      )
+      testthat::expect_error(
+        editClusterST(area = area_test_clust, 
+                        cluster_name = "edit_wrong_ts", 
+                        cost_withdrawal = bad_ts), 
+        regexp = "Input data for cost_withdrawal must be 8760\\*1"
+      )
+    })
+    
+    testthat::test_that("Add right TS values",{
+      good_ts <- matrix(0.7, 8760)
+      
+      # default with new optional TS
+      createClusterST(area = area_test_clust, 
+                      cluster_name = "edit_good_ts_value")
+      
+      # edit with good values (only new TS)
+      editClusterST(area = area_test_clust, 
+                    cluster_name = "edit_good_ts_value", 
+                    cost_injection = good_ts, 
+                    cost_withdrawal = good_ts, 
+                    cost_level = good_ts, 
+                    cost_variation_injection = good_ts,
+                    cost_variation_withdrawal = good_ts)
+      
+      # read series 
+      names_files <- c("cost-injection",
+                       "cost-withdrawal",
+                       "cost-level",
+                       "cost-variation-injection",
+                       "cost-variation-withdrawal")
+      opts_ <- simOptions()
+      path_ts <- file.path(opts_$inputPath, 
+                           "st-storage",
+                           "series",
+                           area_test_clust,
+                           "al_edit_good_ts_value",
+                           paste0(names_files, 
+                                  ".txt"))
+      
+      files_series <- lapply(path_ts, 
+                             data.table::fread) 
+      
+      # test all value not equal to 0 (default)
+      values_files_series <- sapply(files_series, 
+                                    sum)
+      testthat::expect_true(sum(values_files_series)>0)
+    })
   })
   
   
