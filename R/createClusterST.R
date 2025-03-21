@@ -144,7 +144,8 @@ createClusterST <- function(area,
   
   if(!all(names(storage_parameters) %in% names_parameters))
     stop(append("Parameter 'st-storage' must be named with the following elements: ", 
-                paste0(names_parameters, collapse= ", ")))
+                paste0(names_parameters, collapse= ", ")), 
+         call. = FALSE)
   
   # check values parameters
   .st_mandatory_params(list_values = storage_parameters, opts = opts)
@@ -157,7 +158,8 @@ createClusterST <- function(area,
   for (name in names(storage_value)){
     if (!is.null(dim(get(name))))
       if (!identical(dim(get(name)), c(8760L, 1L)))
-        stop(paste0("Input data for ", name, " must be 8760*1"))
+        stop(paste0("Input data for ", name, " must be 8760*1"), 
+             call. = FALSE)
   }
   
   ## Standardize params ----
@@ -276,12 +278,12 @@ createClusterST <- function(area,
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  # already exists ? 
+  ## check cluster already exists ----
   if (tolower(cluster_name) %in% tolower(names(previous_params)) 
       & !overwrite)
     stop(paste(cluster_name, "already exist"))
     
-  # overwrite
+  ## overwrite ----
   if(overwrite){
     if(tolower(cluster_name) %in% tolower(names(previous_params))){
       ind_cluster <- which(tolower(names(previous_params)) %in% 

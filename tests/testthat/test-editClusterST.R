@@ -327,7 +327,7 @@ testthat::test_that("New features v9.2",{
                                      "new_properties",
                                      sep = "_")]]
       
-      # test params created if equal with .ini readed 
+      # test params created if equal with .ini read 
       testthat::expect_equal(
         target_prop[names(all_params)], 
         all_params)
