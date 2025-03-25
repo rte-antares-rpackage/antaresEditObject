@@ -130,6 +130,34 @@ test_that("New feature v8.6",{
     )
   })
   
+  testthat::test_that("Prefix is working?",{
+    # default with prefix
+    createClusterST(
+      area = area_test_clust, 
+      cluster_name = "prefix")
+    
+    # no prefix
+    createClusterST(
+      area = area_test_clust, 
+      cluster_name = "no_prefix", 
+      add_prefix = FALSE)
+    
+    # read prop
+    path_st_ini <- file.path("input", 
+                             "st-storage", 
+                             "clusters", 
+                             area_test_clust,
+                             "list")
+    
+    read_ini <- antaresRead::readIni(path_st_ini)
+    
+    # test 
+    testthat::expect_true(
+      "al_prefix" %in% names(read_ini))
+    testthat::expect_true(
+      "no_prefix" %in% names(read_ini))
+  })
+  
   testthat::test_that("Cluster already exist?",{
     createClusterST(
       area = area_test_clust, 

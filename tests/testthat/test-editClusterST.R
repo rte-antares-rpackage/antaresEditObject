@@ -1,158 +1,270 @@
 
 # v860 ----
-test_that("edit st-storage clusters (only for study >= v8.6.0" , {
-  # global params for structure v8.6 ----
-  opts_test <-createStudy(path = tempdir(), 
-              study_name = "edit-cluster-st", 
-              antares_version = "8.6.0")
-  area_test = "be"
-  opts_test <- createArea(name = area_test, opts = opts_test)
-
-  ## 
-  # INIT : create tests clusters
-  ##
-  opts_test <- createClusterST(area_test, 
-                  "cluster-st-1", 
-                  opts = opts_test) 
+test_that("New feature v8.6", {
+  suppressWarnings(
+    createStudy(path = tempdir(), 
+                study_name = "st-storage", 
+                antares_version = "8.6.0"))
   
-  opts_test <- createClusterST(area_test, 
-                  "cluster-st-2", 
-                  opts = opts_test) 
+  # just need at least one area
+  area_test_clust = "al" 
+  createArea(name = area_test_clust)
   
-  st_clusters <- readClusterSTDesc(opts = opts_test)
-  
-  ## basics errors cases ----
-  testthat::expect_error(editClusterST(area = area_test, 
-                                       cluster_name = "cluster-st-1", 
-                                       opts = "toto"), 
-                         regexp = "inherit from class simOptions")
-  opts_fake <- opts_test
-  opts_fake$antaresVersion <- 820
-  testthat::expect_error(editClusterST(area = area_test, 
-                                       cluster_name = "cluster-st-1", 
-                                       opts = opts_fake), 
-                         regexp = "only available if using Antares >= 8.6.0")
-  testthat::expect_error(editClusterST(area = "area_test", 
-                                       cluster_name = "cluster-st-1", 
-                                       opts = opts_test), 
-                         regexp = "is not a valid area name")
-  testthat::expect_error(editClusterST(area = area_test, 
-                                       cluster_name = levels(st_clusters$cluster)[1], 
-                                       group = "new group", 
-                                       add_prefix = FALSE, 
-                                       opts = opts_test), 
-                         regexp = "is not a valid name recognized by Antares")
-  testthat::expect_error(editClusterST(area = area_test, 
-                                       cluster_name = "casper", 
-                                       group = "Other1",
-                                       add_prefix = FALSE, 
-                                       opts = opts_test), 
-                         regexp = "'casper' doesn't exist")
-  
-  ## default edition cluster ----
-    # if all parameters are NULL => no edition of ini and data .txt
-  testthat::expect_warning(editClusterST(area = area_test, 
-                                         cluster_name = levels(st_clusters$cluster)[1],
-                                         add_prefix = FALSE,
-                                         opts = opts_test), 
-                           regexp = "No edition for 'list.ini' file")
-  
-  ## edit list ini ----
-    # edit only group value
-  name_cluster_test <- levels(st_clusters$cluster)[1]
-  # case insensitive
-  expect_no_error(editClusterST(area = toupper(area_test),
-                                cluster_name = toupper(name_cluster_test),
-                                group = "Other5",
-                                add_prefix = FALSE,
-                                storage_parameters = list("efficiency" = 0.789),
-                                opts = opts_test))
-
-  opts_test <- editClusterST(area = area_test, 
-                             cluster_name = name_cluster_test,
-                             group = "Other2", 
-                             add_prefix = FALSE,
-                             opts = opts_test)
-  
-    # check update "group"
-  st_clusters <- readClusterSTDesc(opts = opts_test)
-  group_test <- st_clusters[cluster %in% name_cluster_test, 
-                            .SD, .SDcols= "group"]
-  testthat::expect_equal("Other2", as.character(group_test$group))
-
+  # at least need 1 st cluster
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "cluster_init")
   
   
-    # edit values (only 2 parameters)
-  name_cluster_test <- levels(st_clusters$cluster)[2]
-  list_params <- storage_values_default()[1:2]
-  list_params$efficiency <- 0.5
-  list_params$reservoircapacity <- 50
+  testthat::test_that("study opts parameters",{
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "cluster_init",
+        opts = list(studyName="test",
+                    studyPath="C:/Users/beta/AppData/Local/Temp/RtmpQtOZyt/st-storage")), 
+      regexp = "opts does not inherit from class simOptions"
+    )
+  })
   
-  initial_values <- st_clusters[cluster %in% name_cluster_test, 
-                                .SD, 
-                                .SDcols= c("efficiency", "reservoircapacity")]
+  testthat::test_that("create cluster only for >=8.6",{
+    bad_opts <- simOptions()
+    bad_opts$antaresVersion <- 850
+    
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err",
+        opts = bad_opts), 
+      regexp = "only available if using Antares >= 8.6.0"
+    )
+  })
   
-  opts_test <- editClusterST(area = area_test, 
-                             cluster_name = name_cluster_test, 
-                             storage_parameters = list_params,
-                             opts = opts_test, 
-                             add_prefix = FALSE)
+  testthat::test_that("Check area",{
+    testthat::expect_error(
+      editClusterST(
+        area = "area_test_clust", 
+        cluster_name = "err"), 
+      regexp = "'area_test_clust' is not a valid area name, possible names are: al"
+    )
+  })
   
+  testthat::test_that("Check group",{
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        group = "myGroup"), 
+      regexp = "Group: 'myGroup' is not a valid name recognized by Antares"
+    )
+  })
   
-  st_clusters <- readClusterSTDesc(opts = opts_test)
-  value_to_test <- st_clusters[cluster %in% name_cluster_test, 
-                               .SD, 
-                               .SDcols= c("group", 
-                                          "efficiency", 
-                                          "reservoircapacity")]
+  testthat::test_that("Check input list 'storage_parameters'",{
+    # respect list format
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        storage_parameters = c(efficiency=1)), 
+      regexp = "storage_parameters does not inherit from class list"
+    )
+    
+    # list with formatted names
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        storage_parameters = list(efficiencyy=1)), 
+      regexp = "Parameter 'st-storage' must be named with the following elements: efficiency, reservoircapacity"
+    )
+    
+    # check values parameters
+    # check is ratio ? 
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        storage_parameters = list(efficiency = 2, 
+                                  reservoircapacity = 100)), 
+      regexp = "efficiency must be in range 0-1"
+    )
+    
+    # check positive capacity ? 
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        storage_parameters = list(efficiency = 0.9, 
+                                  reservoircapacity = -100)), 
+      regexp = "reservoircapacity must be >= 0"
+    )
+    
+    # check is logical ? 
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        storage_parameters = list(efficiency = 0.9, 
+                                  reservoircapacity = 100,
+                                  initialleveloptim = "false")), 
+      regexp = 'list_values\\[\\[\\"initialleveloptim\\"\\]\\] does not inherit from class logical'
+    )
+  })
   
-  # test value group is default
-  testthat::expect_equal("Other1", as.character(value_to_test$group))
+  testthat::test_that("Check dimension TS input",{
+    # test col dim
+    bad_matrix_data_dim <- matrix(1, 8760*2, ncol = 2)
+    
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        PMAX_injection = bad_matrix_data_dim), 
+      regexp = "Input data for PMAX_injection must be 8760\\*1"
+    )
+    
+    # test raw dim
+    bad_matrix_data_dim <- matrix(1, 8784)
+    
+    testthat::expect_error(
+      editClusterST(
+        area = area_test_clust, 
+        cluster_name = "err", 
+        PMAX_injection = bad_matrix_data_dim), 
+      regexp = "Input data for PMAX_injection must be 8760\\*1"
+    )
+  })
   
-  # test parameters are updated
-  value_to_test <- as.list(value_to_test[, .SD, 
-                                         .SDcols= c("efficiency", 
-                                                    "reservoircapacity")])
-  testthat::expect_equal(list_params, value_to_test)
+  testthat::test_that("Check existing cluster ?",{
+    testthat::expect_error(
+      editClusterST(area = area_test_clust, 
+                    cluster_name = "casper", 
+                    group = "Other1"), 
+      regexp = "'al_casper' doesn't exist")
+  })
   
- 
-  ## edit DATA ----
-  val <- 0.007
-  opts_test <- editClusterST(area = area_test, 
-                             cluster_name = levels(st_clusters$cluster)[1],  
-                             PMAX_injection = matrix(val, 8760), 
-                             PMAX_withdrawal = matrix(val, 8760),
-                             inflows =  matrix(0.007, 8760), 
-                             lower_rule_curve = matrix(val, 8760), 
-                             upper_rule_curve = matrix(val, 8760),
-                             opts = opts_test, 
-                             add_prefix = FALSE)
+  testthat::test_that("Default call warning",{
+    # function can be called without modification
+    testthat::expect_warning(
+      editClusterST(area = area_test_clust, 
+                    cluster_name = "cluster_init"), 
+      regexp = "No edition for 'list.ini' file")
+  })
   
-  # test data value (with fread_antares)
-  path_dir_test <- file.path(opts_test$inputPath, "st-storage", "series", area_test, 
-                             paste(area_test, "cluster-st-1", sep = "_"))
-  files_test <- list.files(path_dir_test, full.names = TRUE)
-  l_file_series <- lapply(files_test, antaresRead:::fread_antares, opts = opts_test)
+  testthat::test_that("Edit new properties",{
+    testthat::test_that("Edit group",{
+      # group list
+      st_storage_group <- c("PSP_open", 
+                            "PSP_closed", 
+                            "Pondage", 
+                            "Battery",
+                            paste0("Other", 
+                                   seq(1,5)))
+      
+      editClusterST(area = area_test_clust, 
+                    cluster_name = "cluster_init", 
+                    group = "Battery")
+      
+      # read prop
+      path_st_ini <- file.path("input", 
+                               "st-storage", 
+                               "clusters", 
+                               area_test_clust,
+                               "list")
+      
+      read_ini <- antaresRead::readIni(path_st_ini)
+      target_prop <- read_ini[[paste(area_test_clust, 
+                                     "cluster_init",
+                                     sep = "_")]]
+      
+      # test params created if identical with .ini read 
+      testthat::expect_equal(target_prop[["group"]], 
+                             "Battery")
+    })
+    
+    testthat::test_that("Edit list of parameters 'storage_parameters'",{
+      # edit all params
+      all_params <- storage_values_default()
+      all_params[["efficiency"]] <- 0.9
+      all_params[["reservoircapacity"]] <- 1000
+      all_params[["initiallevel"]] <- 0.5
+      all_params[["withdrawalnominalcapacity"]] <- 250
+      all_params[["injectionnominalcapacity"]] <- 200
+      all_params[["initialleveloptim"]] <- TRUE
+      
+      editClusterST(area = area_test_clust, 
+                    cluster_name = "cluster_init", 
+                    group = "Battery", 
+                    storage_parameters = all_params)
+      
+      # read prop
+      path_st_ini <- file.path("input", 
+                               "st-storage", 
+                               "clusters", 
+                               area_test_clust,
+                               "list")
+      
+      read_ini <- antaresRead::readIni(path_st_ini)
+      target_prop <- read_ini[[paste(area_test_clust, 
+                                     "cluster_init",
+                                     sep = "_")]]
+      
+      # test all properties from .ini
+      testthat::expect_equal(
+        target_prop[setdiff(names(target_prop), 
+                            c("name", "group"))], 
+        all_params)
+    })
+    
+  })
   
-  value_test <- mean(sapply(l_file_series, 
-                       function(.x){
-                         mean(.x$V1)}))
-  
-  testthat::expect_equal(value_test, val)
-  
-  # test data value with readInputTS
-  st_ts <- readInputTS(st_storage = "all", opts = opts_test)
-  
-  # check clusters
-  testthat::expect_true(all(levels(st_clusters$cluster) %in% unique(st_ts$cluster)))
-  
-  # delete study
-  unlink(opts_test$studyPath, recursive = TRUE)
+  testthat::test_that("Edit new TS values",{
+    # there are no test on values 
+    
+    # global var test
+    default_ts_values <- antaresEditObject:::.default_values_st_TS(opts = simOptions())
+    
+    original_files_names <- sapply(default_ts_values, 
+                                   function(x)x$string, 
+                                   USE.NAMES = FALSE)
+    
+    good_dim_ts <- matrix(0.7, 8760)
+    
+    # default with new optional TS
+    editClusterST(area = area_test_clust, 
+                  cluster_name = "cluster_init", 
+                  PMAX_injection = good_dim_ts, 
+                  PMAX_withdrawal = good_dim_ts, 
+                  inflows = good_dim_ts, 
+                  lower_rule_curve = good_dim_ts, 
+                  upper_rule_curve = good_dim_ts)
+    
+    # read series 
+    opts_ <- simOptions()
+    path_ts <- file.path(opts_$inputPath, 
+                         "st-storage",
+                         "series",
+                         area_test_clust,
+                         "al_cluster_init",
+                         paste0(original_files_names, 
+                                ".txt"))
+    
+    files_series <- lapply(path_ts, 
+                           data.table::fread) 
+    
+    # test all value not equal to 0 (default)
+    values_files_series <- sapply(files_series, 
+                                  sum)
+    sum_val <- (0.7*8760)+(0.7*8760)+(0.7*8760)+(0.7*8760)+(0.7*8760)
+    testthat::expect_equal(sum(values_files_series),sum_val)
+  })
+    
+  #Delete study
+  deleteStudy()
 })
 
+
 # v880 ----
-test_that("Edit short-term storage cluster (new feature v8.8.0)",{
-  ## basics errors cases ----
+test_that("New feature v8.8.0)",{
   suppressWarnings(
     createStudy(path = tempdir(), 
                 study_name = "st-storage880", 
@@ -166,34 +278,34 @@ test_that("Edit short-term storage cluster (new feature v8.8.0)",{
   createClusterST(area = area_test_clust, 
                   cluster_name = "default")
   
-  # edit 
-  list_params <- storage_values_default()
-  list_params$efficiency <- 0.5
-  list_params$reservoircapacity <- 50
-  list_params$enabled <- FALSE
-  
-  editClusterST(area = area_test_clust, 
-                cluster_name = "default", 
-                storage_parameters = list_params)
-  
-  # read properties 
-  st_params <- readClusterSTDesc()
-  
-  # "enabled" must be present 
-  testthat::expect_true("enabled"%in%names(st_params))
-  testthat::expect_true(st_params$enabled[1]%in%FALSE)
-  
-  # test restrictions on 'group' parameter
-  testthat::test_that("static 'group",{
-    testthat::expect_error(
-      editClusterST(area = area_test_clust, 
-                      cluster_name = "default", 
-                      group = "not_allowed"), 
-      regexp = paste0(
-        "Group: '", "not_allowed", "' is not a valid name recognized by Antares,"
-      )
-    )
+  test_that("New parameter 'enabled'",{
+    # edit 
+    list_params <- storage_values_default()
+    list_params$efficiency <- 0.5
+    list_params$reservoircapacity <- 50
+    list_params$enabled <- FALSE
     
+    editClusterST(area = area_test_clust, 
+                  cluster_name = "default", 
+                  storage_parameters = list_params)
+    
+    # read prop
+    path_st_ini <- file.path("input", 
+                             "st-storage", 
+                             "clusters", 
+                             area_test_clust,
+                             "list")
+    
+    read_ini <- antaresRead::readIni(path_st_ini)
+    target_prop <- read_ini[[paste(area_test_clust, 
+                                   "default",
+                                   sep = "_")]]
+    
+    # test all properties from .ini
+    testthat::expect_equal(
+      target_prop[setdiff(names(target_prop), 
+                          c("name", "group"))], 
+      list_params)
   })
   
   deleteStudy()
