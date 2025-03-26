@@ -69,13 +69,12 @@ editClusterST <- function(area,
     # check values parameters
     .st_mandatory_params(list_values = storage_parameters, opts = opts)
     
-    ### Standardize cluster name  ----
+    ### Standardize storage_parameters  ----
     params_cluster <- hyphenize_names(storage_parameters)
   }
   
-  ## cluster name prefix ----
-  if (add_prefix)
-    cluster_name <- generate_cluster_name(area, 
+  ## Standardize cluster name + prefix ----
+  cluster_name <- generate_cluster_name(area, 
                                           cluster_name, 
                                           add_prefix)
   
@@ -202,7 +201,7 @@ editClusterST <- function(area,
     # read previous content of ini
     previous_params <- readIniFile(file = path_clusters_ini)
     
-    if (!tolower(cluster_name) %in% tolower(names(previous_params)))
+    if (!cluster_name %in% tolower(names(previous_params)))
       stop(
         "'", 
         cluster_name, 
@@ -213,7 +212,7 @@ editClusterST <- function(area,
     
     # select existing cluster
     ind_cluster <- which(tolower(names(previous_params)) %in% 
-                           tolower(cluster_name))[1]
+                           cluster_name)[1]
     previous_params[[ind_cluster]] <- utils::modifyList(x = previous_params[[ind_cluster]], 
                                                         val = params_cluster)
     names(previous_params)[[ind_cluster]] <- cluster_name
@@ -237,8 +236,8 @@ editClusterST <- function(area,
   path_txt_file <- file.path(opts$inputPath, 
                              "st-storage", 
                              "series", 
-                             tolower(area), 
-                             tolower(cluster_name))
+                             area, 
+                             cluster_name)
   
   # list of params of TS 
   list_local_params <- list(PMAX_injection = PMAX_injection,
@@ -258,8 +257,9 @@ editClusterST <- function(area,
       # name file
       name_file <- list_local_values_params[[x_val]][["string"]]
       # write disk
+      dt_to_write <- as.data.table(list_local_params[[x_val]])
       fwrite(
-        x = list_local_params[[x_val]], 
+        x = dt_to_write, 
         row.names = FALSE, 
         col.names = FALSE, 
         sep = "\t",

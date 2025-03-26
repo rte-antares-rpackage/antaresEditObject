@@ -165,9 +165,8 @@ createClusterST <- function(area,
   ## Standardize params ----
   params_cluster <- hyphenize_names(storage_parameters)
   
-  ## cluster name prefix ----
-  if (add_prefix)
-    cluster_name <- generate_cluster_name(area = area, 
+  ## Standardize cluster name + prefix ----
+  cluster_name <- generate_cluster_name(area = area, 
                                           cluster_name = cluster_name, 
                                           add_prefix = add_prefix)
 
@@ -279,15 +278,15 @@ createClusterST <- function(area,
   previous_params <- readIniFile(file = path_clusters_ini)
   
   ## check cluster already exists ----
-  if (tolower(cluster_name) %in% tolower(names(previous_params)) 
+  if (cluster_name %in% tolower(names(previous_params)) 
       & !overwrite)
     stop(paste(cluster_name, "already exist"))
     
   ## overwrite ----
   if(overwrite){
-    if(tolower(cluster_name) %in% tolower(names(previous_params))){
+    if(cluster_name %in% tolower(names(previous_params))){
       ind_cluster <- which(tolower(names(previous_params)) %in% 
-                             tolower(cluster_name))[1]
+                             cluster_name)[1]
       previous_params[[ind_cluster]] <- params_cluster
       names(previous_params)[[ind_cluster]] <- cluster_name
     }
@@ -313,7 +312,7 @@ createClusterST <- function(area,
                      "st-storage", 
                      "series", 
                      area, 
-                     tolower(cluster_name)),
+                     cluster_name),
     recursive = TRUE, showWarnings = FALSE
   )
   
@@ -334,7 +333,7 @@ createClusterST <- function(area,
       x = data_values, row.names = FALSE, col.names = FALSE, sep = "\t",
       file = file.path(inputPath, "st-storage", "series", 
                        area, 
-                       tolower(cluster_name), 
+                       cluster_name, 
                        paste0(storage_value[[name]]$string, ".txt")))
   }
   
