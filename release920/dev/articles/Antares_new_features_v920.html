@@ -154,8 +154,9 @@ make the adjustment and we keep “920”.</p>
 <code><a href="../reference/createClusterST.html">?createClusterST</a></code>.</p>
 <p>By default you can call function only with two parameters
 (<code>area</code>, <code>cluster_name</code>).</p>
+<p>Clusters are created with default properties and time series.</p>
 <div class="section level3">
-<h3 id="no-restriction-on-group-names">No restriction on group names<a class="anchor" aria-label="anchor" href="#no-restriction-on-group-names"></a>
+<h3 id="dynamic-group-names">Dynamic group names<a class="anchor" aria-label="anchor" href="#dynamic-group-names"></a>
 </h3>
 <p>Default <code>group</code> is still “Other1” and now you can
 <strong>create/edit</strong> your own group name (<em>only for version
@@ -175,12 +176,153 @@ study &gt;= 9.2</em>).</p>
 <span>              cluster_name <span class="op">=</span> <span class="st">"test_storage"</span>, </span>
 <span>              group <span class="op">=</span> <span class="st">"my_own_group_Pondage"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># read cluster properties</span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cluster"],"name":[2],"type":["fct"],"align":["left"]},{"label":["group"],"name":[3],"type":["chr"],"align":["left"]},{"label":["efficiency"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["efficiencywithdrawal"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["enabled"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["initiallevel"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["initialleveloptim"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["injectionnominalcapacity"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["penalize.variation.injection"],"name":[10],"type":["lgl"],"align":["right"]},{"label":["penalize.variation.withdrawal"],"name":[11],"type":["lgl"],"align":["right"]},{"label":["reservoircapacity"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["withdrawalnominalcapacity"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"fr","2":"fr_test_storage","3":"my_own_group_Pondage","4":"1","5":"1","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"FALSE","11":"FALSE","12":"0","13":"0"},{"1":"it","2":"it_test_storage","3":"my_own_group_again","4":"1","5":"1","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"FALSE","11":"FALSE","12":"0","13":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="section level3">
+<h3 id="new-properties">New properties<a class="anchor" aria-label="anchor" href="#new-properties"></a>
+</h3>
+<p>you can create or edit new clusters with new properties (see doc
+<code><a href="../reference/createClusterST.html">?createClusterST</a></code>).</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># new properties (default values)</span></span>
+<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="../reference/storage_values_default.html">storage_values_default</a></span><span class="op">(</span><span class="op">)</span>, check.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["efficiency"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["reservoircapacity"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["initiallevel"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["withdrawalnominalcapacity"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["injectionnominalcapacity"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["initialleveloptim"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["enabled"],"name":[7],"type":["lgl"],"align":["right"]},{"label":["efficiencywithdrawal"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["penalize-variation-injection"],"name":[9],"type":["lgl"],"align":["right"]},{"label":["penalize-variation-withdrawal"],"name":[10],"type":["lgl"],"align":["right"]}],"data":[{"1":"1","2":"0","3":"0.5","4":"0","5":"0","6":"FALSE","7":"TRUE","8":"1","9":"FALSE","10":"FALSE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># creation</span></span>
+<span><span class="va">my_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/storage_values_default.html">storage_values_default</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">my_parameters</span><span class="op">$</span><span class="va">efficiencywithdrawal</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
+<span><span class="va">my_parameters</span><span class="op">$</span><span class="va">`penalize-variation-injection`</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="va">my_parameters</span><span class="op">$</span><span class="va">`penalize-variation-withdrawal`</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/createClusterST.html">createClusterST</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, </span>
+<span>                cluster_name <span class="op">=</span> <span class="st">"test_storage"</span>, </span>
+<span>                group <span class="op">=</span> <span class="st">"new_properties"</span>, </span>
+<span>                storage_parameters <span class="op">=</span> <span class="va">my_parameters</span>, </span>
+<span>                overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/createClusterST.html">createClusterST</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"it"</span>, </span>
+<span>                cluster_name <span class="op">=</span> <span class="st">"test_storage"</span>, </span>
+<span>                group <span class="op">=</span> <span class="st">"new_properties"</span>, </span>
+<span>                storage_parameters <span class="op">=</span> <span class="va">my_parameters</span>,</span>
+<span>                overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># read cluster properties </span></span>
 <span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cluster"],"name":[2],"type":["fct"],"align":["left"]},{"label":["group"],"name":[3],"type":["chr"],"align":["left"]},{"label":["efficiency"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["reservoircapacity"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["initiallevel"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["withdrawalnominalcapacity"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["injectionnominalcapacity"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["initialleveloptim"],"name":[9],"type":["lgl"],"align":["right"]},{"label":["enabled"],"name":[10],"type":["lgl"],"align":["right"]}],"data":[{"1":"fr","2":"fr_test_storage","3":"my_own_group_Pondage","4":"1","5":"0","6":"0.5","7":"0","8":"0","9":"FALSE","10":"TRUE"},{"1":"it","2":"it_test_storage","3":"my_own_group_again","4":"1","5":"0","6":"0.5","7":"0","8":"0","9":"FALSE","10":"TRUE"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cluster"],"name":[2],"type":["fct"],"align":["left"]},{"label":["group"],"name":[3],"type":["chr"],"align":["left"]},{"label":["efficiency"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["efficiencywithdrawal"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["enabled"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["initiallevel"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["initialleveloptim"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["injectionnominalcapacity"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["penalize.variation.injection"],"name":[10],"type":["lgl"],"align":["right"]},{"label":["penalize.variation.withdrawal"],"name":[11],"type":["lgl"],"align":["right"]},{"label":["reservoircapacity"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["withdrawalnominalcapacity"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"fr","2":"fr_test_storage","3":"new_properties","4":"1","5":"0.5","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"TRUE","11":"TRUE","12":"0","13":"0"},{"1":"it","2":"it_test_storage","3":"new_properties","4":"1","5":"0.5","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"TRUE","11":"TRUE","12":"0","13":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># edit properties of existing st-storage cluster</span></span>
+<span><span class="va">my_parameters</span><span class="op">$</span><span class="va">efficiencywithdrawal</span> <span class="op">&lt;-</span> <span class="fl">0.9</span></span>
+<span><span class="va">my_parameters</span><span class="op">$</span><span class="va">`penalize-variation-injection`</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span><span class="va">my_parameters</span><span class="op">$</span><span class="va">`penalize-variation-withdrawal`</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/editClusterST.html">editClusterST</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, </span>
+<span>              cluster_name <span class="op">=</span> <span class="st">"test_storage"</span>,</span>
+<span>              storage_parameters <span class="op">=</span> <span class="va">my_parameters</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># read cluster properties </span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cluster"],"name":[2],"type":["fct"],"align":["left"]},{"label":["group"],"name":[3],"type":["chr"],"align":["left"]},{"label":["efficiency"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["efficiencywithdrawal"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["enabled"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["initiallevel"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["initialleveloptim"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["injectionnominalcapacity"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["penalize.variation.injection"],"name":[10],"type":["lgl"],"align":["right"]},{"label":["penalize.variation.withdrawal"],"name":[11],"type":["lgl"],"align":["right"]},{"label":["reservoircapacity"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["withdrawalnominalcapacity"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"fr","2":"fr_test_storage","3":"new_properties","4":"1","5":"0.9","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"FALSE","11":"FALSE","12":"0","13":"0"},{"1":"it","2":"it_test_storage","3":"new_properties","4":"1","5":"0.5","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"TRUE","11":"TRUE","12":"0","13":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="section level3">
+<h3 id="new-optional-time-series">New optional <strong>time series</strong><a class="anchor" aria-label="anchor" href="#new-optional-time-series"></a>
+</h3>
+<p>We have five new <em>.txt</em> files containing one series of
+dimension
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>8760</mn><mo>,</mo><mi>P</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">{N=8760, P=1}</annotation></semantics></math>
+:</p>
+<ul>
+<li>cost-injection.txt<br>
+</li>
+<li>cost-withdrawal.txt</li>
+<li>cost-level.txt<br>
+</li>
+<li>cost-variation-injection.txt<br>
+</li>
+<li>cost-variation-withdrawal.txt</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># creation</span></span>
+<span><span class="va">ratio_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">8760</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="co"># default properties with new optional TS</span></span>
+<span><span class="fu"><a href="../reference/createClusterST.html">createClusterST</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, </span>
+<span>                cluster_name <span class="op">=</span> <span class="st">"good_ts_value"</span>, </span>
+<span>                cost_injection <span class="op">=</span> <span class="va">ratio_value</span>, </span>
+<span>                cost_withdrawal <span class="op">=</span> <span class="va">ratio_value</span>, </span>
+<span>                cost_level <span class="op">=</span> <span class="va">ratio_value</span>, </span>
+<span>                cost_variation_injection <span class="op">=</span> <span class="va">ratio_value</span>,</span>
+<span>                cost_variation_withdrawal <span class="op">=</span> <span class="va">ratio_value</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># read cluster TS values </span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span>, </span>
+<span>                   showProgress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cluster"],"name":[2],"type":["chr"],"align":["left"]},{"label":["timeId"],"name":[3],"type":["int"],"align":["right"]},{"label":["time"],"name":[4],"type":["dttm"],"align":["right"]},{"label":["day"],"name":[5],"type":["int"],"align":["right"]},{"label":["month"],"name":[6],"type":["fct"],"align":["left"]},{"label":["hour"],"name":[7],"type":["fct"],"align":["left"]},{"label":["tsId"],"name":[8],"type":["int"],"align":["right"]},{"label":["st-storage"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["name_file"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"fr","2":"fr_good_ts_value","3":"1","4":"2018-01-01 00:00:00","5":"1","6":"JAN","7":"00:00","8":"1","9":"0.7","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"2","4":"2018-01-01 01:00:00","5":"1","6":"JAN","7":"01:00","8":"1","9":"0.7","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"3","4":"2018-01-01 02:00:00","5":"1","6":"JAN","7":"02:00","8":"1","9":"0.7","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"4","4":"2018-01-01 03:00:00","5":"1","6":"JAN","7":"03:00","8":"1","9":"0.7","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"5","4":"2018-01-01 04:00:00","5":"1","6":"JAN","7":"04:00","8":"1","9":"0.7","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"6","4":"2018-01-01 05:00:00","5":"1","6":"JAN","7":"05:00","8":"1","9":"0.7","10":"cost-injection"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># edit TS values of existing st-storage cluster</span></span>
+<span><span class="va">new_ratio_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.85</span>, <span class="fl">8760</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># edit everything or anyone you want </span></span>
+<span><span class="fu"><a href="../reference/editClusterST.html">editClusterST</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>,</span>
+<span>              cluster_name <span class="op">=</span> <span class="st">"good_ts_value"</span>,</span>
+<span>              cost_injection <span class="op">=</span> <span class="va">new_ratio_value</span>, </span>
+<span>              cost_withdrawal <span class="op">=</span> <span class="va">new_ratio_value</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No edition for 'list.ini' file</span></span>
+<span></span>
+<span><span class="co"># read cluster TS values </span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readInputTS.html" class="external-link">readInputTS</a></span><span class="op">(</span>st_storage <span class="op">=</span> <span class="st">"all"</span>, </span>
+<span>                   showProgress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cluster"],"name":[2],"type":["chr"],"align":["left"]},{"label":["timeId"],"name":[3],"type":["int"],"align":["right"]},{"label":["time"],"name":[4],"type":["dttm"],"align":["right"]},{"label":["day"],"name":[5],"type":["int"],"align":["right"]},{"label":["month"],"name":[6],"type":["fct"],"align":["left"]},{"label":["hour"],"name":[7],"type":["fct"],"align":["left"]},{"label":["tsId"],"name":[8],"type":["int"],"align":["right"]},{"label":["st-storage"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["name_file"],"name":[10],"type":["chr"],"align":["left"]}],"data":[{"1":"fr","2":"fr_good_ts_value","3":"1","4":"2018-01-01 00:00:00","5":"1","6":"JAN","7":"00:00","8":"1","9":"0.85","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"2","4":"2018-01-01 01:00:00","5":"1","6":"JAN","7":"01:00","8":"1","9":"0.85","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"3","4":"2018-01-01 02:00:00","5":"1","6":"JAN","7":"02:00","8":"1","9":"0.85","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"4","4":"2018-01-01 03:00:00","5":"1","6":"JAN","7":"03:00","8":"1","9":"0.85","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"5","4":"2018-01-01 04:00:00","5":"1","6":"JAN","7":"04:00","8":"1","9":"0.85","10":"cost-injection"},{"1":"fr","2":"fr_good_ts_value","3":"6","4":"2018-01-01 05:00:00","5":"1","6":"JAN","7":"05:00","8":"1","9":"0.85","10":"cost-injection"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="section level3">
+<h3 id="remove-clusters">Remove clusters<a class="anchor" aria-label="anchor" href="#remove-clusters"></a>
+</h3>
+<p>Nothing has changed to remove clusters.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># read cluster names</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "fr_good_ts_value" "fr_test_storage"  "it_test_storage"</span></span>
+<span></span>
+<span><span class="co"># remove a cluster</span></span>
+<span><span class="fu"><a href="../reference/removeCluster.html">removeClusterST</a></span><span class="op">(</span>area <span class="op">=</span> <span class="st">"fr"</span>, </span>
+<span>                cluster_name <span class="op">=</span> <span class="st">"good_ts_value"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># read cluster </span></span>
+<span><span class="va">tab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html" class="external-link">readClusterSTDesc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">rmarkdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/rmarkdown/reference/paged_table.html" class="external-link">paged_table</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span></span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["area"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cluster"],"name":[2],"type":["fct"],"align":["left"]},{"label":["group"],"name":[3],"type":["chr"],"align":["left"]},{"label":["efficiency"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["efficiencywithdrawal"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["enabled"],"name":[6],"type":["lgl"],"align":["right"]},{"label":["initiallevel"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["initialleveloptim"],"name":[8],"type":["lgl"],"align":["right"]},{"label":["injectionnominalcapacity"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["penalize.variation.injection"],"name":[10],"type":["lgl"],"align":["right"]},{"label":["penalize.variation.withdrawal"],"name":[11],"type":["lgl"],"align":["right"]},{"label":["reservoircapacity"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["withdrawalnominalcapacity"],"name":[13],"type":["dbl"],"align":["right"]}],"data":[{"1":"fr","2":"fr_test_storage","3":"new_properties","4":"1","5":"0.9","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"FALSE","11":"FALSE","12":"0","13":"0"},{"1":"it","2":"it_test_storage","3":"new_properties","4":"1","5":"0.5","6":"TRUE","7":"0.5","8":"FALSE","9":"0","10":"TRUE","11":"TRUE","12":"0","13":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
