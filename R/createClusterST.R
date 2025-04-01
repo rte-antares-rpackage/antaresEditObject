@@ -46,6 +46,11 @@
 #'  - initiallevel = 0.5  (`numeric` \{0;1\})  
 #'  - enabled = TRUE (`logical` TRUE/FALSE)  
 #'  
+#' Study version >= "9.2" (new parameters) :  
+#'  - efficiencywithdrawal = 1 (`numeric` \{0;1\})
+#'  - `penalize-variation-injection` = FALSE (`logical` TRUE/FALSE)
+#'  - `penalize-variation-withdrawal` = FALSE `logical` TRUE/FALSE)
+#'  
 #' By default, these values don't allow you to have an active cluster (See example section.)  
 #' 
 #' 
@@ -98,6 +103,17 @@
 #'                 PMAX_injection = ratio_data, 
 #'                 lower_rule_curve = ratio_data, 
 #'                 upper_rule_curve = ratio_data)
+#'                 
+#' # for a study version >= 9.2 (new parameters)
+#' my_parameters <- storage_values_default()
+#' my_parameters$efficiencywithdrawal <- 0.5
+#' my_parameters$`penalize-variation-injection` <- TRUE
+#' my_parameters$`penalize-variation-withdrawal` <- TRUE
+#' 
+#' createClusterST(area = "my_area", 
+#'                 "my_cluster",
+#'                 storage_parameters = my_parameters)
+#'                
 #' }
 #'
 createClusterST <- function(area,

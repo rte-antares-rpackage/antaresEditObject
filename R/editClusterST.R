@@ -15,8 +15,69 @@
 #' 
 #' @examples
 #' \dontrun{
-#' # TODO
-#' print(2+2)
+#' # study version >= "8.6.0"
+#'
+#' # edit an existing cluster (see doc approved groups)
+#' name_group <- "Pondage"
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername", 
+#'               group = name_group)
+#' 
+#' # edit properties
+#' all_params <- storage_values_default()
+#' all_params[["efficiency"]] <- 0.9
+#' all_params[["reservoircapacity"]] <- 1000
+#' all_params[["initiallevel"]] <- 0.5
+#' all_params[["withdrawalnominalcapacity"]] <- 250
+#' all_params[["injectionnominalcapacity"]] <- 200
+#' all_params[["initialleveloptim"]] <- TRUE
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername", 
+#'               storage_parameters = all_params)
+#'
+#' # edit time series
+#' inflow_data <- matrix(3, 8760)
+#' ratio_data <- matrix(0.7, 8760)
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername",
+#'               PMAX_withdrawal = ratio_data, 
+#'               inflows = inflow_data, 
+#'               PMAX_injection = ratio_data, 
+#'               lower_rule_curve = ratio_data, 
+#'               upper_rule_curve = ratio_data)
+#'
+#' # study version >= "9.2" (new parameters and TS)
+#' 
+#' # edit group (dynamic)
+#' name_group <- "MyOwnGroup"
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername", 
+#'               group = name_group)
+#'
+#' # edit properties
+#' my_parameters <- storage_values_default()
+#' my_parameters$efficiencywithdrawal <- 0.5
+#' my_parameters$`penalize-variation-injection` <- TRUE
+#' my_parameters$`penalize-variation-withdrawal` <- TRUE
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername", 
+#'               storage_parameters = my_parameters)
+#'
+#' # edit time series
+#' ratio_data <- matrix(0.7, 8760)
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername",
+#'               cost_injection = ratio_data, 
+#'               cost_withdrawal = ratio_data, 
+#'               cost_level = ratio_data, 
+#'               cost_variation_injection = ratio_data, 
+#'               cost_variation_withdrawal = ratio_data)
 #' }
 #' @export
 editClusterST <- function(area,

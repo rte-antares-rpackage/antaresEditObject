@@ -92,6 +92,13 @@ Study version >= "8.8.0" (update + new parameter) :
 \item enabled = TRUE (\code{logical} TRUE/FALSE)
 }
 
+Study version >= "9.2" (new parameters) :
+\itemize{
+\item efficiencywithdrawal = 1 (\code{numeric} \{0;1\})
+\item \code{penalize-variation-injection} = FALSE (\code{logical} TRUE/FALSE)
+\item \code{penalize-variation-withdrawal} = FALSE \code{logical} TRUE/FALSE)
+}
+
 By default, these values don't allow you to have an active cluster (See example section.)
 }
 
@@ -133,6 +140,17 @@ createClusterST(area = "my_area",
                 PMAX_injection = ratio_data, 
                 lower_rule_curve = ratio_data, 
                 upper_rule_curve = ratio_data)
+                
+# for a study version >= 9.2 (new parameters)
+my_parameters <- storage_values_default()
+my_parameters$efficiencywithdrawal <- 0.5
+my_parameters$`penalize-variation-injection` <- TRUE
+my_parameters$`penalize-variation-withdrawal` <- TRUE
+
+createClusterST(area = "my_area", 
+                "my_cluster",
+                storage_parameters = my_parameters)
+               
 }
 
 }
