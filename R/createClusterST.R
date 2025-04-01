@@ -114,6 +114,18 @@
 #'                 "my_cluster",
 #'                 storage_parameters = my_parameters)
 #'                
+#'                 
+#'   # time series                  
+#' ratio_value <- matrix(0.7, 8760)
+#'
+#' # default properties with new optional TS
+#' createClusterST(area = "fr", 
+#'                 cluster_name = "good_ts_value", 
+#'                 cost_injection = ratio_value, 
+#'                 cost_withdrawal = ratio_value, 
+#'                 cost_level = ratio_value, 
+#'                 cost_variation_injection = ratio_value,
+#'                 cost_variation_withdrawal = ratio_value)               
 #' }
 #'
 createClusterST <- function(area,
