@@ -1,10 +1,5 @@
-<img src="man/figures/antares_simulator.png" align="right" width=250 />
+# antaresEditObject <img src="man/figures/antares_simulator.png" align="right" alt="" width=250 />
 <br/>
-
-# antaresEditObject
-
-
-> Edit an Antares study before running a simulation.
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/antaresEditObject)](https://CRAN.R-project.org/package=antaresEditObject)
@@ -14,6 +9,8 @@
 [![R-CMD-check](https://github.com/rte-antares-rpackage/antaresEditObject/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rte-antares-rpackage/antaresEditObject/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/antaresEditObject/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresEditObject)
 <!-- badges: end -->
+
+> Edit an Antares study before running a simulation.
 
 
 ## Installation

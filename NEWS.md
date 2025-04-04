@@ -5,13 +5,14 @@
 
 NEW FEATURES :  
 
+* `createClusterST()`/`editClusterST()` : Parameter `group` is now dynamic and have no restriction 
 * `createClusterST()`/`editClusterST()` :  
   - **New properties** (*efficiencywithdrawal*, *penalize-variation-injection*, *penalize-variation-withdrawal*, see list of properties according to study version of Antares with `storage_values_default()`)  
   - **New optional time series** (cost-injection, cost-withdrawal, cost-level, cost-variation-injection, cost-variation-withdrawal)
 
 ### Breaking changes  :  
-  - `createClusterST()`/`editClusterST()` : parameter `group` is now dynamic and have no restriction  
-  - `createClusterST()` : for a study < 9.2, execution will be STOP if `group` is not included in list (see doc)  
+  - `createClusterST()` : For a study < *v9.2*, execution will be STOP if `group` is not included in list (see doc)  
+  - `updateAdequacySettings()` : Two parameters (*enable-first-step*, *set-to-null-ntc-between-physical-out-for-first-step*) are `deprecated` and removed. Parameters are forced to `NULL` with study >= v9.2.
     
 
 ### DOC :  

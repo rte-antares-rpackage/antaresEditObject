@@ -33,3 +33,31 @@ test_that("Update an adequacy parameter for an Antares version 860", {
 
 	unlink(x = opts$studyPath, recursive = TRUE)
 })
+
+# >= v920 ----
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "st-storage9.2", 
+              antares_version = "9.2"))
+
+test_that("Properties removed", {
+  lifecycle::expect_deprecated(
+  updateAdequacySettings(
+    set_to_null_ntc_between_physical_out_for_first_step = FALSE), 
+  regexp = "The `set_to_null_ntc_between_physical_out_for_first_step` argument"
+  )
+  
+  lifecycle::expect_deprecated(
+    updateAdequacySettings(enable_first_step = FALSE), 
+    regexp = "The `enable_first_step` argument"
+  )
+  
+  # read general parameters
+  parameters <- readIni("settings/generaldata")
+  params <- parameters[["adequacy patch"]]
+  
+  # tests if NULL are well forced
+  expect_equal(length(params), 0)
+})
+
+deleteStudy()

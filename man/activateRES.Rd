@@ -8,7 +8,7 @@ activateRES(opts = antaresRead::simOptions(), quietly = !interactive())
 }
 \arguments{
 \item{opts}{List of simulation parameters returned by the function
-\code{antaresRead::setSimulationPath}}
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 
 \item{quietly}{Display or not a message to the user if success.}
 }

@@ -114,7 +114,6 @@
 #'                 "my_cluster",
 #'                 storage_parameters = my_parameters)
 #'                
-#'                 
 #'   # time series                  
 #' ratio_value <- matrix(0.7, 8760)
 #'
