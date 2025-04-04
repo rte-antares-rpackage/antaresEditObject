@@ -45,15 +45,15 @@ generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
 
 \item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
 
-\item{cost_injection}{NULL}
+\item{cost_injection}{Penalizes the injection flowrate at each hour (€/MW) \code{numeric} \{>0\} (8760*1).}
 
-\item{cost_withdrawal}{NULL}
+\item{cost_withdrawal}{Penalizes the withdrawal flowrate at each hour (€/MW) \code{numeric} \{>0\} (8760*1).}
 
-\item{cost_level}{NULL}
+\item{cost_level}{Penalizes the volume of stored energy at each hour (€/MW/h) \code{numeric} \{<0;>0\} (8760*1).}
 
-\item{cost_variation_injection}{NULL}
+\item{cost_variation_injection}{Penalizes injection flowrate variation every hour (€/MW/h) \code{numeric} \{>0\} (8760*1).}
 
-\item{cost_variation_withdrawal}{NULL}
+\item{cost_variation_withdrawal}{Penalizes the withdrawal variation every hour (€/MW/h) \code{numeric} \{>0\} (8760*1).}
 
 \item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
@@ -151,6 +151,7 @@ createClusterST(area = "my_area",
                 "my_cluster",
                 storage_parameters = my_parameters)
                
+
   # time series                  
 ratio_value <- matrix(0.7, 8760)
 
