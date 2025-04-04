@@ -77,17 +77,45 @@ updateAdequacySettings <- function(include_adq_patch = NULL,
     new_params <- new_params[!names(new_params) %in% properties_850]
   }
   
-  if (opts[["antaresVersion"]] >= 860) {
+  if (opts[["antaresVersion"]] >= 860 && 
+      opts[["antaresVersion"]] <920) {
     if ("enable_first_step" %in% names(new_params)) {
       message("Property enable_first_step is disabled for the moment. Set to FALSE.\n")
       new_params[["enable_first_step"]] <- FALSE
     }
   }
   
-  new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
-  names(new_params) <- sapply(names(new_params), dicoAdequacySettings, USE.NAMES = FALSE)
+  # display a warning for these parameters
+  if (opts[["antaresVersion"]] >= 920) {
+    short_name <- set_to_null_ntc_between_physical_out_for_first_step
+    if (!is.null(enable_first_step)){
+      lifecycle::deprecate_warn(
+        when = "2.9.2", 
+        what = "antaresEditObject::updateAdequacySettings(enable_first_step)",
+        details = "This parameter are no longer supported for an Antares version >= '9.2', the values will be ignored."
+      )
+      new_params[["enable_first_step"]] <- NULL
+    }
+    if(!is.null(short_name)){
+      lifecycle::deprecate_warn(
+        when = "2.9.2", 
+        what = "antaresEditObject::updateAdequacySettings(set_to_null_ntc_between_physical_out_for_first_step)",
+        details = "This parameter are no longer supported for an Antares version >= '9.2', the values will be ignored."
+      )
+      new_params[["set_to_null_ntc_between_physical_out_for_first_step"]] <- NULL
+    }
+  }
   
-  res <- update_generaldata_by_section(opts = opts, section = "adequacy patch", new_params = new_params)
+  new_params <- lapply(X = new_params,
+                       FUN = .format_ini_rhs)
+  
+  names(new_params) <- sapply(names(new_params), 
+                              dicoAdequacySettings, 
+                              USE.NAMES = FALSE)
+  
+  res <- update_generaldata_by_section(opts = opts, 
+                                       section = "adequacy patch", 
+                                       new_params = new_params)
   
   invisible(res)
 }
