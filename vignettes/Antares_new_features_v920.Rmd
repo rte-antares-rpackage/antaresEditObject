@@ -199,6 +199,28 @@ tab <- readClusterSTDesc()
 rmarkdown::paged_table(tab)
 ```
 
+
+## Generaldata
+
+The “generaldata.ini” settings file (*settings/generaldata.ini*) contains several sections.
+
+Antares Simulator v9.2 deletes some parameters: 
+
+  - *adequacy patch/enable-first-step*
+  - *adequacy patch/set-to-null-ntc-between-physical-out-for-first-step*
+  - *other preferences/initial-reservoir-levels*
+
+A message is displayed and parameters are set to `NULL` for the `[adequacy patch]` section.
+
+For the `[other preferences]` section, the `initial-reservoir-levels` parameter is not explicitly used by a dedicated function.
+
+```{r generaldata}
+# user messages
+updateAdequacySettings(
+    set_to_null_ntc_between_physical_out_for_first_step = FALSE)
+updateAdequacySettings(enable_first_step = FALSE)
+```
+
 ```{r delete study, include=FALSE}
 # Delete study
 unlink(current_study_opts$studyPath, 
