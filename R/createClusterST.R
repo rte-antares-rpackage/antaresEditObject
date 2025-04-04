@@ -16,11 +16,11 @@
 #' generation or consumption on the system `numeric` \{<0;>0\} (8760*1).
 #' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
 #' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
-#' @param cost_injection Penalizes the injection flowrate at each hour (&euro;/MW) `numeric` \{>0\} (8760*1).
-#' @param cost_withdrawal Penalizes the withdrawal flowrate at each hour (&euro;/MW) `numeric` \{>0\} (8760*1).
-#' @param cost_level Penalizes the volume of stored energy at each hour (&euro;/MW/h) `numeric` \{<0;>0\} (8760*1).
-#' @param cost_variation_injection Penalizes injection flowrate variation every hour (&euro;/MW/h) `numeric` \{>0\} (8760*1).
-#' @param cost_variation_withdrawal Penalizes the withdrawal variation every hour (&euro;/MW/h) `numeric` \{>0\} (8760*1).
+#' @param cost_injection Penalizes the injection flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
+#' @param cost_withdrawal Penalizes the withdrawal flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
+#' @param cost_level Penalizes the volume of stored energy at each hour (&euro;/MWh) `numeric` \{<0;>0\} (8760*1).
+#' @param cost_variation_injection Penalizes injection flowrate variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
+#' @param cost_variation_withdrawal Penalizes the withdrawal variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite `logical`, overwrite the cluster or not.
 #' 
