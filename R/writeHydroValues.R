@@ -124,7 +124,8 @@ writeHydroValues <- function(area,
 
 
 #' @title Get default hydro.ini values 
-get_default_hydro_ini_values <- function(){
+#' @template opts-arg 
+get_default_hydro_ini_values <- function(opts){
   
   default_hydro_params <- list(
         "inter-daily-breakdown" = 1, #
@@ -143,6 +144,10 @@ get_default_hydro_ini_values <- function(){
         "reservoir" = FALSE,
         "reservoir capacity" = 0
   )
+  
+  if(opts$antaresVersion>=920)
+    default_hydro_params <- append(default_hydro_params, 
+           list("overflow spilled cost difference" = 1))
   
   return(default_hydro_params)
 }
@@ -303,6 +308,11 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
                           "reservoir capacity" = c("numeric", "integer", "NULL")
   )
   
+  if(opts$antaresVersion>=920)
+    expected_params <- append(
+      expected_params, 
+      list("overflow spilled cost difference" = c("numeric", "integer", "NULL")))
+  
   params_names <- names(params)
   expected_params_names <- names(expected_params)
   
@@ -450,7 +460,7 @@ fill_empty_hydro_ini_file <- function(area, opts = antaresRead::simOptions()){
   
   path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
   ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-  default_params <- get_default_hydro_ini_values()
+  default_params <- get_default_hydro_ini_values(opts = opts)
   # use heuristic
   if (is.null(ini_hydro_data[["use heuristic"]][[area]])) {
     ini_hydro_data[["use heuristic"]][[area]] <- default_params[["use heuristic"]]

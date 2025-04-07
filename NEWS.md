@@ -9,6 +9,7 @@ NEW FEATURES :
 * `createClusterST()`/`editClusterST()` :  
   - **New properties** (*efficiencywithdrawal*, *penalize-variation-injection*, *penalize-variation-withdrawal*, see list of properties according to study version of Antares with `storage_values_default()`)  
   - **New optional time series** (cost-injection, cost-withdrawal, cost-level, cost-variation-injection, cost-variation-withdrawal)
+* `createArea()` initializes the `hydro.ini` file with a new parameter `overflow spilled cost difference`
 
 ### Breaking changes  :  
   - `createClusterST()` : For a study < *v9.2*, execution will be STOP if `group` is not included in list (see doc)  
