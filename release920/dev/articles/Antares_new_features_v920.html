@@ -111,6 +111,15 @@ make the adjustment and we keep “920”.</p>
 <code class="sourceCode R"><span><span class="va">current_study_opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">current_study_opts</span><span class="op">$</span><span class="va">antaresVersion</span></span>
 <span><span class="co">#&gt; [1] 920</span></span></code></pre></div>
+<p>Some minor changes to the creation of the study.</p>
+<p>Initializes the study by updating the <code>generaldata.ini</code>
+file :</p>
+<ul>
+<li>the value of the <code>shedding-policy</code> parameter is changed
+to “accurate shave peaks”</li>
+<li>a new “compatibility” section is created with parameter
+<code>hydro-pmax</code> = “daily”</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="create-area">Create area<a class="anchor" aria-label="anchor" href="#create-area"></a>
@@ -120,6 +129,9 @@ make the adjustment and we keep “920”.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"fr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"it"</span><span class="op">)</span></span></code></pre></div>
+<p>A new parameter <code>overflow spilled cost difference</code> in
+<code>hydro.ini</code> file (<em>input/hydro/hydro.ini</em>) is
+initiated (<em>default value = 1</em>).</p>
 </div>
 <div class="section level2">
 <h2 id="short-term-storage">Short term storage<a class="anchor" aria-label="anchor" href="#short-term-storage"></a>

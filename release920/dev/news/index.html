@@ -52,6 +52,13 @@
 <p>(cf. Antares v9.2 changelog)</p>
 <p>NEW FEATURES :</p>
 <ul><li>
+<code><a href="../reference/create-study.html">createStudy()</a></code> initializes the study by updating the <code>generaldata.ini</code> file :
+<ul><li>the value of the <code>shedding-policy</code> parameter is changed to “accurate shave peaks”</li>
+<li>a new “compatibility” section is created with parameter <code>hydro-pmax</code> = “daily”</li>
+</ul></li>
+<li>
+<code><a href="../reference/createArea.html">createArea()</a></code> initializes the <code>hydro.ini</code> file with a new parameter <code>overflow spilled cost difference</code> (for each area)</li>
+<li>
 <code><a href="../reference/createClusterST.html">createClusterST()</a></code>/<code><a href="../reference/editClusterST.html">editClusterST()</a></code> : Parameter <code>group</code> is now dynamic and have no restriction</li>
 <li>
 <code><a href="../reference/createClusterST.html">createClusterST()</a></code>/<code><a href="../reference/editClusterST.html">editClusterST()</a></code> :
@@ -65,7 +72,7 @@
 <ul><li>
 <code><a href="../reference/createClusterST.html">createClusterST()</a></code> : For a study &lt; <em>v9.2</em>, execution will be STOP if <code>group</code> is not included in list (see doc)<br></li>
 <li>
-<code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> : Two parameters (<em>enable-first-step</em>, <em>set-to-null-ntc-between-physical-out-for-first-step</em>) are <code>deprecated</code> and removed. Parameters are forced to <code>NULL</code> with study &gt;= v9.2.</li>
+<code><a href="../reference/updateAdequacySettings.html">updateAdequacySettings()</a></code> : Two parameters (<em>enable-first-step</em>, <em>set-to-null-ntc-between-physical-out-for-first-step</em>) are <strong>deprecated</strong> and removed. Parameters are forced to <code>NULL</code> with study &gt;= v9.2.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="doc--0-9-2-9000">DOC :<a class="anchor" aria-label="anchor" href="#doc--0-9-2-9000"></a></h4>
