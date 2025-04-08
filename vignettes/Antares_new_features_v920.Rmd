@@ -48,6 +48,12 @@ current_study_opts <- simOptions()
 current_study_opts$antaresVersion
 ```
 
+Some minor changes to the creation of the study. 
+
+Initializes the study by updating the `generaldata.ini` file :  
+
+  - the value of the `shedding-policy` parameter is changed to "accurate shave peaks"
+  - a new "compatibility" section is created with parameter `hydro-pmax` = "daily"
 
 ## Create area 
 
@@ -56,6 +62,8 @@ We just need create *areas* to create *st-storages*.
 createArea(name = "fr")
 createArea(name = "it")
 ```
+
+A new parameter `overflow spilled cost difference` in `hydro.ini` file (*input/hydro/hydro.ini*) is initiated (*default value = 1*).
 
 ## Short term storage
 
