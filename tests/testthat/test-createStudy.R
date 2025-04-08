@@ -2,6 +2,32 @@
 
 # create ----
 
+  ## V9.2----
+test_that("Init v9.2 version study", {
+  path <- file.path(tempdir(), "tests_v920")
+  suppressWarnings(
+    opts <- createStudy(path, antares_version = "9.2")
+  )
+  properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
+  
+  # version
+  expect_identical(properties$antares$version, 9.2)
+  
+  # test new values in generaldata
+  prop_gen <- readIni("settings/generaldata")
+  
+  expect_equal(
+    prop_gen[["other preferences"]][["shedding-policy"]],
+    "accurate shave peaks"
+  )
+  
+  expect_equal(
+    prop_gen[["compatibility"]][["hydro-pmax"]],
+    "daily"
+  )
+  
+  unlink(path, recursive = TRUE)
+})
   ## v9.0----
 test_that("Create a new v9.0 study", {
   path <- file.path(tempdir(), "tests_createStudy")
