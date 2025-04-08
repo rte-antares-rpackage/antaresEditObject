@@ -224,7 +224,7 @@ createArea <- function(name,
   
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    default_params <- get_default_hydro_ini_values()
+    default_params <- get_default_hydro_ini_values(opts = opts)
     # Check area is not possible at this step
     writeIniHydro(area = name, params = default_params, mode = "createArea", opts = opts)
   }

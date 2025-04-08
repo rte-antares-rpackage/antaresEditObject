@@ -76,7 +76,7 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   ## Hydro
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    default_params <- get_default_hydro_ini_values()
+    default_params <- get_default_hydro_ini_values(opts=opts)
     empty_params <- sapply(names(default_params), FUN = function(n) default_params[[n]] <- NULL)
     writeIniHydro(area = name, params = empty_params, mode = "removeArea", opts = opts)
   }

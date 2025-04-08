@@ -57,7 +57,7 @@ null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-fo
 
 \item{shedding.strategy}{share margins}
 
-\item{shedding.policy}{shave peaks or minimize duration}
+\item{shedding.policy}{shave peaks (accurate shave peaks for study >= v9.2)or minimize duration}
 
 \item{unit.commitment.mode}{fast or accurate}
 
