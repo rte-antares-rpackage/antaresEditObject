@@ -20,7 +20,7 @@
 #' @param solver.log true or false (available for version >= 8.8)
 #' @param power.fluctuations free modulations, minimize excursions or minimize ramping
 #' @param shedding.strategy share margins
-#' @param shedding.policy shave peaks or minimize duration
+#' @param shedding.policy shave peaks (accurate shave peaks for study >= v9.2)or minimize duration
 #' @param unit.commitment.mode fast or accurate
 #' @param number.of.cores.mode minimum, low, medium, high or maximum
 #' @param renewable.generation.modelling aggregated or clusters
@@ -119,8 +119,16 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     )
   if (!is.null(shedding.strategy))
     assertthat::assert_that(shedding.strategy %in% c("share margins"))
-  if (!is.null(shedding.policy))
-    assertthat::assert_that(shedding.policy %in% c("shave peaks", "minimize duration"))
+  if (!is.null(shedding.policy)){
+    if(opts$antaresVersion>=920)
+      assertthat::assert_that(
+        shedding.policy %in% 
+          c("accurate shave peaks", "minimize duration"))
+    else
+      assertthat::assert_that(
+        shedding.policy %in% 
+          c("shave peaks", "minimize duration"))
+  }
   if (!is.null(unit.commitment.mode))
     assertthat::assert_that(unit.commitment.mode %in% c("fast", "accurate"))
   if (!is.null(number.of.cores.mode))
