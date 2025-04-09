@@ -262,8 +262,9 @@ scenarioBuilder <- function(n_scenario = 1,
 #' @export
 create_scb_referential_series_type <- function(){
   
-  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc")
-  choices <- c("load", "hydro", "wind", "solar", "thermal", "renewables", "ntc", "hydrolevels", "binding")
+  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc", "hfl")
+  choices <- c("load", "hydro", "wind", "solar", "thermal", "renewables", 
+               "ntc", "hydrolevels", "binding", "hydro final level")
   
   # Check data consistency
   len_series_to_write <- length(series_to_write)  
@@ -415,7 +416,7 @@ extract_el <- function(l, indice) {
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc' or 'hfl', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -427,7 +428,7 @@ extract_el <- function(l, indice) {
 #'  
 #' @note
 #'  - `series = "ntc"` is only available with Antares >= 8.2.0.
-#'  - For `series = "hl"`, each value must be between 0 and 1.
+#'  - For `series = "hl/hfl"`, each value must be between 0 and 1.
 #'  - User must enable/disable `custom-scenario` property in `settings/generaldata.ini` by himself.  
 #'  - `series = "bc"` is only available with Antares >= 8.7.0.
 #'
@@ -440,6 +441,7 @@ extract_el <- function(l, indice) {
 #'  - s or solar
 #'  - t or thermal
 #'  - w or wind
+#'  - hfl or hydro final level
 #' 
 #' @export
 #' 
@@ -462,14 +464,17 @@ updateScenarioBuilder <- function(ldata,
   
   if (!is.list(ldata)) {
     if (!is.null(series)) {
-      if (! all(series %in% ref_series$series)) {
+      if (! all(series %in% ref_series$series)) 
         stop("Your argument series must be one of ", paste0(ref_series$series, collapse = ", "), call. = FALSE)
-      }
       choices <- ref_series[ref_series$series %in% series, "choices"]
       if (isTRUE("ntc" %in% series) & isTRUE(opts$antaresVersion < 820))
-        stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
+        stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", 
+             call. = FALSE)
       if (isTRUE("bc" %in% series) & isTRUE(opts$antaresVersion < 870))
         stop("updateScenarioBuilder: cannot use series='bc' with Antares < 8.7.0", 
+             call. = FALSE)
+      if (isTRUE("hfl" %in% series) & isTRUE(opts$antaresVersion < 920))
+        stop("updateScenarioBuilder: cannot use series='hfl' with Antares < 9.2", 
              call. = FALSE)
       series <- ref_series[ref_series$choices %in% choices & ref_series$type == "w", "series"]
     } else {
@@ -494,6 +499,9 @@ updateScenarioBuilder <- function(ldata,
       stop("updateScenarioBuilder: cannot use series='ntc' with Antares < 8.2.0", call. = FALSE)
     if (isTRUE("bc" %in% series) & isTRUE(opts$antaresVersion < 870))
       stop("updateScenarioBuilder: cannot use series='bc' with Antares < 8.7.0", 
+           call. = FALSE)
+    if (isTRUE("hfl" %in% series) & isTRUE(opts$antaresVersion < 920))
+      stop("updateScenarioBuilder: cannot use series='hfl' with Antares < 9.2", 
            call. = FALSE)
     sbuild <- lapply(
       X = series,
@@ -597,7 +605,7 @@ listify_sb <- function(mat,
   dtsb[, variable := as.numeric(gsub("V", "", variable)) - 1]
   dtsb <- dtsb[value != "rand"]
   
-  if (identical(series, "hl")) {
+  if (series %in% c("hl", "hfl")) {
     dtsb[, value := as.numeric(value)]
     if(min(dtsb$value) < 0 | max(dtsb$value) > 1) {
       stop("Every coefficient for hydro levels must be between 0 and 1.", call. = FALSE)

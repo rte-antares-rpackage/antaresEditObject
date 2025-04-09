@@ -631,3 +631,64 @@ test_that("scenarioBuilder works with binding constraint (v870)", {
   # remove temporary study
   deleteStudy()
 })
+
+
+# v920----
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "scenariobuilder9.2", 
+              antares_version = "9.2"))
+
+# default area with st cluster
+area_test = c("al", "be") 
+lapply(area_test, createArea)
+
+test_that("Check minimal version", {
+  my_coef <- runif(length(getAreas()))
+  
+  opts <- simOptions()
+  opts$antaresVersion <- 880
+  
+  # one constraint => nb areas must be equal to nb coeff
+  ldata <- scenarioBuilder(
+    n_scenario = 10,
+    n_mc = 10,
+    areas = area_test,
+    coef_hydro_levels = my_coef
+  )
+  
+  expect_error(
+    updateScenarioBuilder(ldata = ldata,
+                          series = "hfl", 
+                          opts = opts), 
+               regexp = "updateScenarioBuilder: cannot use series='hfl' with Antares < 9.2"
+  )
+})
+  
+  
+test_that("Add new 'hfl' equivalent to 'hl'", {
+  # nb coeff equivalent to nb areas
+  my_coef <- runif(length(getAreas()))
+  
+  opts <- simOptions()
+  
+  # one constraint => nb areas must be equal to nb coeff
+  ldata <- scenarioBuilder(
+    n_scenario = 10,
+    n_mc = 10,
+    areas = area_test,
+    coef_hydro_levels = my_coef
+  )
+  
+  updateScenarioBuilder(ldata = ldata,
+                        series = "hfl")
+  
+  newSB <- readScenarioBuilder(as_matrix = FALSE)
+  expect_true("hfl" %in% names(newSB))
+  
+  values_newSB_hfl <- unique(unlist(newSB[["hfl"]], use.names = FALSE))
+  expect_equal(length(my_coef), length(values_newSB_hfl)) 
+  expect_equal(my_coef, values_newSB_hfl)
+})
+
+deleteStudy()
