@@ -20,13 +20,6 @@ library(antaresEditObject)
 
 This article will present the new features in line with **Antares v9.2** (cf  [Antares Simulator](https://antares-simulator.readthedocs.io/en/latest/user-guide/04-migration-guides/#v920))
 
-## New features
-
-**Short Term Storages**  :
-
-  - Parameter `group` is now dynamic and have no restriction for user  
-
-
 ## Create new study v9.2
 
 ```{r init}
