@@ -59,7 +59,7 @@ deduplicateScenarioBuilder(
 
 \item{group_bc_rand}{\code{character} Bindgind constraints which to use \code{"rand"}.}
 
-\item{coef_hydro_levels}{Hydro levels coefficients.}
+\item{coef_hydro_levels}{Hydro levels or hydro final level coefficients.}
 
 \item{mode}{\code{character} "bc" to edit binding constraints.}
 

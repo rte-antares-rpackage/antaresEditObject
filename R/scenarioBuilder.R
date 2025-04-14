@@ -12,7 +12,7 @@
 #' @param group_bc `character` Bindgind constraints's groups names to use.
 #' @param group_bc_rand `character` Bindgind constraints which to use `"rand"`.
 #' @param mode `character` "bc" to edit binding constraints.
-#' @param coef_hydro_levels Hydro levels coefficients.
+#' @param coef_hydro_levels Hydro levels or hydro final level coefficients.
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   [antaresRead::setSimulationPath()]
