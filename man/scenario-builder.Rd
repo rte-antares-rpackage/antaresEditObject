@@ -59,7 +59,7 @@ deduplicateScenarioBuilder(
 
 \item{group_bc_rand}{\code{character} Bindgind constraints which to use \code{"rand"}.}
 
-\item{coef_hydro_levels}{Hydro levels coefficients.}
+\item{coef_hydro_levels}{Hydro levels or hydro final level coefficients.}
 
 \item{mode}{\code{character} "bc" to edit binding constraints.}
 
@@ -72,7 +72,7 @@ deduplicateScenarioBuilder(
 
 \item{ldata}{A \code{matrix} obtained with \code{scenarioBuilder},
 or a named list of matrices obtained with \code{scenarioBuilder}, names must be
-'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.}
+'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc' or 'hfl', depending on the series to update.}
 
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
 
@@ -97,7 +97,7 @@ Read, create, update & deduplicate scenario builder.
 \note{
 \itemize{
 \item \code{series = "ntc"} is only available with Antares >= 8.2.0.
-\item For \code{series = "hl"}, each value must be between 0 and 1.
+\item For \code{series = "hl/hfl"}, each value must be between 0 and 1.
 \item User must enable/disable \code{custom-scenario} property in \code{settings/generaldata.ini} by himself.
 \item \code{series = "bc"} is only available with Antares >= 8.7.0.
 }
@@ -112,6 +112,7 @@ For a single matrix, value of series can be :
 \item s or solar
 \item t or thermal
 \item w or wind
+\item hfl or hydro final level
 }
 }
 \examples{

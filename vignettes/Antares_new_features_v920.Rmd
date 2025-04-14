@@ -229,6 +229,34 @@ updateAdequacySettings(
 updateAdequacySettings(enable_first_step = FALSE)
 ```
 
+
+## Scenario builder
+
+The scenario builder allows you to use a new code `hfl` for 'hydro final level'. 
+This new feature is similar to `hl` ('hydro levels') and is used in the same way with the 'coef_hydro_levels' parameter.
+
+```{r scenariobuilder}
+# the number of coeff is equivalent to the number of areas
+  my_coef <- runif(length(getAreas()))
+  
+  opts <- simOptions()
+  
+  # build data 
+  ldata <- scenarioBuilder(
+    n_scenario = 10,
+    n_mc = 10,
+    areas = getAreas(),
+    coef_hydro_levels = my_coef
+  )
+  
+  # update scenearionbuilder.dat
+  updateScenarioBuilder(ldata = ldata,
+                        series = "hfl")
+  
+  readScenarioBuilder(as_matrix = TRUE)
+```
+
+
 ```{r delete study, include=FALSE}
 # Delete study
 unlink(current_study_opts$studyPath, 
@@ -236,8 +264,5 @@ unlink(current_study_opts$studyPath,
 # clean global options
 options(antares = NULL)
 ```
-
-
-
 
 
