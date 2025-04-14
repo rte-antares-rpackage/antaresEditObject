@@ -124,7 +124,7 @@ Read, create, update &amp;amp; deduplicate scenario builder."><meta name="robots
 
 
 <dt id="arg-coef-hydro-levels">coef_hydro_levels<a class="anchor" aria-label="anchor" href="#arg-coef-hydro-levels"></a></dt>
-<dd><p>Hydro levels coefficients.</p></dd>
+<dd><p>Hydro levels or hydro final level coefficients.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
@@ -147,7 +147,7 @@ Read, create, update &amp;amp; deduplicate scenario builder."><meta name="robots
 <dt id="arg-ldata">ldata<a class="anchor" aria-label="anchor" href="#arg-ldata"></a></dt>
 <dd><p>A <code>matrix</code> obtained with <code>scenarioBuilder</code>,
 or a named list of matrices obtained with <code>scenarioBuilder</code>, names must be
-'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl' or 'bc', depending on the series to update.</p></dd>
+'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc' or 'hfl', depending on the series to update.</p></dd>
 
 
 <dt id="arg-series">series<a class="anchor" aria-label="anchor" href="#arg-series"></a></dt>
@@ -175,7 +175,7 @@ Default is to read existing links and update them all.</p></dd>
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
 
 <ul><li><p><code>series = "ntc"</code> is only available with Antares &gt;= 8.2.0.</p></li>
-<li><p>For <code>series = "hl"</code>, each value must be between 0 and 1.</p></li>
+<li><p>For <code>series = "hl/hfl"</code>, each value must be between 0 and 1.</p></li>
 <li><p>User must enable/disable <code>custom-scenario</code> property in <code>settings/generaldata.ini</code> by himself.</p></li>
 <li><p><code>series = "bc"</code> is only available with Antares &gt;= 8.7.0.</p></li>
 </ul><p>For a single matrix, value of series can be :</p><ul><li><p>h or hydro</p></li>
@@ -186,6 +186,7 @@ Default is to read existing links and update them all.</p></dd>
 <li><p>s or solar</p></li>
 <li><p>t or thermal</p></li>
 <li><p>w or wind</p></li>
+<li><p>hfl or hydro final level</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
