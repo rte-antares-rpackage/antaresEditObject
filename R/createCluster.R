@@ -318,7 +318,7 @@ createClusterRES <- function(area,
         suffix_endpoint <- "renewable"
       }
       
-      body <- generate_endpoint_body_createCluster(cluster_parameters = params_cluster, cluster_type = cluster_type)
+      body <- transform_list_to_json_for_createCluster(cluster_parameters = params_cluster, cluster_type = cluster_type)
       result <- api_post(opts = opts, 
                          endpoint = file.path(opts[["study_id"]], "areas", area, "clusters", suffix_endpoint), 
                          body = body, 
@@ -512,10 +512,19 @@ list_pollutants_values <- function(multi_values = NULL) {
 }
 
 
-generate_endpoint_body_createCluster <- function(cluster_parameters, cluster_type) {
+#' Transform a user list to a json object to use in the endpoint of cluster creation
+#'
+#' @importFrom jsonlite toJSON
+#' @importFrom assertthat assert_that
+#'
+#' @param cluster_parameters a list containing the metadata of the cluster you want to create.
+#' @param cluster_type the type of cluster you want to create. Each type has specific values.
+#'
+#' @return a json object
+transform_list_to_json_for_createCluster <- function(cluster_parameters, cluster_type) {
   
-  assertthat::assert_that(cluster_type %in% c("thermal", "renewables"))
-  assertthat::assert_that(inherits(x = cluster_parameters, what = "list"))
+  assert_that(cluster_type %in% c("thermal", "renewables"))
+  assert_that(inherits(x = cluster_parameters, what = "list"))
   
   if (cluster_type == "thermal") {
     cluster_parameters <- list("name" = cluster_parameters[["name"]],
@@ -566,5 +575,5 @@ generate_endpoint_body_createCluster <- function(cluster_parameters, cluster_typ
   }
   cluster_parameters <- dropNulls(cluster_parameters)
   
-  return(jsonlite::toJSON(cluster_parameters, auto_unbox = TRUE))
+  return(toJSON(cluster_parameters, auto_unbox = TRUE))
 }
