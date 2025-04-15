@@ -1,5 +1,12 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
+# antaresEditObject 0.9.2.9000
+
+NEW FEATURES :  
+
+* `.createCluster()` uses a specific endpoint to write cluster's metadata and commands to write matrix
+
+
 # antaresEditObject 0.9.0
 (cf. Antares v9 changelog)
 
