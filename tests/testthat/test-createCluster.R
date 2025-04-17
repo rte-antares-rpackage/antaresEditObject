@@ -276,3 +276,19 @@ test_that("removeCluster(): check if the expected files are deleted", {
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
+
+
+# Convert list to body for endpoint ----
+test_that("transform_list_to_json_for_createCluster() : body is in an expected format", {
+  
+  params <- list("unitcount" = 3L, "enabled" = TRUE, "group" = "Gas", "law.forced" = "value")
+  body <- transform_list_to_json_for_createCluster(cluster_parameters = params, cluster_type = "thermal")
+  expect_true(inherits(x = body, what = "json"))
+  expect_equal(sort(names(jsonlite::fromJSON(body))), c("enabled", "group", "lawForced", "unitCount"))
+  
+  # non-existing property
+  params <- list("unitcount" = 3L, "enabled" = TRUE, "group" = "Gas", "law.forced" = "value", "fake_property" = "antares")
+  body <- transform_list_to_json_for_createCluster(cluster_parameters = params, cluster_type = "thermal")
+  expect_true(inherits(x = body, what = "json"))
+  expect_equal(sort(names(jsonlite::fromJSON(body))), c("enabled", "group", "lawForced", "unitCount"))
+})
