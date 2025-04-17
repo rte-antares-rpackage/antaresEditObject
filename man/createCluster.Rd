@@ -75,7 +75,7 @@ Parameter \code{list_pollutants} is only available for Antares studies >= v8.6.0
 
 You must provide named \code{list} (numerical values or NULL ) :
 
-\code{list( "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25,   "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25,  "op1"= 0.25, "op2"= 0.25, "op3"= 0.25,   "op4"= 0.25, "op5"= NULL, "co2"= NULL)}
+\code{list( "nh3"= 0.25, "nox"= 0.45, "pm2_5"= 0.25, "pm5"= 0.25, "pm10"= 0.25, "nmvoc"= 0.25, "so2"= 0.25, "op1"= 0.25, "op2"= 0.25, "op3"= 0.25, "op4"= 0.25, "op5"= NULL, "co2"= NULL)}
 }
 \examples{
 \dontrun{
@@ -85,23 +85,23 @@ library(antaresEditObject)
 
 # Create a cluster :
 createCluster(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster",
-  group = "other", 
+  group = "other",
   unitcount = 1L, # or as.integer(1)
   marginal_cost = 50
 )
-# by default, cluster name is prefixed 
+# by default, cluster name is prefixed
 # by the area name
 levels(readClusterDesc()$cluster)
 # > "fr_my_cluster"
 
 # To prevent this, use `add_prefix`
 createCluster(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster",
   add_prefix = FALSE,
-  group = "other", 
+  group = "other",
   marginal_cost = 50
 )
 levels(readClusterDesc()$cluster)
@@ -110,42 +110,42 @@ levels(readClusterDesc()$cluster)
 
 # Create a RES cluster :
 createClusterRES(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster_res",
-  group = "other", 
+  group = "other",
   unitcount = 1L, # or as.integer(1)
   nominalcapacity = 50,
   ts_interpretation = "power-generation"
-) 
+)
 
 # You can also specify that the Time-Series of the RES cluster are
 # production factors :
 createClusterRES(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster_res",
-  group = "other", 
+  group = "other",
   unitcount = 1L, # or as.integer(1)
   nominalcapacity = 50,
   ts_interpretation = "production-factor"
 )
 
 
-# Pre-process data : 
+# Pre-process data :
 
 # this is the default data :
 createCluster(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster",
   prepro_data = matrix(
     data = c(rep(1, times = 365 * 2),
-             rep(0, times = 365 * 4)), 
+             rep(0, times = 365 * 4)),
     ncol = 6
   )
 )
 
 # with a data.frame
 createCluster(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster",
   prepro_data = data.frame(
     v1 = rep(7, 365), # column name does not matter
@@ -158,10 +158,10 @@ createCluster(
 )
 
 
-# Pre-process modulation : 
+# Pre-process modulation :
 # this is the default data
 createCluster(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster",
   prepro_modulation = matrix(
     data = c(rep(1, times = 365 * 24 * 3),
@@ -172,7 +172,7 @@ createCluster(
 
 # with a data.frame
 createCluster(
-  area = "fr", 
+  area = "fr",
   cluster_name = "my_cluster",
   prepro_modulation = data.frame(
     var1 = rep(0, 8760), # column name does not matter
