@@ -151,59 +151,72 @@ editClusterRES <- function(area,
   }
   
   if (is_api_study(opts)) {
+    thermal_type <- identical(cluster_type, "thermal")
+    renewables_type <- identical(cluster_type, "renewables")
     
     # update parameters if something else than name
     if (length(params_cluster) > 1) {
-      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/clusters/%s/list/%s", "input/thermal/clusters/%s/list/%s")
-      writeIni(
-        listData = params_cluster,
-        pathIni = sprintf(currPath, area, cluster_name),
-        opts = opts
-      )
+      
+      if (thermal_type) {
+        suffix_endpoint <- "thermal"
+      } else if (renewables_type) {
+        suffix_endpoint <- "renewable"
+      }
+      
+      body <- transform_list_to_json_for_createCluster(cluster_parameters = params_cluster, cluster_type = cluster_type)
+      result <- api_patch(opts = opts, 
+                          endpoint = file.path(opts[["study_id"]], "areas", area, "clusters", suffix_endpoint, cluster_name), 
+                          body = body, 
+                          encode = "raw")
+      cli::cli_alert_success("Endpoint Edit {.emph {.strong {suffix_endpoint}}} (properties) {.emph {.strong {cluster_name}}} success"
+                            )
     }
     
-    # update prepro_modulation
-    if (!identical(cluster_type, "renewables") && !is.null(prepro_modulation)) {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/thermal/prepro/%s/%s/modulation", area, lower_cluster_name),
-        matrix = prepro_modulation
-      )
+    cmd <- NULL
+    
+    if (renewables_type) {
+      if (!is.null(time_series)) {
+        cmd <- api_command_generate(
+            action = "replace_matrix",
+            target = sprintf("input/renewables/series/%s/%s/series", area, lower_cluster_name),
+            matrix = time_series
+        )
+      }
+    }
+    
+    if (thermal_type) {
+      thermal_time_series <- list("prepro_data" = list("path" = "input/thermal/prepro/%s/%s/data",
+                                                       "matrix" = prepro_data
+                                                       ),
+                                  "prepro_modulation" = list("path" = "input/thermal/prepro/%s/%s/modulation",
+                                                             "matrix" = prepro_modulation
+                                                       ),
+                                  "thermal_availabilities" = list("path" = "input/thermal/series/%s/%s/series",
+                                                                  "matrix" = time_series)
+                                  )
+      not_null_matrix <- sapply(thermal_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
+      thermal_time_series <- thermal_time_series[not_null_matrix]
+      
+      if (length(thermal_time_series) > 0) {
+        actions <- lapply(
+          X = seq_along(thermal_time_series),
+          FUN = function(i) {
+            list(
+              target = sprintf(thermal_time_series[[i]][["path"]], area, lower_cluster_name),
+              matrix = thermal_time_series[[i]][["matrix"]]
+            )
+          }
+        )
+        actions <- setNames(actions, rep("replace_matrix", length(actions)))
+        cmd <- do.call(api_commands_generate, actions)
+      }
+    }
+    
+    if (!is.null(cmd)) {
       api_command_register(cmd, opts = opts)
       `if`(
         should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process modulation: {msg_api}"),
-        cli_command_registered("replace_matrix")
-      )
-    }
-    
-    # update prepro_data
-    if (!identical(cluster_type, "renewables") && !is.null(prepro_data)) {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/thermal/prepro/%s/%s/data", area, lower_cluster_name),
-        matrix = prepro_data
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's pre-process data: {msg_api}"),
-        cli_command_registered("replace_matrix")
-      )
-    }
-    
-    # update series
-    if (!is.null(time_series)) {
-      currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf(currPath, area, lower_cluster_name),
-        matrix = time_series
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Update cluster's series: {msg_api}"),
+        api_command_execute(cmd, opts = opts, text_alert = "Updating cluster's series: {msg_api}"),
         cli_command_registered("replace_matrix")
       )
     }
