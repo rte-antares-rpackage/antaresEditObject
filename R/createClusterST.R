@@ -171,27 +171,11 @@ createClusterST <- function(area,
   if (is_api_study(opts)) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
-    
+    params_cluster[["name"]] <- cluster_name
     ##
     # POST only for properties (creation with default TS values)
     ##
-    
-    # adapt parameter names
-    list_properties <- list("group" = params_cluster[["group"]],
-                            "name" = cluster_name,
-                            "injectionNominalCapacity" = params_cluster[["injectionnominalcapacity"]],
-                            "withdrawalNominalCapacity" = params_cluster[["withdrawalnominalcapacity"]],
-                            "reservoirCapacity" = params_cluster[["reservoircapacity"]],
-                            "efficiency" = params_cluster[["efficiency"]],
-                            "initialLevel" = params_cluster[["initiallevel"]],
-                            "initialLevelOptim" = params_cluster[["initialleveloptim"]],
-                            "enabled" = params_cluster[["enabled"]])
-    
-    list_properties <- dropNulls(list_properties)
-    
-    # make json file
-    body <- jsonlite::toJSON(list_properties,
-                             auto_unbox = TRUE)
+    body <- transform_list_to_json_for_createCluster(cluster_parameters = params_cluster, cluster_type = "st-storage")
     
     # send request (without coeffs/term)
     result <- api_post(opts = opts, 
