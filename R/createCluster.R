@@ -553,7 +553,7 @@ transform_list_to_json_for_createCluster <- function(cluster_parameters, cluster
                                "nh3" = cluster_parameters[["nh3"]],
                                "so2" = cluster_parameters[["so2"]],
                                "nox" = cluster_parameters[["nox"]],
-                               "pm25" = cluster_parameters[["pm2-5"]],
+                               "pm25" = cluster_parameters[["pm2_5"]],
                                "pm5" = cluster_parameters[["pm5"]],
                                "pm10" = cluster_parameters[["pm10"]],
                                "nmvoc" = cluster_parameters[["nmvoc"]],
