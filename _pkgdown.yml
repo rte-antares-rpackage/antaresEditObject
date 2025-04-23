@@ -1,6 +1,6 @@
 development:
   mode: auto
-destination: docs/release920
+destination: docs
 template:
   bootstrap: 5
   light-switch: true
