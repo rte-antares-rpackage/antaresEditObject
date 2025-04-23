@@ -23,7 +23,7 @@ NEW FEATURES :
 
 ### DOC :  
 
-A new article exposing new features of Antares Simulator v9.2 is available [here](https://rte-antares-rpackage.github.io/antaresEditObject/release920/dev/articles/Antares_new_features_v920.html)
+A new article exposing new features of Antares Simulator v9.2 is available [here](https://rte-antares-rpackage.github.io/antaresEditObject/dev/articles/Antares_new_features_v920.html)
 
   
 
