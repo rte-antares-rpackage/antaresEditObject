@@ -525,7 +525,7 @@ list_pollutants_values <- function(multi_values = NULL) {
 #' @return a json object
 transform_list_to_json_for_createCluster <- function(cluster_parameters, cluster_type) {
 
-  assert_that(cluster_type %in% c("thermal", "renewables"))
+  assert_that(cluster_type %in% c("thermal", "renewables", "st-storage"))
   assert_that(inherits(x = cluster_parameters, what = "list"))
 
   if (cluster_type == "thermal") {
