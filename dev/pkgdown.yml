@@ -3,9 +3,9 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   Antares_new_features_v860: Antares_new_features_v860.html
-  Antares_new_features_v92: Antares_new_features_v92.html
+  Antares_new_features_v920: Antares_new_features_v920.html
   antaresEditObject: antaresEditObject.html
   api-variant-management: api-variant-management.html
   renewables-energy-sources: renewables-energy-sources.html
   scenario-builder: scenario-builder.html
-last_built: 2025-03-13T17:54Z
+last_built: 2025-04-24T07:45Z
