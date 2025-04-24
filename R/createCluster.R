@@ -530,25 +530,26 @@ transform_list_to_json_for_createCluster <- function(cluster_parameters, cluster
 
   if (cluster_type == "thermal") {
     cluster_parameters <- list("name" = cluster_parameters[["name"]],
+                               "group" = cluster_parameters[["group"]],
+                               "enabled" = cluster_parameters[["enabled"]],
+                               "mustRun" = cluster_parameters[["must-run"]],
                                "unitCount" = cluster_parameters[["unitcount"]],
                                "nominalCapacity" = cluster_parameters[["nominalcapacity"]],
-                               "enabled" = cluster_parameters[["enabled"]],
-                               "group" = cluster_parameters[["group"]],
-                               "genTs" = cluster_parameters[["gen-ts"]],
                                "minStablePower" = cluster_parameters[["min-stable-power"]],
+                               "spinning" = cluster_parameters[["spinning"]],
                                "minUpTime" = cluster_parameters[["min-up-time"]],
                                "minDownTime" = cluster_parameters[["min-down-time"]],
-                               "mustRun" = cluster_parameters[["must-run"]],
-                               "spinning" = cluster_parameters[["spinning"]],
-                               "volatilityForced" = cluster_parameters[["volatility.forced"]],
-                               "volatilityPlanned" = cluster_parameters[["volatility.planned"]],
-                               "lawForced" = cluster_parameters[["law.forced"]],
-                               "lawPlanned" = cluster_parameters[["law.planned"]],
+                               "costGeneration" = cluster_parameters[["costgeneration"]],
                                "marginalCost" = cluster_parameters[["marginal-cost"]],
                                "spreadCost" = cluster_parameters[["spread-cost"]],
                                "fixedCost" = cluster_parameters[["fixed-cost"]],
                                "startupCost" = cluster_parameters[["startup-cost"]],
                                "marketBidCost" = cluster_parameters[["market-bid-cost"]],
+                               "genTs" = cluster_parameters[["gen-ts"]],
+                               "volatilityForced" = cluster_parameters[["volatility.forced"]],
+                               "volatilityPlanned" = cluster_parameters[["volatility.planned"]],
+                               "lawForced" = cluster_parameters[["law.forced"]],
+                               "lawPlanned" = cluster_parameters[["law.planned"]],
                                "co2" = cluster_parameters[["co2"]],
                                "nh3" = cluster_parameters[["nh3"]],
                                "so2" = cluster_parameters[["so2"]],
@@ -562,28 +563,27 @@ transform_list_to_json_for_createCluster <- function(cluster_parameters, cluster
                                "op3" = cluster_parameters[["op3"]],
                                "op4" = cluster_parameters[["op4"]],
                                "op5" = cluster_parameters[["op5"]],
-                               "costGeneration" = cluster_parameters[["costgeneration"]],
                                "efficiency" = cluster_parameters[["efficiency"]],
                                "variableOMCost" = cluster_parameters[["variableomcost"]]
                               )
   } else if (cluster_type == "renewables") {
     cluster_parameters <- list("name" = cluster_parameters[["name"]],
                                "group" = cluster_parameters[["group"]],
+                               "enabled" = cluster_parameters[["enabled"]],
                                "tsInterpretation" = cluster_parameters[["ts-interpretation"]],
                                "unitCount" = cluster_parameters[["unitcount"]],
-                               "enabled" = cluster_parameters[["enabled"]],
                                "nominalCapacity" = cluster_parameters[["nominalcapacity"]]
                               )
   } else if (cluster_type == "st-storage") {
-    cluster_parameters <- list("group" = cluster_parameters[["group"]],
-                               "name" = cluster_parameters[["name"]],
+    cluster_parameters <- list("name" = cluster_parameters[["name"]],
+                               "group" = cluster_parameters[["group"]],
+                               "enabled" = cluster_parameters[["enabled"]],
                                "injectionNominalCapacity" = cluster_parameters[["injectionnominalcapacity"]],
                                "withdrawalNominalCapacity" = cluster_parameters[["withdrawalnominalcapacity"]],
                                "reservoirCapacity" = cluster_parameters[["reservoircapacity"]],
                                "efficiency" = cluster_parameters[["efficiency"]],
                                "initialLevel" = cluster_parameters[["initiallevel"]],
-                               "initialLevelOptim" = cluster_parameters[["initialleveloptim"]],
-                               "enabled" = cluster_parameters[["enabled"]]
+                               "initialLevelOptim" = cluster_parameters[["initialleveloptim"]]
                               )
   }
   cluster_parameters <- dropNulls(cluster_parameters)
