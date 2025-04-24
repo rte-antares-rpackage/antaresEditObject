@@ -106,8 +106,7 @@ writeVariantCommands("path/to/commands.json")
 
 Below are listed all functions from {antaresEditObject} that can be used with the API. These functions will include the following badge in their documentation:
 
-![](https://img.shields.io/badge/Antares%20API-OK-green)
-
+<img src="https://img.shields.io/badge/Antares%20API-OK-green" alt=""/>
 
 ### Create an area
 

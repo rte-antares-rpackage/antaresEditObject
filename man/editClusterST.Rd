@@ -14,6 +14,11 @@ editClusterST(
   inflows = NULL,
   lower_rule_curve = NULL,
   upper_rule_curve = NULL,
+  cost_injection = NULL,
+  cost_withdrawal = NULL,
+  cost_level = NULL,
+  cost_variation_injection = NULL,
+  cost_variation_withdrawal = NULL,
   add_prefix = TRUE,
   opts = antaresRead::simOptions()
 )
@@ -23,19 +28,31 @@ editClusterST(
 
 \item{cluster_name}{Name for the cluster, it will prefixed by area name, unless you set \code{add_prefix = FALSE}.}
 
-\item{group}{Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.}
+\item{group}{Group of the cluster, one of : \emph{{PSP_open, PSP_closed, Pondage, Battery, Other}}.
+It corresponds to the type of stockage (\strong{dynamic name for Antares version >= 9.2}).}
 
-\item{storage_parameters}{Parameters to write in the Ini file.}
+\item{storage_parameters}{\code{list } Parameters to write in the Ini file (see \code{Note}).}
 
-\item{PMAX_injection}{modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_injection}{Modulation of charging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
 
-\item{PMAX_withdrawal}{modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_withdrawal}{Modulation of discharging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
 
-\item{inflows}{imposed withdrawals from the stock for other uses, The values are integer.}
+\item{inflows}{Algebraic deviation of the state of charge of the storage, which does not induce any power
+generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
 
-\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.}
+\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
 
-\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.}
+\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
+
+\item{cost_injection}{Penalizes the injection flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{cost_withdrawal}{Penalizes the withdrawal flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{cost_level}{Penalizes the volume of stored energy at each hour (€/MWh) \code{numeric} \{<0;>0\} (8760*1).}
+
+\item{cost_variation_injection}{Penalizes injection flowrate variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{cost_variation_withdrawal}{Penalizes the withdrawal variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
 
 \item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
@@ -50,6 +67,76 @@ An updated list containing various information about the simulation.
 
 Edit parameters and time series of an existing \code{st-storage} cluster (Antares studies >= v8.6.0).
 }
+\note{
+Put only properties or TS value you want to edit (see \code{examples} section).
+}
+\examples{
+\dontrun{
+# study version >= "8.6.0"
+
+# edit an existing cluster (see doc approved groups)
+name_group <- "Pondage"
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername", 
+              group = name_group)
+
+# edit properties
+all_params <- storage_values_default()
+all_params[["efficiency"]] <- 0.9
+all_params[["reservoircapacity"]] <- 1000
+all_params[["initiallevel"]] <- 0.5
+all_params[["withdrawalnominalcapacity"]] <- 250
+all_params[["injectionnominalcapacity"]] <- 200
+all_params[["initialleveloptim"]] <- TRUE
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername", 
+              storage_parameters = all_params)
+
+# edit time series
+inflow_data <- matrix(3, 8760)
+ratio_data <- matrix(0.7, 8760)
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername",
+              PMAX_withdrawal = ratio_data, 
+              inflows = inflow_data, 
+              PMAX_injection = ratio_data, 
+              lower_rule_curve = ratio_data, 
+              upper_rule_curve = ratio_data)
+
+# study version >= "9.2" (new parameters and TS)
+
+# edit group (dynamic)
+name_group <- "MyOwnGroup"
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername", 
+              group = name_group)
+
+# edit properties
+my_parameters <- storage_values_default()
+my_parameters$efficiencywithdrawal <- 0.5
+my_parameters$`penalize-variation-injection` <- TRUE
+my_parameters$`penalize-variation-withdrawal` <- TRUE
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername", 
+              storage_parameters = my_parameters)
+
+# edit time series
+ratio_data <- matrix(0.7, 8760)
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername",
+              cost_injection = ratio_data, 
+              cost_withdrawal = ratio_data, 
+              cost_level = ratio_data, 
+              cost_variation_injection = ratio_data, 
+              cost_variation_withdrawal = ratio_data)
+}
+}
 \seealso{
-\code{\link[=createClusterST]{createClusterST()}} to edit existing clusters, \code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
+\code{\link[=createClusterST]{createClusterST()}}, \code{\link[=removeClusterST]{removeClusterST()}}
 }

@@ -146,14 +146,15 @@ detect_pattern_in_binding_constraint <- function(pattern, opts = antaresRead::si
   return(bc_not_remove)
 }
 
-
+# standardize : tolower params + manage prefix
 generate_cluster_name <- function(area, cluster_name, add_prefix) {
-  
   cluster_name <- tolower(cluster_name)
+  area <- tolower(area)
   
-  if (add_prefix) {
-    cluster_name <- paste(tolower(area), cluster_name, sep = "_")
-  }
+  if (add_prefix) 
+    cluster_name <- paste(area, 
+                          cluster_name, 
+                          sep = "_")
   
   return(cluster_name)
 }
@@ -182,13 +183,15 @@ generate_cluster_name <- function(area, cluster_name, add_prefix) {
 #' @importFrom antaresRead readIniFile
 update_generaldata_by_section <- function(opts, section, new_params) {
   
-  if (is_api_study(opts = opts)) {
+  if (is_api_study(opts = opts)) 
+    writeIni(listData = new_params,
+             pathIni = sprintf("settings/generaldata/%s", section), 
+             opts = opts)
     
-    writeIni(listData = new_params, pathIni = sprintf("settings/generaldata/%s", section), opts = opts)
-    
-  } else {
-  
-    generaldatapath <- file.path(opts[["studyPath"]], "settings", "generaldata.ini")
+   else {
+    generaldatapath <- file.path(opts[["studyPath"]], 
+                                 "settings", 
+                                 "generaldata.ini")
     generaldata <- readIniFile(file = generaldatapath)
     
     if (section %in% names(generaldata)) {
@@ -198,9 +201,10 @@ update_generaldata_by_section <- function(opts, section, new_params) {
       l_section <- new_params
     }
     generaldata[[section]] <- l_section
-    
-    writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
+    writeIni(listData = generaldata, 
+             pathIni = generaldatapath, 
+             overwrite = TRUE, 
+             opts = opts)
   }
-  
   return(update_opts(opts = opts))
 }

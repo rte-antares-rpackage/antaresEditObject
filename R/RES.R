@@ -9,11 +9,7 @@
 #'  appropriate structure for RES clusters.
 #' @param quietly Display or not a message to the user if success.
 #'
-#' @param opts
-#'   List of simulation parameters returned by the function
-#'   \code{antaresRead::setSimulationPath}
-#'
-#' @return An updated list containing various information about the simulation.
+#' @template opts
 #' @export
 #'
 #' @examples

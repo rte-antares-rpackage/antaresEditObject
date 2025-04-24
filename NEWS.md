@@ -1,5 +1,33 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
+# antaresEditObject 0.9.2.9000
+(cf. Antares v9.2 changelog)
+
+NEW FEATURES :  
+
+* `createStudy()` initializes the study by updating the `generaldata.ini` file :  
+  - the value of the `shedding-policy` parameter is changed to "accurate shave peaks"
+  - a new "compatibility" section is created with parameter `hydro-pmax` = "daily"
+* `createArea()` initializes the `hydro.ini` file with a new parameter `overflow spilled cost difference` (for each area)
+* `createClusterST()`/`editClusterST()` : Parameter `group` is now dynamic and have no restriction 
+* `createClusterST()`/`editClusterST()` :  
+  - **New properties** (*efficiencywithdrawal*, *penalize-variation-injection*, *penalize-variation-withdrawal*, see list of properties according to study version of Antares with `storage_values_default()`)  
+  - **New optional time series** (cost-injection, cost-withdrawal, cost-level, cost-variation-injection, cost-variation-withdrawal)
+* `updateScenarioBuilder()` New type of series "hfl" ("hydro final level", similar to "hydrolevels") is available   
+
+
+### Breaking changes  :  
+  - `createClusterST()` : For a study < *v9.2*, execution will be STOP if `group` is not included in list (see doc)  
+  - `updateAdequacySettings()` : Two parameters (*enable-first-step*, *set-to-null-ntc-between-physical-out-for-first-step*) are **deprecated** and removed. Parameters are forced to `NULL` with study >= v9.2.
+    
+
+### DOC :  
+
+A new article exposing new features of Antares Simulator v9.2 is available [here](https://rte-antares-rpackage.github.io/antaresEditObject/dev/articles/Antares_new_features_v920.html)
+
+  
+
+
 # antaresEditObject 0.9.0
 (cf. Antares v9 changelog)
 

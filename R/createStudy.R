@@ -9,9 +9,9 @@
 #' @param antares_version Antares number version.
 #' 
 #' @section Warning: 
-#' From **Antares version 9.0** onwards, versioning is only done with one number 
+#' From **Antares version 9.2** onwards, versioning is only done with one number 
 #' for the major version number and a two-digit number for the minor 
-#' version number (e.g. 9.0, 9.12, 10.58, ...).
+#' version number (e.g. 9.2, 9.35, 10.58, ...).
 #'
 #' @return Result of [antaresRead::setSimulationPath()] or [antaresRead::setSimulationPathAPI()] accordingly.
 #' @export
@@ -30,10 +30,10 @@
 #'   study_name = "my_study", 
 #'   antares_version = "8.2.0")
 #'   
-#' # with Antares study version >= 9 (max 2 digits, ex : "9.15")  
+#' # with Antares study version >= 9.2 (max 2 digits, ex : "9.25")  
 #' createStudy("path/to/simulation", 
 #'   study_name = "my_study", 
-#'   antares_version = "9.15")
+#'   antares_version = "9.25")
 #' 
 #' }
 createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0") {
@@ -109,12 +109,31 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
   opts <- setSimulationPath(path = path)
   
   # add specific directory and files according to version of study to create
-  if (antares_version >= as.numeric_version("8.1.0")) {
+  if (antares_version >= as.numeric_version("8.1.0")) 
     activateRES(opts = opts)
-  }
   
-  if (antares_version >= as.numeric_version("8.6.0")) {
+  if (antares_version >= as.numeric_version("8.6.0")) 
     activateST(opts = opts)
+  
+  # update actual template for 'generaldata.ini' (>=9.2)
+    # as.numeric_version() is not efficient for 2 digits ... 
+  if(is_new_version){
+    antares_version <- as.numeric(
+      as.character(antares_version))
+    
+    if (antares_version >= 9.2){
+      updateOptimizationSettings(shedding.policy = "accurate shave peaks")
+      
+      # add new section and initiate with value "daily" to keep legacy behavior
+      gen_data_file <- readIni("settings/generaldata")
+      new_section <- list(
+        "compatibility" = list("hydro-pmax" = "daily"))
+      gen_data_file <- append(gen_data_file, new_section)
+      
+      writeIni(listData = gen_data_file, 
+               pathIni = "settings/generaldata", 
+               overwrite = TRUE)
+    }
   }
   return(invisible(opts))
 }

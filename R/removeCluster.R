@@ -84,23 +84,27 @@ removeClusterST <- function(area,
   
   cluster_type <- match.arg(cluster_type)
   
+  # tolower area ----
   area <- tolower(area)
+  #check area ----
   check_area_name(area, opts)
   api_study <- is_api_study(opts)
   is_thermal <- identical(cluster_type, "thermal")
   
   # add prefix to cluster's name
-  cluster_name <- generate_cluster_name(area, cluster_name, add_prefix)
+  cluster_name <- generate_cluster_name(area, 
+                                        cluster_name, 
+                                        add_prefix)
   
   # check if the cluster can be removed safely, i.e. the cluster is not referenced in a binding constraint
   if (is_thermal) {
     if (!api_study) {
-      bc_not_remove <- detect_pattern_in_binding_constraint(pattern = paste0(area, ".", cluster_name), 
-                                                            opts = opts)
+      bc_not_remove <- detect_pattern_in_binding_constraint(
+        pattern = paste0(area, ".", cluster_name), 
+        opts = opts)
       if (!identical(bc_not_remove, character(0))) 
         warning("The following binding constraints have the cluster to remove as a coefficient : ", 
                 paste0(bc_not_remove, collapse = ", "))
-      
     }
   }
   
@@ -144,7 +148,7 @@ removeClusterST <- function(area,
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  # cluster indice
+  # check cluster name ----
   idx <- which(tolower(names(previous_params)) %in% cluster_name)
   if (length(idx) < 1)
     warning("Cluster '", cluster_name, "' you want to remove doesn't seem to exist in area '", area, "'.")
