@@ -307,49 +307,73 @@ createClusterRES <- function(area,
   
   # API block
   if (is_api_study(opts)) {
-    
-    if (cluster_type == "thermal") {
-      cmd <- api_command_generate(
-        action = "create_cluster",
-        area_id = area,
-        cluster_name = cluster_name,
-        prepro = prepro_data,
-        modulation = prepro_modulation,
-        parameters = params_cluster
-      )
-    } else {
-      cmd <- api_command_generate(
-        action = "create_renewables_cluster",
-        area_id = area,
-        cluster_name = cluster_name,
-        parameters = params_cluster
-      )
+
+    if (!is_api_mocked(opts)) {
+      thermal_type <- identical(cluster_type, "thermal")
+      renewables_type <- identical(cluster_type, "renewables")
+
+      if (thermal_type) {
+        suffix_endpoint <- "thermal"
+      } else if (renewables_type) {
+        suffix_endpoint <- "renewable"
+      }
+
+      body <- transform_list_to_json_for_createCluster(cluster_parameters = params_cluster, cluster_type = cluster_type)      
+      result <- api_post(opts = opts,
+                         endpoint = file.path(opts[["study_id"]], "areas", area, "clusters", suffix_endpoint),
+                         body = body,
+                         encode = "raw")
+      cli::cli_alert_success("Endpoint Create {.emph {.strong {suffix_endpoint}}} (properties) {.emph {.strong {cluster_name}}} success"
+                            )
+
+      cmd <- NULL
+      if (renewables_type) {
+        if (!is.null(time_series)) {
+          cmd <- api_command_generate(
+              action = "replace_matrix",
+              target = sprintf("input/renewables/series/%s/%s/series", area, lower_cluster_name),
+              matrix = time_series
+          )
+        }
+      }
+
+      if (thermal_type) {
+        thermal_time_series <- list("prepro_data" = list("path" = "input/thermal/prepro/%s/%s/data",
+                                                         "matrix" = prepro_data
+                                                         ),
+                                    "prepro_modulation" = list("path" = "input/thermal/prepro/%s/%s/modulation",
+                                                               "matrix" = prepro_modulation
+                                                         ),
+                                    "thermal_availabilities" = list("path" = "input/thermal/series/%s/%s/series",
+                                                                    "matrix" = time_series)
+                                    )
+        not_null_matrix <- sapply(thermal_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
+        thermal_time_series <- thermal_time_series[not_null_matrix]
+
+        if (length(thermal_time_series) > 0) {
+          actions <- lapply(
+            X = seq_along(thermal_time_series),
+            FUN = function(i) {
+              list(
+                target = sprintf(thermal_time_series[[i]][["path"]], area, lower_cluster_name),
+                matrix = thermal_time_series[[i]][["matrix"]]
+              )
+            }
+          )
+          actions <- setNames(actions, rep("replace_matrix", length(actions)))
+          cmd <- do.call(api_commands_generate, actions)
+        }
+      }
+
+      if (!is.null(cmd)) {
+        api_command_register(cmd, opts = opts)
+        `if`(
+          should_command_be_executed(opts),
+          api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
+          cli_command_registered("replace_matrix")
+        )
+      }
     }
-    
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_cluster}: {msg_api}"),
-      cli_command_registered("create_cluster")
-    )
-    
-    if (is.null(time_series)) {
-      time_series <- matrix(0,8760) #Default
-    }
-    
-    currPath <- ifelse(identical(cluster_type, "renewables"), "input/renewables/series/%s/%s/series", "input/thermal/series/%s/%s/series")
-    cmd <- api_command_generate(
-      action = "replace_matrix",
-      target = sprintf(currPath, area, lower_cluster_name),
-      matrix = time_series
-    )
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "Writing cluster's series: {msg_api}"),
-      cli_command_registered("replace_matrix")
-    )
-    
     return(invisible(opts))
   }
   
@@ -487,4 +511,73 @@ list_pollutants_values <- function(multi_values = NULL) {
        "op4"= multi_values, 
        "op5"= multi_values, 
        "co2"= multi_values)
+}
+
+
+#' Transform a user list to a json object to use in the endpoint of cluster creation
+#'
+#' @importFrom jsonlite toJSON
+#' @importFrom assertthat assert_that
+#'
+#' @param cluster_parameters a list containing the metadata of the cluster you want to create.
+#' @param cluster_type the type of cluster you want to create. Each type has specific values.
+#'
+#' @return a json object
+#' @noRd
+transform_list_to_json_for_createCluster <- function(cluster_parameters, cluster_type) {
+
+  assert_that(cluster_type %in% c("thermal", "renewables"))
+  assert_that(inherits(x = cluster_parameters, what = "list"))
+
+  if (cluster_type == "thermal") {
+    cluster_parameters <- list("name" = cluster_parameters[["name"]],
+                               "group" = cluster_parameters[["group"]],
+                               "enabled" = cluster_parameters[["enabled"]],
+                               "mustRun" = cluster_parameters[["must-run"]],
+                               "unitCount" = cluster_parameters[["unitcount"]],
+                               "nominalCapacity" = cluster_parameters[["nominalcapacity"]],
+                               "minStablePower" = cluster_parameters[["min-stable-power"]],
+                               "spinning" = cluster_parameters[["spinning"]],
+                               "minUpTime" = cluster_parameters[["min-up-time"]],
+                               "minDownTime" = cluster_parameters[["min-down-time"]],
+                               "costGeneration" = cluster_parameters[["costgeneration"]],
+                               "marginalCost" = cluster_parameters[["marginal-cost"]],
+                               "spreadCost" = cluster_parameters[["spread-cost"]],
+                               "fixedCost" = cluster_parameters[["fixed-cost"]],
+                               "startupCost" = cluster_parameters[["startup-cost"]],
+                               "marketBidCost" = cluster_parameters[["market-bid-cost"]],
+                               "genTs" = cluster_parameters[["gen-ts"]],
+                               "volatilityForced" = cluster_parameters[["volatility.forced"]],
+                               "volatilityPlanned" = cluster_parameters[["volatility.planned"]],
+                               "lawForced" = cluster_parameters[["law.forced"]],
+                               "lawPlanned" = cluster_parameters[["law.planned"]],
+                               "co2" = cluster_parameters[["co2"]],
+                               "nh3" = cluster_parameters[["nh3"]],
+                               "so2" = cluster_parameters[["so2"]],
+                               "nox" = cluster_parameters[["nox"]],
+                               "pm25" = cluster_parameters[["pm2_5"]],
+                               "pm5" = cluster_parameters[["pm5"]],
+                               "pm10" = cluster_parameters[["pm10"]],
+                               "nmvoc" = cluster_parameters[["nmvoc"]],
+                               "op1" = cluster_parameters[["op1"]],
+                               "op2" = cluster_parameters[["op2"]],
+                               "op3" = cluster_parameters[["op3"]],
+                               "op4" = cluster_parameters[["op4"]],
+                               "op5" = cluster_parameters[["op5"]],
+                               "efficiency" = cluster_parameters[["efficiency"]],
+                               "variableOMCost" = cluster_parameters[["variableomcost"]]
+                              )
+  } else if (cluster_type == "renewables") {
+    cluster_parameters <- list("name" = cluster_parameters[["name"]],
+                               "group" = cluster_parameters[["group"]],
+                               "enabled" = cluster_parameters[["enabled"]],
+                               "tsInterpretation" = cluster_parameters[["ts-interpretation"]],
+                               "unitCount" = cluster_parameters[["unitcount"]],
+                               "nominalCapacity" = cluster_parameters[["nominalcapacity"]]
+                              )
+  }
+  
+  cluster_parameters <- dropNulls(cluster_parameters)
+
+  return(toJSON(cluster_parameters, auto_unbox = TRUE))
 }
