@@ -292,6 +292,7 @@ editBindingConstraint <- function(name,
 
 # api part code
 .editBC_api <- function(..., opts){
+  
   body <- list(...)
   # checks for any study version (legacy)
   if (is.null(body$time_step))
@@ -333,9 +334,9 @@ editBindingConstraint <- function(name,
   }
   
   # >=v870
-  
+  with_time_series <- !is.null(body$values)  
   # reforge list structure
-  if(!is.null(body$values)){
+  if (with_time_series) {
     list_values <- list(less_term_matrix = body$values$lt,
                         equal_term_matrix = body$values$eq,
                         greater_term_matrix = body$values$gt)
@@ -405,12 +406,15 @@ editBindingConstraint <- function(name,
           body = body, 
           encode = "raw")
   
-  # /validate 
-  api_get(opts = opts, 
-          endpoint = file.path(opts$study_id, 
-                               "constraint-groups",
-                               result$group, 
-                               "validate"))
+  # /validate only if user provides a time series for optimization reason
+  if (with_time_series) {
+    api_get(opts = opts, 
+            endpoint = file.path(opts$study_id, 
+                                 "constraint-groups",
+                                 result$group, 
+                                 "validate")
+            )
+  }
   
   # specific endpoint for coeffs/terms
   if(!is.null(body_terms))
