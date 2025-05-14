@@ -337,15 +337,13 @@ their documentation:</p>
 <span>  area <span class="op">=</span> <span class="st">"area01"</span>, </span>
 <span>  cluster_name <span class="op">=</span> <span class="st">"clus01"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
-<span><span class="co">#&gt;       "target": "input/thermal/series/area01/area01_clus01/series",</span></span>
-<span><span class="co">#&gt;       "matrix": [[0],[0],[0],[0],[0],[0]] [truncated]...</span></span>
+<span><span class="co">#&gt;       "target": "input/links/area01/capacities/area02_indirect",</span></span>
+<span><span class="co">#&gt;       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
@@ -375,31 +373,20 @@ their documentation:</p>
 <span>    ncol <span class="op">=</span> <span class="fl">12</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_cluster</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
-<span><span class="co">#&gt;     "action": "create_cluster",</span></span>
+<span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
-<span><span class="co">#&gt;       "area_id": "area01",</span></span>
-<span><span class="co">#&gt;       "cluster_name": "clus02",</span></span>
-<span><span class="co">#&gt;       "prepro": [[9,9,7,7,7,7],[9,9,7,7,7,7],[9,9,7,7,7,7],[9,9,7,7,7,7],[9,9,7,7,7,7],[9,9,7,7,7,7]] [truncated]...,</span></span>
-<span><span class="co">#&gt;       "modulation": [[8,8,8,6],[8,8,8,6],[8,8,8,6],[8,8,8,6],[8,8,8,6],[8,8,8,6]] [truncated]...,</span></span>
-<span><span class="co">#&gt;       "parameters": {</span></span>
-<span><span class="co">#&gt;         "group": "Nuclear",</span></span>
-<span><span class="co">#&gt;         "unitcount": 1,</span></span>
-<span><span class="co">#&gt;         "marginal-cost": 50,</span></span>
-<span><span class="co">#&gt;         "ts-interpretation": "production-factor",</span></span>
-<span><span class="co">#&gt;         "name": "clus02"</span></span>
-<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;       "target": "input/links/area01/capacities/area02_direct",</span></span>
+<span><span class="co">#&gt;       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   },</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
-<span><span class="co">#&gt;       "target": "input/thermal/series/area01/clus02/series",</span></span>
-<span><span class="co">#&gt;       "matrix": [[22,22,22,22,22,22,22,22,44,44,44,44],[22,22,22,22,22,22,22,22,44,44,44,44],[22,22,22,22,22,22,22,22,44,44,44,44],[22,22,22,22,22,22,22,22,44,44,44,44],[22,22,22,22,22,22,22,22,44,44,44,44],[22,22,22,22,22,22,22,22,44,44,44,44]] [truncated]...</span></span>
+<span><span class="co">#&gt;       "target": "input/links/area01/capacities/area02_indirect",</span></span>
+<span><span class="co">#&gt;       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
