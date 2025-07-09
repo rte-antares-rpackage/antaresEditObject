@@ -177,7 +177,7 @@ createClusterBulk <- function(cluster_object,
   if (!NROW(list_params$prepro_modulation) %in% c(0, 8736, 8760)) {
     stop("Number of rows for modulation data must be 0 or 8760")
   }
-  if (!NCOL(list_params$prepro_modulation) %in% c(1, 4)) {
+  if (!NCOL(list_params$prepro_modulation) %in% c(0, 1, 4)) { # issue 115 NCOL NULL return
     stop("Number of cols for modulation data must be 0 or 4")
   }
   

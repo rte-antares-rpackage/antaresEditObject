@@ -26,8 +26,15 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   list_name <- name
   name <- tolower(name)
   
+  check_area_name(name, opts)
+  api_study <- is_api_study(opts)
+  if (!api_study | (api_study && !is_api_mocked(opts))) {
+    # check if the area can be removed safely, i.e. the area is not referenced in a binding constraint
+    .check_area_in_binding_constraint(name, opts)
+  }
+  
   # API block
-  if (is_api_study(opts)) {
+  if (api_study) {
     cmd <- api_command_generate("remove_area", id = name)
     api_command_register(cmd, opts = opts)
     `if`(
@@ -39,12 +46,10 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
     return(update_api_opts(opts))
   }
   
-  check_area_name(name, opts)
-
   # Input path
   inputPath <- opts$inputPath
   
-  # Links
+  ## Links
   links_area <- as.character(getLinks(areas = name))
   if (length(links_area) > 0) {
     links_area <- strsplit(x = links_area, split = " - ")
@@ -67,12 +72,11 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
 
   # Area folder
   unlink(x =  file.path(inputPath, "areas", name), recursive = TRUE)
-
-
-  # Hydro
+  
+  ## Hydro
   # ini
   if (file.exists(file.path(inputPath, "hydro", "hydro.ini"))) {
-    default_params <- get_default_hydro_ini_values()
+    default_params <- get_default_hydro_ini_values(opts=opts)
     empty_params <- sapply(names(default_params), FUN = function(n) default_params[[n]] <- NULL)
     writeIniHydro(area = name, params = empty_params, mode = "removeArea", opts = opts)
   }
@@ -89,28 +93,21 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
   # series
   unlink(x = file.path(inputPath, "hydro", "series", name), recursive = TRUE)
 
-
-
-
-  # Load
+  ## Load
   unlink(x = file.path(inputPath, "load", "prepro", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "load", "series", paste0("load_", name, ".txt")), recursive = TRUE)
 
-
-  # Misc-gen
+  ## Misc-gen
   unlink(x = file.path(inputPath, "misc-gen", paste0("miscgen-", name, ".txt")), recursive = TRUE)
 
-
-  # Reserves
+  ## Reserves
   unlink(x = file.path(inputPath, "reserves", paste0(name, ".txt")), recursive = TRUE)
 
-
-  # Solar
+  ## Solar
   unlink(x = file.path(inputPath, "solar", "prepro", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "solar", "series", paste0("solar_", name, ".txt")), recursive = TRUE)
 
-
-  # Thermal
+  ## Thermal
   unlink(x = file.path(inputPath, "thermal", "clusters", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "thermal", "prepro", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "thermal", "series", name), recursive = TRUE)
@@ -125,47 +122,15 @@ removeArea <- function(name, opts = antaresRead::simOptions()) {
     writeIni(thermal_areas, thermal_areas_path, overwrite = TRUE)
   }
 
-
-  # Wind
+  ## Wind
   unlink(x = file.path(inputPath, "wind", "prepro", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "wind", "series", paste0("wind_", name, ".txt")), recursive = TRUE)
-
   
-  
-  # Remove binding constraints
-  bc <- readBindingConstraints(opts = opts)
-  bc_area <- lapply(
-    X = bc,
-    FUN = function(x) {
-      all(grepl(pattern = name, x = names(x$coefs)))
-    }
-  )
-  bc_area <- unlist(bc_area)
-  bc_remove <- names(bc_area[bc_area])
-  if (length(bc_remove) > 0) {
-    for (bci in bc_remove) {
-      opts <- removeBindingConstraint(name = bci, opts = opts)
-    }
-  }
-  
-  
-  bindingconstraints <- readLines(
-    con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
-  )
-  # bindingconstraints <- grep(pattern = name, x = bindingconstraints, value = TRUE, invert = TRUE)
-  ind1 <- !grepl(pattern = paste0("^", name, "%"), x = bindingconstraints)
-  ind2 <- !grepl(pattern = paste0("%", name, "\\s"), x = bindingconstraints)
-  
-  writeLines(
-    text = paste(bindingconstraints[ind1 | ind2], collapse = "\n"), 
-    con = file.path(inputPath, "bindingconstraints", "bindingconstraints.ini")
-  )
-  
-  # st-storage
+  ## st-storage
   unlink(x = file.path(inputPath, "st-storage", "clusters", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "st-storage", "series", name), recursive = TRUE)
   
-  # renewables
+  ## renewables
   unlink(x = file.path(inputPath, "renewables", "clusters", name), recursive = TRUE)
   unlink(x = file.path(inputPath, "renewables", "series", name), recursive = TRUE)
 
@@ -232,4 +197,31 @@ checkRemovedArea <- function(area, all_files = TRUE, opts = antaresRead::simOpti
     areaResidus = areaResidus
   )
   
+}
+
+
+.check_area_in_binding_constraint <- function(name, opts) {
+
+  # Link
+  bc_not_remove_link <- character(0)
+  links_area <- as.character(getLinks(areas = name, opts = opts))
+  links_area <- gsub(pattern = " - ", replacement = "%", x = links_area)
+  # Legacy code allows reversed (i.e. not sorted) coefficient in a binding constraint 
+  links_area_reversed <- gsub(pattern = "(^.*)%(.*$)", replacement = "\\2%\\1", x = links_area)
+  if (length(links_area) > 0) {
+    bc_not_remove_link <- detect_pattern_in_binding_constraint(pattern = c(links_area, links_area_reversed), opts = opts)
+  }
+  
+  # Cluster
+  bc_not_remove_cluster <- character(0)
+  clusters <- readClusterDesc(opts = opts)
+  clusters_area <- clusters[clusters$area == name,]
+  if (nrow(clusters_area) > 0) {  
+    bc_not_remove_cluster <- detect_pattern_in_binding_constraint(pattern = paste0(clusters_area$area, ".", clusters_area$cluster), opts = opts)
+  }
+  
+  bc_not_remove <- union(bc_not_remove_cluster, bc_not_remove_link)
+  if (!identical(bc_not_remove, character(0))) {
+    warning("The following binding constraints have the area to remove in a coefficient : ", paste0(bc_not_remove, collapse = ", "))
+  }
 }

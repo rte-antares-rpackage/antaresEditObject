@@ -10,9 +10,9 @@ computeOtherFromHourlyMulti(
   type = c("areas", "links", "clusters"),
   timeStep = c("daily", "monthly", "annual", "weekly"),
   mcYears = simOptions()$mcYears,
-  writeOutput = F,
+  writeOutput = FALSE,
   nbcl = 8,
-  verbose = F
+  verbose = FALSE
 )
 }
 \arguments{

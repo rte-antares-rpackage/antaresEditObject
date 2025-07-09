@@ -1,3 +1,194 @@
+> Copyright © 2016 RTE Reseau de transport d’electricite
+
+# antaresEditObject 0.9.2.9000
+(cf. Antares v9.2 changelog)
+
+NEW FEATURES :  
+
+* `createStudy()` initializes the study by updating the `generaldata.ini` file :  
+  - the value of the `shedding-policy` parameter is changed to "accurate shave peaks"
+  - a new "compatibility" section is created with parameter `hydro-pmax` = "daily"
+* `createArea()` initializes the `hydro.ini` file with a new parameter `overflow spilled cost difference` (for each area)
+* `createClusterST()`/`editClusterST()` : Parameter `group` is now dynamic and have no restriction 
+* `createClusterST()`/`editClusterST()` :  
+  - **New properties** (*efficiencywithdrawal*, *penalize-variation-injection*, *penalize-variation-withdrawal*, see list of properties according to study version of Antares with `storage_values_default()`)  
+  - **New optional time series** (cost-injection, cost-withdrawal, cost-level, cost-variation-injection, cost-variation-withdrawal)
+* `updateScenarioBuilder()` New type of series "hfl" ("hydro final level", similar to "hydrolevels") is available
+* `editBindingConstraint()` : control the dimensions of the matrix only if a time series is provided by the user for optimization
+* `.createCluster()` uses a specific endpoint to write cluster's metadata and commands to write matrix
+
+
+### Breaking changes  :  
+  - `createClusterST()` : For a study < *v9.2*, execution will be STOP if `group` is not included in list (see doc)  
+  - `updateAdequacySettings()` : Two parameters (*enable-first-step*, *set-to-null-ntc-between-physical-out-for-first-step*) are **deprecated** and removed. Parameters are forced to `NULL` with study >= v9.2.
+    
+
+### DOC :  
+
+A new article exposing new features of Antares Simulator v9.2 is available [here](https://rte-antares-rpackage.github.io/antaresEditObject/dev/articles/Antares_new_features_v920.html)
+
+  
+
+
+# antaresEditObject 0.9.0
+(cf. Antares v9 changelog)
+
+NEW FEATURES (Antares v9.0) :  
+
+* `createStudy()` takes into account the new format of Antares studies (e.g. 9.0, 9.15 instead of 900, 915)  
+
+BUGFIXES :  
+
+* `editBindingConstraint()` :  
+  - `operator` parameter set to NULL, by default, no longer causes an error.  
+  - To add values, the `operator` parameter is now required.  
+  - For a study version >= 832, the `filter-year-by-year` and `filter-synthesis` properties are retained in the .ini file if they are not modified.  
+* *[private function]* `api_command_execute()` manage snapshot generation of a variant study with a tempo to wait the end of current task (prevents the order from being ignored).  
+  - You can use global parameter `verbose` to `TRUE` ([#274](https://github.com/rte-antares-rpackage/antaresRead/pull/274) `antaresRead`) to display diagnostic messages (`getOption("antares")`)
+* `updateAdequacySettings()` : in API mode do not send NULL value
+
+
+GITHUB ACTIONS :  
+
+* Actions artifacts v3 is closing down, update to v4  
+* test-coverage.yaml updated 
+
+
+# antaresEditObject 0.7.1
+
+### Breaking changes  :  
+
+* `createBindingConstraint()` / `editBindingConstraint()` uses metadata to check the group size of time series.
+* `createBindingConstraintBulk()` checks consistency of groups passed as parameters and consistency with the study.
+* `importZipStudyWeb()` can delete the zipfile and move the study in Antares Web to another folder
+* delete `antaresRead-reexports.R` and adjust scripts to have a clean package
+* `removeArea()` : send a warning instead of a stop if an area is referenced in a binding constraint coefficient
+* `removeLink()` : send a warning instead of a stop if a link is referenced in a binding constraint coefficient
+* `removeCluster()` : send a warning instead of a stop if a cluster is referenced in a binding constraint coefficient
+* `createClusterST()` : updated with new endpoint API (POST + PUT)
+* `editClusterST()` : updated with new endpoint API (PATCH + PUT)
+* `removeCluster()`/`removeClusterRES()`/`removeClusterST()` updated with new endpoint API (DELETE)
+
+NEW FEATURES (Antares v8.8) :
+
+* `updateOptimizationSettings()` allows the user to update solver.log property  
+* `createClusterST()` / `editClusterST()` use new parameters and default values
+* Add new function `api_patch()` to put PATCH (httr) request to API 
+
+
+BUGFIXES :  
+
+* `createBindingConstraint()` in API mode (for study <v870) created with "hourly" timeStep all the time
+* `createBindingConstraint()` / `editBindingConstraint()` in TEXT mode, bad values in time series  
+* `createBindingConstraintBulk()` with no VALUES and with a mix 
+* Enable control of matrix dimension in `.check_bulk_object_dim()` even if the values are not in first position in the list
+* `editLink()` : avoid *NULL* value (default) for arguments *filter_synthesis* and *filter_year_by_year* to write an empty string
+* `updateOutputSettings()` : in API mode, allow the user to edit the desired property
+* `setPlaylist()`: do not send NULL value if the weights are not provided in argument
+
+
+OTHER UPDATES :  
+
+* `updateGeneralSettings()` : replace custom.ts.numbers argument by custom.scenario and deprecate custom.ts.numbers  
+* `updateGeneralSettings()` : add thematic.trimming argument for edition  
+
+DOC :  
+
+* `createClusterST()` : update doc to discrabe st-storage list parameters + "Inflows" parameter
+
+# antaresEditObject 0.7.0 
+
+> Scenarized RHS for binding constraints
+
+NEW FEATURES (Antares v8.7, cf. Antares v8.7 changelog) :  
+
+* `createBindingConstraint()` / `createBindingConstraintBulk()` 
+  - New parameters `group`  
+  - Parameter `values` is now list of `data.frame` 
+  
+* `editBindingConstraint()` 
+  - New parameters `group`  
+  - Parameter `values` is now list of `data.frame`
+  
+* `removeBindingConstraint()` can now delete coupling constraints from the `group` parameter.
+* `scenarioBuilder()` has 3 new parameters dedicated to use with binding constraints.
+* `updateGeneralSettings()` adds coupling constraints to the `scenariobuilder.dat` file.
+ 
+### Breaking changes  :  
+
+* `createBindingConstraint()` is available with **offset** parameter in API mode 
+
+
+# antaresEditObject 0.6.4 
+
+BREAKING CHANGES :  
+
+* Add UTF-8 encoding argument in `.getJobs()`
+* Unit tests no longer call the study in the antaresRead package for versions > 8.0.0
+
+BUGFIXES :  
+
+* `createArea()`/`editArea()` : in API mode, split data in nodalOptimization argument to write it in the expected files
+* `editArea()` : not delete one of the two economic options if only one must be edited
+* Avoid data deletion in API mode for `editArea()`
+
+
+# antaresEditObject 0.6.3
+
+NEW FEATURES :
+
+* Complete function `deleteStudy()` with new parameter `simulation` to delete a simulation in an Antares study.
+* New parameter `geographic.trimming` in `updateGeneralSettings()`to activate or deactivate this general parameter.
+* Add `importZipStudyWeb()` to allow the user to import a local study in Antares Web
+
+### Breaking changes
+
+* `setPlaylist()` optimized for the API mode
+  - returned an updated list of simulation parameters returned by the function `setSimulationPath()` and `setSimulationPathAPI()`
+* `.createCluster()` uses data.table::fwrite() instead of utils::write.table() for optimization
+* `createCluster()` parameter `list_pollutants` default value to NULL.
+* `createBindingConstraint()` parameter `coefficients` must be alphabetically ordered.
+* `.createCluster()` default matrix in API mode.
+* `removeArea()` :
+  - control the existence of an area in a binding constraint coefficient before deletion
+  - no longer deletes a binding constraint
+* `removeLink()` : control the existence of a link a in a binding constraint coefficient before deletion
+* `removeCluster()` : control the existence of a cluster a in a binding constraint coefficient before deletion
+* `createClusterST()` : add a control to check if a cluster exists before running actions.
+* `editClusterST()` : add a control to check if a cluster exists before running actions.
+* `.removeCluster()` : add a control to check if a cluster exists before running actions in st-storage mode.
+* Update documentation for scenarioBuilder : user must enable/disable `custom-scenario` property in `generaldata.ini` by himself
+
+
+BUGFIXES : 
+
+* Fix `filter_synthesis` and `filter_year_by_year` parameters of `editLink()` in API mode
+* Fix `setPlaylist()` works in API and local mode with weights.
+* Fix `getPlaylist()` works in API and local mode with weights.
+* Fix `createDSR()` in API mode : daily binding constraint takes 366 rows.
+* Fix `createCluster()` and `editCluster()` parameter `list_pollutants` stop if Antares Version < 8.6.0
+* `getJobs()` no longer returns duplicates and displays the two new columns `owner_id` and `owner_name`.
+* Allow the user to set symbol or full name as argument series in `updateScenarioBuilder()`
+* `scenarioBuilder()` matrix has the same row repeated if the area is not rand
+* Fix `createLink()` to update opts in API mode.
+* Fix `editClusterST()` : can not edit a cluster if it does not exist in API mode.
+* `updateScenarioBuilder()` works for NTC part : allow cartesian in the merge.
+* `api_command_execute()` :  
+  - no longer deletes a command  
+  - displays a success message for a study or variant
+* `removeCluster()` no longer deletes everything in the folder prepro  
+
+# antaresEditObject 0.6.2
+* Fix test to remove rev dep to `antaresRead` (see `cran-comments.md` for details)
+
+# antaresEditObject 0.6.1
+* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
+
+BUGFIXES : 
+
+* Error CRAN CHECKS (fix issue #115)
+
+
 # antaresEditObject 0.6.0
 
 ### Breaking changes (Antares v8.6, cf. Antares v8.6 changelog) :
@@ -24,11 +215,10 @@ NEW FEATURES :
 * Add `writeIniHydro()` function to make easier the edition of the `input/hydro/hydro.ini` file
 * Call `writeIniHydro()` in `createArea()` and `removeArea()`
 * Enable edition of hydro levels in `settings/scenariobuilder.dat` by using `scenarioBuilder()` and `updateScenarioBuilder()`
-* Add deduplicateScenarioBuilder() function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
-* Add writeIniHydro() function to make easier the edition of the input/hydro/hydro.ini file
-* Call writeIniHydro() in createArea() and removeArea()
-* removeArea() removes only expected files in links directory
-
+* Add `deduplicateScenarioBuilder()` function to keep the last value if a key is duplicated in settings/scenariobuilder.dat
+* Add `writeIniHydro()` function to make easier the edition of the input/hydro/hydro.ini file
+* Call `writeIniHydro()` in `createArea()` and `removeArea()`
+* `removeArea()` removes only expected files in links directory
 
 
 ### Breaking changes
@@ -39,6 +229,7 @@ NEW FEATURES :
 * `removeClusterRES()` in API mode
 * `removeLink()` delete properly data for an Antares version >= 820
 * `rollback_to_previous_data()` enable to rollback if original value is NULL
+* `writeInputTS()` allows the user to set a link with the separator ' - ' (ex: 'area1 - area2')
 
 BUGFIXES : 
 

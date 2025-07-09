@@ -1,11 +1,11 @@
 Package: antaresEditObject
 Type: Package
 Title: Edit an 'Antares' Simulation
-Version: 0.6.0
+Version: 0.9.2.9000
 Authors@R: c(
     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
-    person("Frederic", "Breant", role = "aut"),
-    person("Victor", "Perrier", role = c("aut")),
+    person("Frederic", "Breant", role = "ctb"),
+    person("Victor", "Perrier", role = c("ctb")),
     person("Baptiste", "Seguinot", role = "ctb"),
     person("Benoit", "Thieurmel", role = "ctb"),
     person("Titouan", "Robert", role = "ctb"),
@@ -15,17 +15,20 @@ Authors@R: c(
     person("Assil", "Mansouri", role = "ctb"),
     person("Abdallah", "Mahoudi", role = "ctb"),
     person("Clement", "Berthet", role = "ctb"),
+    person("Kamel", "Kemiha", role = "ctb"),
+    person("Nicolas", "Boitard", role = "ctb"),
     person("RTE", role = "cph"))
 Description: Edit an 'Antares' simulation before running it : create new areas, links, thermal
     clusters or binding constraints or edit existing ones. Update 'Antares' general & optimization settings.
     'Antares' is an open source power system generator, more information available here : <https://antares-simulator.org/>.
-License: GPL (>= 2) | file LICENSE
-URL: https://github.com/rte-antares-rpackage/antaresEditObject
+License: GPL (>= 2)
+URL: https://github.com/rte-antares-rpackage/antaresEditObject, https://rte-antares-rpackage.github.io/antaresEditObject/
 BugReports: https://github.com/rte-antares-rpackage/antaresEditObject/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.2
 Roxygen: list(markdown = TRUE)
-Depends: antaresRead (>= 2.4.2)
+Depends: 
+    antaresRead (>= 2.4.2)
 Imports: 
     assertthat,
     cli,
@@ -42,10 +45,13 @@ Imports:
     parallel,
     future,
     plyr,
-    yaml
+    yaml,
+    lifecycle
 Suggests: 
     testthat,
     covr,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Remotes:  
+    rte-antares-rpackage/antaresRead

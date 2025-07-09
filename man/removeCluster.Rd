@@ -41,9 +41,10 @@ removeClusterST(
 An updated list containing various information about the simulation.
 }
 \description{
-\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}} (thermal clusters only)
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
-Remove a cluster, thermal RES (renewable energy source) or short-term storage, and all its data.
+Delete cluster(s), thermal, renewable (renewable energy source) or short-term storage,
+along with all its data (properties + TS).
 }
 \examples{
 \dontrun{

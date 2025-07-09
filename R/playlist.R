@@ -1,8 +1,11 @@
 
 #' @title Get the playlist of an Antares study
-#'  `r antaresEditObject:::badge_api_ok()`
+#'  
 #'
-#' @description \code{getPlaylist} gives the identifier of the MC years which
+#' @description 
+#' `r antaresEditObject:::badge_api_ok()`
+#' 
+#' \code{getPlaylist} gives the identifier of the MC years which
 #' will be simulated in the Antares study, taking into account the potential use of a
 #' playlist which can skip some MC years
 #'
@@ -39,8 +42,9 @@
 #' setPlaylist(c(3, 5, 7))
 #' }
 getPlaylist <- function(opts = antaresRead::simOptions()) {
-  assertthat::assert_that(inherits(opts, "simOptions"))
   
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  api_study <- is_api_study(opts)
   # read general parameters
   parameters <- readIni("settings/generaldata", opts = opts)
   
@@ -58,18 +62,29 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
   # otherwise, update the vector of mc_years by removing disabled years
   playlist_update_type <- names(parameters$playlist)
   playlist_update_value <- parameters$playlist
-  
-  for (type in playlist_update_type){
-    no_uptdate <- grepl(pattern = "reset", type)
-    if (!no_uptdate){
-      transform_values <- gsub(pattern = "\\[|\\]", 
-                               x = playlist_update_value[[type]],
-                               replacement = "")
-      transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+  if (api_study){
+    
+    for (type in playlist_update_type){
+      no_uptdate <- grepl(pattern = "reset", type)
+      if (!no_uptdate){
+        if (type == "playlist_year +"){
+          transform_values <- gsub(pattern = "\\[|\\]", 
+                                   x = playlist_update_value[[type]],
+                                   replacement = "")
+          transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+        }
+        else if (type == "playlist_year_weight"){
+          transform_values <- gsub(pattern = "\\['|'|'\\]", 
+                                   x = playlist_update_value[[type]],
+                                   replacement = "")
+          transform_values <- unlist(strsplit(x = transform_values, split = "\\,"))
+        }
+        
+        
+        playlist_update_value[[type]] <- as.numeric(transform_values)
+      } 
       
-      playlist_update_value[[type]] <- as.integer(transform_values)
-    } 
-      
+    }
   }
   
   # untouched playlist - no modification have been made
@@ -112,14 +127,19 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
       return(activate_mc)
     } else{
       vect_value_weigth = unlist(playlist_update_value[names(playlist_update_value) == "playlist_year_weight"])
-      mat_play_list <-
-        data.table(t(cbind.data.frame(strsplit(
-          vect_value_weigth, ","
-        ))))
-      mat_play_list$V1 <- as.numeric(mat_play_list$V1) + 1
-      mat_play_list$V2 <- as.numeric(mat_play_list$V2)
-      setnames(mat_play_list, "V1", "mcYears")
-      setnames(mat_play_list, "V2", "weights")
+      if(api_study){
+        mcYears <- vect_value_weigth[seq(1, length(vect_value_weigth), by = 2)] + 1
+        weights <- vect_value_weigth[seq(2, length(vect_value_weigth), by = 2)]
+        mat_play_list <- data.table(mcYears, weights)
+      }
+      else {
+        mat_play_list <- data.table(t(cbind.data.frame(
+          strsplit(vect_value_weigth, ","))))
+        mat_play_list$V1 <- as.numeric(mat_play_list$V1) + 1
+        mat_play_list$V2 <- as.numeric(mat_play_list$V2)
+        setnames(mat_play_list, "V1", "mcYears")
+        setnames(mat_play_list, "V2", "weights")
+      }
       return(list(activate_mc = activate_mc, weights = mat_play_list))
     }
   }
@@ -143,7 +163,7 @@ getPlaylist <- function(opts = antaresRead::simOptions()) {
 #'  * `setPlaylist` does not return anything. It is  used to modify the input of an Antares study.
 #'
 #' @importFrom assertthat assert_that
-#' @importFrom antaresRead simOptions
+#' @importFrom antaresRead simOptions readIni
 #' @export
 #'
 #' @rdname playlist
@@ -151,10 +171,11 @@ setPlaylist <- function(playlist,
                         weights = NULL,
                         opts = antaresRead::simOptions()) {
   
-  version_study <- substr(opts$antaresVersion, 1, 1)
-  version_study <- as.numeric(version_study)
+  api_study <- is_api_study(opts)
   
-  if (version_study < 8 & !is.null(weights)) {
+  version_study <- substr(opts$antaresVersion, 1, 1)
+  
+  if (as.numeric(version_study) < 8 & !is.null(weights)) {
     stop("weights can be use only for antares > V8, please convert your studie before")
   }
   
@@ -173,53 +194,94 @@ setPlaylist <- function(playlist,
   playlist <- sort(playlist)
   playlist <- unique(playlist)
   
-  
   # read general data parameters
   generaldata <- readIni("settings/generaldata", opts = opts)
+  existing_playlist_weight <- "playlist_year_weight" %in% names(generaldata$playlist)
   
   # if all mc_years must be simulated, desactive playlist
   if (length(playlist) == length(mc_years)) {
     # update line to disable the playlist
     generaldata$general$`user-playlist` <- FALSE
-    # write updated file
-    writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
-    
+    if (api_study) {
+      # To minimize the number of queries, we reduce the list to the updated items
+      generaldata <- generaldata[which(names(generaldata) == "general")]
+      generaldata$general[which(names(generaldata$general) != "user-playlist")] <- NULL
+    }
   } else { # otherwise, set the playlist
     # update line to enable the playlist
     generaldata$general$`user-playlist` <- TRUE
-    
     # delete lines with current playlist
     generaldata$playlist <- NULL
     
     # create new playlist (+ patch double to integer)
     new_playlist <- setNames(as.list(sort(as.integer(playlist - 1))), rep("playlist_year +", length(playlist)))
-    if (opts$typeLoad == "api"){
+    playlist_weights <- .format_playlist_weights(weights = weights, api_mode = api_study)
+    
+    if (api_study) {
       new_playlist$sep <- ", "
       new_playlist <- list("playlist_year +" = paste0("[", do.call(paste, new_playlist), "]"))
-    }
-    new_playlist <- c(list(playlist_reset = FALSE), new_playlist)
-    
-    if (!is.null(weights)) {
-      new_playlist <- c(
-        new_playlist, 
-        setNames(apply(
-          X = weights, 
-          MARGIN = 1,
-          FUN = function(X) {
-            paste0(
-              X[1] - 1,
-              ",",
-              format(round(X[2], 6), nsmall = 6)
-            )
-          }
-        ), rep("playlist_year_weight", length(weights)))
-      )
+      if (existing_playlist_weight & is.null(playlist_weights)) {
+        weights <- data.table("mcYears" = playlist, "weights" = rep(1, length(playlist))) # 1 is the default weight
+        playlist_weights <- .format_playlist_weights(weights = weights, api_mode = TRUE) 
+      }
+      new_playlist[["playlist_year_weight"]] <- playlist_weights
+    } else {
+      new_playlist <- c(new_playlist, playlist_weights)
     }
     
+    new_playlist <- c(list("playlist_reset" = FALSE), new_playlist)
+    
+    if (api_study) {
+      # To minimize the number of queries, we reduce the list to the updated items
+      generaldata <- generaldata[which(names(generaldata) == "general")]
+      generaldata$general[which(names(generaldata$general) != "user-playlist")] <- NULL
+    }
     # add new playlist to the parameters description
     generaldata$playlist <- new_playlist
-    
-    # write updated file
-    writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
   }
+  
+  writeIni(listData = generaldata, pathIni = "settings/generaldata", overwrite = TRUE, opts = opts)
+  
+  if (api_study) {
+    suppressWarnings(
+      res <- antaresRead::setSimulationPathAPI(host = opts$host,
+                                               study_id = opts$study_id, 
+                                               token = opts$token, 
+                                               simulation = "input")
+    )
+  } else {
+    suppressWarnings(
+      res <- antaresRead::setSimulationPath(path = opts$studyPath, 
+                                            simulation = "input")
+    )
+  }
+  
+  return(invisible(res))
+}
+
+
+#' Generate playlist_year_weight section in the appropriate format.
+#' 
+#' @param weights
+#'   data.table, 2 columns : mcYears and weights. Only with after antares V8
+#' @param api_mode Boolean to identify an api study
+#'
+#' @return The playlist_year_weight section formatted.
+#'
+.format_playlist_weights <- function(weights, api_mode) {
+  
+  playlist_year_weight <- NULL 
+  
+  if (!is.null(weights)) {
+    if (api_mode) {
+      playlist_year_weight <- paste0(weights$mcYears - 1, ",", weights$weights)
+      playlist_year_weight <- paste("\'", playlist_year_weight, "\'", collapse  = ",", sep = "")
+      playlist_year_weight <- paste("[", playlist_year_weight, "]", sep = "")
+    } else {
+      playlist_year_weight <- paste0(weights$mcYears - 1, ",", format(round(weights$weights, 6), nsmall = 6))
+      playlist_year_weight <- setNames(playlist_year_weight, rep("playlist_year_weight", length(playlist_year_weight)))
+    }
+  }
+  
+  return(playlist_year_weight)
 }

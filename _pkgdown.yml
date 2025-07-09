@@ -1,5 +1,7 @@
+development:
+  mode: auto
 destination: docs
-
 template:
-  params:
-    bootswatch: readable
+  bootstrap: 5
+  light-switch: true
+

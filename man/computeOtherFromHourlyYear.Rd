@@ -10,7 +10,7 @@ computeOtherFromHourlyYear(
   areas = "all",
   opts = simOptions(),
   timeStep = c("daily", "monthly", "annual", "weekly"),
-  writeOutput = F
+  writeOutput = FALSE
 )
 }
 \arguments{

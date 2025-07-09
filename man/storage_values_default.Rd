@@ -2,16 +2,24 @@
 % Please edit documentation in R/createClusterST.R
 \name{storage_values_default}
 \alias{storage_values_default}
-\title{Output pollutants list for thermal clusters}
+\title{Short Term Storage Property List}
 \usage{
-storage_values_default()
+storage_values_default(opts = simOptions())
+}
+\arguments{
+\item{opts}{List of simulation parameters returned by the function
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \value{
+An updated list containing various information about the simulation.
+
 a named list
 }
 \description{
-Output pollutants list for thermal clusters
+Default values are returned according to study version
 }
 \examples{
+\dontrun{
 storage_values_default()
+}
 }

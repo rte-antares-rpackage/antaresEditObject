@@ -1,9 +1,10 @@
 #' @title Remove a cluster
 #' 
 #' @description 
-#' `r antaresEditObject:::badge_api_ok()` (thermal clusters only)
+#' `r antaresEditObject:::badge_api_ok()` 
 #' 
-#' Remove a cluster, thermal RES (renewable energy source) or short-term storage, and all its data.
+#' Delete cluster(s), thermal, renewable (renewable energy source) or short-term storage, 
+#' along with all its data (properties + TS).
 #' 
 #'
 #' @inheritParams createCluster
@@ -75,38 +76,6 @@ removeClusterST <- function(area,
   )
 }
 
-
-.api_command_generate_remove_cluster <- function(area,
-                                                 cluster_name,
-                                                 cluster_type = c("thermal", "renewables", "st-storage")
-                                                ) {
-  
-  cluster_type <- match.arg(cluster_type)
-  
-  remove_action <- switch(cluster_type,
-                          "thermal" = "remove_cluster",
-                          "renewables" = "remove_renewables_cluster",
-                          "st-storage" = "remove_st_storage"
-                          )
-  
-  if (identical(cluster_type, "st-storage")) {
-    cmd <- api_command_generate(
-            action = remove_action,
-            area_id = area,
-            storage_id = cluster_name
-            )
-  } else {
-    cmd <- api_command_generate(
-            action = remove_action,
-            area_id = area,
-            cluster_id = cluster_name
-            )
-  }
-    
-  return(cmd)
-}
-
-
 .removeCluster <- function(area, 
                            cluster_name, 
                            add_prefix = TRUE,
@@ -115,67 +84,95 @@ removeClusterST <- function(area,
   
   cluster_type <- match.arg(cluster_type)
   
+  # tolower area ----
   area <- tolower(area)
+  #check area ----
+  check_area_name(area, opts)
+  api_study <- is_api_study(opts)
+  is_thermal <- identical(cluster_type, "thermal")
   
-  # Input path
-  inputPath <- opts$inputPath
+  # add prefix to cluster's name
+  cluster_name <- generate_cluster_name(area, 
+                                        cluster_name, 
+                                        add_prefix)
   
-  if (add_prefix)
-    cluster_name <- paste(area, cluster_name, sep = "_")
+  # check if the cluster can be removed safely, i.e. the cluster is not referenced in a binding constraint
+  if (is_thermal) {
+    if (!api_study) {
+      bc_not_remove <- detect_pattern_in_binding_constraint(
+        pattern = paste0(area, ".", cluster_name), 
+        opts = opts)
+      if (!identical(bc_not_remove, character(0))) 
+        warning("The following binding constraints have the cluster to remove as a coefficient : ", 
+                paste0(bc_not_remove, collapse = ", "))
+    }
+  }
   
-  if (is_api_study(opts)) {
+  if (api_study) {
     # format name for API 
     cluster_name <- transform_name_to_id(cluster_name)
     
-    cmd <- .api_command_generate_remove_cluster(area, cluster_name, cluster_type)
-    
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = paste0("{.emph ", cmd$action, "}: {msg_api}")),
-      cli_command_registered(cmd$action)
+    # adapt type for api 
+    api_type <- switch(
+      cluster_type,
+      "thermal" = "clusters/thermal",
+      "renewables" = "clusters/renewable",
+      "st-storage" = "storages"
     )
+    
+    # body request
+    body <- jsonlite::toJSON(cluster_name)
+    
+    # delete
+    api_delete(opts = opts, 
+               endpoint =  file.path(opts$study_id, 
+                                     "areas", 
+                                     area, 
+                                     api_type), 
+               body = body,
+               encode = "raw")
+    
+    cli::cli_alert_success("Endpoint {.emph {'Delete Cluster'}} {.emph 
+                          [{cluster_type}] {.strong {cluster_name}}} success")
     
     return(invisible(opts))
   }
   
+  # Input path
+  clustertypePath <- file.path(opts$inputPath, cluster_type)
+  
   # Remove from Ini file
   # path to ini file
-  path_clusters_ini <- file.path(inputPath, cluster_type, "clusters", area, "list.ini")
+  path_clusters_ini <- file.path(clustertypePath, "clusters", area, "list.ini")
   
   # read previous content of ini
   previous_params <- readIniFile(file = path_clusters_ini)
   
-  # cluster indice
-  ind <- which(tolower(names(previous_params)) %in% tolower(cluster_name))
-  if (length(ind) < 1)
+  # check cluster name ----
+  idx <- which(tolower(names(previous_params)) %in% cluster_name)
+  if (length(idx) < 1)
     warning("Cluster '", cluster_name, "' you want to remove doesn't seem to exist in area '", area, "'.")
   
-  # Remove
-  previous_params[ind] <- NULL
+  # Remove entry in list.ini
+  previous_params[idx] <- NULL
   
-  # write
   writeIni(
     listData = previous_params,
     pathIni = path_clusters_ini,
     overwrite = TRUE
   )
   
-  if (length(previous_params) > 0) {
-    # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area, tolower(cluster_name)), recursive = TRUE)
-    if (identical(cluster_type, "thermal")) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
-    }
-  } else {
-    # remove series
-    unlink(x = file.path(inputPath, cluster_type, "series", area), recursive = TRUE)
-    if (identical(cluster_type, "thermal")) {
-      # remove prepro
-      unlink(x = file.path(inputPath, cluster_type, "prepro", area), recursive = TRUE)
-    }
+  # Remove directories recursively
+  subdirs_to_remove <- c("series")
+  if (is_thermal) {
+    subdirs_to_remove <- c(subdirs_to_remove, "prepro")
   }
+  
+  dirs_to_remove <- file.path(clustertypePath, subdirs_to_remove, area)
+  if (length(previous_params) > 0) {
+    dirs_to_remove <- file.path(dirs_to_remove, cluster_name)
+  }
+  lapply(dirs_to_remove, unlink, recursive = TRUE)
   
   # Maj simulation
   suppressWarnings({

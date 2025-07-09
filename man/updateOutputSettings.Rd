@@ -15,13 +15,13 @@ updateOutputSettings(
 \arguments{
 \item{synthesis}{Logical. If TRUE, synthetic results will be stored in a
 directory Study_name/OUTPUT/simu_tag/Economy/mc-all. If FALSE, No general
-synthesis will be printed out.}
+synthesis will be printed out. See Antares General Reference Guide (see link below).}
 
-\item{storenewset}{Logical. See Antares General Reference Guide.}
+\item{storenewset}{Logical. See Antares General Reference Guide (see link below).}
 
-\item{archives}{Character vector. Series to archive.}
+\item{archives}{Character vector. Series to archive. See Antares General Reference Guide (see link below).}
 
-\item{result.format}{Character. Output format (txt-files or zip).}
+\item{result.format}{Character. Output format (txt-files or zip). See Antares General Reference Guide (see link below).}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -40,10 +40,13 @@ Update output parameters of an Antares study
 updateOutputSettings(
   synthesis = TRUE,
   storenewset = FALSE,
-  archives = c("load", "wind")
+  archives = c("load", "wind"),
   result.format = "zip"
 )
 
 }
 
+}
+\seealso{
+{Antares General Reference Guide}
 }

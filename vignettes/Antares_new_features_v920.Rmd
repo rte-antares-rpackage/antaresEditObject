@@ -1,0 +1,261 @@
+---
+title: "Antares new features v9.2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Antares new features v9.2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(antaresEditObject)
+```
+
+This article will present the new features in line with **Antares v9.2** (cf  [Antares Simulator](https://antares-simulator.readthedocs.io/en/latest/user-guide/04-migration-guides/#v920))
+
+## Create new study v9.2
+
+```{r init}
+dir_path <- tempdir()
+suppressWarnings(
+  createStudy(path = dir_path, 
+            study_name = "test920", 
+            antares_version = "9.2")
+)
+
+```
+
+For Antares Simulator, format version is now "9.2". For packages, we make the adjustment and we keep "920". 
+
+**Check version of my current study** : 
+
+```{r}
+current_study_opts <- simOptions()
+current_study_opts$antaresVersion
+```
+
+Some minor changes to the creation of the study. 
+
+Initializes the study by updating the `generaldata.ini` file :  
+
+  - the value of the `shedding-policy` parameter is changed to "accurate shave peaks"
+  - a new "compatibility" section is created with parameter `hydro-pmax` = "daily"
+
+## Create area 
+
+We just need create *areas* to create *st-storages*. 
+```{r areas}
+createArea(name = "fr")
+createArea(name = "it")
+```
+
+A new parameter `overflow spilled cost difference` in `hydro.ini` file (*input/hydro/hydro.ini*) is initiated (*default value = 1*).
+
+## Short term storage
+
+We can create new clusters, st-storage (from v8.6), with function `createClusterST()`. You can see function documentation with `?createClusterST`.  
+
+By default you can call function only with two parameters (`area`, `cluster_name`). 
+
+Clusters are created with default properties and time series.
+
+### Dynamic group names
+
+Default `group` is still "Other1" and now you can **create/edit** your own group name (*only for version study >= 9.2*).
+
+```{r st-storage/group}
+# creation
+createClusterST(area = "fr", 
+                cluster_name = "test_storage", 
+                group = "my_own_group")
+
+createClusterST(area = "it", 
+                cluster_name = "test_storage", 
+                group = "my_own_group_again")
+
+# edit group of existing st-storage cluster
+editClusterST(area = "fr", 
+              cluster_name = "test_storage", 
+              group = "my_own_group_Pondage")
+
+# read cluster properties
+tab <- readClusterSTDesc()
+rmarkdown::paged_table(tab)
+```
+### New properties
+
+you can create or edit new clusters with new properties (see doc `?createClusterST`). 
+
+```{r default values}
+# new properties (default values)
+rmarkdown::paged_table(as.data.frame(storage_values_default(), check.names = FALSE))
+```
+
+```{r creation/properties}
+# creation
+my_parameters <- storage_values_default()
+my_parameters$efficiencywithdrawal <- 0.5
+my_parameters$`penalize-variation-injection` <- TRUE
+my_parameters$`penalize-variation-withdrawal` <- TRUE
+
+createClusterST(area = "fr", 
+                cluster_name = "test_storage", 
+                group = "new_properties", 
+                storage_parameters = my_parameters, 
+                overwrite = TRUE)
+
+createClusterST(area = "it", 
+                cluster_name = "test_storage", 
+                group = "new_properties", 
+                storage_parameters = my_parameters,
+                overwrite = TRUE)
+
+# read cluster properties 
+tab <- readClusterSTDesc()
+rmarkdown::paged_table(tab)
+```
+
+```{r edit/properties}
+# edit properties of existing st-storage cluster
+my_parameters$efficiencywithdrawal <- 0.9
+my_parameters$`penalize-variation-injection` <- FALSE
+my_parameters$`penalize-variation-withdrawal` <- FALSE
+
+editClusterST(area = "fr", 
+              cluster_name = "test_storage",
+              storage_parameters = my_parameters)
+
+# read cluster properties 
+tab <- readClusterSTDesc()
+rmarkdown::paged_table(tab)
+```
+
+### New optional **time series**
+
+We have five new *.txt* files containing one series of dimension ${N=8760, P=1}$ :  
+
+  - cost-injection.txt  
+  - cost-withdrawal.txt 
+  - cost-level.txt  
+  - cost-variation-injection.txt  
+  - cost-variation-withdrawal.txt
+  
+
+```{r create/ts}
+# creation
+ratio_value <- matrix(0.7, 8760)
+  
+# default properties with new optional TS
+createClusterST(area = "fr", 
+                cluster_name = "good_ts_value", 
+                cost_injection = ratio_value, 
+                cost_withdrawal = ratio_value, 
+                cost_level = ratio_value, 
+                cost_variation_injection = ratio_value,
+                cost_variation_withdrawal = ratio_value)
+
+# read cluster TS values 
+tab <- readInputTS(st_storage = "all", 
+                   showProgress = FALSE)
+rmarkdown::paged_table(head(tab))
+```
+
+```{r edit/ts}
+# edit TS values of existing st-storage cluster
+new_ratio_value <- matrix(0.85, 8760)
+
+# edit everything or anyone you want 
+editClusterST(area = "fr",
+              cluster_name = "good_ts_value",
+              cost_injection = new_ratio_value, 
+              cost_withdrawal = new_ratio_value)
+
+# read cluster TS values 
+tab <- readInputTS(st_storage = "all", 
+                   showProgress = FALSE)
+rmarkdown::paged_table(head(tab))
+```
+
+### Remove clusters
+
+Nothing has changed to remove clusters.
+
+```{r remove}
+# read cluster names
+levels(readClusterSTDesc()$cluster)
+
+# remove a cluster
+removeClusterST(area = "fr", 
+                cluster_name = "good_ts_value")
+
+# read cluster 
+tab <- readClusterSTDesc()
+rmarkdown::paged_table(tab)
+```
+
+
+## Generaldata
+
+The “generaldata.ini” settings file (*settings/generaldata.ini*) contains several sections.
+
+Antares Simulator v9.2 deletes some parameters: 
+
+  - *adequacy patch/enable-first-step*
+  - *adequacy patch/set-to-null-ntc-between-physical-out-for-first-step*
+  - *other preferences/initial-reservoir-levels*
+
+A message is displayed and parameters are set to `NULL` for the `[adequacy patch]` section.
+
+For the `[other preferences]` section, the `initial-reservoir-levels` parameter is not explicitly used by a dedicated function.
+
+```{r generaldata}
+# user messages
+updateAdequacySettings(
+    set_to_null_ntc_between_physical_out_for_first_step = FALSE)
+updateAdequacySettings(enable_first_step = FALSE)
+```
+
+
+## Scenario builder
+
+The scenario builder allows you to use a new code `hfl` for 'hydro final level'. 
+This new feature is similar to `hl` ('hydro levels') and is used in the same way with the 'coef_hydro_levels' parameter.
+
+```{r scenariobuilder}
+# the number of coeff is equivalent to the number of areas
+  my_coef <- runif(length(getAreas()))
+  
+  opts <- simOptions()
+  
+  # build data 
+  ldata <- scenarioBuilder(
+    n_scenario = 10,
+    n_mc = 10,
+    areas = getAreas(),
+    coef_hydro_levels = my_coef
+  )
+  
+  # update scenearionbuilder.dat
+  updateScenarioBuilder(ldata = ldata,
+                        series = "hfl")
+  
+  readScenarioBuilder(as_matrix = TRUE)
+```
+
+
+```{r delete study, include=FALSE}
+# Delete study
+unlink(current_study_opts$studyPath, 
+       recursive = TRUE)
+# clean global options
+options(antares = NULL)
+```
+
+

@@ -16,6 +16,7 @@ updateOptimizationSettings(
   include.spinningreserve = NULL,
   include.primaryreserve = NULL,
   include.exportmps = NULL,
+  solver.log = NULL,
   power.fluctuations = NULL,
   shedding.strategy = NULL,
   shedding.policy = NULL,
@@ -50,11 +51,13 @@ null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-fo
 
 \item{include.exportmps}{true or false (since v8.3.2 can take also : none, optim-1, optim-2, both-optims)}
 
+\item{solver.log}{true or false (available for version >= 8.8)}
+
 \item{power.fluctuations}{free modulations, minimize excursions or minimize ramping}
 
 \item{shedding.strategy}{share margins}
 
-\item{shedding.policy}{shave peaks or minimize duration}
+\item{shedding.policy}{shave peaks (accurate shave peaks for study >= v9.2)or minimize duration}
 
 \item{unit.commitment.mode}{fast or accurate}
 

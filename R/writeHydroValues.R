@@ -9,16 +9,16 @@
 #' @param type Type of hydro file, it can be "waterValues", "reservoir", "maxpower", "inflowPattern" or "creditmodulations".
 #' @param data The data must have specific dimension depending on the type of file :
 #' \itemize{
-#'   \item{waterValues}{: a 365x101 numeric matrix:
+#'   \item \code{waterValues}: a 365x101 numeric matrix:
 #'   marginal values for the stored energy based on date (365 days)
 #'   and on the reservoir level (101 round percentage values ranging from
 #'   0% to 100%). OR a 3-column matrix with 365x101 rows. In this latter case the 3 columns must
 #'   be 'date', 'level' and 'value' (in this order), and the rows must be sorted by:
-#'   ascending day, ascending level.}
-#'   \item{reservoir}{: a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.}
-#'   \item{maxpower}{: a 365x4 numeric matrix.}
-#'   \item{inflowPattern}{: a 365x1 numeric matrix.}
-#'   \item{creditmodulations}{: a 2x101 numeric matrix.}
+#'   ascending day, ascending level.
+#'   \item \code{reservoir}: a 365x3 numeric matrix. The columns contains respectively the levels min, avg and max.
+#'   \item \code{maxpower}: a 365x4 numeric matrix.
+#'   \item \code{inflowPattern}: a 365x1 numeric matrix.
+#'   \item \code{creditmodulations}: a 2x101 numeric matrix.
 #'   }
 #'   
 #' @param overwrite Logical. Overwrite the values if a file already exists.
@@ -124,7 +124,8 @@ writeHydroValues <- function(area,
 
 
 #' @title Get default hydro.ini values 
-get_default_hydro_ini_values <- function(){
+#' @template opts-arg 
+get_default_hydro_ini_values <- function(opts){
   
   default_hydro_params <- list(
         "inter-daily-breakdown" = 1, #
@@ -143,6 +144,10 @@ get_default_hydro_ini_values <- function(){
         "reservoir" = FALSE,
         "reservoir capacity" = 0
   )
+  
+  if(opts$antaresVersion>=920)
+    default_hydro_params <- append(default_hydro_params, 
+           list("overflow spilled cost difference" = 1))
   
   return(default_hydro_params)
 }
@@ -234,21 +239,21 @@ check_consistency_reservoir_values <- function(area, new_data, prev_data){
 #' @param area The area where to edit the values.
 #' @param params The list data must have specific names and specific types :
 #' \itemize{
-#'      \item{follow load}{ : logical or NULL}
-#'      \item{use heuristic}{ : logical or NULL}
-#'      \item{use water}{ : logical or NULL}
-#'      \item{hard bounds}{ : logical or NULL}
-#'      \item{use leeway}{ : logical or NULL}
-#'      \item{power to level}{ : logical or NULL}
-#'      \item{reservoir}{ : logical or NULL}
-#'      \item{inter-daily-breakdown}{ : numeric, integer or NULL}
-#'      \item{intra-daily-modulation}{ : numeric, integer or NULL}
-#'      \item{inter-monthly-breakdown}{ : numeric, integer or NULL}
-#'      \item{leeway low}{ : numeric, integer or NULL}
-#'      \item{leeway up}{ : numeric, integer or NULL}
-#'      \item{pumping efficiency}{ : numeric, integer or NULL}
-#'      \item{initialize reservoir date}{ : numeric, integer or NULL}
-#'      \item{reservoir capacity}{ : numeric, integer or NULL}
+#'      \item \code{follow load} : logical or NULL
+#'      \item \code{use heuristic} : logical or NULL
+#'      \item \code{use water} : logical or NULL
+#'      \item \code{hard bounds} : logical or NULL
+#'      \item \code{use leeway} : logical or NULL
+#'      \item \code{power to level} : logical or NULL
+#'      \item \code{reservoir} : logical or NULL
+#'      \item \code{inter-daily-breakdown} : numeric, integer or NULL
+#'      \item \code{intra-daily-modulation} : numeric, integer or NULL
+#'      \item \code{inter-monthly-breakdown} : numeric, integer or NULL
+#'      \item \code{leeway low} : numeric, integer or NULL
+#'      \item \code{leeway up} : numeric, integer or NULL
+#'      \item \code{pumping efficiency} : numeric, integer or NULL
+#'      \item \code{initialize reservoir date} : numeric, integer or NULL
+#'      \item \code{reservoir capacity} : numeric, integer or NULL
 #'   }
 #' @param mode Execution mode. Useful when you create a new area or remove an existing area to avoid control on hydro data.
 #' @param opts List of simulation parameters returned by the function
@@ -302,6 +307,11 @@ writeIniHydro <- function(area, params, mode = "other", opts = antaresRead::simO
                           "reservoir" = c("logical", "NULL"),
                           "reservoir capacity" = c("numeric", "integer", "NULL")
   )
+  
+  if(opts$antaresVersion>=920)
+    expected_params <- append(
+      expected_params, 
+      list("overflow spilled cost difference" = c("numeric", "integer", "NULL")))
   
   params_names <- names(params)
   expected_params_names <- names(expected_params)
@@ -450,7 +460,7 @@ fill_empty_hydro_ini_file <- function(area, opts = antaresRead::simOptions()){
   
   path_ini_hydro <- file.path("input", "hydro", "hydro.ini")
   ini_hydro_data <- antaresRead::readIni(path_ini_hydro, opts = opts)
-  default_params <- get_default_hydro_ini_values()
+  default_params <- get_default_hydro_ini_values(opts = opts)
   # use heuristic
   if (is.null(ini_hydro_data[["use heuristic"]][[area]])) {
     ini_hydro_data[["use heuristic"]][[area]] <- default_params[["use heuristic"]]
@@ -557,8 +567,8 @@ get_type_check_mingen_vs_hydrostorage <- function(hydro_params){
 #'
 #' Compute the type of control to make between :
 #' \itemize{
-#'      \item{`input/hydro/series/<area>/mingen.txt`}
-#'      \item{`input/hydro/series/<area>/mod.txt`}
+#'      \item \code{input/hydro/series/<area>/mingen.txt}
+#'      \item \code{input/hydro/series/<area>/mod.txt}
 #' }
 #' This control is implemented in Antares too.
 #' 
@@ -728,8 +738,8 @@ check_mingen_vs_hydro_storage <- function(area, opts = antaresRead::simOptions()
 #'
 #' Compute the type of control to make between :
 #' \itemize{
-#'      \item{`input/hydro/series/<area>/mingen.txt`}
-#'      \item{`input/hydro/common/capacity/maxpower_<area>.txt`}
+#'      \item \code{input/hydro/series/<area>/mingen.txt}
+#'      \item \code{input/hydro/common/capacity/maxpower_<area>.txt}
 #' }
 #' This control is implemented in Antares too.
 #' No control to execute if `reservoir` section in hydro.ini for the area is set to TRUE. 

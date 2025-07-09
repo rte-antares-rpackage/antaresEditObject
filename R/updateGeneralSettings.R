@@ -19,34 +19,39 @@
 #' printed out in an individual directory7 :
 #'   Study_name/OUTPUT/simu_tag/Economy /mc-i-number
 #' @param derated See Antares General Reference Guide.
-#' @param custom.ts.numbers See Antares General Reference Guide.
-#' @param user.playlist See Antares General Reference Guide.
-#' @param filtering See Antares General Reference Guide.
-#' @param active.rules.scenario See Antares General Reference Guide.
-#' @param generate See Antares General Reference Guide.
-#' @param nbtimeseriesload See Antares General Reference Guide.
-#' @param nbtimeserieshydro See Antares General Reference Guide.
-#' @param nbtimeserieswind See Antares General Reference Guide.
-#' @param nbtimeseriesthermal See Antares General Reference Guide.
-#' @param nbtimeseriessolar See Antares General Reference Guide.
-#' @param refreshtimeseries See Antares General Reference Guide.
-#' @param intra.modal See Antares General Reference Guide.
-#' @param inter.modal See Antares General Reference Guide.
-#' @param refreshintervalload See Antares General Reference Guide.
-#' @param refreshintervalhydro See Antares General Reference Guide.
-#' @param refreshintervalwind See Antares General Reference Guide.
-#' @param refreshintervalthermal See Antares General Reference Guide.
-#' @param refreshintervalsolar See Antares General Reference Guide.
-#' @param readonly See Antares General Reference Guide.
-#' 
+#' @param custom.scenario See Antares General Reference Guide (see link below). Replace custom.ts.numbers.
+#' @param custom.ts.numbers See Antares General Reference Guide (see link below). Replaced by custom.scenario.
+#' @param user.playlist See Antares General Reference Guide (see link below).
+#' @param filtering See Antares General Reference Guide (see link below).
+#' @param active.rules.scenario See Antares General Reference Guide (see link below).
+#' @param generate See Antares General Reference Guide (see link below).
+#' @param nbtimeseriesload See Antares General Reference Guide (see link below).
+#' @param nbtimeserieshydro See Antares General Reference Guide (see link below).
+#' @param nbtimeserieswind See Antares General Reference Guide (see link below).
+#' @param nbtimeseriesthermal See Antares General Reference Guide (see link below).
+#' @param nbtimeseriessolar See Antares General Reference Guide (see link below).
+#' @param refreshtimeseries See Antares General Reference Guide (see link below).
+#' @param intra.modal See Antares General Reference Guide (see link below).
+#' @param inter.modal See Antares General Reference Guide (see link below).
+#' @param refreshintervalload See Antares General Reference Guide (see link below).
+#' @param refreshintervalhydro See Antares General Reference Guide (see link below).
+#' @param refreshintervalwind See Antares General Reference Guide (see link below).
+#' @param refreshintervalthermal See Antares General Reference Guide (see link below).
+#' @param refreshintervalsolar See Antares General Reference Guide (see link below).
+#' @param readonly See Antares General Reference Guide (see link below).
+#' @param geographic.trimming \code{logical} indicates whether to store the results for all time spans (FALSE) or for custom time spans (TRUE)
+#' @param thematic.trimming See Antares General Reference Guide (see link below).
 #' @template opts
 #' 
 #' @export
 #' 
 #' @importFrom utils modifyList
 #' @importFrom assertthat assert_that
-#' @importFrom antaresRead setSimulationPath
+#' @importFrom antaresRead setSimulationPath readIniFile
+#' @importFrom lifecycle is_present deprecate_warn deprecated
 #'
+#' @seealso {Antares General Reference Guide}
+#' 
 #' @examples
 #' \dontrun{
 #' 
@@ -69,7 +74,8 @@ updateGeneralSettings <- function(mode = NULL,
                                   leapyear = NULL,
                                   year.by.year = NULL, 
                                   derated = NULL, 
-                                  custom.ts.numbers = NULL,
+                                  custom.scenario = NULL,
+                                  custom.ts.numbers = deprecated(),
                                   user.playlist = NULL,
                                   filtering = NULL, 
                                   active.rules.scenario = NULL, 
@@ -88,9 +94,20 @@ updateGeneralSettings <- function(mode = NULL,
                                   refreshintervalthermal = NULL, 
                                   refreshintervalsolar = NULL, 
                                   readonly = NULL,
+                                  geographic.trimming = NULL,
+                                  thematic.trimming = NULL,
                                   opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # Replace custom.ts.numbers argument by custom.scenario
+  if (lifecycle::is_present(custom.ts.numbers)) {
+    lifecycle::deprecate_warn(when = "0.7.1",
+                              what = "updateGeneralSettings(custom.ts.numbers = )",
+                              with = "updateGeneralSettings(custom.scenario = )"
+                              )
+    custom.scenario <- custom.ts.numbers
+  }
   
   intra.modal <- check_param_modal(intra.modal, opts)
   inter.modal <- check_param_modal(inter.modal, opts)
@@ -114,7 +131,7 @@ updateGeneralSettings <- function(mode = NULL,
     leapyear = leapyear,
     year.by.year = year.by.year,
     derated = derated,
-    custom.ts.numbers = custom.ts.numbers,
+    custom.scenario = custom.scenario,
     user.playlist = user.playlist,
     filtering = filtering,
     active.rules.scenario = active.rules.scenario,
@@ -132,42 +149,20 @@ updateGeneralSettings <- function(mode = NULL,
     refreshintervalwind = refreshintervalwind,
     refreshintervalthermal = refreshintervalthermal,
     refreshintervalsolar = refreshintervalsolar,
-    readonly = readonly
+    readonly = readonly,
+    geographic.trimming = geographic.trimming,
+    thematic.trimming = thematic.trimming
   )
-  new_params <- dropNulls(new_params)
-  for (i in seq_along(new_params)) {
-    new_params[[i]] <- paste(as.character(new_params[[i]]), collapse = ", ")
-    names(new_params)[i] <- dicoGeneralSettings(names(new_params)[i])
-  }
   
-  # API block
-  if (is_api_study(opts)) {
-
-    writeIni(listData = new_params, pathIni = "settings/generaldata/general", opts = opts)
-    
-    return(update_api_opts(opts))
-  }
+  new_params <- dropNulls(x = new_params)
+  new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
+  names(new_params) <- sapply(names(new_params), dicoGeneralSettings, USE.NAMES = FALSE)  
   
-  # read current settings
-  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  
-  # update general field
-  l_general <- generaldata$general
-  
-  l_general <- utils::modifyList(x = l_general, val = new_params)
-  generaldata$general <- l_general
-  
-  # write
-  writeIni(listData = generaldata, pathIni = generaldatapath, overwrite = TRUE, opts = opts)
-  
-  # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_generaldata_by_section(opts = opts, section = "general", new_params = new_params)
   
   invisible(res)
 }
+
 
 check_param_modal <- function(x, opts) {
   if (is.null(x))
@@ -217,6 +212,7 @@ check_param_RES <- function(x, opts) {
   return(x)
 }
 
+
 check_param_links <- function(x, opts) {
   if (is.null(x))
     return(NULL)
@@ -230,6 +226,7 @@ check_param_links <- function(x, opts) {
   return(x)
 }
 
+
 #' Correspondence between arguments of \code{updateGeneralSettings} and actual Antares parameters.
 #' 
 #' @param arg An argument from function \code{updateGeneralSettings}.
@@ -241,29 +238,28 @@ check_param_links <- function(x, opts) {
 #' @examples 
 #' dicoGeneralSettings("year.by.year") # "year-by-year"
 dicoGeneralSettings <- function(arg) {
-  if (length(arg) > 1) 
+  
+  if (length(arg) > 1) { 
     stop("'arg' must be length one")
+  }
   
   antares_params <- as.list(
     c("mode", "horizon", "nbyears", "simulation.start", "simulation.end", 
       "january.1st", "first-month-in-year", "first.weekday", "leapyear", 
-      "year-by-year", "derated", "custom-ts-numbers", "user-playlist", 
+      "year-by-year", "derated", "custom-scenario", "user-playlist", 
       "filtering", "active-rules-scenario", "generate", "nbtimeseriesload", 
       "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
       "nbtimeseriessolar", "refreshtimeseries", "intra-modal", "inter-modal", 
       "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-      "refreshintervalthermal", "refreshintervalsolar", "readonly")
+      "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic-trimming", "thematic-trimming")
   )
   names(antares_params) <- c("mode", "horizon", "nbyears", "simulation.start", "simulation.end", 
                              "january.1st", "first.month.in.year", "first.weekday", "leapyear", 
-                             "year.by.year", "derated", "custom.ts.numbers", "user.playlist", 
+                             "year.by.year", "derated", "custom.scenario", "user.playlist", 
                              "filtering", "active.rules.scenario", "generate", "nbtimeseriesload", 
                              "nbtimeserieshydro", "nbtimeserieswind", "nbtimeseriesthermal", 
                              "nbtimeseriessolar", "refreshtimeseries", "intra.modal", "inter.modal", 
                              "refreshintervalload", "refreshintervalhydro", "refreshintervalwind", 
-                             "refreshintervalthermal", "refreshintervalsolar", "readonly")
+                             "refreshintervalthermal", "refreshintervalsolar", "readonly", "geographic.trimming", "thematic.trimming")
   antares_params[[arg]]
 }
-
-
-

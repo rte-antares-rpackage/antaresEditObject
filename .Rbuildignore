@@ -11,3 +11,4 @@ test_case/
 man-roxygen/
 ^codecov\.yml$
 ^CRAN-SUBMISSION$
+^LICENSE\.md$

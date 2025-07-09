@@ -4,7 +4,11 @@
 \alias{get_default_hydro_ini_values}
 \title{Get default hydro.ini values}
 \usage{
-get_default_hydro_ini_values()
+get_default_hydro_ini_values(opts)
+}
+\arguments{
+\item{opts}{List of simulation parameters returned by the function
+\code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
 \description{
 Get default hydro.ini values

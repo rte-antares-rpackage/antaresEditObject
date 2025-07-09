@@ -31,15 +31,30 @@ if it doesn't exist, it'll be created.}
 \item{...}{Other query parameters passed to POST request.}
 }
 \value{
-Result of \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}} or \code{\link[=setSimulationPathAPI]{setSimulationPathAPI()}} accordingly.
+Result of \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}} or \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPathAPI()}} accordingly.
 }
 \description{
 Create study on disk or with AntaREST server through the API.
 }
+\section{Warning}{
+
+From \strong{Antares version 9.2} onwards, versioning is only done with one number
+for the major version number and a two-digit number for the minor
+version number (e.g. 9.2, 9.35, 10.58, ...).
+}
+
 \examples{
 \dontrun{
 
-createStudy("path/to/simulation")
+# with default values 
+createStudy("path/to/simulation", 
+  study_name = "my_study", 
+  antares_version = "8.2.0")
+  
+# with Antares study version >= 9.2 (max 2 digits, ex : "9.25")  
+createStudy("path/to/simulation", 
+  study_name = "my_study", 
+  antares_version = "9.25")
 
 }
 }

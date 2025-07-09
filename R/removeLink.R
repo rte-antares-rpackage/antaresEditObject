@@ -21,10 +21,32 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  # control areas name
-  # can be with some upper case (list.txt)
   from <- tolower(from)
   to <- tolower(to)
+  
+  # Area existence
+  check_area_name(from, opts)
+  check_area_name(to, opts)
+  
+  # areas' order
+  areas <- c(from, to)
+  if (!identical(areas, sort(areas))) {
+    from <- areas[2]
+    to <- areas[1]
+  }
+  
+  # Link existence
+  link <- paste(from, to, sep = " - ")
+  if (!link %in% as.character(antaresRead::getLinks())) {
+    message("Link doesn't exist")
+    return()
+  }
+  
+  # check if the link can be removed safely, i.e. the link is not referenced in a binding constraint
+  bc_not_remove <- detect_pattern_in_binding_constraint(pattern = c(paste0(from, "%", to), paste0(to, "%", from)), opts = opts)
+  if (!identical(bc_not_remove, character(0))) {
+    warning("The following binding constraints have the link to remove as a coefficient : ", paste0(bc_not_remove, collapse = ", "))
+  }
   
   # API block
   if (is_api_study(opts)) {
@@ -47,42 +69,30 @@ removeLink <- function(from, to, opts = antaresRead::simOptions()) {
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  # areas' order
-  areas <- c(from, to)
-  if (!identical(areas, sort(areas))) {
-    from <- areas[2]
-    to <- areas[1]
-  }
-  
-  link <- paste(from, to, sep = " - ")
-  if (!link %in% as.character(antaresRead::getLinks())) {
-    message("Link doesn't exist")
-    return()
-  }
-  
+  inputlinksfromPath <- file.path(inputPath, "links", from)
   
   # Previous links
+  propertiesPath <- file.path(inputlinksfromPath, "properties.ini")
   prev_links <- readIniFile(
-    file = file.path(inputPath, "links", from, "properties.ini")
+    file = propertiesPath
   )
   prev_links[[to]] <- NULL
   writeIni(
     listData = prev_links,
-    pathIni = file.path(inputPath, "links", from, "properties.ini"),
+    pathIni = propertiesPath,
     overwrite = TRUE
   )
-
-  # check version
-  v820 <- is_antares_v820(opts)
   
   # Remove files
-  if (v820) {
-    unlink(x = file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt")), recursive = TRUE)
-    unlink(x = file.path(inputPath, "links", from, "capacities", paste0(to, "_indirect.txt")), recursive = TRUE)
-    unlink(x = file.path(inputPath, "links", from, paste0(to, "_parameters.txt")), recursive = TRUE)
+  if (is_antares_v820(opts)) {
+    both_direction <- c("_direct.txt", "_indirect.txt")
+    files_to_remove <- c(file.path(inputlinksfromPath, "capacities", paste0(to, both_direction)),
+                         file.path(inputlinksfromPath, paste0(to, "_parameters.txt"))
+                        )
   } else {
-    unlink(x = file.path(inputPath, "links", from, paste0(to, ".txt")), recursive = TRUE)
+    files_to_remove <- c(file.path(inputlinksfromPath, paste0(to, ".txt")))
   }
+  lapply(files_to_remove, unlink)
   
   # Maj simulation
   suppressWarnings({

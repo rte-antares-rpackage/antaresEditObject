@@ -187,37 +187,60 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
       "'command' must be a command generated with api_command_generate() or api_commands_generate()"
     )
   }
-  api_post(opts, paste0(opts$study_id, "/commands"), body = body, encode = "raw")
+  
+  # send command for study or variant
+  api_post(opts, 
+           paste0(opts$study_id, "/commands"), 
+           body = body, 
+           encode = "raw")
+  
+  # extract command name to put message
+  command_name <- jsonlite::fromJSON(body, simplifyVector = TRUE)
+  command_name <- command_name$action
+  msg_api=" " # HACK /!\
+  cli::cli_alert_success(paste0(text_alert, "success"))
+  
+  # Snaphost /generate" for variant only
   if (is_variant(opts)) {
-    api_put(opts, paste0(opts$study_id, "/generate"))
-    result <- api_get(opts, paste0(opts$study_id, "/task"))
-    while(is.null(result$result)) {
+    variant_res <- api_put(opts, paste0(opts$study_id, "/generate"))
+    
+    # retrieve task information
+    result_task_id <- api_get(opts = opts, 
+                              endpoint = file.path("v1", "tasks", variant_res), 
+                              default_endpoint = NULL)
+    
+    while(is.null(result_task_id$result)) {
+      if(!is.null(opts$verbose))
+        if(opts$verbose)
+          message("...Generate Snapshot task in progress...")
       if(is.null(opts$sleep))
         Sys.sleep(0.5)
       else
         Sys.sleep(opts$sleep)
-      result <- api_get(opts, paste0(opts$study_id, "/task"))
+      result_task_id <- api_get(opts = opts, 
+                                endpoint = file.path("v1", "tasks", variant_res), 
+                                default_endpoint = NULL)
     }
-    result_log <- jsonlite::fromJSON(result$logs[[length(result$logs)]]$message, simplifyVector = FALSE)
-    msg_api <- result_log$message
-    if (is.null(msg_api) | identical(msg_api, ""))
-      msg_api <- "<no feedback from API>"
-    if (identical(result_log$success, TRUE)) {
-      if (!is_quiet())
-        cli::cli_alert_success(text_alert)
+    
+    # test if task is terminated with success
+    result_task_id_log <- result_task_id$result
+    status <- isTRUE(result_task_id_log$success)
+    details_command <- jsonlite::fromJSON(result_task_id_log$return_value, 
+                                          simplifyVector = FALSE)
+    
+    if(status){
+      if(!is.null(opts$verbose))
+        if(opts$verbose)
+          message(paste0("Snapshot generated for : ", 
+                         details_command$details[[1]]$name))
     }
-    if (identical(result_log$success, FALSE)) {
-      if (!is_quiet())
-        cli::cli_alert_danger(text_alert)
-      api_delete(opts, paste0(opts$study_id, "/commands/", result_log$id))
-      stop(paste0("\n", msg_api), 
-           call. = FALSE)
-      if (!is_quiet())
-        cli::cli_alert_warning("Command has been deleted")
-    }
-    return(invisible(result$result$success))
+      
+    else
+      stop(paste0("Not success for task : ", details_command$details[[1]]$name))
+    return(invisible(TRUE))
   }
 }
+
 
 
 
@@ -262,3 +285,79 @@ transform_name_to_id <- function(name, lower = TRUE, id_dash = FALSE) {
   return(valid_id)
 }
 
+
+#' API methods
+#'
+#' @param opts Antares simulation options or a `list` with an `host = ` slot.
+#' @param endpoint API endpoint to interrogate, it will be added after `default_endpoint`.
+#'  Can be a full URL (by wrapping ìn [I()]), in that case `default_endpoint` is ignored.
+#' @param ... Additional arguments passed to API method ([httr::PATCH()]).
+#' @param default_endpoint Default endpoint to use.
+#'
+#' @return Response from the API.
+#' @export
+#'
+#' @importFrom httr PATCH accept_json stop_for_status content add_headers
+#' @importFrom utils URLencode
+#'
+#' @examples
+#' \dontrun{
+#' # Simple example to update st-storages properties 
+#' 
+#' # read existing study 
+#' opts <- setSimulationPath("path_to_the_study", "input")
+#' 
+#' # make list of properties
+#' prop <- list(efficiency = 0.5,
+#'   reservoircapacity = 350, 
+#'   initialleveloptim = TRUE)
+#'   
+#' # convert to JSON
+#' body <- jsonlite::toJSON(prop,
+#'   auto_unbox = TRUE)   
+#'   
+#' # send to server (see /apidoc)
+#' api_patch(opts = opts, 
+#'   endpoint = file.path(opts$study_id, 
+#'                      "areas", 
+#'                       area,
+#'                      "storages",
+#'                      cluster_name), 
+#'  body = body, 
+#'  encode = "raw")   
+#'
+#' }
+api_patch <- function(opts, endpoint, ..., default_endpoint = "v1/studies") {
+  if (inherits(endpoint, "AsIs")) {
+    opts$host <- endpoint
+    endpoint <- NULL
+    default_endpoint <- NULL
+  }
+  
+  if (is.null(opts$host))
+    stop("No host provided in `opts`: use a valid simulation options object or explicitly provide a host with opts = list(host = ...)")
+  
+  if (!is.null(opts$token) && opts$token != "") 
+    config <- add_headers(Authorization = paste("Bearer ", 
+                                                opts$token), 
+                          Accept = "application/json")
+  else 
+    config <- add_headers(Accept = "application/json")
+  
+  # send request
+  result <- PATCH(
+    url = URLencode(paste(c(opts$host, default_endpoint, endpoint), collapse = "/")),
+    config = config,
+    ...
+  )
+  
+  # manage response
+  api_content <- content(result)
+  if(!is.null(names(api_content)))
+    api_content <- paste0("\n[Description] : ", api_content$description,
+                          "\n[Exception] : ", api_content$exception)
+  else
+    api_content <- NULL
+  stop_for_status(result, task = api_content)
+  content(result)
+}

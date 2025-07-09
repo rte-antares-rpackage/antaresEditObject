@@ -14,6 +14,11 @@ createClusterST(
   inflows = NULL,
   lower_rule_curve = NULL,
   upper_rule_curve = NULL,
+  cost_injection = NULL,
+  cost_withdrawal = NULL,
+  cost_level = NULL,
+  cost_variation_injection = NULL,
+  cost_variation_withdrawal = NULL,
   add_prefix = TRUE,
   overwrite = FALSE,
   opts = antaresRead::simOptions()
@@ -24,23 +29,35 @@ createClusterST(
 
 \item{cluster_name}{Name for the cluster, it will prefixed by area name, unless you set \code{add_prefix = FALSE}.}
 
-\item{group}{Group of the cluster, one of : "PSP_open", "PSP_closed", "Pondage", "Battery", "Other". It corresponds to the type of stockage.}
+\item{group}{Group of the cluster, one of : \emph{{PSP_open, PSP_closed, Pondage, Battery, Other}}.
+It corresponds to the type of stockage (\strong{dynamic name for Antares version >= 9.2}).}
 
 \item{storage_parameters}{\code{list } Parameters to write in the Ini file (see \code{Note}).}
 
-\item{PMAX_injection}{modulation of charging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_injection}{Modulation of charging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
 
-\item{PMAX_withdrawal}{modulation of discharging capacity on an 8760-hour basis. The values are float between 0 and 1.}
+\item{PMAX_withdrawal}{Modulation of discharging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
 
-\item{inflows}{imposed withdrawals from the stock for other uses, The values are integer.}
+\item{inflows}{Algebraic deviation of the state of charge of the storage, which does not induce any power
+generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
 
-\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. The values are float between 0 and 1.}
+\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
 
-\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. The values are float between 0 and 1.}
+\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
+
+\item{cost_injection}{Penalizes the injection flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{cost_withdrawal}{Penalizes the withdrawal flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{cost_level}{Penalizes the volume of stored energy at each hour (€/MWh) \code{numeric} \{<0;>0\} (8760*1).}
+
+\item{cost_variation_injection}{Penalizes injection flowrate variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{cost_variation_withdrawal}{Penalizes the withdrawal variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
 
 \item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
-\item{overwrite}{Logical, overwrite the cluster or not.}
+\item{overwrite}{\code{logical}, overwrite the cluster or not.}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -53,20 +70,38 @@ An updated list containing various information about the simulation.
 
 Create a new ST-storage cluster for >= v8.6.0 Antares studies.
 }
-\note{
-To write parameters to the \code{list.ini} file. You have function \code{storage_values_default()} who is called by default.
-This function return \code{list} containing six parameters for cluster \code{st-storage}.
-See example section.
+\section{note}{
 
-To write data (.txt file), you have parameter for each output file :
+
+To write parameters to the \code{list.ini} file. You have function \code{storage_values_default()} who is called by default.
+This function return \code{list} containing properties according study version for cluster \code{st-storage}.
+
+Study version >= "8.6.0" :
 \itemize{
-\item PMAX-injection.txt
-\item PMAX-withdrawal.txt
-\item inflows.txt
-\item lower-rule-curve.txt
-\item upper-rule-curve.txt
+\item efficiency = 1  (\code{numeric} \{0;1\})
+\item reservoircapacity = 0  (\code{integer} >= 0)
+\item initiallevel = 0  (\code{numeric} \{0;1\})
+\item withdrawalnominalcapacity = 0  (\code{integer} >= 0)
+\item injectionnominalcapacity = 0  (\code{integer} >= 0)
+\item initialleveloptim = FALSE (\code{logical} TRUE/FALSE)
 }
+
+Study version >= "8.8.0" (update + new parameter) :
+\itemize{
+\item initiallevel = 0.5  (\code{numeric} \{0;1\})
+\item enabled = TRUE (\code{logical} TRUE/FALSE)
 }
+
+Study version >= "9.2" (new parameters) :
+\itemize{
+\item efficiencywithdrawal = 1 (\code{numeric} \{0;1\})
+\item \code{penalize-variation-injection} = FALSE (\code{logical} TRUE/FALSE)
+\item \code{penalize-variation-withdrawal} = FALSE \code{logical} TRUE/FALSE)
+}
+
+By default, these values don't allow you to have an active cluster (See example section.)
+}
+
 \examples{
 \dontrun{
 
@@ -84,13 +119,19 @@ levels(readClusterSTDesc()$cluster)
 # > "my_area_my_cluster"
 
 # create cluster with custom parameter and data
+  # use the function to create your own list of parameters (no Antares optim)
+  # if you want optim (my_parameters$initialleveloptim <- TRUE)
 my_parameters <- storage_values_default()
 my_parameters$efficiency <- 0.5
+my_parameters$initiallevel <- 10
+my_parameters$withdrawalnominalcapacity <- 100
+my_parameters$injectionnominalcapacity <- 1000
 my_parameters$reservoircapacity <- 10000
 
-
+  # time series 
 inflow_data <- matrix(3, 8760)
 ratio_data <- matrix(0.7, 8760)
+
 createClusterST(area = "my_area", 
                 "my_cluster",
                 storage_parameters = my_parameters,
@@ -99,10 +140,32 @@ createClusterST(area = "my_area",
                 PMAX_injection = ratio_data, 
                 lower_rule_curve = ratio_data, 
                 upper_rule_curve = ratio_data)
+                
+# for a study version >= 9.2 (new parameters)
+my_parameters <- storage_values_default()
+my_parameters$efficiencywithdrawal <- 0.5
+my_parameters$`penalize-variation-injection` <- TRUE
+my_parameters$`penalize-variation-withdrawal` <- TRUE
+
+createClusterST(area = "my_area", 
+                "my_cluster",
+                storage_parameters = my_parameters)
+               
+  # time series                  
+ratio_value <- matrix(0.7, 8760)
+
+# default properties with new optional TS
+createClusterST(area = "fr", 
+                cluster_name = "good_ts_value", 
+                cost_injection = ratio_value, 
+                cost_withdrawal = ratio_value, 
+                cost_level = ratio_value, 
+                cost_variation_injection = ratio_value,
+                cost_variation_withdrawal = ratio_value)               
 }
 
 }
 \seealso{
-\code{\link[=editClusterST]{editClusterST()}} to edit existing clusters, \code{\link[=readClusterSTDesc]{readClusterSTDesc()}} to read cluster,
-\code{\link[=removeClusterST]{removeClusterST()}} to remove clusters.
+All the functions needed to manage a storage cluster,
+\code{\link[antaresRead:readClusterDesc]{antaresRead::readClusterSTDesc()}}, \code{\link[=editClusterST]{editClusterST()}}, \code{\link[=removeClusterST]{removeClusterST()}}.
 }

@@ -13,3 +13,60 @@ Thanks!
 
 ## Fix CRAN NOTE for release 0.6.0
 "Running R code in ‘testthat.R’ had CPU time 8.1 times elapsed time"
+
+## Fix CRAN CHECKS on version 0.6.0 
+* Fix ERROR on `r-devel-linux-x86_64-debian-gcc` cause function `base::NCOL()` is updated
+
+## Fix TESTS (in this patch version 0.6.2) to remove rev dep to package `antaresRead` 
+* we have issue to next release of package `antaresRead` (v2.6.1), see below
+
+Changes to worse in reverse depends:
+
+Package: antaresEditObject
+Check: tests
+New result: ERROR
+    Running ‘testthat.R’ [54s/51s]
+    
+Failure ('test-createCluster.R:76:5'): Remove all clusters ──────────────────
+`antaresRead::readClusterDesc()` did not throw an error.
+
+## antaresEditObject 0.6.4 
+Patch version to break abusive dependencies with antaresRead in tests
+
+## antaresEditObject 0.7.1
+
+### Re Submission  
+
+ - Check: PDF version of manual, Result: WARNING
+  LaTeX errors when creating PDF version.
+  This typically indicates Rd problems.
+  LaTeX errors found:
+  ! LaTeX Error: Unicode character (U+26A0)
+                 not set up for use with LaTeX.
+                 
+Fix local error (R CMD check antaresEditObject_0.7.1.tar.gz) :  
+
+ - When sourcing 'api-variant-management.R':
+Erreur : Cannot find the file(s): "../man/figures/badge_api_ok.svg"  
+
+
+This error did not appear on the CRAN
+
+### Re Submission 2
+  
+  - Fix TRUE and FALSE instead of T and F  
+  - `\dontrun{}` sections are needed because most of functions need to be apply on a study load on Global env (legacy code too)  
+  - There is only a maintainer, contributors and RTE, which is the owner. (we use `use_gpl_license(version = 2, include_future = TRUE)`)
+  
+
+## antaresEditObject 0.9.0 
+
+### Re Submission and check doc with command below
+
+```r
+devtools::check(manual = TRUE,
+                remote = TRUE,
+                incoming = TRUE)
+```
+No more "Found the following (possibly) invalid URLs"
+
