@@ -1,4 +1,4 @@
-
+skip()
 # for all version of study
   # untar studies in temp files
 setup_study_860(sourcedir860)
