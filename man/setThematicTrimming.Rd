@@ -22,9 +22,10 @@ setThematicTrimming(
 An updated list containing various information about the simulation.
 }
 \description{
-Put only variables names you want to keep in study output.
+\ifelse{html}{\figure{badge_api_ok.svg}{options: alt='Antares API OK'}}{Antares API: \strong{OK}}
 
-you can add or remove variables.
+Put only variables names you want to keep in study output.
+You can add or remove variables (use study version >=v8.8).
 }
 \note{
 You can put only variables according to version of study
@@ -32,7 +33,7 @@ You can put only variables according to version of study
 \examples{
 \dontrun{
 
-# list of variables (from version v8.0 to version >= v8.6)
+# list of variables (version >= v8.8)
 vect_select_vars <- antaresRead:::pkgEnv$thematic
 
 ##

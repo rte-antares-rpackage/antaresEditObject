@@ -1,9 +1,12 @@
 
 #' @title Set the thematic trimming of an Antares Study
 #'
-#' @description Put only variables names you want to keep in study output.  
+#' @description 
+#' `r antaresEditObject:::badge_api_ok()`
 #' 
-#' you can add or remove variables.
+#' 
+#' Put only variables names you want to keep in study output.  
+#' You can add or remove variables (use study version >=v8.8).
 #'
 #' @param selection_variables `character` of variables to add or remove.
 #' @param type_select `character` select mode to add or remove (default add mode).
@@ -16,7 +19,7 @@
 #' @examples 
 #' \dontrun{
 #' 
-#' # list of variables (from version v8.0 to version >= v8.6)
+#' # list of variables (version >= v8.8)
 #' vect_select_vars <- antaresRead:::pkgEnv$thematic
 #' 
 #' ##
@@ -35,9 +38,9 @@ setThematicTrimming <- function(selection_variables,
                                 type_select = c("add", "suppr"),
                                 opts = simOptions()){
 
-  # available only for study version >= 800
-  if(opts$antaresVersion<800)
-    stop("'setThematicTrimming()' calls is only available for study version >= v8.0", 
+  # available only for study version >= 880
+  if(opts$antaresVersion<880)
+    stop("'setThematicTrimming()' calls is only available for study version >= v8.8", 
          call. = FALSE)
   
   # basics parameters checks
@@ -47,11 +50,8 @@ setThematicTrimming <- function(selection_variables,
   
   # checks whether the variables agree with the version
     # at least one variable must be present in the list 
-  variables_package_list <- antaresRead:::pkgEnv$thematic
-  
-    # filter with version
-  variables_package_list <- variables_package_list[
-    variables_package_list$version<=opts$antaresVersion, variable]
+  target_version <- as.character(opts$antaresVersion)
+  variables_package_list <- antaresRead:::pkgEnv$thematic[[target_version]]$col_name
   
   is_selection_ok <- any(
     selection_variables %in%
@@ -63,43 +63,34 @@ setThematicTrimming <- function(selection_variables,
          opts$antaresVersion, 
          call. = FALSE)
   
-  # read general data parameters
-  generaldata <- readIni("settings/generaldata", 
-                         opts = opts)
-  
   # update [general] (used to custom variable selection in Antares UI)
-  generaldata$general$`thematic-trimming` <- TRUE
+  opts$parameters$general$`thematic-trimming` <- TRUE
   
   # manage writing general data
-  generaldata_updated <- .set_thematic(type_select = type_select, 
+  opts_generaldata_updated <- .set_thematic(type_select = type_select, 
                 pkg_var_version = variables_package_list, 
                 list_var_selection = selection_variables, 
-                general_data = generaldata, 
-                api_mode = antaresRead:::is_api_study(opts = opts))
+                opts_param =  opts, 
+                api_mode = is_api_study(opts = opts))
   
   # write updated file
-  writeIni(listData = generaldata_updated, 
+  writeIni(listData = opts_generaldata_updated$parameters, 
            pathIni = "settings/generaldata", 
            overwrite = TRUE, 
            opts = opts)
   
   # Update simulation options object
-  if(antaresRead:::is_api_study(opts = opts)){
+  if(is_api_study(opts = opts)){
     suppressWarnings(
       res <- antaresRead::setSimulationPathAPI(host = opts$host,
                                                study_id = opts$study_id, 
                                                token = opts$token, 
                                                simulation = "input")
     )
-    }else{
-    suppressWarnings(
-      res <- antaresRead::setSimulationPath(path = opts$studyPath, 
-                                            simulation = "input")
-    )
-  }
+    }else
+      res <- opts_generaldata_updated
 
   invisible(res)
-  
 }
 
 
@@ -109,10 +100,11 @@ setThematicTrimming <- function(selection_variables,
 .set_thematic <- function(type_select, 
                           pkg_var_version, 
                           list_var_selection,
-                          general_data,
+                          opts_param,
                           api_mode = FALSE){
+
   # reset [variables selection]
-  general_data$`variables selection` <- NULL
+  opts_param$parameters$`variables selection` <- NULL
   
   # count variables to write
   nb_var_version <- length(pkg_var_version)
@@ -123,14 +115,14 @@ setThematicTrimming <- function(selection_variables,
   # case with all variables selected
   if(nb_var_version==nb_right_var_selection){
     if(type_select %in% "add"){
-      cat("All variables are selected, by defaut it's not required to edit 'generaldata.ini'")
+      message("All variables are selected, by default it's not required to edit 'generaldata.ini'")
       # general_data$`variables selection` <- NULL
-      return(general_data)
+      return(opts_param)
       }
     else{
-      cat("All variables will be skiped")
-      general_data$`variables selection`$selected_vars_reset <- FALSE
-      return(general_data)
+      message("All variables will be skiped")
+      opts_param$parameters$`variables selection`$selected_vars_reset <- FALSE
+      return(opts_param)
       }
     }
   
@@ -139,15 +131,15 @@ setThematicTrimming <- function(selection_variables,
     if(type_select %in% "add"){
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
                                              api_mode = api_mode)
-      general_data$`variables selection` <- var_select_bloc
-      return(general_data)
+      opts_param$parameters$`variables selection` <- var_select_bloc
+      return(opts_param)
     }else{
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
                                              pattern_list = "select_var -", 
                                              type_select = "suppr",
                                              api_mode = api_mode)
-      general_data$`variables selection` <- var_select_bloc
-      return(general_data)
+      opts_param$parameters$`variables selection` <- var_select_bloc
+      return(opts_param)
     }
     # write the opposite 
   }else{ 
@@ -158,22 +150,17 @@ setThematicTrimming <- function(selection_variables,
                                              pattern_list = "select_var -", 
                                              type_select = "suppr",
                                              api_mode = api_mode)
-      general_data$`variables selection` <- var_select_bloc
-      return(general_data)
+      opts_param$parameters$`variables selection` <- var_select_bloc
+      return(opts_param)
     }else{
       var_select_bloc <- .make_thematic_list(var_selection = list_var_selection, 
                                              pattern_list = "select_var +", 
                                              type_select = "add",
                                              api_mode = api_mode)
-      general_data$`variables selection` <- var_select_bloc
-      return(general_data)
+      opts_param$parameters$`variables selection` <- var_select_bloc
+      return(opts_param)
     }
   }
-  
-  
-    
-  
-  
 }
 
 

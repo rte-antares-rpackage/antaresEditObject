@@ -1,196 +1,308 @@
-skip()
-# for all version of study
-  # untar studies in temp files
-setup_study_860(sourcedir860)
-setup_study(studies, sourcedir)
 
-# v710 ----
+test_that("Minimum version v8.8", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 870,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
   
-test_that("set thematic trimming v710", {
-  # read study / load meta parameters
-  antaresRead::setSimulationPath(studyPath, "input")
+  # when/then
+  # message is displayed
+  expect_error(
+    setThematicTrimming(selection_variables = "NULL", 
+                        opts = opts), 
+    regexp = "'setThematicTrimming\\(\\)' calls is only available"
+  )
+})
+
+# v8.8 ----
+test_that("Add ALL variables", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 880,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
+  
+  # create dir with properties
+  dir_path <- file.path(study_path, study_name, "settings")
+  lapply(dir_path, dir.create, recursive = TRUE, showWarnings = FALSE)
+  
+  # write generaldata
+  writeLines(text = "", con = file.path(dir_path, "generaldata.ini"))
   
   # list of variables
-  vect_select_vars <- antaresRead:::pkgEnv$thematic
+  vect_select_vars <- antaresRead::list_thematic_variables(opts = opts)
   
-  # setThematicTrimming() not available for version <800
-  testthat::expect_error(
-    setThematicTrimming(selection_variables = vect_select_vars$variable), 
-    regexp = "calls is only available for study version >= v8.0"
+  # when/then
+    # message is displayed
+  expect_message(
+    setThematicTrimming(selection_variables = vect_select_vars$col_name, 
+                        type_select = "add",
+                        opts = opts), 
+    regexp = "All variables are selected, by default"
   )
   
-  # delete study
-  unlink(x = studyPath, recursive = TRUE)
+  # section variable selection is deleted 
+  # only custom mode is written 
+  generaldata_file <- readIni(pathIni = "settings/generaldata", 
+                              opts = opts)
+  expect_true(generaldata_file$general$`thematic-trimming`)
+  expect_null(generaldata_file$`variables selection`)
 })
-  
 
-# v860 ----
-## add variables ----
-test_that("set thematic trimming version >= 800 (ADD VAR)", {
-  # read study / load meta parameters
-  antaresRead::setSimulationPath(study_temp_path, "input")
+
+test_that("Skip ALL variables", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 880,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
+  
+  # create dir with properties
+  dir_path <- file.path(study_path, study_name, "settings")
+  lapply(dir_path, dir.create, recursive = TRUE, showWarnings = FALSE)
+  
+  # write generaldata
+  writeLines(text = "", con = file.path(dir_path, "generaldata.ini"))
   
   # list of variables
-  vect_select_vars <- antaresRead:::pkgEnv$thematic
+  vect_select_vars <- antaresRead::list_thematic_variables(opts = opts)
   
-  ##
-  # set all variables
-  ##
-  setThematicTrimming(selection_variables = vect_select_vars$variable)
+  # when/then
+  # message is displayed
+  expect_message(
+    setThematicTrimming(selection_variables = vect_select_vars$col_name, 
+                        type_select = "suppr",
+                        opts = opts), 
+    regexp = "All variables will be skiped"
+  )
   
-    # check variables names according to antares version
-  opts_study_test <- simOptions()
-  antares_version <- opts_study_test$antaresVersion
-  filter_vars_version <- vect_select_vars[version<=antares_version,]
-  
-  res_read <- getThematicTrimming()
-  
-  # test if variables are all in output
-  testthat::expect_true(all(filter_vars_version$variable%in%
-                              res_read$variables))
-  # test status values
-  testthat::expect_equal(object = unique(res_read$status_selection), 
-                         expected = "active")
-  
-  ##
-  # set few variables
-  ##
-  setThematicTrimming(selection_variables = vect_select_vars$variable[1:10])
-  res_read <- getThematicTrimming()
-  
-    # test if vars are activated
-  res_read_active <- res_read[res_read$status_selection %in% "active",]
-  testthat::expect_true(all(
-    vect_select_vars$variable[1:10]%in%res_read_active$variables
-  ))
-  
-    # test opts updated
-  opts_study <- simOptions()
-  thematic_values <- opts_study$parameters$`variables selection`
-  testthat::expect_true(!is.null(thematic_values))
-  testthat::expect_true(all(
-    c("selected_vars_reset", "select_var +") %in% 
-      names(thematic_values)
-    ))
-  thematic_values <- unlist(thematic_values, use.names = FALSE)
-  testthat::expect_true(all(
-    c("FALSE", vect_select_vars$variable[1:10])%in%
-      thematic_values
-    ))
-  
-  # set more than 50% of variables
-    # Opposite case with ADD columns but write suppression columns
-  nb_vars <- length(vect_select_vars$variable)
-  setThematicTrimming(selection_variables = vect_select_vars$variable[1:(nb_vars-10)])
-  
-  res_read <- getThematicTrimming()
-  
-    # test if vars are activated
-  res_read_active <- res_read[res_read$status_selection %in% "active",]
-  testthat::expect_true(all(
-    vect_select_vars$variable[1:(nb_vars-10)]%in%res_read_active$variables
-  ))
-  
-    # test opts updated
-  opts_study <- simOptions()
-  thematic_values <- opts_study$parameters$`variables selection`
-  testthat::expect_true(!is.null(thematic_values))
-  testthat::expect_true(all(
-    c("selected_vars_reset", "select_var -") %in% 
-      names(thematic_values)
-  ))
-    # control values
-  thematic_values <- unlist(thematic_values, use.names = FALSE)
-  res_read_skip <- res_read[res_read$status_selection %in% "skip",]
-  testthat::expect_true(all(
-    c("TRUE", res_read_skip$variables)%in%
-      thematic_values
-  ))
- 
+  # check write part
+  generaldata_file <- readIni(pathIni = "settings/generaldata", 
+                              opts = opts)
+  expect_true(generaldata_file$general$`thematic-trimming`)
+  expect_false(generaldata_file$`variables selection`$selected_vars_reset)
 })
 
-## suppr variables ----
-test_that("set thematic trimming version >= 800 (SUPPR VAR)", {
-  # read study / load meta parameters
-  antaresRead::setSimulationPath(study_temp_path, "input")
+
+test_that("select var+ less 50%", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 880,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
+  
+  # create dir with properties
+  dir_path <- file.path(study_path, study_name, "settings")
+  lapply(dir_path, dir.create, recursive = TRUE, showWarnings = FALSE)
+  
+  # write generaldata
+  writeLines(text = "", con = file.path(dir_path, "generaldata.ini"))
   
   # list of variables
-  vect_select_vars <- antaresRead:::pkgEnv$thematic
+  vect_select_vars <- antaresRead::list_thematic_variables(opts = opts)
+  vect_select_vars <- vect_select_vars$col_name[1:10]
   
-  ##
-  # set all variables
-  ##
-  setThematicTrimming(selection_variables = vect_select_vars$variable, 
-                      type_select = "suppr")
+  # when
+  setThematicTrimming(selection_variables = vect_select_vars, 
+                      opts = opts)
   
-  # read
-  res_read <- getThematicTrimming()
+  # then
+  # check write part
+  generaldata_file <- readIni(pathIni = "settings/generaldata", 
+                              opts = opts)
   
-  # test status values
-  testthat::expect_equal(object = unique(res_read$status_selection), 
-                         expected = "skip")
+  # expected params
+  expect_true(generaldata_file$general$`thematic-trimming`)
+  expect_false(generaldata_file$`variables selection`$selected_vars_reset)
   
-  ##
-  # set few variables
-  ##
-  setThematicTrimming(selection_variables = vect_select_vars$variable[1:10], 
-                      type_select = "suppr")
+  # expected values
+  index <- names(generaldata_file$`variables selection`)%in%"select_var +"  
   
-  # read
-  res_read <- getThematicTrimming()
+  values_expected <- unlist(generaldata_file$`variables selection`[index], 
+                            use.names = FALSE)
   
-  # test if vars are activated
-  res_read_active <- res_read[res_read$status_selection %in% "skip",]
-  testthat::expect_true(all(
-    vect_select_vars$variable[1:10]%in%res_read_active$variables
-  ))
-  
-  # test opts updated
-  opts_study <- simOptions()
-  thematic_values <- opts_study$parameters$`variables selection`
-  testthat::expect_true(!is.null(thematic_values))
-  testthat::expect_true(all(
-    c("selected_vars_reset", "select_var -") %in% 
-      names(thematic_values)
-  ))
-  
-  thematic_values <- unlist(thematic_values, use.names = FALSE)
-  testthat::expect_true(all(
-    c("TRUE", vect_select_vars$variable[1:10])%in%
-      thematic_values
-  ))
-  
-  # set more than 50% of variables
-  # Opposite case with "suppr" columns but write "add" columns
-  nb_vars <- length(vect_select_vars$variable)
-  setThematicTrimming(selection_variables = vect_select_vars$variable[1:(nb_vars-10)], 
-                      type_select = "suppr")
-  
-  res_read <- getThematicTrimming()
-  
-  # test if vars are skiped
-  res_read_skip <- res_read[res_read$status_selection %in% "skip",]
-  testthat::expect_true(all(
-    vect_select_vars$variable[1:(nb_vars-10)]%in%
-      res_read_skip$variables
-  ))
-  
-  # test opts updated
-  opts_study <- simOptions()
-  thematic_values <- opts_study$parameters$`variables selection`
-  testthat::expect_true(!is.null(thematic_values))
-  testthat::expect_true(all(
-    c("selected_vars_reset", "select_var +") %in% 
-      names(thematic_values)
-  ))
-  # control values
-  thematic_values <- unlist(thematic_values, use.names = FALSE)
-  res_read_active <- res_read[res_read$status_selection %in% "active",]
-  testthat::expect_true(all(
-    c("FALSE", res_read_active$variables)%in%
-      thematic_values
-  ))
+  expect_equal(vect_select_vars, values_expected)
 })
 
-# delete study ----
-unlink(x = study_temp_path, recursive = TRUE)
+test_that("select var+ more 50%", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 880,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
+  
+  # create dir with properties
+  dir_path <- file.path(study_path, study_name, "settings")
+  lapply(dir_path, dir.create, recursive = TRUE, showWarnings = FALSE)
+  
+  # write generaldata
+  writeLines(text = "", con = file.path(dir_path, "generaldata.ini"))
+  
+  # list of variables
+  vect_select_vars <- antaresRead::list_thematic_variables(opts = opts)
+  vect_select_vars <- vect_select_vars$col_name[1:90]
+  
+  # when
+  setThematicTrimming(selection_variables = vect_select_vars, 
+                      opts = opts)
+  
+  # then
+  # check write part
+  generaldata_file <- readIni(pathIni = "settings/generaldata", 
+                              opts = opts)
+  
+  # expected params
+  expect_true(generaldata_file$general$`thematic-trimming`)
+  expect_true(generaldata_file$`variables selection`$selected_vars_reset)
+  
+  # expected values
+  index <- names(generaldata_file$`variables selection`)%in%"select_var -"  
+  
+  values_expected <- unlist(generaldata_file$`variables selection`[index], 
+                            use.names = FALSE)
+  
+  object_to_test <- setdiff(antaresRead::list_thematic_variables(opts = opts)$col_name,
+                            vect_select_vars)
+  expect_equal(object_to_test, values_expected)
+})
+
+test_that("select var- less 50%", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 880,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
+  
+  # create dir with properties
+  dir_path <- file.path(study_path, study_name, "settings")
+  lapply(dir_path, dir.create, recursive = TRUE, showWarnings = FALSE)
+  
+  # write generaldata
+  writeLines(text = "", con = file.path(dir_path, "generaldata.ini"))
+  
+  # list of variables
+  vect_select_vars <- antaresRead::list_thematic_variables(opts = opts)
+  vect_select_vars <- vect_select_vars$col_name[1:10]
+  
+  # when
+  setThematicTrimming(selection_variables = vect_select_vars, 
+                      type_select = "suppr",
+                      opts = opts)
+  
+  # then
+  # check write part
+  generaldata_file <- readIni(pathIni = "settings/generaldata", 
+                              opts = opts)
+  
+  # expected params
+  expect_true(generaldata_file$general$`thematic-trimming`)
+  expect_true(generaldata_file$`variables selection`$selected_vars_reset)
+  
+  # expected values
+  index <- names(generaldata_file$`variables selection`)%in%"select_var -"  
+  
+  values_expected <- unlist(generaldata_file$`variables selection`[index], 
+                            use.names = FALSE)
+  
+  expect_equal(vect_select_vars, values_expected)
+})
+
+test_that("select var- more 50%", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 880,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
+  
+  # create dir with properties
+  dir_path <- file.path(study_path, study_name, "settings")
+  lapply(dir_path, dir.create, recursive = TRUE, showWarnings = FALSE)
+  
+  # write generaldata
+  writeLines(text = "", con = file.path(dir_path, "generaldata.ini"))
+  
+  # list of variables
+  vect_select_vars <- antaresRead::list_thematic_variables(opts = opts)
+  vect_select_vars <- vect_select_vars$col_name[1:90]
+  
+  # when
+  setThematicTrimming(selection_variables = vect_select_vars, 
+                      type_select = "suppr",
+                      opts = opts)
+  
+  # then
+  # check write part
+  generaldata_file <- readIni(pathIni = "settings/generaldata", 
+                              opts = opts)
+  
+  # expected params
+  expect_true(generaldata_file$general$`thematic-trimming`)
+  expect_false(generaldata_file$`variables selection`$selected_vars_reset)
+  
+  # expected values
+  index <- names(generaldata_file$`variables selection`)%in%"select_var +"  
+  
+  values_expected <- unlist(generaldata_file$`variables selection`[index], 
+                            use.names = FALSE)
+  
+  object_to_test <- setdiff(antaresRead::list_thematic_variables(opts = opts)$col_name,
+                            vect_select_vars)
+  expect_equal(object_to_test, values_expected)
+})
