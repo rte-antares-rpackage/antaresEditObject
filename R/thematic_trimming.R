@@ -72,25 +72,22 @@ setThematicTrimming <- function(selection_variables,
                 list_var_selection = selection_variables, 
                 opts_param =  opts, 
                 api_mode = is_api_study(opts = opts))
-  
+
   # write updated file
-  writeIni(listData = opts_generaldata_updated$parameters, 
+  if (is_api_study(opts)) {
+    bloc_selection <- opts_generaldata_updated$parameters[
+      names(opts_generaldata_updated$parameters)%in%
+        c("general", "variables selection")]
+  }else
+    bloc_selection <- opts_generaldata_updated$parameters
+  
+  writeIni(listData = bloc_selection, 
            pathIni = "settings/generaldata", 
            overwrite = TRUE, 
            opts = opts)
   
   # Update simulation options object
-  if(is_api_study(opts = opts)){
-    suppressWarnings(
-      res <- antaresRead::setSimulationPathAPI(host = opts$host,
-                                               study_id = opts$study_id, 
-                                               token = opts$token, 
-                                               simulation = "input")
-    )
-    }else
-      res <- opts_generaldata_updated
-
-  invisible(res)
+  invisible(opts_generaldata_updated)
 }
 
 
@@ -185,9 +182,7 @@ setThematicTrimming <- function(selection_variables,
   
   # update list
   if(api_mode){
-    element_list <- paste("\'", var_selection, "\'", 
-                          collapse  = ",", sep = "")
-    element_list <- paste("[", element_list, "]", sep = "")
+    element_list <- jsonlite::toJSON(var_selection)
     bloc_list <- list(element_list)
     names(bloc_list) <- pattern_list
     }else{
