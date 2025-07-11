@@ -34,7 +34,7 @@ You can put only variables according to version of study
 \dontrun{
 
 # list of variables (version >= v8.8)
-vect_select_vars <- antaresRead:::pkgEnv$thematic
+vect_select_vars <- list_thematic_variables()
 
 ##
 # add all variables

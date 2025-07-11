@@ -24,6 +24,32 @@ test_that("Minimum version v8.8", {
 })
 
 # v8.8 ----
+test_that("Bad colnames", {
+  # given
+  areas <- c("fr", "be")
+  study_path <- tempdir()
+  study_name <- "add_all"
+  opts <- list(
+    "inputPath" = study_path,
+    "typeLoad"= "txt",
+    "areaList" = areas,
+    "antaresVersion" = 880,
+    "studyPath" = file.path(study_path, study_name),
+    "studyName" = study_name
+  )
+  class(opts) <- c("simOptions")
+  
+  # when/then
+  # message is displayed
+  expect_error(
+    setThematicTrimming(selection_variables = c("NULL", "MyColumns"), 
+                        type_select = "add",
+                        opts = opts), 
+    regexp = "Put only variables according too version of study"
+  )
+})
+
+
 test_that("Add ALL variables", {
   # given
   areas <- c("fr", "be")
