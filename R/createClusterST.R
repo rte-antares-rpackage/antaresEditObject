@@ -141,6 +141,8 @@ createClusterST <- function(area,
                             cost_level = NULL,
                             cost_variation_injection = NULL,
                             cost_variation_withdrawal = NULL,
+                            constraints_properties = NULL, 
+                            constraints_ts = NULL,
                             add_prefix = TRUE, 
                             overwrite = FALSE,
                             opts = antaresRead::simOptions()) {
@@ -364,6 +366,15 @@ createClusterST <- function(area,
                        paste0(storage_value[[name]]$string, ".txt")))
   }
   
+  ## add constraint(s) ----
+  if(!is.null(constraints_properties))
+    .add_storage_constraint(area = area, 
+                            cluster_name = cluster_name, 
+                            constraints_properties = constraints_properties, 
+                            constraints_ts = constraints_ts, 
+                            overwrite = overwrite, 
+                            opts = opts)
+  
   # Update simulation options object
   suppressWarnings({
     res <- antaresRead::setSimulationPath(
@@ -372,7 +383,6 @@ createClusterST <- function(area,
   })
   
   invisible(res)
-  
 }
 
 
@@ -515,3 +525,94 @@ storage_values_default <- function(opts = simOptions()) {
   }
   return(storage_value)
 }
+
+#' Add constaint to a st-storage
+#' 
+#' @inheritParams createClusterST
+#' @noRd
+.add_storage_constraint <- function(area, 
+                                   cluster_name, 
+                                   constraints_properties, 
+                                   constraints_ts, 
+                                   overwrite,
+                                   opts){
+  # constraints/<area id>/additional-constraints.ini
+  
+  # create dir 
+  dir_path <- file.path(opts$inputPath, 
+                        "st-storage", 
+                        "constraints", 
+                        area)
+  dir.create(dir_path, recursive = TRUE, showWarnings = FALSE)
+  
+  ## write properties ----
+  
+  # TODO check mandatory list params
+  
+  # read previous content of ini (if exists)
+  path_contraint_ini <- file.path(dir_path, 
+                                  "additional-constraints.ini")
+  
+  if(file.exists(path_contraint_ini)){
+    previous_params <- readIniFile(file = path_contraint_ini)
+    
+    constraints_names <- names(constraints_properties)
+    
+    ## check constraint(s) already exist(s) ----
+    if (any(
+      constraints_names %in% 
+        tolower(names(previous_params)) & 
+        !overwrite))
+      stop(paste(constraints_names, "already exist"), 
+           call. = FALSE)
+    
+    ## overwrite ----
+    if(overwrite){
+      if(any(
+        constraints_names %in% tolower(names(previous_params))
+        )){
+        # insert/overwrite
+        ind_cluster <- which(tolower(names(previous_params)) %in% 
+                               constraints_names)
+        previous_params[ind_cluster] <- constraints_properties
+        constraints_properties <- previous_params
+        # names(previous_params)[ind_cluster] <- constraints_names
+      }else
+        constraints_properties <- append(previous_params, constraints_properties) 
+    }else
+      constraints_properties <- append(previous_params, constraints_properties)
+  }
+  # write properties (all properties are overwritten)
+  writeIni(
+    listData = constraints_properties,
+    pathIni = path_contraint_ini,
+    overwrite = TRUE
+  )
+  
+  ## write ts values ----
+  # check if ts already exist
+  ts_name <- paste0("rhs_", names(constraints_ts), ".txt")
+  path_ts_files <- file.path(dir_path, 
+                             ts_name)
+  
+  if(any(file.exists(path_ts_files))){
+    if(!overwrite)
+      stop(paste(constraints_names, "already exist"), 
+           call. = FALSE)
+  }
+  lapply(names(constraints_ts), 
+         function(x){
+           fwrite(
+             x = constraints_ts[[x]], 
+             row.names = FALSE, 
+             col.names = FALSE, 
+             sep = "\t",
+             file = file.path(dir_path, 
+                              paste0("rhs_", x, ".txt")))
+           })
+}
+
+
+
+
+

@@ -19,6 +19,8 @@ createClusterST(
   cost_level = NULL,
   cost_variation_injection = NULL,
   cost_variation_withdrawal = NULL,
+  constraints_properties = NULL,
+  constraints_ts = NULL,
   add_prefix = TRUE,
   overwrite = FALSE,
   opts = antaresRead::simOptions()
