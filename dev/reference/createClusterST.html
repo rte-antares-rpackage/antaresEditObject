@@ -72,6 +72,8 @@ Create a new ST-storage cluster for &amp;gt;= v8.6.0 Antares studies."><meta nam
 <span>  cost_level <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cost_variation_injection <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cost_variation_withdrawal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  constraints_properties <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  constraints_ts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -138,6 +140,14 @@ generation or consumption on the system <code>numeric</code> {&lt;0;&gt;0} (8760
 
 <dt id="arg-cost-variation-withdrawal">cost_variation_withdrawal<a class="anchor" aria-label="anchor" href="#arg-cost-variation-withdrawal"></a></dt>
 <dd><p>Penalizes the withdrawal variation every hour (€/MWh) <code>numeric</code> {&gt;0} (8760*1).</p></dd>
+
+
+<dt id="arg-constraints-properties">constraints_properties<a class="anchor" aria-label="anchor" href="#arg-constraints-properties"></a></dt>
+<dd><p><code>list </code> Parameters (see example)</p></dd>
+
+
+<dt id="arg-constraints-ts">constraints_ts<a class="anchor" aria-label="anchor" href="#arg-constraints-ts"></a></dt>
+<dd><p><code>list </code> of time series (see example)</p></dd>
 
 
 <dt id="arg-add-prefix">add_prefix<a class="anchor" aria-label="anchor" href="#arg-add-prefix"></a></dt>
@@ -243,7 +253,47 @@ This function return <code>list</code> containing properties according study ver
 <span class="r-in"><span>                cost_withdrawal <span class="op">=</span> <span class="va">ratio_value</span>, </span></span>
 <span class="r-in"><span>                cost_level <span class="op">=</span> <span class="va">ratio_value</span>, </span></span>
 <span class="r-in"><span>                cost_variation_injection <span class="op">=</span> <span class="va">ratio_value</span>,</span></span>
-<span class="r-in"><span>                cost_variation_withdrawal <span class="op">=</span> <span class="va">ratio_value</span><span class="op">)</span>               </span></span>
+<span class="r-in"><span>                cost_variation_withdrawal <span class="op">=</span> <span class="va">ratio_value</span><span class="op">)</span>         </span></span>
+<span class="r-in"><span>                </span></span>
+<span class="r-in"><span>  <span class="co"># Add optional constraints properties (name of cluster is prefixed by default)</span></span></span>
+<span class="r-in"><span>    <span class="co"># remember to prefix in the list </span></span></span>
+<span class="r-in"><span>    </span></span>
+<span class="r-in"><span><span class="va">name_no_prefix</span> <span class="op">&lt;-</span> <span class="st">"add_constraints"</span></span></span>
+<span class="r-in"><span><span class="va">clust_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">area_test_clust</span>, </span></span>
+<span class="r-in"><span>                    <span class="va">name_no_prefix</span>, </span></span>
+<span class="r-in"><span>                    sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">constraints_properties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"withdrawal-1"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    cluster <span class="op">=</span> <span class="va">clust_name</span>,</span></span>
+<span class="r-in"><span>    variable <span class="op">=</span> <span class="st">"withdrawal"</span>,</span></span>
+<span class="r-in"><span>    operator <span class="op">=</span> <span class="st">"equal"</span>,</span></span>
+<span class="r-in"><span>    hours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"[1,3,5]"</span>, </span></span>
+<span class="r-in"><span>              <span class="st">"[120,121,122,123,124,125,126,127,128]"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"netting-1"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    cluster <span class="op">=</span> <span class="va">clust_name</span>,</span></span>
+<span class="r-in"><span>    variable <span class="op">=</span> <span class="st">"netting"</span>,</span></span>
+<span class="r-in"><span>    operator <span class="op">=</span> <span class="st">"less"</span>,</span></span>
+<span class="r-in"><span>    hours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"[1, 168]"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a cluster with constraint properties (no need to provide TS)</span></span></span>
+<span class="r-in"><span><span class="fu">createClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="va">area_test_clust</span>, </span></span>
+<span class="r-in"><span>                cluster_name <span class="op">=</span> <span class="va">name_no_prefix</span>, </span></span>
+<span class="r-in"><span>                constraints_properties <span class="op">=</span> <span class="va">constraints_properties</span><span class="op">)</span>         </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>   <span class="co"># Add optional constraints properties + TS </span></span></span>
+<span class="r-in"><span><span class="va">good_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">8760</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">constraints_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"withdrawal-2"</span><span class="op">=</span><span class="va">good_ts</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"netting-2"</span><span class="op">=</span><span class="va">good_ts</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a cluster with constraint properties + TS</span></span></span>
+<span class="r-in"><span><span class="fu">createClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="va">area_test_clust</span>, </span></span>
+<span class="r-in"><span>                cluster_name <span class="op">=</span> <span class="va">name_no_prefix</span>, </span></span>
+<span class="r-in"><span>                constraints_properties <span class="op">=</span> <span class="va">constraints_properties</span>, </span></span>
+<span class="r-in"><span>                constraints_ts <span class="op">=</span> <span class="va">constraints_ts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
