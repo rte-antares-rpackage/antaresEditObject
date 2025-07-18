@@ -715,7 +715,43 @@ test_that("Add new binding constraint properties", {
                   cluster_name = name_no_prefix, 
                   constraints_properties = constraints_properties)
   
+  # then
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust,
+                           "additional-constraints")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_names <- names(read_ini)
+  
+  # test params created if identical with .ini read 
+  expect_true(all(
+    names(constraints_properties)%in%target_names))
+  
+  
+  test_that("Ovewrite not permiss", {
+    expect_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties)
+    )
+  })
+  
+  test_that("Ovewrite permiss", {
+    expect_no_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties, 
+                      overwrite = TRUE)
+    )
+  })
+  
 })
+
+
+
 
 test_that("Add new TS constraint", {
   # /!\ you can add ts only with properties
@@ -752,11 +788,64 @@ test_that("Add new TS constraint", {
                   constraints_properties = constraints_properties, 
                   constraints_ts = constraints_ts)
   
+  # then
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust,
+                           "additional-constraints")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_names <- names(read_ini)
+  
+  # test params created if identical with .ini read 
+  expect_true(all(
+    names(constraints_properties)%in%target_names))
+  
+  # read ts
+  opts_ <- simOptions()
+  ts_path <- file.path(opts_$inputPath, 
+                       "st-storage", 
+                       "constraints", 
+                       area_test_clust,
+                       paste0("rhs_", names(constraints_ts), ".txt"))
+  
+  # exist ?
+  expect_true(all(
+    file.exists(ts_path)
+  ))
+  
+  # dim ? 
+  dim <- lapply(ts_path, function(x){
+    file_ts <- fread(input = x)
+    dim(file_ts)
+  })
+  
+  expect_equal(dim[[1]], dim[[2]])
+  expect_equal(dim[[1]][1], 8760)
+  expect_equal(dim[[1]][2], 1)
+  
+  
+  test_that("Ovewrite TS not permiss", {
+    expect_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties, 
+                      constraints_ts = constraints_ts)
+    )
+  })
+  
+  test_that("Ovewrite permiss", {
+    expect_no_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties, 
+                      overwrite = TRUE)
+    )
+  })
 })
 
-
-    
-  
 deleteStudy()
 
 

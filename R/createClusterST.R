@@ -21,6 +21,8 @@
 #' @param cost_level Penalizes the volume of stored energy at each hour (&euro;/MWh) `numeric` \{<0;>0\} (8760*1).
 #' @param cost_variation_injection Penalizes injection flowrate variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
 #' @param cost_variation_withdrawal Penalizes the withdrawal variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
+#' @param constraints_properties `list ` Parameters (see example)
+#' @param constraints_ts `list ` of time series (see example)
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite `logical`, overwrite the cluster or not.
 #' 
@@ -124,7 +126,47 @@
 #'                 cost_withdrawal = ratio_value, 
 #'                 cost_level = ratio_value, 
 #'                 cost_variation_injection = ratio_value,
-#'                 cost_variation_withdrawal = ratio_value)               
+#'                 cost_variation_withdrawal = ratio_value)         
+#'                 
+#'   # Add optional constraints properties (name of cluster is prefixed by default)
+#'     # remember to prefix in the list 
+#'     
+#' name_no_prefix <- "add_constraints"
+#' clust_name <- paste(area_test_clust, 
+#'                     name_no_prefix, 
+#'                     sep = "_")
+#' 
+#' constraints_properties <- list(
+#'   "withdrawal-1"=list(
+#'     cluster = clust_name,
+#'     variable = "withdrawal",
+#'     operator = "equal",
+#'     hours = c("[1,3,5]", 
+#'               "[120,121,122,123,124,125,126,127,128]")
+#'   ),
+#'   "netting-1"=list(
+#'     cluster = clust_name,
+#'     variable = "netting",
+#'     operator = "less",
+#'     hours = c("[1, 168]")
+#'   ))
+#' 
+#' # create a cluster with constraint properties (no need to provide TS)
+#' createClusterST(area = area_test_clust, 
+#'                 cluster_name = name_no_prefix, 
+#'                 constraints_properties = constraints_properties)         
+#' 
+#'    # Add optional constraints properties + TS 
+#' good_ts <- matrix(0.7, 8760)
+#' constraints_ts <- list(
+#'   "withdrawal-2"=good_ts,
+#'   "netting-2"=good_ts)
+#' 
+#' # create a cluster with constraint properties + TS
+#' createClusterST(area = area_test_clust, 
+#'                 cluster_name = name_no_prefix, 
+#'                 constraints_properties = constraints_properties, 
+#'                 constraints_ts = constraints_ts)
 #' }
 #'
 createClusterST <- function(area,
@@ -563,10 +605,10 @@ storage_values_default <- function(opts = simOptions()) {
       constraints_names %in% 
         tolower(names(previous_params)) & 
         !overwrite))
-      stop(paste(constraints_names, "already exist"), 
+      stop(paste(constraints_names, " already exist "), 
            call. = FALSE)
     
-    ## overwrite ----
+    ## overwrite prop ----
     if(overwrite){
       if(any(
         constraints_names %in% tolower(names(previous_params))
@@ -597,7 +639,7 @@ storage_values_default <- function(opts = simOptions()) {
   
   if(any(file.exists(path_ts_files))){
     if(!overwrite)
-      stop(paste(constraints_names, "already exist"), 
+      stop(paste(constraints_names, " already exist "), 
            call. = FALSE)
   }
   lapply(names(constraints_ts), 
