@@ -21,8 +21,6 @@
 #' @param cost_level Penalizes the volume of stored energy at each hour (&euro;/MWh) `numeric` \{<0;>0\} (8760*1).
 #' @param cost_variation_injection Penalizes injection flowrate variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
 #' @param cost_variation_withdrawal Penalizes the withdrawal variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
-#' @param constraints_properties `list ` Parameters (see example)
-#' @param constraints_ts `list ` of time series (see example)
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
 #' @param overwrite `logical`, overwrite the cluster or not.
 #' 
@@ -126,47 +124,7 @@
 #'                 cost_withdrawal = ratio_value, 
 #'                 cost_level = ratio_value, 
 #'                 cost_variation_injection = ratio_value,
-#'                 cost_variation_withdrawal = ratio_value)         
-#'                 
-#'   # Add optional constraints properties (name of cluster is prefixed by default)
-#'     # remember to prefix in the list 
-#'     
-#' name_no_prefix <- "add_constraints"
-#' clust_name <- paste(area_test_clust, 
-#'                     name_no_prefix, 
-#'                     sep = "_")
-#' 
-#' constraints_properties <- list(
-#'   "withdrawal-1"=list(
-#'     cluster = clust_name,
-#'     variable = "withdrawal",
-#'     operator = "equal",
-#'     hours = c("[1,3,5]", 
-#'               "[120,121,122,123,124,125,126,127,128]")
-#'   ),
-#'   "netting-1"=list(
-#'     cluster = clust_name,
-#'     variable = "netting",
-#'     operator = "less",
-#'     hours = c("[1, 168]")
-#'   ))
-#' 
-#' # create a cluster with constraint properties (no need to provide TS)
-#' createClusterST(area = area_test_clust, 
-#'                 cluster_name = name_no_prefix, 
-#'                 constraints_properties = constraints_properties)         
-#' 
-#'    # Add optional constraints properties + TS 
-#' good_ts <- matrix(0.7, 8760)
-#' constraints_ts <- list(
-#'   "withdrawal-2"=good_ts,
-#'   "netting-2"=good_ts)
-#' 
-#' # create a cluster with constraint properties + TS
-#' createClusterST(area = area_test_clust, 
-#'                 cluster_name = name_no_prefix, 
-#'                 constraints_properties = constraints_properties, 
-#'                 constraints_ts = constraints_ts)
+#'                 cost_variation_withdrawal = ratio_value)               
 #' }
 #'
 createClusterST <- function(area,
@@ -183,8 +141,6 @@ createClusterST <- function(area,
                             cost_level = NULL,
                             cost_variation_injection = NULL,
                             cost_variation_withdrawal = NULL,
-                            constraints_properties = NULL, 
-                            constraints_ts = NULL,
                             add_prefix = TRUE, 
                             overwrite = FALSE,
                             opts = antaresRead::simOptions()) {
@@ -408,15 +364,6 @@ createClusterST <- function(area,
                        paste0(storage_value[[name]]$string, ".txt")))
   }
   
-  ## add constraint(s) ----
-  if(!is.null(constraints_properties))
-    .add_storage_constraint(area = area, 
-                            cluster_name = cluster_name, 
-                            constraints_properties = constraints_properties, 
-                            constraints_ts = constraints_ts, 
-                            overwrite = overwrite, 
-                            opts = opts)
-  
   # Update simulation options object
   suppressWarnings({
     res <- antaresRead::setSimulationPath(
@@ -425,6 +372,7 @@ createClusterST <- function(area,
   })
   
   invisible(res)
+  
 }
 
 
@@ -567,94 +515,3 @@ storage_values_default <- function(opts = simOptions()) {
   }
   return(storage_value)
 }
-
-#' Add constaint to a st-storage
-#' 
-#' @inheritParams createClusterST
-#' @noRd
-.add_storage_constraint <- function(area, 
-                                   cluster_name, 
-                                   constraints_properties, 
-                                   constraints_ts, 
-                                   overwrite,
-                                   opts){
-  # constraints/<area id>/additional-constraints.ini
-  
-  # create dir 
-  dir_path <- file.path(opts$inputPath, 
-                        "st-storage", 
-                        "constraints", 
-                        area)
-  dir.create(dir_path, recursive = TRUE, showWarnings = FALSE)
-  
-  ## write properties ----
-  
-  # TODO check mandatory list params
-  
-  # read previous content of ini (if exists)
-  path_contraint_ini <- file.path(dir_path, 
-                                  "additional-constraints.ini")
-  
-  if(file.exists(path_contraint_ini)){
-    previous_params <- readIniFile(file = path_contraint_ini)
-    
-    constraints_names <- names(constraints_properties)
-    
-    ## check constraint(s) already exist(s) ----
-    if (any(
-      constraints_names %in% 
-        tolower(names(previous_params)) & 
-        !overwrite))
-      stop(paste(constraints_names, " already exist "), 
-           call. = FALSE)
-    
-    ## overwrite prop ----
-    if(overwrite){
-      if(any(
-        constraints_names %in% tolower(names(previous_params))
-        )){
-        # insert/overwrite
-        ind_cluster <- which(tolower(names(previous_params)) %in% 
-                               constraints_names)
-        previous_params[ind_cluster] <- constraints_properties
-        constraints_properties <- previous_params
-        # names(previous_params)[ind_cluster] <- constraints_names
-      }else
-        constraints_properties <- append(previous_params, constraints_properties) 
-    }else
-      constraints_properties <- append(previous_params, constraints_properties)
-  }
-  # write properties (all properties are overwritten)
-  writeIni(
-    listData = constraints_properties,
-    pathIni = path_contraint_ini,
-    overwrite = TRUE
-  )
-  
-  ## write ts values ----
-  # check if ts already exist
-  ts_name <- paste0("rhs_", names(constraints_ts), ".txt")
-  path_ts_files <- file.path(dir_path, 
-                             ts_name)
-  
-  if(any(file.exists(path_ts_files))){
-    if(!overwrite)
-      stop(paste(constraints_names, " already exist "), 
-           call. = FALSE)
-  }
-  lapply(names(constraints_ts), 
-         function(x){
-           fwrite(
-             x = constraints_ts[[x]], 
-             row.names = FALSE, 
-             col.names = FALSE, 
-             sep = "\t",
-             file = file.path(dir_path, 
-                              paste0("rhs_", x, ".txt")))
-           })
-}
-
-
-
-
-

@@ -413,40 +413,38 @@ deleteStudy()
 
 
 # >=880 ----
-test_that("Default values",{
-  suppressWarnings(
-    createStudy(path = tempdir(), 
-                study_name = "st-storage880", 
-                antares_version = "8.8.0"))
-  
-  # default area with st cluster
-  area_test_clust = "al" 
-  createArea(name = area_test_clust)
-  
-  # default 
-  createClusterST(area = area_test_clust, 
-                  cluster_name = "default")
-  
-  # read prop
-  path_st_ini <- file.path("input", 
-                           "st-storage", 
-                           "clusters", 
-                           area_test_clust,
-                           "list")
-  
-  read_ini <- antaresRead::readIni(path_st_ini)
-  target_prop <- read_ini[[paste(area_test_clust, 
-                                 "default",
-                                 sep = "_")]]
-  
-  # test default values
-  expect_equal(
-    target_prop[setdiff(names(target_prop), 
-                        c("name", "group"))], 
-    storage_values_default())
-  
-  deleteStudy()
-})
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "st-storage880", 
+              antares_version = "8.8.0"))
+
+# default area with st cluster
+area_test_clust = "al" 
+createArea(name = area_test_clust)
+
+# default 
+createClusterST(area = area_test_clust, 
+                cluster_name = "default")
+
+# read prop
+path_st_ini <- file.path("input", 
+                         "st-storage", 
+                         "clusters", 
+                         area_test_clust,
+                         "list")
+
+read_ini <- antaresRead::readIni(path_st_ini)
+target_prop <- read_ini[[paste(area_test_clust, 
+                               "default",
+                               sep = "_")]]
+
+# test default values
+expect_equal(
+  target_prop[setdiff(names(target_prop), 
+                      c("name", "group"))], 
+  storage_values_default())
+
+deleteStudy()
 
 
 # >=9.2 ---- 
@@ -569,7 +567,6 @@ test_that("Wrong type/values",{
 test_that("Add right values",{
   # add new parameters 
   all_params <- storage_values_default()
-  all_params[["efficiency"]] <- 0.8
   all_params[["efficiencywithdrawal"]] <- 0.9
   all_params[["penalize-variation-injection"]] <- TRUE
   all_params[["penalize-variation-withdrawal"]] <- TRUE
@@ -686,166 +683,8 @@ test_that("Add right TS values",{
                                 sum)
   expect_true(sum(values_files_series)>0)
 })
-
-## Optional constraints ----
-test_that("Add new binding constraint properties", {
-  # given
-  name_no_prefix <- "add_constraints"
-  clust_name <- paste(area_test_clust, 
-                      name_no_prefix, 
-                      sep = "_")
-
-  constraints_properties <- list(
-    "withdrawal-1"=list(
-      cluster = clust_name,
-      variable = "withdrawal",
-      operator = "equal",
-      hours = c("[1,3,5]", 
-                "[120,121,122,123,124,125,126,127,128]")
-    ),
-    "netting-1"=list(
-      cluster = clust_name,
-      variable = "netting",
-      operator = "less",
-      hours = c("[1, 168]")
-    ))
+    
   
-  # when
-  createClusterST(area = area_test_clust, 
-                  cluster_name = name_no_prefix, 
-                  constraints_properties = constraints_properties)
-  
-  # then
-  # read prop
-  path_st_ini <- file.path("input", 
-                           "st-storage", 
-                           "constraints", 
-                           area_test_clust,
-                           "additional-constraints")
-  
-  read_ini <- antaresRead::readIni(path_st_ini)
-  target_names <- names(read_ini)
-  
-  # test params created if identical with .ini read 
-  expect_true(all(
-    names(constraints_properties)%in%target_names))
-  
-  
-  test_that("Ovewrite not permiss", {
-    expect_error(
-      createClusterST(area = area_test_clust, 
-                      cluster_name = name_no_prefix, 
-                      constraints_properties = constraints_properties)
-    )
-  })
-  
-  test_that("Ovewrite permiss", {
-    expect_no_error(
-      createClusterST(area = area_test_clust, 
-                      cluster_name = name_no_prefix, 
-                      constraints_properties = constraints_properties, 
-                      overwrite = TRUE)
-    )
-  })
-  
-})
-
-
-
-
-test_that("Add new TS constraint", {
-  # /!\ you can add ts only with properties
-  
-  # given
-  name_no_prefix <- "add_ts"
-  clust_name <- paste(area_test_clust, 
-                      name_no_prefix, 
-                      sep = "_")
-  
-  constraints_properties <- list(
-    "withdrawal-2"=list(
-      cluster = clust_name,
-      variable = "withdrawal",
-      operator = "equal",
-      hours = c("[1,3,5]", 
-                "[120,121,122,123,124,125,126,127,128]")
-    ),
-    "netting-2"=list(
-      cluster = clust_name,
-      variable = "netting",
-      operator = "less",
-      hours = c("[1, 168]")
-    ))
-  
-  good_ts <- matrix(0.7, 8760)
-  constraints_ts <- list(
-    "withdrawal-2"=good_ts,
-    "netting-2"=good_ts)
-  
-  # when
-  createClusterST(area = area_test_clust, 
-                  cluster_name = name_no_prefix, 
-                  constraints_properties = constraints_properties, 
-                  constraints_ts = constraints_ts)
-  
-  # then
-  # read prop
-  path_st_ini <- file.path("input", 
-                           "st-storage", 
-                           "constraints", 
-                           area_test_clust,
-                           "additional-constraints")
-  
-  read_ini <- antaresRead::readIni(path_st_ini)
-  target_names <- names(read_ini)
-  
-  # test params created if identical with .ini read 
-  expect_true(all(
-    names(constraints_properties)%in%target_names))
-  
-  # read ts
-  opts_ <- simOptions()
-  ts_path <- file.path(opts_$inputPath, 
-                       "st-storage", 
-                       "constraints", 
-                       area_test_clust,
-                       paste0("rhs_", names(constraints_ts), ".txt"))
-  
-  # exist ?
-  expect_true(all(
-    file.exists(ts_path)
-  ))
-  
-  # dim ? 
-  dim <- lapply(ts_path, function(x){
-    file_ts <- fread(input = x)
-    dim(file_ts)
-  })
-  
-  expect_equal(dim[[1]], dim[[2]])
-  expect_equal(dim[[1]][1], 8760)
-  expect_equal(dim[[1]][2], 1)
-  
-  
-  test_that("Ovewrite TS not permiss", {
-    expect_error(
-      createClusterST(area = area_test_clust, 
-                      cluster_name = name_no_prefix, 
-                      constraints_properties = constraints_properties, 
-                      constraints_ts = constraints_ts)
-    )
-  })
-  
-  test_that("Ovewrite permiss", {
-    expect_no_error(
-      createClusterST(area = area_test_clust, 
-                      cluster_name = name_no_prefix, 
-                      constraints_properties = constraints_properties, 
-                      overwrite = TRUE)
-    )
-  })
-})
-
 deleteStudy()
 
 
