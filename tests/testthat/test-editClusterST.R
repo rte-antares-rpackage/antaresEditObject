@@ -520,6 +520,73 @@ test_that("Add right TS values",{
   expect_true(sum(values_files_series)>0)
 })
 
+
+## Optional constraints ----
+test_that("Edit constraint properties", {
+  # given
+  name_no_prefix <- "add_constraints"
+  clust_name <- paste(area_test_clust, 
+                      name_no_prefix, 
+                      sep = "_")
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      cluster = clust_name,
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      cluster = clust_name,
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  # when
+  edit_constraints_properties <- list(
+    "withdrawal-1"=list(
+      cluster = clust_name,
+      variable = "injection",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122]")
+    ),
+    "netting-1"=list(
+      cluster = clust_name,
+      variable = "variation-injection",
+      operator = "less",
+      hours = c("[1, 168]",
+                "[240, 241]")
+    ))
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix, 
+                constraints_properties = edit_constraints_properties)
+  
+  # then
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust,
+                           "additional-constraints")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_names <- names(read_ini)
+  
+  # test params created if identical with .ini read 
+  expect_true(all(
+    names(constraints_properties)%in%target_names))
+})
+
+
+
 deleteStudy()
 
   

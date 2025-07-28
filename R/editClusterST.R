@@ -94,6 +94,8 @@ editClusterST <- function(area,
                           cost_level = NULL,
                           cost_variation_injection = NULL,
                           cost_variation_withdrawal = NULL,
+                          constraints_properties = NULL, 
+                          constraints_ts = NULL,
                           add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
 
@@ -286,7 +288,6 @@ editClusterST <- function(area,
     )
   }
   
-  
   ## write TS ----
   
   ##
@@ -331,6 +332,13 @@ editClusterST <- function(area,
     }
   })
   
+  ## Optional constraints ----
+  .edit_storage_constraints(area = area, 
+                            cluster_name = cluster_name,
+                            constraints_properties = constraints_properties, 
+                            constraints_ts = constraints_ts, 
+                            opts = opts)
+  
   # Maj simulation
   suppressWarnings({
     res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
@@ -338,3 +346,53 @@ editClusterST <- function(area,
   
   invisible(res)
 }
+
+
+#' Edit constraints to a st-storage
+#' 
+#' @inheritParams createClusterST
+#' @noRd
+.edit_storage_constraints <- function(area, 
+                                    cluster_name, 
+                                    constraints_properties, 
+                                    constraints_ts, 
+                                    opts){
+  # constraints/<area id>/additional-constraints.ini
+  
+  # target dir
+  dir_path <- file.path(opts$inputPath, 
+                        "st-storage", 
+                        "constraints", 
+                        area)
+  
+  # properties part
+  if(!is.null(constraints_properties)){
+    # read previous content of ini (if exists)
+    path_contraint_ini <- file.path(dir_path, 
+                                    "additional-constraints.ini")
+    
+    if(file.exists(path_contraint_ini)){
+      previous_params <- readIniFile(file = path_contraint_ini)
+      previous_params <- tolower(names(previous_params))
+      
+      constraints_names <- names(constraints_properties)
+      
+      ## check constraints 
+      if (!all(
+        constraints_names %in% previous_params
+         ))
+        stop(paste0(setdiff(constraints_names, 
+                            previous_params), 
+                    collapse = ", "), 
+             "' doesn't exist, it can't be edited. You can create constaints with createCluster().", 
+             call. = FALSE)
+    }else
+      stop(, call. = FALSE)
+  }
+  
+  
+}
+
+
+
+

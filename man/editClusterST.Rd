@@ -19,6 +19,8 @@ editClusterST(
   cost_level = NULL,
   cost_variation_injection = NULL,
   cost_variation_withdrawal = NULL,
+  constraints_properties = NULL,
+  constraints_ts = NULL,
   add_prefix = TRUE,
   opts = antaresRead::simOptions()
 )
@@ -53,6 +55,10 @@ generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
 \item{cost_variation_injection}{Penalizes injection flowrate variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
 
 \item{cost_variation_withdrawal}{Penalizes the withdrawal variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{constraints_properties}{\code{list } Parameters (see example)}
+
+\item{constraints_ts}{\code{list } of time series (see example)}
 
 \item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
