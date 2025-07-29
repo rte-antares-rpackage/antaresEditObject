@@ -690,21 +690,17 @@ test_that("Add right TS values",{
 ## Optional constraints ----
 test_that("Add new binding constraint properties", {
   # given
+  
   name_no_prefix <- "add_constraints"
-  clust_name <- paste(area_test_clust, 
-                      name_no_prefix, 
-                      sep = "_")
 
   constraints_properties <- list(
     "withdrawal-1"=list(
-      cluster = clust_name,
       variable = "withdrawal",
       operator = "equal",
       hours = c("[1,3,5]", 
                 "[120,121,122,123,124,125,126,127,128]")
     ),
     "netting-1"=list(
-      cluster = clust_name,
       variable = "netting",
       operator = "less",
       hours = c("[1, 168]")
@@ -721,6 +717,7 @@ test_that("Add new binding constraint properties", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
+                           name_no_prefix,
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -751,27 +748,20 @@ test_that("Add new binding constraint properties", {
 })
 
 
-
-
 test_that("Add new TS constraint", {
   # /!\ you can add ts only with properties
   
   # given
   name_no_prefix <- "add_ts"
-  clust_name <- paste(area_test_clust, 
-                      name_no_prefix, 
-                      sep = "_")
   
   constraints_properties <- list(
     "withdrawal-2"=list(
-      cluster = clust_name,
       variable = "withdrawal",
       operator = "equal",
       hours = c("[1,3,5]", 
                 "[120,121,122,123,124,125,126,127,128]")
     ),
     "netting-2"=list(
-      cluster = clust_name,
       variable = "netting",
       operator = "less",
       hours = c("[1, 168]")
@@ -794,6 +784,7 @@ test_that("Add new TS constraint", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
+                           name_no_prefix,
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -809,6 +800,7 @@ test_that("Add new TS constraint", {
                        "st-storage", 
                        "constraints", 
                        area_test_clust,
+                       name_no_prefix,
                        paste0("rhs_", names(constraints_ts), ".txt"))
   
   # exist ?
