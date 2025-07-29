@@ -173,20 +173,15 @@ createClusterST(area = "fr",
     # remember to prefix in the list 
     
 name_no_prefix <- "add_constraints"
-clust_name <- paste(area_test_clust, 
-                    name_no_prefix, 
-                    sep = "_")
 
 constraints_properties <- list(
   "withdrawal-1"=list(
-    cluster = clust_name,
     variable = "withdrawal",
     operator = "equal",
     hours = c("[1,3,5]", 
               "[120,121,122,123,124,125,126,127,128]")
   ),
   "netting-1"=list(
-    cluster = clust_name,
     variable = "netting",
     operator = "less",
     hours = c("[1, 168]")
@@ -198,6 +193,20 @@ createClusterST(area = area_test_clust,
                 constraints_properties = constraints_properties)         
 
    # Add optional constraints properties + TS 
+   
+constraints_properties <- list(
+  "withdrawal-2"=list(
+    variable = "withdrawal",
+    operator = "equal",
+    hours = c("[1,3,5]", 
+              "[120,121,122,123,124,125,126,127,128]")
+  ),
+  "netting-2"=list(
+    variable = "netting",
+    operator = "less",
+    hours = c("[1, 168]")
+  ))    
+   
 good_ts <- matrix(0.7, 8760)
 constraints_ts <- list(
   "withdrawal-2"=good_ts,

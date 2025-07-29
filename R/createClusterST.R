@@ -132,20 +132,15 @@
 #'     # remember to prefix in the list 
 #'     
 #' name_no_prefix <- "add_constraints"
-#' clust_name <- paste(area_test_clust, 
-#'                     name_no_prefix, 
-#'                     sep = "_")
 #' 
 #' constraints_properties <- list(
 #'   "withdrawal-1"=list(
-#'     cluster = clust_name,
 #'     variable = "withdrawal",
 #'     operator = "equal",
 #'     hours = c("[1,3,5]", 
 #'               "[120,121,122,123,124,125,126,127,128]")
 #'   ),
 #'   "netting-1"=list(
-#'     cluster = clust_name,
 #'     variable = "netting",
 #'     operator = "less",
 #'     hours = c("[1, 168]")
@@ -157,6 +152,20 @@
 #'                 constraints_properties = constraints_properties)         
 #' 
 #'    # Add optional constraints properties + TS 
+#'    
+#' constraints_properties <- list(
+#'   "withdrawal-2"=list(
+#'     variable = "withdrawal",
+#'     operator = "equal",
+#'     hours = c("[1,3,5]", 
+#'               "[120,121,122,123,124,125,126,127,128]")
+#'   ),
+#'   "netting-2"=list(
+#'     variable = "netting",
+#'     operator = "less",
+#'     hours = c("[1, 168]")
+#'   ))    
+#'    
 #' good_ts <- matrix(0.7, 8760)
 #' constraints_ts <- list(
 #'   "withdrawal-2"=good_ts,
@@ -237,6 +246,7 @@ createClusterST <- function(area,
   params_cluster <- hyphenize_names(storage_parameters)
   
   ## Standardize cluster name + prefix ----
+  cluster_name_ori <- cluster_name
   cluster_name <- generate_cluster_name(area = area, 
                                           cluster_name = cluster_name, 
                                           add_prefix = add_prefix)
@@ -411,7 +421,7 @@ createClusterST <- function(area,
   ## add constraint(s) ----
   if(!is.null(constraints_properties))
     .add_storage_constraint(area = area, 
-                            cluster_name = cluster_name, 
+                            cluster_name = cluster_name_ori, 
                             constraints_properties = constraints_properties, 
                             constraints_ts = constraints_ts, 
                             overwrite = overwrite, 
@@ -578,13 +588,14 @@ storage_values_default <- function(opts = simOptions()) {
                                    constraints_ts, 
                                    overwrite,
                                    opts){
-  # constraints/<area id>/additional-constraints.ini
+  # constraints/<area id>/cluster/additional-constraints.ini
   
   # create dir 
   dir_path <- file.path(opts$inputPath, 
                         "st-storage", 
                         "constraints", 
-                        area)
+                        area, 
+                        cluster_name)
   dir.create(dir_path, recursive = TRUE, showWarnings = FALSE)
   
   ## write properties ----
@@ -633,25 +644,27 @@ storage_values_default <- function(opts = simOptions()) {
   
   ## write ts values ----
   # check if ts already exist
-  ts_name <- paste0("rhs_", names(constraints_ts), ".txt")
-  path_ts_files <- file.path(dir_path, 
-                             ts_name)
-  
-  if(any(file.exists(path_ts_files))){
-    if(!overwrite)
-      stop(paste(constraints_names, " already exist "), 
-           call. = FALSE)
-  }
-  lapply(names(constraints_ts), 
-         function(x){
-           fwrite(
-             x = constraints_ts[[x]], 
-             row.names = FALSE, 
-             col.names = FALSE, 
-             sep = "\t",
-             file = file.path(dir_path, 
-                              paste0("rhs_", x, ".txt")))
+  if(!is.null(constraints_ts)){
+    ts_name <- paste0("rhs_", names(constraints_ts), ".txt")
+    path_ts_files <- file.path(dir_path, 
+                               ts_name)
+    
+    if(any(file.exists(path_ts_files))){
+      if(!overwrite)
+        stop(paste(constraints_names, " already exist "), 
+             call. = FALSE)
+    }
+    lapply(names(constraints_ts), 
+           function(x){
+             fwrite(
+               x = constraints_ts[[x]], 
+               row.names = FALSE, 
+               col.names = FALSE, 
+               sep = "\t",
+               file = file.path(dir_path, 
+                                paste0("rhs_", x, ".txt")))
            })
+  }
 }
 
 
