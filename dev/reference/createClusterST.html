@@ -259,20 +259,15 @@ This function return <code>list</code> containing properties according study ver
 <span class="r-in"><span>    <span class="co"># remember to prefix in the list </span></span></span>
 <span class="r-in"><span>    </span></span>
 <span class="r-in"><span><span class="va">name_no_prefix</span> <span class="op">&lt;-</span> <span class="st">"add_constraints"</span></span></span>
-<span class="r-in"><span><span class="va">clust_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">area_test_clust</span>, </span></span>
-<span class="r-in"><span>                    <span class="va">name_no_prefix</span>, </span></span>
-<span class="r-in"><span>                    sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">constraints_properties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"withdrawal-1"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    cluster <span class="op">=</span> <span class="va">clust_name</span>,</span></span>
 <span class="r-in"><span>    variable <span class="op">=</span> <span class="st">"withdrawal"</span>,</span></span>
 <span class="r-in"><span>    operator <span class="op">=</span> <span class="st">"equal"</span>,</span></span>
 <span class="r-in"><span>    hours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"[1,3,5]"</span>, </span></span>
 <span class="r-in"><span>              <span class="st">"[120,121,122,123,124,125,126,127,128]"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"netting-1"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    cluster <span class="op">=</span> <span class="va">clust_name</span>,</span></span>
 <span class="r-in"><span>    variable <span class="op">=</span> <span class="st">"netting"</span>,</span></span>
 <span class="r-in"><span>    operator <span class="op">=</span> <span class="st">"less"</span>,</span></span>
 <span class="r-in"><span>    hours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"[1, 168]"</span><span class="op">)</span></span></span>
@@ -284,6 +279,20 @@ This function return <code>list</code> containing properties according study ver
 <span class="r-in"><span>                constraints_properties <span class="op">=</span> <span class="va">constraints_properties</span><span class="op">)</span>         </span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>   <span class="co"># Add optional constraints properties + TS </span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span><span class="va">constraints_properties</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"withdrawal-2"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    variable <span class="op">=</span> <span class="st">"withdrawal"</span>,</span></span>
+<span class="r-in"><span>    operator <span class="op">=</span> <span class="st">"equal"</span>,</span></span>
+<span class="r-in"><span>    hours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"[1,3,5]"</span>, </span></span>
+<span class="r-in"><span>              <span class="st">"[120,121,122,123,124,125,126,127,128]"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"netting-2"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    variable <span class="op">=</span> <span class="st">"netting"</span>,</span></span>
+<span class="r-in"><span>    operator <span class="op">=</span> <span class="st">"less"</span>,</span></span>
+<span class="r-in"><span>    hours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"[1, 168]"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span>    </span></span>
+<span class="r-in"><span>   </span></span>
 <span class="r-in"><span><span class="va">good_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">8760</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">constraints_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"withdrawal-2"</span><span class="op">=</span><span class="va">good_ts</span>,</span></span>
