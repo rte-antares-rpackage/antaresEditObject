@@ -72,6 +72,8 @@ Edit parameters and time series of an existing st-storage cluster (Antares studi
 <span>  cost_level <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cost_variation_injection <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cost_variation_withdrawal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  constraints_properties <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  constraints_ts <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -139,6 +141,14 @@ generation or consumption on the system <code>numeric</code> {&lt;0;&gt;0} (8760
 <dd><p>Penalizes the withdrawal variation every hour (€/MWh) <code>numeric</code> {&gt;0} (8760*1).</p></dd>
 
 
+<dt id="arg-constraints-properties">constraints_properties<a class="anchor" aria-label="anchor" href="#arg-constraints-properties"></a></dt>
+<dd><p><code>list </code> Parameters (see example)</p></dd>
+
+
+<dt id="arg-constraints-ts">constraints_ts<a class="anchor" aria-label="anchor" href="#arg-constraints-ts"></a></dt>
+<dd><p><code>list </code> of time series (see example)</p></dd>
+
+
 <dt id="arg-add-prefix">add_prefix<a class="anchor" aria-label="anchor" href="#arg-add-prefix"></a></dt>
 <dd><p>If <code>TRUE</code> (the default), <code>cluster_name</code> will be prefixed by area name.</p></dd>
 
@@ -163,72 +173,7 @@ generation or consumption on the system <code>numeric</code> {&lt;0;&gt;0} (8760
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># study version &gt;= "8.6.0"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># edit an existing cluster (see doc approved groups)</span></span></span>
-<span class="r-in"><span><span class="va">name_group</span> <span class="op">&lt;-</span> <span class="st">"Pondage"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">editClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"areaname"</span>, </span></span>
-<span class="r-in"><span>              cluster_name <span class="op">=</span> <span class="st">"clustername"</span>, </span></span>
-<span class="r-in"><span>              group <span class="op">=</span> <span class="va">name_group</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># edit properties</span></span></span>
-<span class="r-in"><span><span class="va">all_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="storage_values_default.html">storage_values_default</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">all_params</span><span class="op">[[</span><span class="st">"efficiency"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.9</span></span></span>
-<span class="r-in"><span><span class="va">all_params</span><span class="op">[[</span><span class="st">"reservoircapacity"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
-<span class="r-in"><span><span class="va">all_params</span><span class="op">[[</span><span class="st">"initiallevel"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span></span>
-<span class="r-in"><span><span class="va">all_params</span><span class="op">[[</span><span class="st">"withdrawalnominalcapacity"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">250</span></span></span>
-<span class="r-in"><span><span class="va">all_params</span><span class="op">[[</span><span class="st">"injectionnominalcapacity"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">200</span></span></span>
-<span class="r-in"><span><span class="va">all_params</span><span class="op">[[</span><span class="st">"initialleveloptim"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">editClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"areaname"</span>, </span></span>
-<span class="r-in"><span>              cluster_name <span class="op">=</span> <span class="st">"clustername"</span>, </span></span>
-<span class="r-in"><span>              storage_parameters <span class="op">=</span> <span class="va">all_params</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># edit time series</span></span></span>
-<span class="r-in"><span><span class="va">inflow_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8760</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ratio_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">8760</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">editClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"areaname"</span>, </span></span>
-<span class="r-in"><span>              cluster_name <span class="op">=</span> <span class="st">"clustername"</span>,</span></span>
-<span class="r-in"><span>              PMAX_withdrawal <span class="op">=</span> <span class="va">ratio_data</span>, </span></span>
-<span class="r-in"><span>              inflows <span class="op">=</span> <span class="va">inflow_data</span>, </span></span>
-<span class="r-in"><span>              PMAX_injection <span class="op">=</span> <span class="va">ratio_data</span>, </span></span>
-<span class="r-in"><span>              lower_rule_curve <span class="op">=</span> <span class="va">ratio_data</span>, </span></span>
-<span class="r-in"><span>              upper_rule_curve <span class="op">=</span> <span class="va">ratio_data</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># study version &gt;= "9.2" (new parameters and TS)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># edit group (dynamic)</span></span></span>
-<span class="r-in"><span><span class="va">name_group</span> <span class="op">&lt;-</span> <span class="st">"MyOwnGroup"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">editClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"areaname"</span>, </span></span>
-<span class="r-in"><span>              cluster_name <span class="op">=</span> <span class="st">"clustername"</span>, </span></span>
-<span class="r-in"><span>              group <span class="op">=</span> <span class="va">name_group</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># edit properties</span></span></span>
-<span class="r-in"><span><span class="va">my_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="storage_values_default.html">storage_values_default</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">efficiencywithdrawal</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span></span>
-<span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">`penalize-variation-injection`</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span><span class="va">my_parameters</span><span class="op">$</span><span class="va">`penalize-variation-withdrawal`</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">editClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"areaname"</span>, </span></span>
-<span class="r-in"><span>              cluster_name <span class="op">=</span> <span class="st">"clustername"</span>, </span></span>
-<span class="r-in"><span>              storage_parameters <span class="op">=</span> <span class="va">my_parameters</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># edit time series</span></span></span>
-<span class="r-in"><span><span class="va">ratio_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">8760</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">editClusterST</span><span class="op">(</span>area <span class="op">=</span> <span class="st">"areaname"</span>, </span></span>
-<span class="r-in"><span>              cluster_name <span class="op">=</span> <span class="st">"clustername"</span>,</span></span>
-<span class="r-in"><span>              cost_injection <span class="op">=</span> <span class="va">ratio_data</span>, </span></span>
-<span class="r-in"><span>              cost_withdrawal <span class="op">=</span> <span class="va">ratio_data</span>, </span></span>
-<span class="r-in"><span>              cost_level <span class="op">=</span> <span class="va">ratio_data</span>, </span></span>
-<span class="r-in"><span>              cost_variation_injection <span class="op">=</span> <span class="va">ratio_data</span>, </span></span>
-<span class="r-in"><span>              cost_variation_withdrawal <span class="op">=</span> <span class="va">ratio_data</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
-</code></pre></div>
+
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
