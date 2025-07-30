@@ -78,6 +78,34 @@
 #'               cost_level = ratio_data, 
 #'               cost_variation_injection = ratio_data, 
 #'               cost_variation_withdrawal = ratio_data)
+#'               
+#' # Edit optional constraints properties 
+#' # make a list with names for the section and mandatory parameters
+#' 
+#' constraints_properties <- list(
+#'   "withdrawal-1"= list(
+#'     variable = "withdrawal",
+#'     operator = "equal",
+#'     hours = c("[1,3,5]", 
+#'               "[120,121,122,123,124,125,126,127,128]")
+#'   ),
+#'   "netting-1"= list(
+#'     variable = "netting",
+#'     operator = "less",
+#'     hours = c("[1, 168]")
+#'   ))     
+#'   
+#' # make a list for TS with same names like previous properties
+#' TS_values <- matrix(0.2, 8760)
+#' 
+#' constraints_ts <- list(
+#'   "withdrawal-1"=TS_values,
+#'   "netting-1"=TS_values)0
+#' 
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername", 
+#'               constraints_properties = constraints_properties,
+#'               constraints_ts = constraints_ts)             
 #' }
 #' @export
 editClusterST <- function(area,
@@ -137,6 +165,7 @@ editClusterST <- function(area,
   }
   
   ## Standardize cluster name + prefix ----
+  cluster_name_ori <- cluster_name
   cluster_name <- generate_cluster_name(area, 
                                           cluster_name, 
                                           add_prefix)
@@ -258,9 +287,8 @@ editClusterST <- function(area,
   
   # only edition if parameters are no NULL
   is_null_parameter <- all(names(params_cluster)%in%"name")
-  if(is_null_parameter)
-    warning("No edition for 'list.ini' file", call. = FALSE)
-  else{
+  
+  if(!is_null_parameter){
     # read previous content of ini
     previous_params <- readIniFile(file = path_clusters_ini)
     
@@ -334,7 +362,7 @@ editClusterST <- function(area,
   
   ## Optional constraints ----
   .edit_storage_constraints(area = area, 
-                            cluster_name = cluster_name,
+                            cluster_name = cluster_name_ori,
                             constraints_properties = constraints_properties, 
                             constraints_ts = constraints_ts, 
                             opts = opts)
@@ -357,42 +385,80 @@ editClusterST <- function(area,
                                     constraints_properties, 
                                     constraints_ts, 
                                     opts){
-  # constraints/<area id>/additional-constraints.ini
+  # constraints/<area id>/<cluster id>/additional-constraints.ini
   
   # target dir
   dir_path <- file.path(opts$inputPath, 
                         "st-storage", 
                         "constraints", 
-                        area)
+                        area,
+                        cluster_name)
+  
+  # ini file path
+  path_contraint_ini <- file.path(dir_path,
+                                  "additional-constraints.ini")
   
   # properties part
   if(!is.null(constraints_properties)){
     # read previous content of ini (if exists)
-    path_contraint_ini <- file.path(dir_path, 
-                                    "additional-constraints.ini")
+    previous_params <- .check_constaints_ini(path_file = path_contraint_ini, 
+                                             list_data_constraints = constraints_properties)
     
-    if(file.exists(path_contraint_ini)){
-      previous_params <- readIniFile(file = path_contraint_ini)
-      previous_params <- tolower(names(previous_params))
-      
-      constraints_names <- names(constraints_properties)
-      
-      ## check constraints 
-      if (!all(
-        constraints_names %in% previous_params
-         ))
-        stop(paste0(setdiff(constraints_names, 
-                            previous_params), 
-                    collapse = ", "), 
-             "' doesn't exist, it can't be edited. You can create constaints with createCluster().", 
-             call. = FALSE)
-    }else
-      stop(, call. = FALSE)
+    
+    # insert/update
+    previous_params_updated <- utils::modifyList(x = previous_params, 
+                                                 val = constraints_properties)
+    
+    # write modified ini file
+    writeIni(
+      listData = previous_params_updated,
+      pathIni = path_contraint_ini,
+      overwrite = TRUE
+    )
   }
   
+  # TS part 
+  if(!is.null(constraints_ts)){
+    # check ini file => constraint name must be present
+    
+    # check constraint name
+    .check_constaints_ini(path_file = path_contraint_ini, 
+                          list_data_constraints = constraints_ts)
+    
+    # update/overwrite/create
+    lapply(names(constraints_ts), 
+           function(x){
+             fwrite(
+               x = constraints_ts[[x]], 
+               row.names = FALSE, 
+               col.names = FALSE, 
+               sep = "\t",
+               file = file.path(dir_path, 
+                                paste0("rhs_", x, ".txt")))
+           })
+  }
   
 }
 
 
-
+.check_constaints_ini <- function(path_file, list_data_constraints){
+  # previous properties
+  previous_params <- readIniFile(file = path_file)
+  
+  ## check constraints 
+  names_previous_params <- tolower(names(previous_params))
+  constraints_names <- names(list_data_constraints)
+  
+  if (!all(
+    constraints_names %in% names_previous_params
+  ))
+    stop("'",
+         paste0(setdiff(constraints_names, 
+                        names_previous_params), 
+                collapse = ", "), 
+         "' doesn't exist, it can't be edited. You can create constaints with createCluster().", 
+         call. = FALSE)
+  
+  return(previous_params)
+}
 

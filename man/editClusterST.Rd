@@ -141,6 +141,34 @@ editClusterST(area = "areaname",
               cost_level = ratio_data, 
               cost_variation_injection = ratio_data, 
               cost_variation_withdrawal = ratio_data)
+              
+# Edit optional constraints properties 
+# make a list with names for the section and mandatory parameters
+
+constraints_properties <- list(
+  "withdrawal-1"= list(
+    variable = "withdrawal",
+    operator = "equal",
+    hours = c("[1,3,5]", 
+              "[120,121,122,123,124,125,126,127,128]")
+  ),
+  "netting-1"= list(
+    variable = "netting",
+    operator = "less",
+    hours = c("[1, 168]")
+  ))     
+  
+# make a list for TS with same names like previous properties
+TS_values <- matrix(0.2, 8760)
+
+constraints_ts <- list(
+  "withdrawal-1"=TS_values,
+  "netting-1"=TS_values)0
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername", 
+              constraints_properties = constraints_properties,
+              constraints_ts = constraints_ts)             
 }
 }
 \seealso{

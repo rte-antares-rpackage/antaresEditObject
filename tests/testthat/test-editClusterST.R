@@ -156,13 +156,6 @@ test_that("Check existing cluster ?",{
   })
 })
 
-test_that("Default call warning",{
-  # function can be called without modification
-  expect_warning(
-    editClusterST(area = area_test_clust, 
-                  cluster_name = "cluster_init"), 
-    regexp = "No edition for 'list.ini' file")
-})
 
 ## Edit new properties ----
 test_that("Edit group",{
@@ -521,24 +514,62 @@ test_that("Add right TS values",{
 })
 
 
-## Optional constraints ----
-test_that("Edit constraint properties", {
+## Optional constraints properties ----
+
+test_that("Edit NULL dont update file", {
   # given
-  name_no_prefix <- "add_constraints"
-  clust_name <- paste(area_test_clust, 
-                      name_no_prefix, 
-                      sep = "_")
+  name_no_prefix <- "add_nothing"
   
   constraints_properties <- list(
     "withdrawal-1"=list(
-      cluster = clust_name,
       variable = "withdrawal",
       operator = "equal",
       hours = c("[1,3,5]", 
                 "[120,121,122,123,124,125,126,127,128]")
     ),
     "netting-1"=list(
-      cluster = clust_name,
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  # when
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix)
+  
+  # then
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust,
+                           name_no_prefix,
+                           "additional-constraints")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_names <- names(read_ini)
+  
+  # test params created if identical with .ini read 
+  expect_equal(names(constraints_properties), names(read_ini))
+})
+
+
+test_that("Edit with bad element in list", {
+  # given
+  name_no_prefix <- "bad_list"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
       variable = "netting",
       operator = "less",
       hours = c("[1, 168]")
@@ -551,18 +582,61 @@ test_that("Edit constraint properties", {
   # when
   edit_constraints_properties <- list(
     "withdrawal-1"=list(
-      cluster = clust_name,
-      variable = "injection",
+      variable = "withdrawal",
       operator = "equal",
       hours = c("[1,3,5]", 
-                "[120,121,122]")
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1_bis"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  # then
+  expect_error(
+    editClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = edit_constraints_properties)
+    , regexp = "'netting-1_bis' doesn't exist, it can't be edited."
+  )
+})
+
+
+test_that("Edit constraint properties", {
+  # given
+  name_no_prefix <- "add_constraints"
+ 
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
     ),
     "netting-1"=list(
-      cluster = clust_name,
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  # when
+  edit_constraints_properties <- list(
+    "netting-1"=list(
       variable = "variation-injection",
       operator = "less",
       hours = c("[1, 168]",
                 "[240, 241]")
+    ),
+    "withdrawal-1"=list(
+      variable = "injection",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122]")
     ))
   
   editClusterST(area = area_test_clust, 
@@ -575,6 +649,7 @@ test_that("Edit constraint properties", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
+                           name_no_prefix,
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -585,8 +660,379 @@ test_that("Edit constraint properties", {
     names(constraints_properties)%in%target_names))
 })
 
+test_that("Edit one or more of list of constraints", {
+  # given
+  name_no_prefix <- "one_of_list"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ),
+    "netting-2"=list(
+      variable = "injection",
+      operator = "less",
+      hours = c("[1, 168, 170]")
+    ),
+    "withdrawal-2"=list(
+      variable = "withdrawal",
+      operator = "less",
+      hours = c("[1,3]", 
+                "[120,121,122,123]")
+    ))
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  # when
+  edit_constraints_properties <- list(
+    "netting-1"=list(
+      variable = "injection",
+      operator = "less",
+      hours = c("[1, 168]")
+    ),
+    "withdrawal-2"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1,3]", 
+                "[120]")
+    )
+  )
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix, 
+                constraints_properties = edit_constraints_properties)
+  
+  # then
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust,
+                           name_no_prefix,
+                           "additional-constraints")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_names <- names(read_ini)
+  
+  # test params created if identical with .ini read 
+  expect_true(all(
+    names(constraints_properties)%in%target_names))
+  
+  expect_equal(read_ini$`netting-1`$variable, "injection")
+  expect_equal(read_ini$`withdrawal-2`$variable, "netting")
+})
 
 
+
+## Optional constraints TS ----
+
+test_that("Edit NULL dont create TS file", {
+  # given
+  name_no_prefix <- "edit_no_ts_default"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  # when
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix)
+  
+  # then
+  # check txt files dont exist
+  opts_obj <- simOptions()
+  ts_names <- paste0("rhs_", 
+                     names(constraints_properties), 
+                     ".txt")
+  path_ts_files <- file.path(opts_obj$inputPath, 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust,
+                           name_no_prefix,
+                           ts_names)
+  
+  expect_false(all(
+    file.exists(ts_names)
+  ))
+})
+
+test_that("Edit NULL dont update existing TS file", {
+  # given
+  name_no_prefix <- "add_full_constraint"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  good_ts <- matrix(0.7, 8760)
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  # when
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix)
+  
+  # then
+  # check txt are not updated
+  opts_obj <- simOptions()
+  ts_names <- paste0("rhs_", 
+                     names(constraints_properties), 
+                     ".txt")
+  path_ts_files <- file.path(opts_obj$inputPath, 
+                             "st-storage", 
+                             "constraints", 
+                             area_test_clust,
+                             name_no_prefix,
+                             ts_names)
+  
+  ts_read <- lapply(path_ts_files, function(x){
+    as.matrix(data.table::fread(x))
+  })
+  names(ts_read) <- names(constraints_ts)
+  
+  expect_equal(ts_read, constraints_ts, check.attributes = FALSE)
+})
+
+test_that("Edit TS which do not exist", {
+  # given
+  name_no_prefix <- "edit_create_ts"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  # when
+  good_ts <- data.table::as.data.table(matrix(0.7, 8760))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix, 
+                constraints_ts = constraints_ts)
+  
+  # then
+  opts_obj <- simOptions()
+  ts_names <- paste0("rhs_", 
+                     names(constraints_properties), 
+                     ".txt")
+  path_ts_files <- file.path(opts_obj$inputPath, 
+                             "st-storage", 
+                             "constraints", 
+                             area_test_clust,
+                             name_no_prefix,
+                             ts_names)
+  
+  ts_read <- lapply(path_ts_files, data.table::fread)
+  names(ts_read) <- names(constraints_ts)
+  
+  expect_equal(ts_read, constraints_ts, check.attributes = FALSE)
+})
+
+test_that("Edit existing TS", {
+  # given
+  name_no_prefix <- "edit_existing_ts"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  good_ts <- data.table::as.data.table(matrix(10, 8760))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  # when
+  good_ts <- data.table::as.data.table(matrix(0.7, 8760))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix, 
+                constraints_ts = constraints_ts)
+  
+  # then
+  opts_obj <- simOptions()
+  ts_names <- paste0("rhs_", 
+                     names(constraints_properties), 
+                     ".txt")
+  path_ts_files <- file.path(opts_obj$inputPath, 
+                             "st-storage", 
+                             "constraints", 
+                             area_test_clust,
+                             name_no_prefix,
+                             ts_names)
+  
+  ts_read <- lapply(path_ts_files, data.table::fread)
+  names(ts_read) <- names(constraints_ts)
+  
+  expect_equal(ts_read, constraints_ts, check.attributes = FALSE)
+})
+
+test_that("Edit properties + TS", {
+  # given
+  name_no_prefix <- "edit_prop_ts"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  good_ts <- data.table::as.data.table(matrix(10, 8760))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  # when
+  edit_constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal_edit",
+      operator = "equal_edit",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128, 000]")
+    ),
+    "netting-1"=list(
+      variable = "netting_edit",
+      operator = "less_edit",
+      hours = c("[1, 168, 000]")
+    ))
+  
+  good_ts <- data.table::as.data.table(matrix(0.2, 8760))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix, 
+                constraints_properties = edit_constraints_properties,
+                constraints_ts = constraints_ts)
+  
+  # then
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust,
+                           name_no_prefix,
+                           "additional-constraints")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_names <- names(read_ini)
+  
+  # test params created if identical with .ini read 
+    # 'hours' have a special format with ',' in braquet + as separator /!\
+  expect_true(all(
+    names(constraints_properties)%in%target_names))
+  
+  expect_equal(read_ini$`withdrawal-1`$variable, 
+               edit_constraints_properties$`withdrawal-1`$variable)
+  expect_equal(read_ini$`withdrawal-1`$operator, 
+               edit_constraints_properties$`withdrawal-1`$operator)
+  
+  
+  expect_equal(read_ini$`netting-1`$variable, 
+               edit_constraints_properties$`netting-1`$variable)
+  expect_equal(read_ini$`netting-1`$operator, 
+               edit_constraints_properties$`netting-1`$operator)
+  
+  # TS
+  opts_obj <- simOptions()
+  ts_names <- paste0("rhs_", 
+                     names(constraints_properties), 
+                     ".txt")
+  path_ts_files <- file.path(opts_obj$inputPath, 
+                             "st-storage", 
+                             "constraints", 
+                             area_test_clust,
+                             name_no_prefix,
+                             ts_names)
+  
+  ts_read <- lapply(path_ts_files, data.table::fread)
+  names(ts_read) <- names(constraints_ts)
+  
+  expect_equal(ts_read, constraints_ts, check.attributes = FALSE)
+})
+
+
+#Delete study
 deleteStudy()
 
   
