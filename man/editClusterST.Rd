@@ -19,6 +19,8 @@ editClusterST(
   cost_level = NULL,
   cost_variation_injection = NULL,
   cost_variation_withdrawal = NULL,
+  constraints_properties = NULL,
+  constraints_ts = NULL,
   add_prefix = TRUE,
   opts = antaresRead::simOptions()
 )
@@ -53,6 +55,10 @@ generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
 \item{cost_variation_injection}{Penalizes injection flowrate variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
 
 \item{cost_variation_withdrawal}{Penalizes the withdrawal variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+
+\item{constraints_properties}{\code{list } Parameters (see example)}
+
+\item{constraints_ts}{\code{list } of time series (see example)}
 
 \item{add_prefix}{If \code{TRUE} (the default), \code{cluster_name} will be prefixed by area name.}
 
@@ -135,6 +141,34 @@ editClusterST(area = "areaname",
               cost_level = ratio_data, 
               cost_variation_injection = ratio_data, 
               cost_variation_withdrawal = ratio_data)
+              
+# Edit optional constraints properties 
+# make a list with names for the section and mandatory parameters
+
+constraints_properties <- list(
+  "withdrawal-1"= list(
+    variable = "withdrawal",
+    operator = "equal",
+    hours = c("[1,3,5]", 
+              "[120,121,122,123,124,125,126,127,128]")
+  ),
+  "netting-1"= list(
+    variable = "netting",
+    operator = "less",
+    hours = c("[1, 168]")
+  ))     
+  
+# make a list for TS with same names like previous properties
+TS_values <- matrix(0.2, 8760)
+
+constraints_ts <- list(
+  "withdrawal-1"=TS_values,
+  "netting-1"=TS_values)0
+
+editClusterST(area = "areaname", 
+              cluster_name = "clustername", 
+              constraints_properties = constraints_properties,
+              constraints_ts = constraints_ts)             
 }
 }
 \seealso{

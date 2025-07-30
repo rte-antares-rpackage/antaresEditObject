@@ -169,8 +169,7 @@ createClusterST(area = "fr",
                 cost_variation_injection = ratio_value,
                 cost_variation_withdrawal = ratio_value)         
                 
-  # Add optional constraints properties (name of cluster is prefixed by default)
-    # remember to prefix in the list 
+# Add optional constraints properties 
     
 name_no_prefix <- "add_constraints"
 
