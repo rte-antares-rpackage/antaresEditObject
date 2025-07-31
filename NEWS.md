@@ -13,7 +13,8 @@ NEW FEATURES :
 * `createClusterST()`/`editClusterST()` :  
   - **New properties** (*efficiencywithdrawal*, *penalize-variation-injection*, *penalize-variation-withdrawal*, see list of properties according to study version of Antares with `storage_values_default()`)  
   - **New optional time series** (cost-injection, cost-withdrawal, cost-level, cost-variation-injection, cost-variation-withdrawal)
-  - **New additional constraints** (properties and time series)
+  - **New additional constraints** (properties and time series)  
+* `removeClusterST()` : remove **New optional time series** + **New additional constraints**    
 * `updateScenarioBuilder()` New type of series "hfl" ("hydro final level", similar to "hydrolevels") is available
 
 
