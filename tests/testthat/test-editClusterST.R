@@ -547,7 +547,7 @@ test_that("Edit NULL dont update file", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
-                           name_no_prefix,
+                           paste0(area_test_clust, "_",name_no_prefix),
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -649,7 +649,7 @@ test_that("Edit constraint properties", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
-                           name_no_prefix,
+                           paste0(area_test_clust, "_",name_no_prefix),
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -717,7 +717,7 @@ test_that("Edit one or more of list of constraints", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
-                           name_no_prefix,
+                           paste0(area_test_clust, "_",name_no_prefix),
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -770,7 +770,7 @@ test_that("Edit NULL dont create TS file", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
-                           name_no_prefix,
+                           paste0(area_test_clust, "_",name_no_prefix),
                            ts_names)
   
   expect_false(all(
@@ -819,7 +819,7 @@ test_that("Edit NULL dont update existing TS file", {
                              "st-storage", 
                              "constraints", 
                              area_test_clust,
-                             name_no_prefix,
+                             paste0(area_test_clust, "_",name_no_prefix),
                              ts_names)
   
   ts_read <- lapply(path_ts_files, function(x){
@@ -870,7 +870,7 @@ test_that("Edit TS which do not exist", {
                              "st-storage", 
                              "constraints", 
                              area_test_clust,
-                             name_no_prefix,
+                             paste0(area_test_clust, "_",name_no_prefix),
                              ts_names)
   
   ts_read <- lapply(path_ts_files, data.table::fread)
@@ -925,7 +925,7 @@ test_that("Edit existing TS", {
                              "st-storage", 
                              "constraints", 
                              area_test_clust,
-                             name_no_prefix,
+                             paste0(area_test_clust, "_",name_no_prefix),
                              ts_names)
   
   ts_read <- lapply(path_ts_files, data.table::fread)
@@ -991,7 +991,7 @@ test_that("Edit properties + TS", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
-                           name_no_prefix,
+                           paste0(area_test_clust, "_",name_no_prefix),
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -1022,7 +1022,7 @@ test_that("Edit properties + TS", {
                              "st-storage", 
                              "constraints", 
                              area_test_clust,
-                             name_no_prefix,
+                             paste0(area_test_clust, "_",name_no_prefix),
                              ts_names)
   
   ts_read <- lapply(path_ts_files, data.table::fread)

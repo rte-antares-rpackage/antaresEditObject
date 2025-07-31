@@ -165,7 +165,6 @@ editClusterST <- function(area,
   }
   
   ## Standardize cluster name + prefix ----
-  cluster_name_ori <- cluster_name
   cluster_name <- generate_cluster_name(area, 
                                           cluster_name, 
                                           add_prefix)
@@ -362,7 +361,7 @@ editClusterST <- function(area,
   
   ## Optional constraints ----
   .edit_storage_constraints(area = area, 
-                            cluster_name = cluster_name_ori,
+                            cluster_name = cluster_name,
                             constraints_properties = constraints_properties, 
                             constraints_ts = constraints_ts, 
                             opts = opts)

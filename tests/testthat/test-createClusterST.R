@@ -717,7 +717,7 @@ test_that("Add new binding constraint properties", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
-                           name_no_prefix,
+                           paste0(area_test_clust, "_",name_no_prefix),
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -784,7 +784,7 @@ test_that("Add new TS constraint", {
                            "st-storage", 
                            "constraints", 
                            area_test_clust,
-                           name_no_prefix,
+                           paste0(area_test_clust, "_",name_no_prefix),
                            "additional-constraints")
   
   read_ini <- antaresRead::readIni(path_st_ini)
@@ -800,7 +800,7 @@ test_that("Add new TS constraint", {
                        "st-storage", 
                        "constraints", 
                        area_test_clust,
-                       name_no_prefix,
+                       paste0(area_test_clust, "_",name_no_prefix),
                        paste0("rhs_", names(constraints_ts), ".txt"))
   
   # exist ?

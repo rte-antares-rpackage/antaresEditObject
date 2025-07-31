@@ -245,7 +245,6 @@ createClusterST <- function(area,
   params_cluster <- hyphenize_names(storage_parameters)
   
   ## Standardize cluster name + prefix ----
-  cluster_name_ori <- cluster_name
   cluster_name <- generate_cluster_name(area = area, 
                                           cluster_name = cluster_name, 
                                           add_prefix = add_prefix)
@@ -420,7 +419,7 @@ createClusterST <- function(area,
   ## add constraint(s) ----
   if(!is.null(constraints_properties))
     .add_storage_constraint(area = area, 
-                            cluster_name = cluster_name_ori, 
+                            cluster_name = cluster_name, 
                             constraints_properties = constraints_properties, 
                             constraints_ts = constraints_ts, 
                             overwrite = overwrite, 
