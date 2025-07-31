@@ -81,7 +81,6 @@ removeClusterST <- function(area,
                            add_prefix = TRUE,
                            cluster_type = c("thermal", "renewables", "st-storage"),
                            opts = antaresRead::simOptions()) {
-  
   cluster_type <- match.arg(cluster_type)
   
   # tolower area ----
@@ -171,7 +170,7 @@ removeClusterST <- function(area,
   dirs_to_remove <- file.path(clustertypePath, subdirs_to_remove, area)
   
   # remove dir "constraints" (st-storage)
-  if(opts$antaresVersion>=920)
+  if(opts$antaresVersion>=920 & cluster_type %in% "st-storage")
     dirs_to_remove <- file.path(clustertypePath, 
                                 append(subdirs_to_remove, "constraints"), 
                                 area)

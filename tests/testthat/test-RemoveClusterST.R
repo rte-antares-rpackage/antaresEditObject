@@ -181,12 +181,13 @@ createArea(name = area_test_clust)
 
 test_that("Remove cluster without constraints", {
   # at least need 1 st cluster
+  name_no_prefix <- "remove_no_constraints"
   createClusterST(area = area_test_clust, 
-                  cluster_name = "cluster_init")
+                  cluster_name = name_no_prefix)
   
   # remove cluster
   removeClusterST(area = area_test_clust, 
-                  cluster_name = "cluster_init")
+                  cluster_name = name_no_prefix)
   
   # removed from ini file ?
   
@@ -199,7 +200,7 @@ test_that("Remove cluster without constraints", {
   
   read_ini <- antaresRead::readIni(path_st_ini)
   target_prop <- read_ini[[paste(area_test_clust, 
-                                 "cluster_init",
+                                 name_no_prefix,
                                  sep = "_")]]
   
   expect_null(target_prop)
@@ -210,7 +211,7 @@ test_that("Remove cluster without constraints", {
                            "clusters", 
                            "series",
                            area_test_clust,
-                           "al_cluster_init")
+                           paste0(area_test_clust, "_",name_no_prefix))
   
   expect_false(dir.exists(path_st_dir))
 })
@@ -269,9 +270,72 @@ test_that("Remove cluster with constraints", {
                            "clusters", 
                            "series",
                            area_test_clust,
-                           "al_cluster_init")
+                           paste0(area_test_clust, "_",name_no_prefix))
   
   expect_false(dir.exists(path_st_dir))
+})
+
+test_that("Remove cluster with multiple cluster/constraints", {
+  # given
+  name_no_prefix <- "remove_constraints1"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  good_ts <- data.table::as.data.table(matrix(10, 8760))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  name_no_prefix2 <- "remove_constraints2"
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix2, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  # when
+  # remove cluster
+  removeClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix)
+  
+  # then
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "clusters", 
+                           area_test_clust,
+                           "list")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  
+  expect_equal(names(read_ini), "al_remove_constraints2")
+  
+  # remove directory ? 
+  path_st_dir <- file.path("input", 
+                           "st-storage", 
+                           "clusters", 
+                           c("series", "constraints"),
+                           area_test_clust,
+                           paste0(area_test_clust, "_",name_no_prefix2))
+  
+  expect_false(all(
+    dir.exists(path_st_dir)))
 })
 
 deleteStudy()
