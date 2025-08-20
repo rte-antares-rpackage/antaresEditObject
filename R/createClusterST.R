@@ -299,39 +299,90 @@ createClusterST <- function(area,
     ##
     # PUT api call for each TS value
     ##
-    
     # on construit toutes les séries
-    ST_time_series <- list("PMAX_injection" = list("path" = "input/st-storage/series/%s/%s/pmax_injection",
-                                                   "matrix" = PMAX_injection),
-                           "PMAX_withdrawal" = list("path" = "input/st-storage/series/%s/%s/pmax_withdrawal",
-                                                    "matrix" = PMAX_withdrawal),
-                           "inflows" = list("path" = "input/st-storage/series/%s/%s/inflows",
-                                            "matrix" = inflows),
-                           "lower_rule_curve" = list("path" = "input/st-storage/series/%s/%s/lower_rule_curve",
-                                                     "matrix" = lower_rule_curve),
-                           "upper_rule_curve" = list("path" = "input/st-storage/series/%s/%s/upper_rule_curve",
-                                                     "matrix" = upper_rule_curve)
-                           
+    # 1) mapping entre clé et suffixe
+    keys <- c("PMAX_injection", "PMAX_withdrawal", "inflows", "lower_rule_curve", "upper_rule_curve")
+    suffixes <- tolower(keys)  # -> met tout en minuscule pour les paths
+    
+    # 2) Construction
+    ST_time_series <- setNames(
+      lapply(seq_along(keys), function(i) {
+        list(
+          path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", suffixes[i]),
+          matrix = get(keys[i], inherits = TRUE)  
+        )
+      }),
+      keys
     )
     
-    
     if (opts$antaresVersion >= 920) {
-      ST_time_series_920 <- list("cost_injection" = list("path" = "input/st-storage/series/%s/%s/cost_injection",
-                                                         "matrix" = cost_injection),
-                                 "cost_withdrawal" = list("path" = "input/st-storage/series/%s/%s/cost_withdrawal",
-                                                          "matrix" = cost_withdrawal),
-                                 "cost_level" = list("path" = "input/st-storage/series/%s/%s/cost_level",
-                                                     "matrix" = cost_level),
-                                 "cost_variation_injection" = list("path" = "input/st-storage/series/%s/%s/cost_variation_injection",
-                                                                   "matrix" = cost_variation_injection),
-                                 "cost_variation_withdrawal" = list("path" = "input/st-storage/series/%s/%s/cost_variation_withdrawal",
-                                                                    "matrix" = cost_variation_withdrawal)
-                                 
+      # 1) Noms des séries
+      keys <- c(
+        "cost_injection",
+        "cost_withdrawal",
+        "cost_level",
+        "cost_variation_injection",
+        "cost_variation_withdrawal"
+      )
+      
+      # 2) Construction de la liste ST_time_series_920
+      ST_time_series_920 <- setNames(
+        lapply(keys, function(k) {
+          list(
+            path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", k),
+            matrix = get(k, inherits = TRUE) 
+          )
+        }),
+        keys
       )
       
       ST_time_series <- append(ST_time_series, ST_time_series_920)
+      
+      ## Constraints POST (robuste : on récupère l'ID exact du cluster)
+      if (!is.null(constraints_properties)) {
+        # force un tableau JSON même pour une seule valeur
+        # Parse chaque occurrence, qu'elle soit donnée comme chaîne "[1,3,5]" ou comme vecteur c(1L,3L,5L)
+        .to_hours_list <- function(x) {
+          if (is.character(x)) x <- jsonlite::fromJSON(x)
+          as.list(as.integer(x))  
+        }
+        
+        .make_occ <- function(pr) {
+          h <- pr$hours
+          if (is.null(h)) return(list())
+          # h peut être: vecteur de chaînes ("[1,3]","[120,121]") OU liste de vecteurs (c(1,3), c(120,121))
+          elems <- if (is.list(h)) h else as.list(h)
+          lapply(elems, function(v) list(hours = .to_hours_list(v)))
+        }
+        
+        constraints_payload <- lapply(names(constraints_properties), function(nm) {
+          pr <- constraints_properties[[nm]]
+          list(
+            name        = nm,
+            variable    = pr$variable,
+            operator    = pr$operator,
+            occurrences = .make_occ(pr),
+            enabled     = if (!is.null(pr$enabled)) isTRUE(pr$enabled) else TRUE
+          )
+        })
+        
+        # 3) Endpoint constraints (avec l'ID exact)
+        endpoint_constraints <- file.path(
+          opts$study_id, "areas", tolower(area), "storages",tolower(cluster_name),
+          "additional-constraints"
+        )
+        # update
+        api_post(opts = opts, 
+                 endpoint =  endpoint_constraints, 
+                 body = constraints_payload, 
+                 encode = "json")
+        
+        cli::cli_alert_success(
+          "Endpoint {.emph {'Create ST-storage (constraints)'}} pour {.strong {cluster_name}} OK"
+        )
+      }
     }
-    
+    #Matrix
     not_null_matrix <- sapply(ST_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
     ST_time_series <- ST_time_series[not_null_matrix]
     cmd <- NULL
