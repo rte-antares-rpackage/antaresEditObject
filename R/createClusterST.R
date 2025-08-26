@@ -381,6 +381,26 @@ createClusterST <- function(area,
           "Endpoint {.emph {'Create ST-storage (constraints)'}} pour {.strong {cluster_name}} OK"
         )
       }
+    
+      # 5) TS des contraintes (rhs_<name>) via replace_matrix
+      if (!is.null(constraints_ts) && length(constraints_ts) > 0) {
+        actions_rhs <- lapply(names(constraints_ts), function(nm) {
+          list(
+            target = sprintf("input/st-storage/constraints/%s/%s/rhs_%s",
+                             tolower(area), tolower(cluster_name), nm),
+            matrix = constraints_ts[[nm]]
+          )
+        })
+        actions_rhs <- setNames(actions_rhs, rep("replace_matrix", length(actions_rhs)))
+        cmd_rhs <- do.call(api_commands_generate, actions_rhs)
+        api_command_register(cmd_rhs, opts = opts)
+        if (should_command_be_executed(opts)) {
+          api_command_execute(cmd_rhs, opts = opts,
+                              text_alert = "Writing constraint TS (rhs_*): {msg_api}")
+        } else {
+          cli_command_registered("replace_matrix")
+        }
+      }
     }
     #Matrix
     not_null_matrix <- sapply(ST_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
