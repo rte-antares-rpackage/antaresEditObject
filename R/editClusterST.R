@@ -211,7 +211,10 @@ editClusterST <- function(area,
       "efficiency" = params_cluster[["efficiency"]],
       "initialLevel" = params_cluster[["initiallevel"]],
       "initialLevelOptim" = params_cluster[["initialleveloptim"]],
-      "enabled" = params_cluster[["enabled"]])
+      "enabled" = params_cluster[["enabled"]],
+      "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
+      "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
     
     list_properties <- dropNulls(list_properties)
     
