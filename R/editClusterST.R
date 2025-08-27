@@ -241,38 +241,66 @@ editClusterST <- function(area,
     # PUT for TS values
     ##
     # adapt list name TS 
-    list_value_ts <- list(pmax_injection = PMAX_injection,
-                          pmax_withdrawal = PMAX_withdrawal,
-                          inflows = inflows,
-                          lower_rule_curve = lower_rule_curve,
-                          upper_rule_curve = upper_rule_curve)
+    # on construit toutes les séries
+    # 1) mapping entre clé et suffixe
+    keys <- c("PMAX_injection", "PMAX_withdrawal", "inflows", "lower_rule_curve", "upper_rule_curve")
+    suffixes <- tolower(keys)  # -> met tout en minuscule pour les paths
     
-    list_value_ts <- dropNulls(list_value_ts)
-    
-    if(length(list_value_ts)!=0){
-      lapply(names(list_value_ts), function(x){
-        body = jsonlite::toJSON(list(data=list_value_ts[[x]],
-                                     index=0, 
-                                     columns=0),
-                                auto_unbox = FALSE)
-        
-        endpoint <- file.path(opts$study_id, 
-                              "areas", 
-                              area, 
-                              "storages",
-                              cluster_name,
-                              "series", 
-                              x)
-        
-        # update
-        api_put(opts = opts, 
-                endpoint =  endpoint, 
-                body = body, 
-                encode = "raw")
-        
-        cli::cli_alert_success("Endpoint {.emph {'Edit ST-storage (TS value)'}} {.emph 
-                      {.strong {x}}} success")
-      })
+    # 2) Construction
+    ST_time_series <- setNames(
+      lapply(seq_along(keys), function(i) {
+        list(
+          path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", suffixes[i]),
+          matrix = get(keys[i], inherits = TRUE)  
+        )
+      }),
+      keys
+    )
+    if (opts$antaresVersion >= 920) {
+      # 1) Noms des séries
+      keys <- c(
+        "cost_injection",
+        "cost_withdrawal",
+        "cost_level",
+        "cost_variation_injection",
+        "cost_variation_withdrawal"
+      )
+      # 2) Construction de la liste ST_time_series_920
+      ST_time_series_920 <- setNames(
+        lapply(keys, function(k) {
+          list(
+            path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", k),
+            matrix = get(k, inherits = TRUE) 
+          )
+        }),
+        keys
+      )
+      ST_time_series <- append(ST_time_series, ST_time_series_920)
+    }
+    #Matrix
+    not_null_matrix <- sapply(ST_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
+    ST_time_series <- ST_time_series[not_null_matrix]
+    cmd <- NULL
+    if (length(ST_time_series) > 0) {
+      actions <- lapply(
+        X = seq_along(ST_time_series),
+        FUN = function(i) {
+          list(
+            target = sprintf(ST_time_series[[i]][["path"]], tolower(area), tolower(cluster_name)),
+            matrix = ST_time_series[[i]][["matrix"]]
+          )
+        }
+      )
+      actions <- setNames(actions, rep("replace_matrix", length(actions)))
+      cmd <- do.call(api_commands_generate, actions)
+    }
+    if (!is.null(cmd)) {
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts),
+        api_command_execute(cmd, opts = opts, text_alert = "Writing short-term's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
     }
     return(invisible(opts))
   }
