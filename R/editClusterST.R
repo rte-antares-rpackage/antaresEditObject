@@ -276,6 +276,71 @@ editClusterST <- function(area,
         keys
       )
       ST_time_series <- append(ST_time_series, ST_time_series_920)
+      
+      ## Constraints PUT (replace all)
+      if (!is.null(constraints_properties)) {
+        .to_hours_list <- function(x) {
+          if (is.character(x)) x <- jsonlite::fromJSON(x)
+          as.list(as.integer(x))
+        }
+        .make_occ <- function(pr) {
+          h <- pr$hours
+          if (is.null(h)) return(list())
+          elems <- if (is.list(h)) h else as.list(h)
+          lapply(elems, function(v) list(hours = .to_hours_list(v)))
+        }
+        
+        # 1) Construire chaque contrainte (avec 'name')
+        payload_list <- lapply(names(constraints_properties), function(nm) {
+          pr <- constraints_properties[[nm]]
+          list(
+            name        = nm,
+            variable    = pr$variable,
+            operator    = pr$operator,
+            occurrences = .make_occ(pr),
+            enabled     = if (!is.null(pr$enabled)) isTRUE(pr$enabled) else TRUE
+          )
+        })
+        
+        # 2) Transformer en DICO { "<name>": {variable=..., operator=..., ...}, ... }
+        body_constraints <- setNames(
+          lapply(payload_list, function(x) { x$name <- NULL; x }),
+          vapply(payload_list, `[[`, "", "name")
+        )
+        
+        endpoint_constraints <- file.path(
+          opts$study_id, "areas", tolower(area), "storages", tolower(cluster_name),
+          "additional-constraints"
+        )
+        
+        api_put(
+          opts = opts,
+          endpoint = endpoint_constraints,
+          body = body_constraints,
+          encode = "json"
+        )
+      }
+      
+      # 5) TS des contraintes (rhs_<name>) via replace_matrix
+      if (!is.null(constraints_ts) && length(constraints_ts) > 0) {
+        actions_rhs <- lapply(names(constraints_ts), function(nm) {
+          list(
+            target = sprintf("input/st-storage/constraints/%s/%s/rhs_%s",
+                             tolower(area), tolower(cluster_name), nm),
+            matrix = constraints_ts[[nm]]
+          )
+        })
+        actions_rhs <- setNames(actions_rhs, rep("replace_matrix", length(actions_rhs)))
+        cmd_rhs <- do.call(api_commands_generate, actions_rhs)
+        api_command_register(cmd_rhs, opts = opts)
+        if (should_command_be_executed(opts)) {
+          api_command_execute(cmd_rhs, opts = opts,
+                              text_alert = "Writing constraint TS (rhs_*): {msg_api}")
+        } else {
+          cli_command_registered("replace_matrix")
+        }
+      }
+      
     }
     #Matrix
     not_null_matrix <- sapply(ST_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
