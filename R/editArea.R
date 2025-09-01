@@ -72,7 +72,9 @@ editArea <- function(name,
     .api_command_execute_edit_area(name = name, new_values = filtering, type = "filtering", opts = opts)
     if (is_830) {
       .api_command_execute_edit_area(name = name, new_values = adequacy, type = "adequacy", opts = opts)
-    }
+    } 
+    
+    .api_command_execute_edit_area_ui(name = name, color = color, localization = localization, opts = opts)
     
     return(invisible(opts))
   }
@@ -224,4 +226,34 @@ editArea <- function(name,
       cli_command_registered("update_config")
     )
   }
+}
+
+
+#' Edit area's ui in API mode.
+#'
+#' @inheritParams editArea
+#'
+.api_command_execute_edit_area_ui <- function(name, color, localization, opts) {
+  
+  wo_localization <- is.null(localization)
+  wo_color <- is.null(color)
+  
+  if (wo_localization || wo_color) {
+    old_ui <- readIni(pathIni = paste0("input/areas/",name,"/ui.ini"), opts= opts)
+    if (wo_localization) {
+      localization <- c(old_ui[["ui"]][["x"]], old_ui[["ui"]][["y"]])
+    }
+    if (wo_color) {
+      color <- grDevices::rgb(old_ui[["ui"]][["color_r"]], old_ui[["ui"]][["color_g"]], old_ui[["ui"]][["color_b"]], max = 255)
+    }
+  }
+  
+  ui <- .format_ui_data_by_mode(name = name, localization = localization, color = color, api_mode = TRUE)
+  cmd <- api_command_generate(action = "update_area_ui", ui)
+  api_command_register(cmd, opts = opts)
+  `if`(
+    should_command_be_executed(opts), 
+    api_command_execute(cmd, opts = opts, text_alert = "Update area's ui: "),
+    cli_command_registered("update_area_ui")
+  )
 }

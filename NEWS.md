@@ -16,6 +16,7 @@ NEW FEATURES :
   - **New additional constraints** (properties and time series)  
 * `removeClusterST()` : remove **New optional time series** + **New additional constraints**    
 * `updateScenarioBuilder()` New type of series "hfl" ("hydro final level", similar to "hydrolevels") is available
+* `createArea()`/`editArea()`: in API mode, allow the user to customize localization and color of an area 
 
 
 NEW FEATURES (other) :  
