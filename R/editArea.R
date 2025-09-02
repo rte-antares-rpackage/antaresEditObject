@@ -239,7 +239,7 @@ editArea <- function(name,
   wo_color <- is.null(color)
   
   if (wo_localization || wo_color) {
-    prev_ui <- readIni(pathIni = paste0("input/areas/",name,"/ui.ini"), opts= opts)
+    prev_ui <- readIni(pathIni = paste0("input/areas/",name,"/ui.ini"), opts = opts)
     if (wo_localization) {
       localization <- c(prev_ui[["ui"]][["x"]], prev_ui[["ui"]][["y"]])
     }
@@ -250,10 +250,10 @@ editArea <- function(name,
   
   ui <- .format_ui_data_by_mode(name = name, localization = localization, color = color, api_mode = TRUE)
   cmd <- api_command_generate(action = "update_area_ui", ui)
-  api_command_register(cmd, opts = opts)
+  api_command_register(command = cmd, opts = opts)
   `if`(
-    should_command_be_executed(opts), 
-    api_command_execute(cmd, opts = opts, text_alert = "Update area's ui: "),
+    should_command_be_executed(opts = opts), 
+    api_command_execute(command = cmd, opts = opts, text_alert = "Update area's ui: "),
     cli_command_registered("update_area_ui")
   )
 }

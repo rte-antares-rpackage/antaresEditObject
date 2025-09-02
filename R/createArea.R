@@ -158,10 +158,10 @@ createArea <- function(name,
    
     cmd <- api_command_generate(action = "update_area_ui", ui)
     
-    api_command_register(cmd, opts = opts)
+    api_command_register(command = cmd, opts = opts)
     `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "Update area's ui: "),
+      should_command_be_executed(opts = opts), 
+      api_command_execute(command = cmd, opts = opts, text_alert = "Update area's ui: "),
       cli_command_registered("update_area_ui")
     )
     
