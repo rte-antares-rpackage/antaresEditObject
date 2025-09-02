@@ -239,12 +239,12 @@ editArea <- function(name,
   wo_color <- is.null(color)
   
   if (wo_localization || wo_color) {
-    old_ui <- readIni(pathIni = paste0("input/areas/",name,"/ui.ini"), opts= opts)
+    prev_ui <- readIni(pathIni = paste0("input/areas/",name,"/ui.ini"), opts= opts)
     if (wo_localization) {
-      localization <- c(old_ui[["ui"]][["x"]], old_ui[["ui"]][["y"]])
+      localization <- c(prev_ui[["ui"]][["x"]], prev_ui[["ui"]][["y"]])
     }
     if (wo_color) {
-      color <- grDevices::rgb(old_ui[["ui"]][["color_r"]], old_ui[["ui"]][["color_g"]], old_ui[["ui"]][["color_b"]], max = 255)
+      color <- grDevices::rgb(prev_ui[["ui"]][["color_r"]], prev_ui[["ui"]][["color_g"]], prev_ui[["ui"]][["color_b"]], max = 255)
     }
   }
   
