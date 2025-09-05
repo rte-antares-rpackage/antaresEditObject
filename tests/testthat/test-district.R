@@ -14,7 +14,7 @@ sapply(studies, function(study) {
     areas <- sort(sample(x = getOption("antares")$areaList, size = 2))
     
     createDistrict(
-      name = "mydistrict", 
+      name = "MyDistrict", 
       apply_filter = "add-all", 
       remove_area = areas
     )
@@ -24,8 +24,12 @@ sapply(studies, function(study) {
   
   test_that("Remove a district", {
     
+    expect_warning(removeDistrict(name = "mydistrict", opts = simOptions()),
+                   regexp = "No district was removed. Please provide the exact name of the district."
+                   )
+    
     removeDistrict(
-      name = "mydistrict", 
+      name = "MyDistrict", 
       opts = simOptions()
     )
     

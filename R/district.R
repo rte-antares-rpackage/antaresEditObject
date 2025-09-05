@@ -156,10 +156,12 @@ removeDistrict <- function(name, opts = simOptions()) {
   # Read previous sets
   sets_path <- file.path(inputPath, "areas", "sets.ini")
   prev_params <- readIniFile(file = sets_path)
-  
-  prev_params[[name]] <- NULL
-  
-  writeIni(listData = prev_params, pathIni = sets_path, overwrite = TRUE)
+  if (name %in% names(prev_params)) {
+    prev_params[[name]] <- NULL
+    writeIni(listData = prev_params, pathIni = sets_path, overwrite = TRUE)
+  } else {
+    warning("No district was removed. Please provide the exact name of the district.")
+  }
   
   suppressWarnings({
     res <- setSimulationPath(path = opts[["studyPath"]], simulation = "input")
