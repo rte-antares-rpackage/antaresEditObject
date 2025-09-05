@@ -16,6 +16,7 @@ NEW FEATURES :
   - **New additional constraints** (properties and time series)  
 * `removeClusterST()` : remove **New optional time series** + **New additional constraints**    
 * `updateScenarioBuilder()` New type of series "hfl" ("hydro final level", similar to "hydrolevels") is available
+* `removeDistrict()` remove a district from a study
 
 
 NEW FEATURES (other) :  
