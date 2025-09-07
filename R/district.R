@@ -118,6 +118,8 @@ createDistrict <- function(name,
 #'
 #' @param name District's name.
 #'
+#' @seealso [createDistrict()]
+#'
 #' @template opts
 #'
 #' @importFrom antaresRead simOptions setSimulationPath getDistricts api_delete
@@ -135,7 +137,7 @@ createDistrict <- function(name,
 #' }
 removeDistrict <- function(name, opts = simOptions()) {
   
-  assert_that(tolower(name) %in% getDistricts(opts = opts), msg = paste0("No district ", name, " in the study."))
+  assert_that(tolower(name) %in% getDistricts(opts = opts), msg = paste("No district", name, "in the study."))
   
   if (is_api_study(opts = opts)) {
     

@@ -26,3 +26,6 @@ removeDistrict(
 )
 }
 }
+\seealso{
+\code{\link[=createDistrict]{createDistrict()}}
+}
