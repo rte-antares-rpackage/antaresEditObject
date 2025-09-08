@@ -111,3 +111,63 @@ createDistrict <- function(name,
   
   invisible(res)
 }
+
+
+
+#' @title Remove a district
+#'
+#' @param name District's name.
+#'
+#' @seealso [createDistrict()]
+#'
+#' @template opts
+#'
+#' @importFrom antaresRead simOptions setSimulationPath getDistricts api_delete
+#' @importFrom assertthat assert_that
+#' @importFrom cli cli_alert_success
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' removeDistrict(
+#'   name = "mydistrict",
+#'   opts = simOptions()
+#' )
+#' }
+removeDistrict <- function(name, opts = simOptions()) {
+  
+  assert_that(tolower(name) %in% getDistricts(opts = opts), msg = paste("No district", name, "in the study."))
+  
+  if (is_api_study(opts = opts)) {
+    
+    api_delete(opts = opts, 
+               endpoint =  file.path(opts[["study_id"]], "districts", tolower(name)),
+               default_endpoint = "v1/studies"
+               )
+    
+    cli_alert_success("Endpoint {.emph {'Delete district'}} {.emph 
+                           {.strong {name}}} success")
+                           
+    return(update_api_opts(opts))
+  }
+  
+  inputPath <- opts[["inputPath"]]
+  assert_that(!is.null(inputPath) && file.exists(inputPath))
+  
+  # Read previous sets
+  sets_path <- file.path(inputPath, "areas", "sets.ini")
+  prev_params <- readIniFile(file = sets_path)
+  if (name %in% names(prev_params)) {
+    prev_params[[name]] <- NULL
+    writeIni(listData = prev_params, pathIni = sets_path, overwrite = TRUE)
+  } else {
+    warning("No district was removed. Please provide the exact name of the district.")
+  }
+  
+  suppressWarnings({
+    res <- setSimulationPath(path = opts[["studyPath"]], simulation = "input")
+  })
+  
+  invisible(res)
+}
