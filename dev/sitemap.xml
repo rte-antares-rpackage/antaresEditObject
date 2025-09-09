@@ -48,9 +48,11 @@
 <url><loc>/dev/reference/dicoOptimizationSettings.html</loc></url>
 <url><loc>/dev/reference/dicoOutputSettings.html</loc></url>
 <url><loc>/dev/reference/dot-api_command_execute_edit_area.html</loc></url>
+<url><loc>/dev/reference/dot-api_command_execute_edit_area_ui.html</loc></url>
 <url><loc>/dev/reference/dot-dailyToWeekly.html</loc></url>
 <url><loc>/dev/reference/dot-format_ini_rhs.html</loc></url>
 <url><loc>/dev/reference/dot-format_playlist_weights.html</loc></url>
+<url><loc>/dev/reference/dot-format_ui_data_by_mode.html</loc></url>
 <url><loc>/dev/reference/dot-hourlyToOther.html</loc></url>
 <url><loc>/dev/reference/dot-initializeLinksArea.html</loc></url>
 <url><loc>/dev/reference/dot-initializeRenewablesArea.html</loc></url>

@@ -168,10 +168,13 @@ their documentation:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area01"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_area_ui</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area02"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_area_ui</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_area_ui</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
@@ -181,16 +184,85 @@ their documentation:</p>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   },</span></span>
 <span><span class="co">#&gt;   {</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area01",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_area",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
 <span><span class="co">#&gt;       "area_name": "area02"</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   },</span></span>
 <span><span class="co">#&gt;   {</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area02",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_area",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
 <span><span class="co">#&gt;       "area_name": "area03"</span></span>
 <span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   {</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area03",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>Create a second area with some default parameters:</p>
@@ -201,6 +273,7 @@ their documentation:</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_config</span> registered, see all commands with `getVariantCommands()`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_area_ui</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
@@ -210,16 +283,85 @@ their documentation:</p>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   },</span></span>
 <span><span class="co">#&gt;   {</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area01",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_area",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
 <span><span class="co">#&gt;       "area_name": "area02"</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   },</span></span>
 <span><span class="co">#&gt;   {</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area02",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_area",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
 <span><span class="co">#&gt;       "area_name": "area03"</span></span>
 <span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   {</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area03",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
 <span><span class="co">#&gt;   },</span></span>
 <span><span class="co">#&gt;   {</span></span>
 <span><span class="co">#&gt;     "action": "create_area",</span></span>
@@ -236,12 +378,36 @@ their documentation:</p>
 <span><span class="co">#&gt;         "filter-year-by-year": "hourly, daily, weekly, monthly, annual"</span></span>
 <span><span class="co">#&gt;       }</span></span>
 <span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   {</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area04",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>
 <p>You can also edit an area or remove it:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createArea.html">createArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area000"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_area</span> registered, see all commands with `getVariantCommands()`</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">update_area_ui</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="co"># editArea(name = "area000", ...)</span></span>
 <span><span class="fu"><a href="../reference/removeArea.html">removeArea</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"area000"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">remove_area</span> registered, see all commands with `getVariantCommands()`</span></span>
