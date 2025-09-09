@@ -564,3 +564,35 @@ test_that("New HYDRO default parameter", {
   
   deleteStudy()
 })
+
+
+test_that("Check ui data", {
+  
+  suppressWarnings({
+    opts <- createStudy(study_name = "test_ui", path = tempdir(), antares_version = "8.8.0")
+  })
+  
+  area <- "zone1"
+  createArea(name = area, localization = c(200,100), color = grDevices::rgb(255, 123, 110, max = 255), opts = opts)
+  
+  ui <- readIniFile(file.path(opts$inputPath, "areas", area, "ui.ini"))
+  
+  expect_true(inherits(x = ui, what = "list"))
+  expect_true(length(ui) == 4)
+  expect_equal(sort(names(ui)), c("layerColor", "layerX", "layerY", "ui"))
+  
+  expect_equal(ui[["ui"]][["x"]], 200)
+  expect_equal(ui[["ui"]][["y"]], 100)
+  expect_equal(ui[["ui"]][["color_r"]], 255)
+  expect_equal(ui[["ui"]][["color_g"]], 123)
+  expect_equal(ui[["ui"]][["color_b"]], 110)
+  expect_equal(ui[["ui"]][["layers"]], 0)
+  
+  expect_equal(ui[["layerX"]][["0"]], 200)
+  
+  expect_equal(ui[["layerY"]][["0"]], 100)
+  
+  expect_equal(ui[["layerColor"]][["0"]], "255, 123, 110")
+  
+  deleteStudy(opts = opts)
+})
