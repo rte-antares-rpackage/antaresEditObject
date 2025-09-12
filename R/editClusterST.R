@@ -126,7 +126,7 @@ editClusterST <- function(area,
                           constraints_ts = NULL,
                           add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
-
+  
   ## check study opts parameters ----
   assertthat::assert_that(inherits(opts, "simOptions"))
   
@@ -166,8 +166,8 @@ editClusterST <- function(area,
   
   ## Standardize cluster name + prefix ----
   cluster_name <- generate_cluster_name(area, 
-                                          cluster_name, 
-                                          add_prefix)
+                                        cluster_name, 
+                                        add_prefix)
   
   # all properties of cluster standardized
   params_cluster <- c(list(name = cluster_name, 
@@ -183,7 +183,7 @@ editClusterST <- function(area,
   ## check dim data ----
   
   # According to Antares Version 
-    # default values associated with TS + .txt names files
+  # default values associated with TS + .txt names files
   list_local_values_params <- .default_values_st_TS(opts = opts)
   
   # check every ts parameter
@@ -211,7 +211,10 @@ editClusterST <- function(area,
       "efficiency" = params_cluster[["efficiency"]],
       "initialLevel" = params_cluster[["initiallevel"]],
       "initialLevelOptim" = params_cluster[["initialleveloptim"]],
-      "enabled" = params_cluster[["enabled"]])
+      "enabled" = params_cluster[["enabled"]],
+      "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
+      "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
     
     list_properties <- dropNulls(list_properties)
     
@@ -238,38 +241,131 @@ editClusterST <- function(area,
     # PUT for TS values
     ##
     # adapt list name TS 
-    list_value_ts <- list(pmax_injection = PMAX_injection,
-                          pmax_withdrawal = PMAX_withdrawal,
-                          inflows = inflows,
-                          lower_rule_curve = lower_rule_curve,
-                          upper_rule_curve = upper_rule_curve)
+    # we build all the series
+    # 1) mapping between key and suffix
+    keys <- c("PMAX_injection", "PMAX_withdrawal", "inflows", "lower_rule_curve", "upper_rule_curve")
+    suffixes <- tolower(keys) 
     
-    list_value_ts <- dropNulls(list_value_ts)
-    
-    if(length(list_value_ts)!=0){
-      lapply(names(list_value_ts), function(x){
-        body = jsonlite::toJSON(list(data=list_value_ts[[x]],
-                                     index=0, 
-                                     columns=0),
-                                auto_unbox = FALSE)
+    # Building
+    ST_time_series <- setNames(
+      lapply(seq_along(keys), function(i) {
+        list(
+          path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", suffixes[i]),
+          matrix = get(keys[i], inherits = TRUE)  
+        )
+      }),
+      keys
+    )
+    if (opts$antaresVersion >= 920) {
+      # Names of the series
+      keys <- c(
+        "cost_injection",
+        "cost_withdrawal",
+        "cost_level",
+        "cost_variation_injection",
+        "cost_variation_withdrawal"
+      )
+      # Building the ST_time_series_920 list
+      ST_time_series_920 <- setNames(
+        lapply(keys, function(k) {
+          list(
+            path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", k),
+            matrix = get(k, inherits = TRUE) 
+          )
+        }),
+        keys
+      )
+      ST_time_series <- append(ST_time_series, ST_time_series_920)
+      
+      ## Constraints PUT (replace all)
+      if (!is.null(constraints_properties)) {
+        .to_hours_list <- function(x) {
+          if (is.character(x)) x <- jsonlite::fromJSON(x)
+          as.list(as.integer(x))
+        }
+        .make_occ <- function(pr) {
+          h <- pr$hours
+          if (is.null(h)) return(list())
+          elems <- if (is.list(h)) h else as.list(h)
+          lapply(elems, function(v) list(hours = .to_hours_list(v)))
+        }
         
-        endpoint <- file.path(opts$study_id, 
-                              "areas", 
-                              area, 
-                              "storages",
-                              cluster_name,
-                              "series", 
-                              x)
+        # Build each constraint (with 'name')
+        payload_list <- lapply(names(constraints_properties), function(nm) {
+          pr <- constraints_properties[[nm]]
+          list(
+            name        = nm,
+            variable    = pr$variable,
+            operator    = pr$operator,
+            occurrences = .make_occ(pr),
+            enabled     = if (!is.null(pr$enabled)) isTRUE(pr$enabled) else TRUE
+          )
+        })
         
-        # update
-        api_put(opts = opts, 
-                endpoint =  endpoint, 
-                body = body, 
-                encode = "raw")
+        # Transform into a dict { "<name>": {variable=..., operator=..., ...}, ... }
+        body_constraints <- setNames(
+          lapply(payload_list, function(x) { x$name <- NULL; x }),
+          vapply(payload_list, `[[`, "", "name")
+        )
         
-        cli::cli_alert_success("Endpoint {.emph {'Edit ST-storage (TS value)'}} {.emph 
-                      {.strong {x}}} success")
-      })
+        endpoint_constraints <- file.path(
+          opts$study_id, "areas", tolower(area), "storages", tolower(cluster_name),
+          "additional-constraints"
+        )
+        
+        api_put(
+          opts = opts,
+          endpoint = endpoint_constraints,
+          body = body_constraints,
+          encode = "json"
+        )
+      }
+      
+      # Constraints time series (rhs_<name>) via replace_matrix
+      if (!is.null(constraints_ts) && length(constraints_ts) > 0) {
+        actions_rhs <- lapply(names(constraints_ts), function(nm) {
+          list(
+            target = sprintf("input/st-storage/constraints/%s/%s/rhs_%s",
+                             tolower(area), tolower(cluster_name), nm),
+            matrix = constraints_ts[[nm]]
+          )
+        })
+        actions_rhs <- setNames(actions_rhs, rep("replace_matrix", length(actions_rhs)))
+        cmd_rhs <- do.call(api_commands_generate, actions_rhs)
+        api_command_register(cmd_rhs, opts = opts)
+        if (should_command_be_executed(opts)) {
+          api_command_execute(cmd_rhs, opts = opts,
+                              text_alert = "Writing constraint TS (rhs_*): {msg_api}")
+        } else {
+          cli_command_registered("replace_matrix")
+        }
+      }
+      
+    }
+    #Matrix
+    not_null_matrix <- sapply(ST_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
+    ST_time_series <- ST_time_series[not_null_matrix]
+    cmd <- NULL
+    if (length(ST_time_series) > 0) {
+      actions <- lapply(
+        X = seq_along(ST_time_series),
+        FUN = function(i) {
+          list(
+            target = sprintf(ST_time_series[[i]][["path"]], tolower(area), tolower(cluster_name)),
+            matrix = ST_time_series[[i]][["matrix"]]
+          )
+        }
+      )
+      actions <- setNames(actions, rep("replace_matrix", length(actions)))
+      cmd <- do.call(api_commands_generate, actions)
+    }
+    if (!is.null(cmd)) {
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts),
+        api_command_execute(cmd, opts = opts, text_alert = "Writing short-term's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
     }
     return(invisible(opts))
   }
@@ -320,7 +416,7 @@ editClusterST <- function(area,
   ##
   # Write TS PART ("series/")
   ##
-
+  
   # Path folder for TS
   path_txt_file <- file.path(opts$inputPath, 
                              "st-storage", 
@@ -330,15 +426,15 @@ editClusterST <- function(area,
   
   # list of params of TS 
   list_local_params <- list(PMAX_injection = PMAX_injection,
-                         PMAX_withdrawal =  PMAX_withdrawal,
-                         inflows =  inflows ,
-                         lower_rule_curve =  lower_rule_curve,
-                         upper_rule_curve =  upper_rule_curve,
-                         cost_injection =  cost_injection,
-                         cost_withdrawal =  cost_withdrawal,
-                         cost_level =  cost_level,
-                         cost_variation_injection =  cost_variation_injection,
-                         cost_variation_withdrawal =  cost_variation_withdrawal)
+                            PMAX_withdrawal =  PMAX_withdrawal,
+                            inflows =  inflows ,
+                            lower_rule_curve =  lower_rule_curve,
+                            upper_rule_curve =  upper_rule_curve,
+                            cost_injection =  cost_injection,
+                            cost_withdrawal =  cost_withdrawal,
+                            cost_level =  cost_level,
+                            cost_variation_injection =  cost_variation_injection,
+                            cost_variation_withdrawal =  cost_variation_withdrawal)
   
   # write TS
   lapply(names(list_local_params), function(x_val){
@@ -380,10 +476,10 @@ editClusterST <- function(area,
 #' @inheritParams createClusterST
 #' @noRd
 .edit_storage_constraints <- function(area, 
-                                    cluster_name, 
-                                    constraints_properties, 
-                                    constraints_ts, 
-                                    opts){
+                                      cluster_name, 
+                                      constraints_properties, 
+                                      constraints_ts, 
+                                      opts){
   # constraints/<area id>/<cluster id>/additional-constraints.ini
   
   # target dir

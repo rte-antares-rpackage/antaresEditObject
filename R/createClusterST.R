@@ -196,7 +196,7 @@ createClusterST <- function(area,
                             add_prefix = TRUE, 
                             overwrite = FALSE,
                             opts = antaresRead::simOptions()) {
-
+  
   ## check study opts parameters ----
   assertthat::assert_that(inherits(opts, "simOptions"))
   
@@ -207,7 +207,7 @@ createClusterST <- function(area,
   .check_group_st(group = group, opts = opts)
   
   ##  check area ----
-    # exsiting in current study ?
+  # exsiting in current study ?
   check_area_name(area, opts)  
   
   ## tolower area----
@@ -220,7 +220,6 @@ createClusterST <- function(area,
   
   # static name of list parameters 
   names_parameters <- names(storage_values_default(opts = opts))
-  
   if(!all(names(storage_parameters) %in% names_parameters))
     stop(append("Parameter 'st-storage' must be named with the following elements: ", 
                 paste0(names_parameters, collapse= ", ")), 
@@ -230,7 +229,7 @@ createClusterST <- function(area,
   .st_mandatory_params(list_values = storage_parameters, opts = opts)
   
   # According to Antares Version 
-    # default values associated with TS + .txt names files
+  # default values associated with TS + .txt names files
   storage_value <- .default_values_st_TS(opts = opts)
   
   ## check dim data ----
@@ -246,9 +245,9 @@ createClusterST <- function(area,
   
   ## Standardize cluster name + prefix ----
   cluster_name <- generate_cluster_name(area = area, 
-                                          cluster_name = cluster_name, 
-                                          add_prefix = add_prefix)
-
+                                        cluster_name = cluster_name, 
+                                        add_prefix = add_prefix)
+  
   # all properties of cluster standardized
   params_cluster <- c(list(name = cluster_name, 
                            group = group),
@@ -264,7 +263,6 @@ createClusterST <- function(area,
     ##
     # POST only for properties (creation with default TS values)
     ##
-    
     # adapt parameter names
     list_properties <- list(
       "group" = params_cluster[["group"]],
@@ -275,7 +273,10 @@ createClusterST <- function(area,
       "efficiency" = params_cluster[["efficiency"]],
       "initialLevel" = params_cluster[["initiallevel"]],
       "initialLevelOptim" = params_cluster[["initialleveloptim"]],
-      "enabled" = params_cluster[["enabled"]])
+      "enabled" = params_cluster[["enabled"]],
+      "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
+      "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
     
     list_properties <- dropNulls(list_properties)
     
@@ -298,41 +299,134 @@ createClusterST <- function(area,
     ##
     # PUT api call for each TS value
     ##
+    # we build all the series
+    # 1) mapping between key and suffix
+    keys <- c("PMAX_injection", "PMAX_withdrawal", "inflows", "lower_rule_curve", "upper_rule_curve")
+    suffixes <- tolower(keys)  
     
-    # adapt list name TS 
-    list_value_ts <- list(pmax_injection = PMAX_injection,
-                          pmax_withdrawal = PMAX_withdrawal,
-                          inflows = inflows,
-                          lower_rule_curve = lower_rule_curve,
-                          upper_rule_curve = upper_rule_curve)
+    # 2) Building
+    ST_time_series <- setNames(
+      lapply(seq_along(keys), function(i) {
+        list(
+          path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", suffixes[i]),
+          matrix = get(keys[i], inherits = TRUE)  
+        )
+      }),
+      keys
+    )
     
-    list_value_ts <- dropNulls(list_value_ts)
-    
-    if(length(list_value_ts)!=0){
-      lapply(names(list_value_ts), function(x){
-        body = jsonlite::toJSON(list(data=list_value_ts[[x]],
-                                     index=0, 
-                                     columns=0),
-                                auto_unbox = FALSE)
+    if (opts$antaresVersion >= 920) {
+      # Names of the series
+      keys <- c(
+        "cost_injection",
+        "cost_withdrawal",
+        "cost_level",
+        "cost_variation_injection",
+        "cost_variation_withdrawal"
+      )
+      
+      # Building the ST_time_series_920 list
+      ST_time_series_920 <- setNames(
+        lapply(keys, function(k) {
+          list(
+            path   = sprintf("input/st-storage/series/%s/%s/%s", "%s", "%s", k),
+            matrix = get(k, inherits = TRUE) 
+          )
+        }),
+        keys
+      )
+      
+      ST_time_series <- append(ST_time_series, ST_time_series_920)
+      
+      # POST Constraints (robust: we retrieve the exact cluster ID)
+      if (!is.null(constraints_properties)) {
+        # force a JSON array even for a single value
+        # Parse each occurrence, whether given as a string "[1,3,5]" or as a vector c(1L,3L,5L)
+        .to_hours_list <- function(x) {
+          if (is.character(x)) x <- jsonlite::fromJSON(x)
+          as.list(as.integer(x))  
+        }
         
-        endpoint <- file.path(opts$study_id, 
-                              "areas", 
-                              area, 
-                              "storages",
-                              cluster_name,
-                              "series", 
-                              x)
+        .make_occ <- function(pr) {
+          h <- pr$hours
+          if (is.null(h)) return(list())
+          # h can be: vector of strings ("[1,3]","[120,121]") OR list of vectors (c(1,3), c(120,121))
+          elems <- if (is.list(h)) h else as.list(h)
+          lapply(elems, function(v) list(hours = .to_hours_list(v)))
+        }
         
+        constraints_payload <- lapply(names(constraints_properties), function(nm) {
+          pr <- constraints_properties[[nm]]
+          list(
+            name        = nm,
+            variable    = pr$variable,
+            operator    = pr$operator,
+            occurrences = .make_occ(pr),
+            enabled     = if (!is.null(pr$enabled)) isTRUE(pr$enabled) else TRUE
+          )
+        })
+        
+        # Endpoint constraints (with the exact ID)
+        endpoint_constraints <- file.path(
+          opts$study_id, "areas", tolower(area), "storages",tolower(cluster_name),
+          "additional-constraints"
+        )
         # update
-        api_put(opts = opts, 
-                endpoint =  endpoint, 
-                body = body, 
-                encode = "raw")
+        api_post(opts = opts, 
+                 endpoint =  endpoint_constraints, 
+                 body = constraints_payload, 
+                 encode = "json")
         
-        cli::cli_alert_success("Endpoint {.emph {'Create ST-storage (TS value)'}} {.emph 
-                      {.strong {x}}} success")
-      })
-     
+        cli::cli_alert_success(
+          "Endpoint {.emph {'Create ST-storage (constraints)'}} pour {.strong {cluster_name}} OK"
+        )
+      }
+      
+      #  Constraints time series (rhs_<name>) via replace_matrix
+      if (!is.null(constraints_ts) && length(constraints_ts) > 0) {
+        actions_rhs <- lapply(names(constraints_ts), function(nm) {
+          list(
+            target = sprintf("input/st-storage/constraints/%s/%s/rhs_%s",
+                             tolower(area), tolower(cluster_name), nm),
+            matrix = constraints_ts[[nm]]
+          )
+        })
+        actions_rhs <- setNames(actions_rhs, rep("replace_matrix", length(actions_rhs)))
+        cmd_rhs <- do.call(api_commands_generate, actions_rhs)
+        api_command_register(cmd_rhs, opts = opts)
+        if (should_command_be_executed(opts)) {
+          api_command_execute(cmd_rhs, opts = opts,
+                              text_alert = "Writing constraint TS (rhs_*): {msg_api}")
+        } else {
+          cli_command_registered("replace_matrix")
+        }
+      }
+    }
+    #Matrix
+    not_null_matrix <- sapply(ST_time_series, FUN = function(l) {!is.null(l[["matrix"]])})
+    ST_time_series <- ST_time_series[not_null_matrix]
+    cmd <- NULL
+    if (length(ST_time_series) > 0) {
+      actions <- lapply(
+        X = seq_along(ST_time_series),
+        FUN = function(i) {
+          list(
+            target = sprintf(ST_time_series[[i]][["path"]], tolower(area), tolower(cluster_name)),
+            matrix = ST_time_series[[i]][["matrix"]]
+          )
+        }
+      )
+      actions <- setNames(actions, rep("replace_matrix", length(actions)))
+      cmd <- do.call(api_commands_generate, actions)
+    }
+    
+    if (!is.null(cmd)) {
+      api_command_register(cmd, opts = opts)
+      `if`(
+        should_command_be_executed(opts),
+        api_command_execute(cmd, opts = opts, text_alert = "Writing short-term's series: {msg_api}"),
+        cli_command_registered("replace_matrix")
+      )
     }
     return(invisible(opts))
   }
@@ -360,7 +454,7 @@ createClusterST <- function(area,
   if (cluster_name %in% tolower(names(previous_params)) 
       & !overwrite)
     stop(paste(cluster_name, "already exist"))
-    
+  
   ## overwrite ----
   if(overwrite){
     if(cluster_name %in% tolower(names(previous_params))){
@@ -370,7 +464,7 @@ createClusterST <- function(area,
       names(previous_params)[[ind_cluster]] <- cluster_name
     }
   }
-    
+  
   # add properties 
   previous_params[[cluster_name]] <- params_cluster
   
@@ -553,7 +647,7 @@ storage_values_default <- function(opts = simOptions()) {
 }
 
 # name parameter of function associated with .txt names files
-  # mutualized with editClusterST()  
+# mutualized with editClusterST()  
 .default_values_st_TS <- function(opts){
   # TS DATA parameters : default value + name txt file
   storage_value <- list(PMAX_injection = list(N=1, string = "PMAX-injection"),
@@ -581,11 +675,11 @@ storage_values_default <- function(opts = simOptions()) {
 #' @inheritParams createClusterST
 #' @noRd
 .add_storage_constraint <- function(area, 
-                                   cluster_name, 
-                                   constraints_properties, 
-                                   constraints_ts, 
-                                   overwrite,
-                                   opts){
+                                    cluster_name, 
+                                    constraints_properties, 
+                                    constraints_ts, 
+                                    overwrite,
+                                    opts){
   # constraints/<area id>/cluster/additional-constraints.ini
   
   # create dir 
@@ -612,8 +706,8 @@ storage_values_default <- function(opts = simOptions()) {
     ## check constraint(s) already exist(s) ----
     if (any(
       constraints_names %in% 
-        tolower(names(previous_params)) & 
-        !overwrite))
+      tolower(names(previous_params)) & 
+      !overwrite))
       stop(paste(constraints_names, " already exist "), 
            call. = FALSE)
     
@@ -621,7 +715,7 @@ storage_values_default <- function(opts = simOptions()) {
     if(overwrite){
       if(any(
         constraints_names %in% tolower(names(previous_params))
-        )){
+      )){
         # insert/overwrite
         ind_cluster <- which(tolower(names(previous_params)) %in% 
                                constraints_names)
