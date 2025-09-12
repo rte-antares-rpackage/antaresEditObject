@@ -126,7 +126,7 @@ editClusterST <- function(area,
                           constraints_ts = NULL,
                           add_prefix = TRUE, 
                           opts = antaresRead::simOptions()) {
-
+  
   ## check study opts parameters ----
   assertthat::assert_that(inherits(opts, "simOptions"))
   
@@ -166,8 +166,8 @@ editClusterST <- function(area,
   
   ## Standardize cluster name + prefix ----
   cluster_name <- generate_cluster_name(area, 
-                                          cluster_name, 
-                                          add_prefix)
+                                        cluster_name, 
+                                        add_prefix)
   
   # all properties of cluster standardized
   params_cluster <- c(list(name = cluster_name, 
@@ -183,7 +183,7 @@ editClusterST <- function(area,
   ## check dim data ----
   
   # According to Antares Version 
-    # default values associated with TS + .txt names files
+  # default values associated with TS + .txt names files
   list_local_values_params <- .default_values_st_TS(opts = opts)
   
   # check every ts parameter
@@ -241,12 +241,12 @@ editClusterST <- function(area,
     # PUT for TS values
     ##
     # adapt list name TS 
-    # on construit toutes les séries
-    # 1) mapping entre clé et suffixe
+    # we build all the series
+    # 1) mapping between key and suffix
     keys <- c("PMAX_injection", "PMAX_withdrawal", "inflows", "lower_rule_curve", "upper_rule_curve")
-    suffixes <- tolower(keys)  # -> met tout en minuscule pour les paths
+    suffixes <- tolower(keys) 
     
-    # 2) Construction
+    # Building
     ST_time_series <- setNames(
       lapply(seq_along(keys), function(i) {
         list(
@@ -257,7 +257,7 @@ editClusterST <- function(area,
       keys
     )
     if (opts$antaresVersion >= 920) {
-      # 1) Noms des séries
+      # Names of the series
       keys <- c(
         "cost_injection",
         "cost_withdrawal",
@@ -265,7 +265,7 @@ editClusterST <- function(area,
         "cost_variation_injection",
         "cost_variation_withdrawal"
       )
-      # 2) Construction de la liste ST_time_series_920
+      # Building the ST_time_series_920 list
       ST_time_series_920 <- setNames(
         lapply(keys, function(k) {
           list(
@@ -290,7 +290,7 @@ editClusterST <- function(area,
           lapply(elems, function(v) list(hours = .to_hours_list(v)))
         }
         
-        # 1) Construire chaque contrainte (avec 'name')
+        # Build each constraint (with 'name')
         payload_list <- lapply(names(constraints_properties), function(nm) {
           pr <- constraints_properties[[nm]]
           list(
@@ -302,7 +302,7 @@ editClusterST <- function(area,
           )
         })
         
-        # 2) Transformer en DICO { "<name>": {variable=..., operator=..., ...}, ... }
+        # Transform into a dict { "<name>": {variable=..., operator=..., ...}, ... }
         body_constraints <- setNames(
           lapply(payload_list, function(x) { x$name <- NULL; x }),
           vapply(payload_list, `[[`, "", "name")
@@ -321,7 +321,7 @@ editClusterST <- function(area,
         )
       }
       
-      # 5) TS des contraintes (rhs_<name>) via replace_matrix
+      # Constraints time series (rhs_<name>) via replace_matrix
       if (!is.null(constraints_ts) && length(constraints_ts) > 0) {
         actions_rhs <- lapply(names(constraints_ts), function(nm) {
           list(
@@ -416,7 +416,7 @@ editClusterST <- function(area,
   ##
   # Write TS PART ("series/")
   ##
-
+  
   # Path folder for TS
   path_txt_file <- file.path(opts$inputPath, 
                              "st-storage", 
@@ -426,15 +426,15 @@ editClusterST <- function(area,
   
   # list of params of TS 
   list_local_params <- list(PMAX_injection = PMAX_injection,
-                         PMAX_withdrawal =  PMAX_withdrawal,
-                         inflows =  inflows ,
-                         lower_rule_curve =  lower_rule_curve,
-                         upper_rule_curve =  upper_rule_curve,
-                         cost_injection =  cost_injection,
-                         cost_withdrawal =  cost_withdrawal,
-                         cost_level =  cost_level,
-                         cost_variation_injection =  cost_variation_injection,
-                         cost_variation_withdrawal =  cost_variation_withdrawal)
+                            PMAX_withdrawal =  PMAX_withdrawal,
+                            inflows =  inflows ,
+                            lower_rule_curve =  lower_rule_curve,
+                            upper_rule_curve =  upper_rule_curve,
+                            cost_injection =  cost_injection,
+                            cost_withdrawal =  cost_withdrawal,
+                            cost_level =  cost_level,
+                            cost_variation_injection =  cost_variation_injection,
+                            cost_variation_withdrawal =  cost_variation_withdrawal)
   
   # write TS
   lapply(names(list_local_params), function(x_val){
@@ -476,10 +476,10 @@ editClusterST <- function(area,
 #' @inheritParams createClusterST
 #' @noRd
 .edit_storage_constraints <- function(area, 
-                                    cluster_name, 
-                                    constraints_properties, 
-                                    constraints_ts, 
-                                    opts){
+                                      cluster_name, 
+                                      constraints_properties, 
+                                      constraints_ts, 
+                                      opts){
   # constraints/<area id>/<cluster id>/additional-constraints.ini
   
   # target dir

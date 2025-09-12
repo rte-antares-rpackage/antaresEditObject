@@ -299,12 +299,12 @@ createClusterST <- function(area,
     ##
     # PUT api call for each TS value
     ##
-    # on construit toutes les séries
-    # 1) mapping entre clé et suffixe
+    # we build all the series
+    # 1) mapping between key and suffix
     keys <- c("PMAX_injection", "PMAX_withdrawal", "inflows", "lower_rule_curve", "upper_rule_curve")
-    suffixes <- tolower(keys)  # -> met tout en minuscule pour les paths
+    suffixes <- tolower(keys)  
     
-    # 2) Construction
+    # 2) Building
     ST_time_series <- setNames(
       lapply(seq_along(keys), function(i) {
         list(
@@ -316,7 +316,7 @@ createClusterST <- function(area,
     )
     
     if (opts$antaresVersion >= 920) {
-      # 1) Noms des séries
+      # Names of the series
       keys <- c(
         "cost_injection",
         "cost_withdrawal",
@@ -325,7 +325,7 @@ createClusterST <- function(area,
         "cost_variation_withdrawal"
       )
       
-      # 2) Construction de la liste ST_time_series_920
+      # Building the ST_time_series_920 list
       ST_time_series_920 <- setNames(
         lapply(keys, function(k) {
           list(
@@ -338,10 +338,10 @@ createClusterST <- function(area,
       
       ST_time_series <- append(ST_time_series, ST_time_series_920)
       
-      ## Constraints POST (robuste : on récupère l'ID exact du cluster)
+      # POST Constraints (robust: we retrieve the exact cluster ID)
       if (!is.null(constraints_properties)) {
-        # force un tableau JSON même pour une seule valeur
-        # Parse chaque occurrence, qu'elle soit donnée comme chaîne "[1,3,5]" ou comme vecteur c(1L,3L,5L)
+        # force a JSON array even for a single value
+        # Parse each occurrence, whether given as a string "[1,3,5]" or as a vector c(1L,3L,5L)
         .to_hours_list <- function(x) {
           if (is.character(x)) x <- jsonlite::fromJSON(x)
           as.list(as.integer(x))  
@@ -350,7 +350,7 @@ createClusterST <- function(area,
         .make_occ <- function(pr) {
           h <- pr$hours
           if (is.null(h)) return(list())
-          # h peut être: vecteur de chaînes ("[1,3]","[120,121]") OU liste de vecteurs (c(1,3), c(120,121))
+          # h can be: vector of strings ("[1,3]","[120,121]") OR list of vectors (c(1,3), c(120,121))
           elems <- if (is.list(h)) h else as.list(h)
           lapply(elems, function(v) list(hours = .to_hours_list(v)))
         }
@@ -366,7 +366,7 @@ createClusterST <- function(area,
           )
         })
         
-        # 3) Endpoint constraints (avec l'ID exact)
+        # Endpoint constraints (with the exact ID)
         endpoint_constraints <- file.path(
           opts$study_id, "areas", tolower(area), "storages",tolower(cluster_name),
           "additional-constraints"
@@ -381,8 +381,8 @@ createClusterST <- function(area,
           "Endpoint {.emph {'Create ST-storage (constraints)'}} pour {.strong {cluster_name}} OK"
         )
       }
-    
-      # 5) TS des contraintes (rhs_<name>) via replace_matrix
+      
+      #  Constraints time series (rhs_<name>) via replace_matrix
       if (!is.null(constraints_ts) && length(constraints_ts) > 0) {
         actions_rhs <- lapply(names(constraints_ts), function(nm) {
           list(
