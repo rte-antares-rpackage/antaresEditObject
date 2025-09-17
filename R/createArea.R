@@ -154,6 +154,17 @@ createArea <- function(name,
       }
     }
     
+    ui <- .format_ui_data_by_mode(name = name, localization = localization, color = color, api_mode = TRUE)
+   
+    cmd <- api_command_generate(action = "update_area_ui", ui)
+    
+    api_command_register(command = cmd, opts = opts)
+    `if`(
+      should_command_be_executed(opts = opts), 
+      api_command_execute(command = cmd, opts = opts, text_alert = "Update area's ui: "),
+      cli_command_registered("update_area_ui")
+    )
+    
     return(update_api_opts(opts))
   }
   
@@ -190,19 +201,8 @@ createArea <- function(name,
     overwrite = overwrite
   )
   # ui ini file
-  localization <- as.character(localization)
-  ui <- list(
-    ui = list(
-      x = localization[1], y = localization[2],
-      color_r = unname(grDevices::col2rgb(color)["red", 1]),
-      color_g = unname(grDevices::col2rgb(color)["green", 1]),
-      color_b = unname(grDevices::col2rgb(color)["blue", 1]),
-      layers = "0"
-    ),
-    layerX = list(`0` = localization[1]),
-    layerY = list(`0` = localization[2]),
-    layerColor = list(`0` = as.vector(grDevices::col2rgb(color)))
-  )
+
+  ui <- .format_ui_data_by_mode(name = name, localization = localization, color = color, api_mode = FALSE)
   writeIni(
     listData = ui,
     pathIni = file.path(inputPath, "areas", name, "ui.ini"),
@@ -662,4 +662,47 @@ adequacyOptions <- function(adequacy_patch_mode = "outside"){
       overwrite = overwrite
     )
   }
+}
+
+
+#' Generate the data for the ui part by study mode.
+#'
+#' @param name Name of the area as a character, without punctuation except - and _.
+#' @param localization Localization on the map
+#' @param color Color of the node
+#' @param api_mode Is study in API mode?
+#'
+#'
+.format_ui_data_by_mode <- function(name, localization, color, api_mode) {
+  
+  if (api_mode) {
+    ui <- list("area_id" = name,
+                "area_ui" = list(
+                  "x" = localization[1],
+                  "y" = localization[2],
+                  "layer_x" = list(`0` = localization[1]),
+                  "layer_y" = list(`0` = localization[2]),
+                  "color_rgb" = as.vector(grDevices::col2rgb(color)),
+                  "layer_color" = list(`0` = paste0(as.vector(grDevices::col2rgb(color)), collapse = ", "))
+                  ),
+                "layer" = "0"
+    )
+  } else {
+    localization <- as.character(localization)
+    ui <- list(
+      "ui" = list(
+         "x" = localization[1],
+         "y" = localization[2],
+         "color_r" = unname(grDevices::col2rgb(color)["red", 1]),
+         "color_g" = unname(grDevices::col2rgb(color)["green", 1]),
+         "color_b" = unname(grDevices::col2rgb(color)["blue", 1]),
+         "layers" = "0"
+        ),
+      "layerX" = list(`0` = localization[1]),
+      "layerY" = list(`0` = localization[2]),
+      "layerColor" = list(`0` = as.vector(grDevices::col2rgb(color)))
+    )
+  }
+  
+  return(ui)
 }
