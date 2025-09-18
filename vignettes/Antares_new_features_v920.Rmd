@@ -189,10 +189,24 @@ We can add additional constraints via the dedicated endpoints:
 
  - constraints_properties
  - TS constraints rhs_*
+ 
+The function read_storages_constraints() reads all short-term storage constraints from API or disk and returns them as a nested R list.
+Each top-level element corresponds to an area.
+Inside each area you will find, for each storage cluster, two main sub-lists:
+
+properties – general information and constraint definitions, such as:
+
+ - variable (e.g. "withdrawal")
+ - operator (e.g. "equal")
+ - hours (e.g. "[1, 3, 5]")
+ - enabled (logical flag)
+
+values
+ - time-series data linked to those constraints, for example a rhs_test element containing a numeric vector of hourly values (length 8760).
 
 #### Properties 
 
-```{r}
+```{r, message=FALSE}
 # Create 
 createClusterST(area = "fr",
                 cluster_name = "Additional_Properties",
@@ -207,7 +221,7 @@ createClusterST(area = "fr",
                 cost_level = NULL,
                 cost_variation_injection = NULL, 
                 cost_variation_withdrawal =NULL,
-                constraints_properties <- list(
+                constraints_properties = list(
                   "test"=list(
                     variable = "withdrawal",
                     operator = "equal",
@@ -251,7 +265,7 @@ editClusterST (area = "fr",
 
 #### Values 
 
-```{r}
+```{r, message=FALSE}
 # Create
 good_ts <- matrix(0.7, nrow = 8760, ncol = 1)
 createClusterST(area = "fr",
@@ -267,7 +281,7 @@ createClusterST(area = "fr",
                 cost_level = NULL,
                 cost_variation_injection = NULL, 
                 cost_variation_withdrawal =NULL,
-                constraints_properties <- list(
+                constraints_properties = list(
                   "test"=list(
                     variable = "withdrawal",
                     operator = "equal",
@@ -281,7 +295,7 @@ createClusterST(area = "fr",
                     hours = c("[1, 168]")
                   )),
                 # constraints_ts 
-                constraints_ts <- list(
+                constraints_ts = list(
                   "test" = good_ts,
                   "test2"    = good_ts
                 ))
@@ -296,7 +310,12 @@ editClusterST (area = "fr",
                add_prefix = TRUE)
 #Read
 res=read_storages_constraints()
-utils::str(res, max.level = 3)  
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(listviewer)
+jsonedit(res, mode = "view", options = list(collapsed = 1))
 ```
 
 ### Remove clusters
