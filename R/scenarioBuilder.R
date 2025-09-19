@@ -552,11 +552,23 @@ updateScenarioBuilder <- function(ldata,
 clearScenarioBuilder <- function(ruleset = "Default Ruleset",
                                  opts = antaresRead::simOptions()) {
   if (is_api_study(opts)) {
-    cmd <- api_command_generate(
+    # cmd <- api_command_generate(
+    #   action = "update_config",
+    #   target = paste0("settings/scenariobuilder/", ruleset),
+    #   data = list()
+    # )
+    
+    # api_command_generate() can't be used with API (non compatible with [])
+    cmd <- list(
       action = "update_config",
-      target = paste0("settings/scenariobuilder/", ruleset),
-      data = list()
+      args = list(
+        target = paste0("settings/scenariobuilder/", 
+                        ruleset),
+        data = NULL
+      )
     )
+    class(cmd) <- c(class(cmd), "antares.api.command")
+    
     api_command_register(cmd, opts = opts)
     `if`(
       should_command_be_executed(opts), 
