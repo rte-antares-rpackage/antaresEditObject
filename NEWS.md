@@ -32,6 +32,10 @@ NEW FEATURES (other) :
   - `updateAdequacySettings()` : Two parameters (*enable-first-step*, *set-to-null-ntc-between-physical-out-for-first-step*) are **deprecated** and removed. Parameters are forced to `NULL` with study >= v9.2.
     
 
+BUGFIXES :    
+
+* `clearScenarioBuilder()` in API mode, updates correctly with empty data (`{}`)
+
 ### DOC :  
 
 A new article exposing new features of Antares Simulator v9.2 is available [here](https://rte-antares-rpackage.github.io/antaresEditObject/dev/articles/Antares_new_features_v920.html)
