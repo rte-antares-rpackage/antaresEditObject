@@ -276,7 +276,8 @@ createClusterST <- function(area,
       "enabled" = params_cluster[["enabled"]],
       "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
       "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
-      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]],
+      "allowOverflow"= params_cluster[["allow-overflow"]])
     
     list_properties <- dropNulls(list_properties)
     
@@ -767,8 +768,3 @@ storage_values_default <- function(opts = simOptions()) {
            })
   }
 }
-
-
-
-
-
