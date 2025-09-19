@@ -276,7 +276,8 @@ createClusterST <- function(area,
       "enabled" = params_cluster[["enabled"]],
       "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
       "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
-      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]],
+      "allowOverflow"= params_cluster[["allow-overflow"]])
     
     list_properties <- dropNulls(list_properties)
     
@@ -566,6 +567,12 @@ createClusterST <- function(area,
       assertthat::assert_that(inherits(list_values[["penalize-variation-withdrawal"]], 
                                        "logical"))
   }
+  
+  if (opts$antaresVersion >= 930){
+    if(!is.null(list_values[["allow-overflow"]]))
+      assertthat::assert_that(inherits(list_values[["allow-overflow"]], 
+                                       "logical"))
+  }
 }
 
 .is_ratio <- function(x, mess){
@@ -616,6 +623,9 @@ storage_values_default <- function(opts = simOptions()) {
     lst_parameters[["efficiencywithdrawal"]] <- 1
     lst_parameters[["penalize-variation-injection"]] <- FALSE
     lst_parameters[["penalize-variation-withdrawal"]] <- FALSE
+  }
+  if (opts$antaresVersion >= 930){
+    lst_parameters[["allow-overflow"]] <- FALSE
   }
   return(lst_parameters)
 }
@@ -758,8 +768,3 @@ storage_values_default <- function(opts = simOptions()) {
            })
   }
 }
-
-
-
-
-
