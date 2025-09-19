@@ -566,6 +566,12 @@ createClusterST <- function(area,
       assertthat::assert_that(inherits(list_values[["penalize-variation-withdrawal"]], 
                                        "logical"))
   }
+  
+  if (opts$antaresVersion >= 930){
+    if(!is.null(list_values[["allow-overflow"]]))
+      assertthat::assert_that(inherits(list_values[["allow-overflow"]], 
+                                       "logical"))
+  }
 }
 
 .is_ratio <- function(x, mess){
@@ -616,6 +622,9 @@ storage_values_default <- function(opts = simOptions()) {
     lst_parameters[["efficiencywithdrawal"]] <- 1
     lst_parameters[["penalize-variation-injection"]] <- FALSE
     lst_parameters[["penalize-variation-withdrawal"]] <- FALSE
+  }
+  if (opts$antaresVersion >= 930){
+    lst_parameters[["allow-overflow"]] <- FALSE
   }
   return(lst_parameters)
 }
