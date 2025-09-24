@@ -1,5 +1,13 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
+# antaresEditObject 0.9.3.0
+(cf. Antares v9.3 changelog)
+
+NEW FEATURES :  
+
+* `createClusterST()`/`editClusterST()` :  
+  - **New properties** (*allow-overflow*, see list of properties according to study version of Antares with `storage_values_default()`)  
+
 # antaresEditObject 0.9.2.9000
 (cf. Antares v9.2 changelog)
 

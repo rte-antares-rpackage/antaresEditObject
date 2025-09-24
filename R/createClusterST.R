@@ -53,6 +53,9 @@
 #'  - `penalize-variation-injection` = FALSE (`logical` TRUE/FALSE)
 #'  - `penalize-variation-withdrawal` = FALSE `logical` TRUE/FALSE)
 #'  
+#' Study version >= "9.3" (new parameters) :  
+#'  - `allow-overflow` = FALSE (`logical` TRUE/FALSE)
+#'  
 #' By default, these values don't allow you to have an active cluster (See example section.)  
 #' 
 #' 
@@ -111,6 +114,10 @@
 #' my_parameters$efficiencywithdrawal <- 0.5
 #' my_parameters$`penalize-variation-injection` <- TRUE
 #' my_parameters$`penalize-variation-withdrawal` <- TRUE
+#' 
+#' # for a study version >= 9.3 (new parameters)
+#' my_parameters <- storage_values_default()
+#' my_parameters$`allow-overflow` <- TRUE
 #' 
 #' createClusterST(area = "my_area", 
 #'                 "my_cluster",
