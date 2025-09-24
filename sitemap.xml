@@ -2,6 +2,7 @@
 <url><loc>/404.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
 <url><loc>/articles/Antares_new_features_v860.html</loc></url>
+<url><loc>/articles/Antares_new_features_v920.html</loc></url>
 <url><loc>/articles/antaresEditObject.html</loc></url>
 <url><loc>/articles/api-variant-management.html</loc></url>
 <url><loc>/articles/index.html</loc></url>
@@ -48,9 +49,11 @@
 <url><loc>/reference/dicoOptimizationSettings.html</loc></url>
 <url><loc>/reference/dicoOutputSettings.html</loc></url>
 <url><loc>/reference/dot-api_command_execute_edit_area.html</loc></url>
+<url><loc>/reference/dot-api_command_execute_edit_area_ui.html</loc></url>
 <url><loc>/reference/dot-dailyToWeekly.html</loc></url>
 <url><loc>/reference/dot-format_ini_rhs.html</loc></url>
 <url><loc>/reference/dot-format_playlist_weights.html</loc></url>
+<url><loc>/reference/dot-format_ui_data_by_mode.html</loc></url>
 <url><loc>/reference/dot-hourlyToOther.html</loc></url>
 <url><loc>/reference/dot-initializeLinksArea.html</loc></url>
 <url><loc>/reference/dot-initializeRenewablesArea.html</loc></url>
@@ -82,6 +85,7 @@
 <url><loc>/reference/removeArea.html</loc></url>
 <url><loc>/reference/removeBindingConstraint.html</loc></url>
 <url><loc>/reference/removeCluster.html</loc></url>
+<url><loc>/reference/removeDistrict.html</loc></url>
 <url><loc>/reference/removeLink.html</loc></url>
 <url><loc>/reference/replicate_missing_ts.html</loc></url>
 <url><loc>/reference/rollback_to_previous_data.html</loc></url>
@@ -91,6 +95,7 @@
 <url><loc>/reference/searchStudy.html</loc></url>
 <url><loc>/reference/setAPImode.html</loc></url>
 <url><loc>/reference/setSolverPath.html</loc></url>
+<url><loc>/reference/setThematicTrimming.html</loc></url>
 <url><loc>/reference/storage_values_default.html</loc></url>
 <url><loc>/reference/updateAdequacySettings.html</loc></url>
 <url><loc>/reference/updateGeneralSettings.html</loc></url>
