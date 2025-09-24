@@ -1079,4 +1079,5 @@ test_that("Edit right values",{
     all_params)
 })
 
-
+#Delete study
+deleteStudy()
