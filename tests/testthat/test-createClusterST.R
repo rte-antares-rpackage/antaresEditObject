@@ -854,26 +854,18 @@ createArea(name = area_test_clust)
 # add new parameters 
 all_params <- storage_values_default()
 
-# "efficiencywithdrawal"
-# type
-all_params[["allow-overflow"]] <- TRUE
-
-expect_error(
-  createClusterST(area = area_test_clust, 
-                  cluster_name = "err", 
-                  storage_parameters = all_params), 
-  regexp = "x must be of type 'logical'"
-)
-
-# value
-all_params[["allow-overflow"]] <- 1
-
-expect_error(
-  createClusterST(area = area_test_clust, 
-                  cluster_name = "err", 
-                  storage_parameters = all_params), 
-  regexp = "x must be of type 'logical'"
-)
+# "allow-overflow"
+test_that("Wrong type/values",{
+  # value
+  all_params[["allow-overflow"]] <- 1
+  
+  expect_error(
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "err", 
+                    storage_parameters = all_params), 
+    regexp = "x must be of type 'logical'"
+  )
+})
 
 test_that("Add right values",{
   # add new parameters 
