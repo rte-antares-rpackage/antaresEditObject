@@ -105,7 +105,14 @@
 #' editClusterST(area = "areaname", 
 #'               cluster_name = "clustername", 
 #'               constraints_properties = constraints_properties,
-#'               constraints_ts = constraints_ts)             
+#'               constraints_ts = constraints_ts)    
+#'
+#'' # study version >= "9.3" (new parameters)
+#'
+# edit properties
+#' my_parameters <- storage_values_default()
+#' my_parameters$`allow-overflow` <- TRUE
+#'                        
 #' }
 #' @export
 editClusterST <- function(area,
@@ -214,7 +221,8 @@ editClusterST <- function(area,
       "enabled" = params_cluster[["enabled"]],
       "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
       "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
-      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]],
+      "allowOverflow"= params_cluster[["allow-overflow"]])
     
     list_properties <- dropNulls(list_properties)
     
