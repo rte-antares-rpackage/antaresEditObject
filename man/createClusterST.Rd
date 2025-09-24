@@ -105,6 +105,11 @@ Study version >= "9.2" (new parameters) :
 \item \code{penalize-variation-withdrawal} = FALSE \code{logical} TRUE/FALSE)
 }
 
+Study version >= "9.3" (new parameters) :
+\itemize{
+\item \code{allow-overflow} = FALSE (\code{logical} TRUE/FALSE)
+}
+
 By default, these values don't allow you to have an active cluster (See example section.)
 }
 
@@ -152,6 +157,10 @@ my_parameters <- storage_values_default()
 my_parameters$efficiencywithdrawal <- 0.5
 my_parameters$`penalize-variation-injection` <- TRUE
 my_parameters$`penalize-variation-withdrawal` <- TRUE
+
+# for a study version >= 9.3 (new parameters)
+my_parameters <- storage_values_default()
+my_parameters$`allow-overflow` <- TRUE
 
 createClusterST(area = "my_area", 
                 "my_cluster",
