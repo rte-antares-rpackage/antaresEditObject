@@ -242,13 +242,20 @@ createClusterST <- function(area,
   storage_value <- .default_values_st_TS(opts = opts)
   
   ## check dim data ----
-  for (name in names(storage_value)){
-    if (!is.null(dim(get(name))))
-      if (!identical(dim(get(name)), c(8760L, 1L)))
-        stop(paste0("Input data for ", name, " must be 8760*1"), 
-             call. = FALSE)
+  for (name in names(storage_value)) {
+    x <- storage_value[[name]]
+    if (!is.null(dim(x))) {
+      if (opts$antaresVersion >= 930) {
+        if (!(nrow(x) == 8760L && ncol(x) >= 1L)) {
+          stop(sprintf("Input data for %s must be 8760×N (N>=1)", name), call. = FALSE)
+        }
+      } else {
+        if (!identical(dim(x), c(8760L, 1L))) {
+          stop(sprintf("Input data for %s must be 8760×1", name), call. = FALSE)
+        }
+      }
+    }
   }
-  
   ## Standardize params ----
   params_cluster <- hyphenize_names(storage_parameters)
   
