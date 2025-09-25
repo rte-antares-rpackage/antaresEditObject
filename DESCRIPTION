@@ -54,5 +54,3 @@ Suggests:
     rmarkdown,
     listviewer
 VignetteBuilder: knitr
-Remotes:  
-    rte-antares-rpackage/antaresRead

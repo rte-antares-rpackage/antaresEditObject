@@ -1,5 +1,6 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
+
 # antaresEditObject 0.9.3.9000
 (cf. Antares v9.3 changelog)
 
@@ -39,6 +40,10 @@ NEW FEATURES (other) :
   - `createClusterST()` : For a study < *v9.2*, execution will be STOP if `group` is not included in list (see doc)  
   - `updateAdequacySettings()` : Two parameters (*enable-first-step*, *set-to-null-ntc-between-physical-out-for-first-step*) are **deprecated** and removed. Parameters are forced to `NULL` with study >= v9.2.
     
+
+BUGFIXES :    
+
+* `clearScenarioBuilder()` in API mode, updates correctly with empty data (`{}`)
 
 ### DOC :  
 
