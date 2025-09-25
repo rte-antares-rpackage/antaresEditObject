@@ -222,7 +222,7 @@ createClusterST(area = area_test_clust,
                 cluster_name = name_no_prefix, 
                 constraints_properties = constraints_properties, 
                 constraints_ts = constraints_ts)
-                
+  
 # for a study version >= 9.3 (new parameters)
 my_parameters <- storage_values_default()
 my_parameters$`allow-overflow` <- TRUE
