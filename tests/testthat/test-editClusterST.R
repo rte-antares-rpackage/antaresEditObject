@@ -1079,5 +1079,29 @@ test_that("Edit right values",{
     all_params)
 })
 
+## New TS dimension ----
+test_that("Wrong dim TS",{
+  # like 8.6, these TS are dim [8760;N]
+  bad_ts <- matrix(3, 8760*2, ncol = 2)
+  
+  # create default
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "edit_wrong_ts")
+  
+  #default with bad TS (just test 2 param)
+  expect_error(
+    editClusterST(area = area_test_clust,
+                  cluster_name = "edit_wrong_ts",
+                  cost_injection = bad_ts),
+    regexp = "Input data for cost_injection must be 8760\\*N \\(N>=1\\)"
+  )
+  expect_error(
+    editClusterST(area = area_test_clust,
+                  cluster_name = "edit_wrong_ts",
+                  cost_withdrawal = bad_ts),
+    regexp = "Input data for cost_withdrawal must be 8760\\*N \\(N>=1\\)"
+  )
+})
+
 #Delete study
 deleteStudy()

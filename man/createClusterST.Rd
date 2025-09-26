@@ -36,26 +36,36 @@ It corresponds to the type of stockage (\strong{dynamic name for Antares version
 
 \item{storage_parameters}{\code{list } Parameters to write in the Ini file (see \code{Note}).}
 
-\item{PMAX_injection}{Modulation of charging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
+\item{PMAX_injection}{Modulation of charging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760\emph{1)
+(**\code{numeric} \{0;1\} (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{PMAX_withdrawal}{Modulation of discharging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760*1).}
+\item{PMAX_withdrawal}{Modulation of discharging capacity on an 8760-hour basis. \code{numeric} \{0;1\} (8760\emph{1)
+(**\code{numeric} \{0;1\} (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
 \item{inflows}{Algebraic deviation of the state of charge of the storage, which does not induce any power
-generation or consumption on the system \code{numeric} \{<0;>0\} (8760*1).}
+generation or consumption on the system \code{numeric} \{<0;>0\} (8760\emph{1)
+(**``numeric` \{<0;>0\} (8760}1) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
+\item{lower_rule_curve}{This is the lower limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760\emph{1)
+(**\code{numeric} \{0;1\} (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760*1).}
+\item{upper_rule_curve}{This is the upper limit for filling the stock imposed each hour. \code{numeric} \{0;1\} (8760\emph{1)
+(**\code{numeric} \{0;1\} (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{cost_injection}{Penalizes the injection flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+\item{cost_injection}{Penalizes the injection flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760\emph{1)
+(**\code{numeric} \{>0\}  (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{cost_withdrawal}{Penalizes the withdrawal flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+\item{cost_withdrawal}{Penalizes the withdrawal flowrate at each hour (€/MWh) \code{numeric} \{>0\} (8760\emph{1)
+(**\code{numeric} \{>0\}  (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{cost_level}{Penalizes the volume of stored energy at each hour (€/MWh) \code{numeric} \{<0;>0\} (8760*1).}
+\item{cost_level}{Penalizes the volume of stored energy at each hour (€/MWh) \code{numeric} \{<0;>0\} (8760\emph{1)
+(**\code{numeric} \{<0;>0\}  (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{cost_variation_injection}{Penalizes injection flowrate variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+\item{cost_variation_injection}{Penalizes injection flowrate variation every hour (€/MWh) \code{numeric} \{>0\} (8760\emph{1)
+(**\code{numeric} \{>0\}  (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
-\item{cost_variation_withdrawal}{Penalizes the withdrawal variation every hour (€/MWh) \code{numeric} \{>0\} (8760*1).}
+\item{cost_variation_withdrawal}{Penalizes the withdrawal variation every hour (€/MWh) \code{numeric} \{>0\} (8760\emph{1)
+(**\code{numeric} \{>0\}  (8760}N) noting that N ≥ 1 for Antares version >= 9.3**).}
 
 \item{constraints_properties}{\code{list } Parameters (see example)}
 
@@ -226,6 +236,14 @@ createClusterST(area = area_test_clust,
 # for a study version >= 9.3 (new parameters)
 my_parameters <- storage_values_default()
 my_parameters$`allow-overflow` <- TRUE
+
+  # time series                  
+ratio_value <- matrix(0.7, 8760, N)
+
+# default properties with new optional TS
+createClusterST(area = "fr", 
+                cluster_name = "good_ts_value", 
+                cost_injection = ratio_value)         
                 
 }
 

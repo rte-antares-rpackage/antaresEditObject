@@ -112,6 +112,13 @@
 # edit properties
 #' my_parameters <- storage_values_default()
 #' my_parameters$`allow-overflow` <- TRUE
+#' 
+#' # edit time series
+#' ratio_data <- matrix(0.7, 8760, N)
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername",
+#'               cost_injection = ratio_data)
 #'                        
 #' }
 #' @export
@@ -193,11 +200,36 @@ editClusterST <- function(area,
   # default values associated with TS + .txt names files
   list_local_values_params <- .default_values_st_TS(opts = opts)
   
-  # check every ts parameter
-  for (name in names(list_local_values_params)){
-    if (!is.null(dim(get(name))))
-      if (!identical(dim(get(name)), c(8760L, 1L)))
-        stop(paste0("Input data for ", name, " must be 8760*1"))
+  ## check dim data ----
+  allow_multi <- opts$antaresVersion >= 930
+  
+  for (name in names(list_local_values_params)) {
+    # only check if the argument was provided
+    x <- get0(name, ifnotfound = NULL, inherits = TRUE)
+    if (is.null(x)) next
+    
+    # normalize to a matrix
+    if (is.data.frame(x)) x <- as.matrix(x)
+    if (!is.matrix(x)) {
+      if (length(x) == 8760L) {
+        x <- matrix(x, nrow = 8760L, ncol = 1L)
+      } else {
+        stop(sprintf("Input data for %s must be 8760*%s",
+                     name, if (allow_multi) "N (N>=1)" else "1"),
+             call. = FALSE)
+      }
+    }
+    d <- dim(x)
+    if (d[1L] != 8760L ||
+        (!allow_multi && d[2L] != 1L) ||
+        (allow_multi && d[2L] < 1L)) {
+      stop(sprintf("Input data for %s must be 8760*%s",
+                   name, if (allow_multi) "N (N>=1)" else "1"),
+           call. = FALSE)
+    }
+    
+    #reinsert the normalized version for the write step below
+    assign(name, x, envir = environment())
   }
   
   ## API block ----
