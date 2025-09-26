@@ -10,17 +10,27 @@
 #' @param group Group of the cluster, one of : *{PSP_open, PSP_closed, Pondage, Battery, Other}*. 
 #' It corresponds to the type of stockage (**dynamic name for Antares version >= 9.2**).
 #' @param storage_parameters `list ` Parameters to write in the Ini file (see `Note`). 
-#' @param PMAX_injection Modulation of charging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
-#' @param PMAX_withdrawal Modulation of discharging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1).
+#' @param PMAX_injection Modulation of charging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1)
+#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param PMAX_withdrawal Modulation of discharging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1)
+#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
 #' @param inflows Algebraic deviation of the state of charge of the storage, which does not induce any power 
-#' generation or consumption on the system `numeric` \{<0;>0\} (8760*1).
-#' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
-#' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1).
-#' @param cost_injection Penalizes the injection flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
-#' @param cost_withdrawal Penalizes the withdrawal flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
-#' @param cost_level Penalizes the volume of stored energy at each hour (&euro;/MWh) `numeric` \{<0;>0\} (8760*1).
-#' @param cost_variation_injection Penalizes injection flowrate variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
-#' @param cost_variation_withdrawal Penalizes the withdrawal variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1).
+#' generation or consumption on the system `numeric` \{<0;>0\} (8760*1)
+#' (**``numeric` \{<0;>0\} (8760*1) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1)
+#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1)
+#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param cost_injection Penalizes the injection flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
+#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param cost_withdrawal Penalizes the withdrawal flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
+#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param cost_level Penalizes the volume of stored energy at each hour (&euro;/MWh) `numeric` \{<0;>0\} (8760*1)
+#' (**`numeric` \{<0;>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param cost_variation_injection Penalizes injection flowrate variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
+#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' @param cost_variation_withdrawal Penalizes the withdrawal variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
+#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
 #' @param constraints_properties `list ` Parameters (see example)
 #' @param constraints_ts `list ` of time series (see example)
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
@@ -52,6 +62,9 @@
 #'  - efficiencywithdrawal = 1 (`numeric` \{0;1\})
 #'  - `penalize-variation-injection` = FALSE (`logical` TRUE/FALSE)
 #'  - `penalize-variation-withdrawal` = FALSE `logical` TRUE/FALSE)
+#'  
+#' Study version >= "9.3" (new parameters) :  
+#'  - `allow-overflow` = FALSE (`logical` TRUE/FALSE)
 #'  
 #' By default, these values don't allow you to have an active cluster (See example section.)  
 #' 
@@ -111,6 +124,7 @@
 #' my_parameters$efficiencywithdrawal <- 0.5
 #' my_parameters$`penalize-variation-injection` <- TRUE
 #' my_parameters$`penalize-variation-withdrawal` <- TRUE
+#' 
 #' 
 #' createClusterST(area = "my_area", 
 #'                 "my_cluster",
@@ -175,6 +189,19 @@
 #'                 cluster_name = name_no_prefix, 
 #'                 constraints_properties = constraints_properties, 
 #'                 constraints_ts = constraints_ts)
+#'   
+#' # for a study version >= 9.3 (new parameters)
+#' my_parameters <- storage_values_default()
+#' my_parameters$`allow-overflow` <- TRUE
+#' 
+#'   # time series                  
+#' ratio_value <- matrix(0.7, 8760, N)
+#'
+#' # default properties with new optional TS
+#' createClusterST(area = "fr", 
+#'                 cluster_name = "good_ts_value", 
+#'                 cost_injection = ratio_value)         
+#'                 
 #' }
 #'
 createClusterST <- function(area,
@@ -233,11 +260,35 @@ createClusterST <- function(area,
   storage_value <- .default_values_st_TS(opts = opts)
   
   ## check dim data ----
-  for (name in names(storage_value)){
-    if (!is.null(dim(get(name))))
-      if (!identical(dim(get(name)), c(8760L, 1L)))
-        stop(paste0("Input data for ", name, " must be 8760*1"), 
+  allow_multi <- opts$antaresVersion >= 930
+  
+  for (name in names(storage_value)) {
+    # only check if the argument was provided
+    x <- get0(name, ifnotfound = NULL, inherits = TRUE)
+    if (is.null(x)) next
+    
+    # normalize to a matrix
+    if (is.data.frame(x)) x <- as.matrix(x)
+    if (!is.matrix(x)) {
+      if (length(x) == 8760L) {
+        x <- matrix(x, nrow = 8760L, ncol = 1L)
+      } else {
+        stop(sprintf("Input data for %s must be 8760*%s",
+                     name, if (allow_multi) "N (N>=1)" else "1"),
              call. = FALSE)
+      }
+    }
+    d <- dim(x)
+    if (d[1L] != 8760L ||
+        (!allow_multi && d[2L] != 1L) ||
+        (allow_multi && d[2L] < 1L)) {
+      stop(sprintf("Input data for %s must be 8760*%s",
+                   name, if (allow_multi) "N (N>=1)" else "1"),
+           call. = FALSE)
+    }
+    
+    #reinsert the normalized version for the write step below
+    assign(name, x, envir = environment())
   }
   
   ## Standardize params ----
@@ -276,7 +327,8 @@ createClusterST <- function(area,
       "enabled" = params_cluster[["enabled"]],
       "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
       "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
-      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]],
+      "allowOverflow"= params_cluster[["allow-overflow"]])
     
     list_properties <- dropNulls(list_properties)
     
@@ -566,6 +618,12 @@ createClusterST <- function(area,
       assertthat::assert_that(inherits(list_values[["penalize-variation-withdrawal"]], 
                                        "logical"))
   }
+  
+  if (opts$antaresVersion >= 930){
+    if(!is.null(list_values[["allow-overflow"]]))
+      assertthat::assert_that(inherits(list_values[["allow-overflow"]], 
+                                       "logical"))
+  }
 }
 
 .is_ratio <- function(x, mess){
@@ -616,6 +674,9 @@ storage_values_default <- function(opts = simOptions()) {
     lst_parameters[["efficiencywithdrawal"]] <- 1
     lst_parameters[["penalize-variation-injection"]] <- FALSE
     lst_parameters[["penalize-variation-withdrawal"]] <- FALSE
+  }
+  if (opts$antaresVersion >= 930){
+    lst_parameters[["allow-overflow"]] <- FALSE
   }
   return(lst_parameters)
 }
@@ -758,8 +819,3 @@ storage_values_default <- function(opts = simOptions()) {
            })
   }
 }
-
-
-
-
-

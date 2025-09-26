@@ -1035,7 +1035,73 @@ test_that("Edit properties + TS", {
 #Delete study
 deleteStudy()
 
+# >=9.3 ---- 
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "st-storage9.3", 
+              antares_version = "9.3"))
+
+# default area with st cluster
+area_test_clust = "al" 
+createArea(name = area_test_clust)
+
+# edit new properties
+test_that("Edit right values",{
+  # add new parameters 
+  all_params <- list(
+    `allow-overflow` = TRUE
+  )
   
+  # default with new parameters 
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "new_properties")
+  
+  # Edit with new parameters 
+  editClusterST(area = area_test_clust, 
+                cluster_name = "new_properties", 
+                storage_parameters = all_params)
+  
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "clusters", 
+                           area_test_clust,
+                           "list")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_prop <- read_ini[[paste(area_test_clust, 
+                                 "new_properties",
+                                 sep = "_")]]
+  
+  # test params created if equal with .ini read 
+  expect_equal(
+    target_prop[names(all_params)], 
+    all_params)
+})
 
+## New TS dimension ----
+test_that("Wrong dim TS",{
+  # like 8.6, these TS are dim [8760;N]
+  bad_ts <- matrix(3, 8760*2, ncol = 2)
+  
+  # create default
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "edit_wrong_ts")
+  
+  #default with bad TS (just test 2 param)
+  expect_error(
+    editClusterST(area = area_test_clust,
+                  cluster_name = "edit_wrong_ts",
+                  cost_injection = bad_ts),
+    regexp = "Input data for cost_injection must be 8760\\*N \\(N>=1\\)"
+  )
+  expect_error(
+    editClusterST(area = area_test_clust,
+                  cluster_name = "edit_wrong_ts",
+                  cost_withdrawal = bad_ts),
+    regexp = "Input data for cost_withdrawal must be 8760\\*N \\(N>=1\\)"
+  )
+})
 
-
+#Delete study
+deleteStudy()

@@ -841,8 +841,78 @@ test_that("Add new TS constraint", {
 deleteStudy()
 
 
+# >=9.3 ---- 
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "st-storage9.3", 
+              antares_version = "9.3"))
 
+# default area with st cluster
+area_test_clust = "al" 
+createArea(name = area_test_clust)
 
+# add new parameters 
+all_params <- storage_values_default()
 
+# "allow-overflow"
+test_that("Wrong type/values",{
+  # value
+  all_params[["allow-overflow"]] <- 0.9
+  
+  expect_error(
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "err", 
+                    storage_parameters = all_params), 
+    regexp = "does not inherit from class logical"
+  )
+})
 
+test_that("Add right values",{
+  # add new parameters 
+  all_params <- storage_values_default()
+  all_params[["allow-overflow"]] <- TRUE
+  
+  # default with new parameters 
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "new_properties", 
+                  storage_parameters = all_params)
+  
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "clusters", 
+                           area_test_clust,
+                           "list")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_prop <- read_ini[[paste(area_test_clust, 
+                                 "new_properties",
+                                 sep = "_")]]
+  
+  # test params created if identical with .ini read 
+  expect_equal(
+    target_prop[setdiff(names(target_prop), 
+                        c("name", "group"))], 
+    all_params)
+})
+## New TS dimension ----
+test_that("Wrong dim TS",{
+  # like 8.6, these TS are dim [8760;1]
+  bad_ts <- matrix(3, 8760*2, ncol = 2)
+  
+  # default with bad TS (just test 2 param)
+  expect_error(
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "wrong_ts_dimRR", 
+                    cost_injection = bad_ts), 
+    regexp = "Input data for cost_injection must be 8760\\*N \\(N>=1\\)"
+  )
+  expect_error(
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "wrong_ts_dim", 
+                    cost_withdrawal = bad_ts), 
+    regexp = "Input data for cost_withdrawal must be 8760\\*N \\(N>=1\\)"
+  )
+})
 
+deleteStudy()
