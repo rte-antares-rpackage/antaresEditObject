@@ -938,4 +938,80 @@ test_that("Wrong dim TS",{
   )
 })
 
+test_that("Add new TS constraint", {
+  # /!\ you can add ts only with properties
+  
+  # given
+  name_no_prefix <- "add_ts"
+  
+  constraints_properties <- list(
+    "withdrawal-2"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-2"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  good_ts <- matrix(0.7, 8760,3)
+  constraints_ts <- list(
+    "withdrawal-2"=good_ts,
+    "netting-2"=good_ts)
+  
+  # when
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  # read ts
+  opts_ <- simOptions()
+  ts_path <- file.path(opts_$inputPath, 
+                       "st-storage", 
+                       "constraints", 
+                       area_test_clust,
+                       paste0(area_test_clust, "_",name_no_prefix),
+                       paste0("rhs_", names(constraints_ts), ".txt"))
+  
+  # exist ?
+  expect_true(all(
+    file.exists(ts_path)
+  ))
+  
+  dim <- lapply(ts_path, function(x) {
+    file_ts <- data.table::fread(input = x)
+    dim(file_ts)
+  })
+  
+  # All files must have the same dimensions
+  expect_equal(dim[[1]], dim[[2]])
+  # Each file must have exactly 8760 rows
+  expect_equal(dim[[1]][1], 8760)
+ # Each file must have at least 1 column (N >= 1)
+  expect_gte(dim[[1]][2], 1)
+  
+  
+  test_that("Ovewrite TS not permiss", {
+    expect_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties, 
+                      constraints_ts = constraints_ts)
+    )
+  })
+  
+  test_that("Ovewrite permiss", {
+    expect_no_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties, 
+                      overwrite = TRUE)
+    )
+  })
+})
+
 deleteStudy()
