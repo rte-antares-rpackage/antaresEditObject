@@ -201,35 +201,16 @@ editClusterST <- function(area,
   list_local_values_params <- .default_values_st_TS(opts = opts)
   
   ## check dim data ----
+  # allow multiple columns starting with Antares >= 9.3.0 (930)
   allow_multi <- opts$antaresVersion >= 930
-  
-  for (name in names(list_local_values_params)) {
-    # only check if the argument was provided
-    x <- get0(name, ifnotfound = NULL, inherits = TRUE)
-    if (is.null(x)) next
-    
-    # normalize to a matrix
-    if (is.data.frame(x)) x <- as.matrix(x)
-    if (!is.matrix(x)) {
-      if (length(x) == 8760L) {
-        x <- matrix(x, nrow = 8760L, ncol = 1L)
-      } else {
-        stop(sprintf("Input data for %s must be 8760*%s",
-                     name, if (allow_multi) "N (N>=1)" else "1"),
-             call. = FALSE)
-      }
-    }
-    d <- dim(x)
-    if (d[1L] != 8760L ||
-        (!allow_multi && d[2L] != 1L) ||
-        (allow_multi && d[2L] < 1L)) {
-      stop(sprintf("Input data for %s must be 8760*%s",
-                   name, if (allow_multi) "N (N>=1)" else "1"),
-           call. = FALSE)
-    }
-    
-    #reinsert the normalized version for the write step below
-    assign(name, x, envir = environment())
+  nms <- names(list_local_values_params)
+  # Retrieve all inputs as a named list (NULL if missing)
+  in_vals <- mget(nms, inherits = TRUE, ifnotfound = rep(list(NULL), length(nms)))
+  # Normalize only provided inputs
+  provided_norm <- normalize_ts_list(in_vals, allow_multi = allow_multi)
+  # Merge: replace only the $values field
+  for (name in names(provided_norm)) {
+    list_local_values_params[[name]]$values <- provided_norm[[name]]
   }
   
   ## API block ----

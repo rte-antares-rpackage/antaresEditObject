@@ -852,9 +852,32 @@ area_test_clust = "al"
 createArea(name = area_test_clust)
 
 # add new parameters 
-all_params <- storage_values_default()
+test_that("Default values",{
+  # default call 
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "default_prop")
+  
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "clusters", 
+                           area_test_clust,
+                           "list")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_prop <- read_ini[[paste(area_test_clust, 
+                                 "default_prop",
+                                 sep = "_")]]
+  
+  # test default values
+  expect_equal(
+    target_prop[setdiff(names(target_prop), 
+                        c("name", "group"))], 
+    storage_values_default())
+})
 
 # "allow-overflow"
+all_params <- storage_values_default()
 test_that("Wrong type/values",{
   # value
   all_params[["allow-overflow"]] <- 0.9

@@ -259,36 +259,16 @@ createClusterST <- function(area,
   # default values associated with TS + .txt names files
   storage_value <- .default_values_st_TS(opts = opts)
   
-  ## check dim data ----
+  # allow multiple columns starting with Antares >= 9.3.0 (930)
   allow_multi <- opts$antaresVersion >= 930
-  
-  for (name in names(storage_value)) {
-    # only check if the argument was provided
-    x <- get0(name, ifnotfound = NULL, inherits = TRUE)
-    if (is.null(x)) next
-    
-    # normalize to a matrix
-    if (is.data.frame(x)) x <- as.matrix(x)
-    if (!is.matrix(x)) {
-      if (length(x) == 8760L) {
-        x <- matrix(x, nrow = 8760L, ncol = 1L)
-      } else {
-        stop(sprintf("Input data for %s must be 8760*%s",
-                     name, if (allow_multi) "N (N>=1)" else "1"),
-             call. = FALSE)
-      }
-    }
-    d <- dim(x)
-    if (d[1L] != 8760L ||
-        (!allow_multi && d[2L] != 1L) ||
-        (allow_multi && d[2L] < 1L)) {
-      stop(sprintf("Input data for %s must be 8760*%s",
-                   name, if (allow_multi) "N (N>=1)" else "1"),
-           call. = FALSE)
-    }
-    
-    #reinsert the normalized version for the write step below
-    assign(name, x, envir = environment())
+  nms <- names(storage_value)
+  # Retrieve all inputs as a named list (NULL if missing)
+  in_vals <- mget(nms, inherits = TRUE, ifnotfound = rep(list(NULL), length(nms)))
+  # Normalize only provided inputs
+  provided_norm <- normalize_ts_list(in_vals, allow_multi = allow_multi)
+  # Merge: replace only the $values field
+  for (name in names(provided_norm)) {
+    storage_value[[name]]$values <- provided_norm[[name]]
   }
   
   ## Standardize params ----
@@ -818,4 +798,43 @@ storage_values_default <- function(opts = simOptions()) {
                                 paste0("rhs_", x, ".txt")))
            })
   }
+}
+
+#' Normalize a named list of inputs to 8760×N matrices
+#'
+#' @param in_vals 
+#' @param allow_multi 
+#'
+#' @return
+normalize_ts_list <- function(in_vals, allow_multi = FALSE) {
+  out <- Map(function(x, nm) {
+    # Skip missing args
+    if (is.null(x)) return(NULL)
+    
+    # Normalize to a matrix
+    if (is.data.frame(x)) x <- as.matrix(x)
+    if (!is.matrix(x)) {
+      if (length(x) == 8760L) {
+        x <- matrix(x, nrow = 8760L, ncol = 1L)
+      } else {
+        stop(sprintf("Input data for %s must be 8760*%s",
+                     nm, if (allow_multi) "N (N>=1)" else "1"),
+             call. = FALSE)
+      }
+    }
+    
+    # Check dimensions
+    d <- dim(x)
+    if (d[1L] != 8760L ||
+        (!allow_multi && d[2L] != 1L) ||
+        (allow_multi && d[2L] < 1L)) {
+      stop(sprintf("Input data for %s must be 8760*%s",
+                   nm, if (allow_multi) "N (N>=1)" else "1"),
+           call. = FALSE)
+    }
+    x
+  }, in_vals, names(in_vals))
+  
+  # Drop NULL entries, keep names
+  out[!vapply(out, is.null, logical(1))]
 }
