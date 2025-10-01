@@ -187,23 +187,8 @@ createCluster <- function(area,
   }
   
   
-  # statics groups
-  thermal_group <- c("Gas",
-                     "Hard coal",
-                     "Lignite",
-                     "Mixed fuel",
-                     "Nuclear",
-                     "Oil",
-                     "Other",
-                     "Other 2",
-                     "Other 3",
-                     "Other 4")
-  
-  if (!is.null(group) && !tolower(group) %in% tolower(thermal_group))
-    warning(
-      "Group: '", group, "' is not a valid name recognized by Antares,",
-      " you should be using one of: ", paste(thermal_group, collapse = ", ")
-    )
+  ## check group ----
+  .check_group_thermal(group = group, opts = opts)
   
   .createCluster(
     area = area, 
@@ -220,6 +205,60 @@ createCluster <- function(area,
     opts = opts
   )
 }
+#' function to check 'group' of thermal parameter according to version study
+#' no check 'group' for version >= 9.3
+#' @noRd
+.check_group_thermal <- function(group, opts){
+  # `group` is dynamic (>=v9.2)
+  if(opts$antaresVersion<930){
+    # statics groups
+    thermal_group <- c("Gas",
+                       "Hard coal",
+                       "Lignite",
+                       "Mixed fuel",
+                       "Nuclear",
+                       "Oil",
+                       "Other",
+                       "Other 2",
+                       "Other 3",
+                       "Other 4")
+    
+    # check group
+    if (!is.null(group) && !tolower(group) %in% tolower(thermal_group))
+      stop(
+        "Group: '", group, "' is not a valid name recognized by Antares,",
+        " you should be using one of: ", paste(thermal_group, collapse = ", "), 
+        call. = FALSE
+      )
+  }
+}
+
+#' function to check 'group' of renewables parameter according to version study
+#' no check 'group' for version >= 9.3
+#' @noRd
+.check_group_renewables <- function(group, opts){
+  # `group` is dynamic (>=v9.2)
+  if(opts$antaresVersion<930){
+    # statics groups
+    renewables_group <- c("Wind Onshore",
+                          "Wind Offshore",
+                          "Solar Thermal",
+                          "Solar PV",
+                          "Solar Rooftop",
+                          "Other RES 1",
+                          "Other RES 2",
+                          "Other RES 3",
+                          "Other RES 4")
+    
+    # check group
+    if (!is.null(group) && !tolower(group) %in% tolower(renewables_group))
+      stop(
+        "Group: '", group, "' is not a valid name recognized by Antares,",
+        " you should be using one of: ", paste(renewables_group, collapse = ", "), 
+        call. = FALSE
+      )
+  }
+}
 
 #' @export
 #' 
@@ -234,20 +273,9 @@ createClusterRES <- function(area,
                              opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   check_active_RES(opts)
-  renewables_group <- c("Wind Onshore",
-                        "Wind Offshore",
-                        "Solar Thermal",
-                        "Solar PV",
-                        "Solar Rooftop",
-                        "Other RES 1",
-                        "Other RES 2",
-                        "Other RES 3",
-                        "Other RES 4")
-  if (!is.null(group) && !tolower(group) %in% tolower(renewables_group))
-    warning(
-      "Group: '", group, "' is not a valid name recognized by Antares,",
-      " you should be using one of: ", paste(renewables_group, collapse = ", ")
-    )
+  ## check group ----
+  .check_group_renewables(group = group, opts = opts)
+  
   initialize_RES(opts)
   .createCluster(
     area = area, 
@@ -581,3 +609,5 @@ transform_list_to_json_for_createCluster <- function(cluster_parameters, cluster
 
   return(toJSON(cluster_parameters, auto_unbox = TRUE))
 }
+
+
