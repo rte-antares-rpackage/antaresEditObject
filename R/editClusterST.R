@@ -200,18 +200,28 @@ editClusterST <- function(area,
   # default values associated with TS + .txt names files
   list_local_values_params <- .default_values_st_TS(opts = opts)
   
-  ## check dim data ----
-  # allow multiple columns starting with Antares >= 9.3.0 (930)
-  allow_multi <- opts$antaresVersion >= 930
-  nms <- names(list_local_values_params)
-  # Retrieve all inputs as a named list (NULL if missing)
-  in_vals <- mget(nms, inherits = TRUE, ifnotfound = rep(list(NULL), length(nms)))
-  # Normalize only provided inputs
-  provided_norm <- normalize_ts_list(in_vals, allow_multi = allow_multi)
-  # Merge: replace only the $values field
-  for (name in names(provided_norm)) {
-    list_local_values_params[[name]]$values <- provided_norm[[name]]
+  # names of the 10 inputs to validate
+  TS_names <- c(
+    "PMAX_injection", "PMAX_withdrawal", "inflows",
+    "lower_rule_curve", "upper_rule_curve",
+    "cost_injection", "cost_withdrawal", "cost_level",
+    "cost_variation_injection", "cost_variation_withdrawal"
+  )
+  
+  # grab those args from createClusterST()'s environment (NULL if not provided)
+  TS_vals <- mget(TS_names, envir = environment(), inherits = FALSE,
+                  ifnotfound = rep(list(NULL), length(TS_names)))
+  TS_vals <- Filter(Negate(is.null), TS_vals)
+  
+  
+  # class check on provided (non-NULL) ones
+  for (nm in TS_names) {
+    x <- TS_vals[[nm]]
+    if (!is.null(x)) .check_class(x)
   }
+  
+  # dimension check (only non-NULL), Antares version handled inside
+  .check_dimension(TS_vals, opts = opts)
   
   ## API block ----
   if (is_api_study(opts)) {

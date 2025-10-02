@@ -851,7 +851,14 @@ suppressWarnings(
 area_test_clust = "al" 
 createArea(name = area_test_clust)
 
-# add new parameters 
+# Add new parameters  ----
+# global var 
+list_value_930 <- c("cost-injection", 
+                    "cost-withdrawal", 
+                    "cost-level", 
+                    "cost-variation-injection", 
+                    "cost-variation-withdrawal")
+
 test_that("Default values",{
   # default call 
   createClusterST(area = area_test_clust, 
@@ -919,7 +926,7 @@ test_that("Add right values",{
     all_params)
 })
 ## New TS dimension ----
-test_that("Wrong dim TS",{
+test_that("Wrong TS dim",{
   # like 8.6, these TS are dim [8760;1]
   bad_ts <- matrix(3, 8760*2, ncol = 2)
   
@@ -938,7 +945,38 @@ test_that("Wrong dim TS",{
   )
 })
 
-test_that("Add new TS constraint", {
+test_that("Add right TS dim",{
+  good_ts <- matrix(0.7, 8760,2)
+  
+  # default with new optional TS
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "good_ts_value", 
+                  cost_injection = good_ts, 
+                  cost_withdrawal = good_ts, 
+                  cost_level = good_ts, 
+                  cost_variation_injection = good_ts,
+                  cost_variation_withdrawal = good_ts)
+  
+  # read series 
+  opts_ <- simOptions()
+  path_ts <- file.path(opts_$inputPath, 
+                       "st-storage",
+                       "series",
+                       area_test_clust,
+                       "al_good_ts_value",
+                       paste0(list_value_930, 
+                              ".txt"))
+  
+  files_series <- lapply(path_ts, 
+                         data.table::fread) 
+  
+  # test all value not equal to 0 (default)
+  values_files_series <- sapply(files_series, 
+                                sum)
+  expect_true(sum(values_files_series)>0)
+})
+
+test_that("Add new TS constraint dim", {
   # /!\ you can add ts only with properties
   
   # given

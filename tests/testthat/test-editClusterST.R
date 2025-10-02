@@ -1045,7 +1045,26 @@ suppressWarnings(
 area_test_clust = "al" 
 createArea(name = area_test_clust)
 
-# edit new properties
+## Edit new properties ----
+# wrong type/values not eccepted
+test_that("Wrong type/values",{
+  
+  # "allow-overflow" with bad type
+  all_params <- storage_values_default()
+  
+  # type
+  edit_params <- list("allow-overflow" = "area")
+  
+  expect_error(
+    editClusterST(area = area_test_clust, 
+                  cluster_name = "edit_wrong_prop", 
+                  storage_parameters = edit_params), 
+    regexp = "does not inherit from class logical"
+  )
+  
+  # NO TEST value (only TRUE/FALSE)
+})
+
 test_that("Edit right values",{
   # add new parameters 
   all_params <- list(
@@ -1102,6 +1121,149 @@ test_that("Wrong dim TS",{
     regexp = "Input data for cost_withdrawal must be 8760\\*N \\(N>=1\\)"
   )
 })
+test_that("Add right TS dim",{
+  good_ts <- matrix(0.7, 8760,3)
+  
+  # default with new optional TS
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "edit_good_ts_value")
+  
+  # edit with good dimension (only new TS)
+  editClusterST(area = area_test_clust, 
+                cluster_name = "edit_good_ts_value", 
+                cost_injection = good_ts, 
+                cost_withdrawal = good_ts, 
+                cost_level = good_ts, 
+                cost_variation_injection = good_ts,
+                cost_variation_withdrawal = good_ts)
+  
+  # read series 
+  names_files <- c("cost-injection",
+                   "cost-withdrawal",
+                   "cost-level",
+                   "cost-variation-injection",
+                   "cost-variation-withdrawal")
+  opts_ <- simOptions()
+  path_ts <- file.path(opts_$inputPath, 
+                       "st-storage",
+                       "series",
+                       area_test_clust,
+                       "al_edit_good_ts_value",
+                       paste0(names_files, 
+                              ".txt"))
+  
+  files_series <- lapply(path_ts, 
+                         data.table::fread) 
+  
+  # test all value not equal to 0 (default)
+  values_files_series <- sapply(files_series, 
+                                sum)
+  expect_true(sum(values_files_series)>0)
+})
+test_that("Edit TS which do not exist", {
+  # given
+  name_no_prefix <- "edit_create_ts"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  # when
+  good_ts <- data.table::as.data.table(matrix(0.7, 8760,2))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix, 
+                constraints_ts = constraints_ts)
+  
+  # then
+  opts_obj <- simOptions()
+  ts_names <- paste0("rhs_", 
+                     names(constraints_properties), 
+                     ".txt")
+  path_ts_files <- file.path(opts_obj$inputPath, 
+                             "st-storage", 
+                             "constraints", 
+                             area_test_clust,
+                             paste0(area_test_clust, "_",name_no_prefix),
+                             ts_names)
+  
+  ts_read <- lapply(path_ts_files, data.table::fread)
+  names(ts_read) <- names(constraints_ts)
+  
+  expect_equal(ts_read, constraints_ts, check.attributes = FALSE)
+})
+
+test_that("Edit existing TS", {
+  # given
+  name_no_prefix <- "edit_existing_ts"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  good_ts <- data.table::as.data.table(matrix(10, 8760,4))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  # when
+  good_ts <- data.table::as.data.table(matrix(0.7, 8760,4))
+  constraints_ts <- list(
+    "withdrawal-1"=good_ts,
+    "netting-1"=good_ts)
+  
+  editClusterST(area = area_test_clust, 
+                cluster_name = name_no_prefix, 
+                constraints_ts = constraints_ts)
+  
+  # then
+  opts_obj <- simOptions()
+  ts_names <- paste0("rhs_", 
+                     names(constraints_properties), 
+                     ".txt")
+  path_ts_files <- file.path(opts_obj$inputPath, 
+                             "st-storage", 
+                             "constraints", 
+                             area_test_clust,
+                             paste0(area_test_clust, "_",name_no_prefix),
+                             ts_names)
+  
+  ts_read <- lapply(path_ts_files, data.table::fread)
+  names(ts_read) <- names(constraints_ts)
+  
+  expect_equal(ts_read, constraints_ts, check.attributes = FALSE)
+})
+
 
 #Delete study
 deleteStudy()

@@ -259,17 +259,28 @@ createClusterST <- function(area,
   # default values associated with TS + .txt names files
   storage_value <- .default_values_st_TS(opts = opts)
   
-  # allow multiple columns starting with Antares >= 9.3.0 (930)
-  allow_multi <- opts$antaresVersion >= 930
-  nms <- names(storage_value)
-  # Retrieve all inputs as a named list (NULL if missing)
-  in_vals <- mget(nms, inherits = TRUE, ifnotfound = rep(list(NULL), length(nms)))
-  # Normalize only provided inputs
-  provided_norm <- normalize_ts_list(in_vals, allow_multi = allow_multi)
-  # Merge: replace only the $values field
-  for (name in names(provided_norm)) {
-    storage_value[[name]]$values <- provided_norm[[name]]
+  # names of the 10 inputs to validate
+  TS_names <- c(
+    "PMAX_injection", "PMAX_withdrawal", "inflows",
+    "lower_rule_curve", "upper_rule_curve",
+    "cost_injection", "cost_withdrawal", "cost_level",
+    "cost_variation_injection", "cost_variation_withdrawal"
+  )
+  
+  # grab those args from createClusterST()'s environment (NULL if not provided)
+  TS_vals <- mget(TS_names, envir = environment(), inherits = FALSE,
+                  ifnotfound = rep(list(NULL), length(TS_names)))
+  TS_vals <- Filter(Negate(is.null), TS_vals)
+  
+  
+  # class check on provided (non-NULL) ones
+  for (nm in TS_names) {
+    x <- TS_vals[[nm]]
+    if (!is.null(x)) .check_class(x)
   }
+  
+  # dimension check (only non-NULL), Antares version handled inside
+  .check_dimension(TS_vals, opts = opts)
   
   ## Standardize params ----
   params_cluster <- hyphenize_names(storage_parameters)
@@ -800,41 +811,40 @@ storage_values_default <- function(opts = simOptions()) {
   }
 }
 
-#' Normalize a named list of inputs to 8760×N matrices
+
+#' Check the class of the matrix
+#'
+#' @param x 
+#'
+#' @noRd
+.check_class <- function(x) {
+  if (inherits(x, c("matrix", "data.frame", "data.table"))) {
+    return(invisible(TRUE))
+  }
+  stop("L'objet doit être de classe matrix, data.frame ou data.table.", call. = FALSE)
+}
+
+
+#' Check the dimensions of the matrix
 #'
 #' @param in_vals 
 #' @param allow_multi 
 #'
-#' @return
-normalize_ts_list <- function(in_vals, allow_multi = FALSE) {
-  out <- Map(function(x, nm) {
-    # Skip missing args
-    if (is.null(x)) return(NULL)
-    
-    # Normalize to a matrix
-    if (is.data.frame(x)) x <- as.matrix(x)
-    if (!is.matrix(x)) {
-      if (length(x) == 8760L) {
-        x <- matrix(x, nrow = 8760L, ncol = 1L)
-      } else {
-        stop(sprintf("Input data for %s must be 8760*%s",
-                     nm, if (allow_multi) "N (N>=1)" else "1"),
-             call. = FALSE)
-      }
-    }
-    
-    # Check dimensions
+#' @noRd
+.check_dimension <- function(in_vals, opts) {
+  allow_multi <- isTRUE(opts$antaresVersion >= 930)
+
+  for (nm in names(in_vals)) {
+    x <- in_vals[[nm]]
+    if (is.null(x)) next
     d <- dim(x)
-    if (d[1L] != 8760L ||
-        (!allow_multi && d[2L] != 1L) ||
-        (allow_multi && d[2L] < 1L)) {
-      stop(sprintf("Input data for %s must be 8760*%s",
-                   nm, if (allow_multi) "N (N>=1)" else "1"),
-           call. = FALSE)
+    if (allow_multi) {
+      if (d[1L] != 8760L || d[2L] < 1L)
+        stop(sprintf("Input data for %s must be 8760*N (N>=1)", nm), call. = FALSE)
+    } else {
+      if (!identical(d, c(8760L, 1L)))
+        stop(sprintf("Input data for %s must be 8760*1", nm), call. = FALSE)
     }
-    x
-  }, in_vals, names(in_vals))
-  
-  # Drop NULL entries, keep names
-  out[!vapply(out, is.null, logical(1))]
+  }
+  invisible(TRUE)
 }
