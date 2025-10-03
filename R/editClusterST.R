@@ -107,7 +107,7 @@
 #'               constraints_properties = constraints_properties,
 #'               constraints_ts = constraints_ts)    
 #'
-#'' # study version >= "9.3" (new parameters)
+#' # study version >= "9.3" (new parameters)
 #'
 # edit properties
 #' my_parameters <- storage_values_default()

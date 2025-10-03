@@ -135,6 +135,25 @@ test_that("Check dimension TS input",{
   )
 })
 
+test_that("Check TS class",{
+  bad_class <- list(matrix(3, nrow = 8760, ncol = 1))
+  expect_error(
+    createClusterST(
+      area = area_test_clust, 
+      cluster_name = "wrong_ts_class", 
+      cost_injection = bad_class), 
+    regexp = "The object must be of class matrix, data\\.frame, or data\\.table"
+  )
+})
+
+
+# teste l'échec de cost_injection
+createClusterST(
+  area = "fr",
+  cluster_name = "tst4",
+  cost_injection     = bad   # <- celui qu'on veut faire échouer
+)
+
 test_that("Prefix is working?",{
   # default with prefix
   createClusterST(

@@ -11,26 +11,26 @@
 #' It corresponds to the type of stockage (**dynamic name for Antares version >= 9.2**).
 #' @param storage_parameters `list ` Parameters to write in the Ini file (see `Note`). 
 #' @param PMAX_injection Modulation of charging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1)
-#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{0;1\} (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param PMAX_withdrawal Modulation of discharging capacity on an 8760-hour basis. `numeric` \{0;1\} (8760*1)
-#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{0;1\} (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param inflows Algebraic deviation of the state of charge of the storage, which does not induce any power 
 #' generation or consumption on the system `numeric` \{<0;>0\} (8760*1)
-#' (**``numeric` \{<0;>0\} (8760*1) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**``numeric` \{<0;>0\} (8760*1) noting that N >= 1 for Antares version >= 9.3**).
 #' @param lower_rule_curve This is the lower limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1)
-#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{0;1\} (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param upper_rule_curve This is the upper limit for filling the stock imposed each hour. `numeric` \{0;1\} (8760*1)
-#' (**`numeric` \{0;1\} (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{0;1\} (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param cost_injection Penalizes the injection flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
-#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{>0\}  (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param cost_withdrawal Penalizes the withdrawal flowrate at each hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
-#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{>0\}  (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param cost_level Penalizes the volume of stored energy at each hour (&euro;/MWh) `numeric` \{<0;>0\} (8760*1)
-#' (**`numeric` \{<0;>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{<0;>0\}  (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param cost_variation_injection Penalizes injection flowrate variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
-#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{>0\}  (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param cost_variation_withdrawal Penalizes the withdrawal variation every hour (&euro;/MWh) `numeric` \{>0\} (8760*1)
-#' (**`numeric` \{>0\}  (8760*N) noting that N ≥ 1 for Antares version >= 9.3**).
+#' (**`numeric` \{>0\}  (8760*N) noting that N >= 1 for Antares version >= 9.3**).
 #' @param constraints_properties `list ` Parameters (see example)
 #' @param constraints_ts `list ` of time series (see example)
 #' @param add_prefix If `TRUE` (the default), `cluster_name` will be prefixed by area name.
@@ -821,7 +821,7 @@ storage_values_default <- function(opts = simOptions()) {
   if (inherits(x, c("matrix", "data.frame", "data.table"))) {
     return(invisible(TRUE))
   }
-  stop("L'objet doit être de classe matrix, data.frame ou data.table.", call. = FALSE)
+  stop("The object must be of class matrix, data.frame, or data.table", call. = FALSE)
 }
 
 
