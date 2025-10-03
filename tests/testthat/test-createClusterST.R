@@ -146,14 +146,6 @@ test_that("Check TS class",{
   )
 })
 
-
-# teste l'échec de cost_injection
-createClusterST(
-  area = "fr",
-  cluster_name = "tst4",
-  cost_injection     = bad   # <- celui qu'on veut faire échouer
-)
-
 test_that("Prefix is working?",{
   # default with prefix
   createClusterST(
