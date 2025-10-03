@@ -101,44 +101,54 @@ It corresponds to the type of stockage (<strong>dynamic name for Antares version
 
 
 <dt id="arg-pmax-injection">PMAX_injection<a class="anchor" aria-label="anchor" href="#arg-pmax-injection"></a></dt>
-<dd><p>Modulation of charging capacity on an 8760-hour basis. <code>numeric</code> {0;1} (8760*1).</p></dd>
+<dd><p>Modulation of charging capacity on an 8760-hour basis. <code>numeric</code> {0;1} (8760<em>1)
+(**<code>numeric</code> {0;1} (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-pmax-withdrawal">PMAX_withdrawal<a class="anchor" aria-label="anchor" href="#arg-pmax-withdrawal"></a></dt>
-<dd><p>Modulation of discharging capacity on an 8760-hour basis. <code>numeric</code> {0;1} (8760*1).</p></dd>
+<dd><p>Modulation of discharging capacity on an 8760-hour basis. <code>numeric</code> {0;1} (8760<em>1)
+(**<code>numeric</code> {0;1} (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-inflows">inflows<a class="anchor" aria-label="anchor" href="#arg-inflows"></a></dt>
 <dd><p>Algebraic deviation of the state of charge of the storage, which does not induce any power
-generation or consumption on the system <code>numeric</code> {&lt;0;&gt;0} (8760*1).</p></dd>
+generation or consumption on the system <code>numeric</code> {&lt;0;&gt;0} (8760<em>1)
+(**“numeric` {&lt;0;&gt;0} (8760</em>1) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-lower-rule-curve">lower_rule_curve<a class="anchor" aria-label="anchor" href="#arg-lower-rule-curve"></a></dt>
-<dd><p>This is the lower limit for filling the stock imposed each hour. <code>numeric</code> {0;1} (8760*1).</p></dd>
+<dd><p>This is the lower limit for filling the stock imposed each hour. <code>numeric</code> {0;1} (8760<em>1)
+(**<code>numeric</code> {0;1} (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-upper-rule-curve">upper_rule_curve<a class="anchor" aria-label="anchor" href="#arg-upper-rule-curve"></a></dt>
-<dd><p>This is the upper limit for filling the stock imposed each hour. <code>numeric</code> {0;1} (8760*1).</p></dd>
+<dd><p>This is the upper limit for filling the stock imposed each hour. <code>numeric</code> {0;1} (8760<em>1)
+(**<code>numeric</code> {0;1} (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-cost-injection">cost_injection<a class="anchor" aria-label="anchor" href="#arg-cost-injection"></a></dt>
-<dd><p>Penalizes the injection flowrate at each hour (€/MWh) <code>numeric</code> {&gt;0} (8760*1).</p></dd>
+<dd><p>Penalizes the injection flowrate at each hour (€/MWh) <code>numeric</code> {&gt;0} (8760<em>1)
+(**<code>numeric</code> {&gt;0}  (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-cost-withdrawal">cost_withdrawal<a class="anchor" aria-label="anchor" href="#arg-cost-withdrawal"></a></dt>
-<dd><p>Penalizes the withdrawal flowrate at each hour (€/MWh) <code>numeric</code> {&gt;0} (8760*1).</p></dd>
+<dd><p>Penalizes the withdrawal flowrate at each hour (€/MWh) <code>numeric</code> {&gt;0} (8760<em>1)
+(**<code>numeric</code> {&gt;0}  (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-cost-level">cost_level<a class="anchor" aria-label="anchor" href="#arg-cost-level"></a></dt>
-<dd><p>Penalizes the volume of stored energy at each hour (€/MWh) <code>numeric</code> {&lt;0;&gt;0} (8760*1).</p></dd>
+<dd><p>Penalizes the volume of stored energy at each hour (€/MWh) <code>numeric</code> {&lt;0;&gt;0} (8760<em>1)
+(**<code>numeric</code> {&lt;0;&gt;0}  (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-cost-variation-injection">cost_variation_injection<a class="anchor" aria-label="anchor" href="#arg-cost-variation-injection"></a></dt>
-<dd><p>Penalizes injection flowrate variation every hour (€/MWh) <code>numeric</code> {&gt;0} (8760*1).</p></dd>
+<dd><p>Penalizes injection flowrate variation every hour (€/MWh) <code>numeric</code> {&gt;0} (8760<em>1)
+(**<code>numeric</code> {&gt;0}  (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-cost-variation-withdrawal">cost_variation_withdrawal<a class="anchor" aria-label="anchor" href="#arg-cost-variation-withdrawal"></a></dt>
-<dd><p>Penalizes the withdrawal variation every hour (€/MWh) <code>numeric</code> {&gt;0} (8760*1).</p></dd>
+<dd><p>Penalizes the withdrawal variation every hour (€/MWh) <code>numeric</code> {&gt;0} (8760<em>1)
+(**<code>numeric</code> {&gt;0}  (8760</em>N) noting that N &gt;= 1 for Antares version &gt;= 9.3**).</p></dd>
 
 
 <dt id="arg-constraints-properties">constraints_properties<a class="anchor" aria-label="anchor" href="#arg-constraints-properties"></a></dt>
