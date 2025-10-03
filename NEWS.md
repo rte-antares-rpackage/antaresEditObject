@@ -9,7 +9,7 @@ NEW FEATURES :
 * `createClusterST()`/`editClusterST()` :  
   - **New properties** (*allow-overflow*, see list of properties according to study version of Antares with `storage_values_default()`) 
 * `createClusterST()`/`editClusterST()` :  
-  - **New dimension of time series** (all matrices will be of (8760, N), noting that N ≥ 1)
+  - **New dimension of time series** (all matrices will be of (8760, N), noting that N >= 1)
 
 # antaresEditObject 0.9.2.9000
 (cf. Antares v9.2 changelog)
