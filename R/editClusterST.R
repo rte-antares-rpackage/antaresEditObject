@@ -105,7 +105,21 @@
 #' editClusterST(area = "areaname", 
 #'               cluster_name = "clustername", 
 #'               constraints_properties = constraints_properties,
-#'               constraints_ts = constraints_ts)             
+#'               constraints_ts = constraints_ts)    
+#'
+#' # study version >= "9.3" (new parameters)
+#'
+# edit properties
+#' my_parameters <- storage_values_default()
+#' my_parameters$`allow-overflow` <- TRUE
+#' 
+#' # edit time series
+#' ratio_data <- matrix(0.7, 8760, N)
+#'
+#' editClusterST(area = "areaname", 
+#'               cluster_name = "clustername",
+#'               cost_injection = ratio_data)
+#'                        
 #' }
 #' @export
 editClusterST <- function(area,
@@ -186,12 +200,28 @@ editClusterST <- function(area,
   # default values associated with TS + .txt names files
   list_local_values_params <- .default_values_st_TS(opts = opts)
   
-  # check every ts parameter
-  for (name in names(list_local_values_params)){
-    if (!is.null(dim(get(name))))
-      if (!identical(dim(get(name)), c(8760L, 1L)))
-        stop(paste0("Input data for ", name, " must be 8760*1"))
+  # names of the 10 inputs to validate
+  TS_names <- c(
+    "PMAX_injection", "PMAX_withdrawal", "inflows",
+    "lower_rule_curve", "upper_rule_curve",
+    "cost_injection", "cost_withdrawal", "cost_level",
+    "cost_variation_injection", "cost_variation_withdrawal"
+  )
+  
+  # grab those args from createClusterST()'s environment (NULL if not provided)
+  TS_vals <- mget(TS_names, envir = environment(), inherits = FALSE,
+                  ifnotfound = rep(list(NULL), length(TS_names)))
+  TS_vals <- Filter(Negate(is.null), TS_vals)
+  
+  
+  # class check on provided (non-NULL) ones
+  for (nm in TS_names) {
+    x <- TS_vals[[nm]]
+    if (!is.null(x)) .check_class(x)
   }
+  
+  # dimension check (only non-NULL), Antares version handled inside
+  .check_dimension(TS_vals, opts = opts)
   
   ## API block ----
   if (is_api_study(opts)) {
@@ -214,7 +244,8 @@ editClusterST <- function(area,
       "enabled" = params_cluster[["enabled"]],
       "penalizeVariationInjection"= params_cluster[["penalize-variation-injection"]],
       "penalizeVariationWithdrawal"= params_cluster[["penalize-variation-withdrawal"]],
-      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]])
+      "efficiencyWithdrawal"= params_cluster[["efficiencywithdrawal"]],
+      "allowOverflow"= params_cluster[["allow-overflow"]])
     
     list_properties <- dropNulls(list_properties)
     
