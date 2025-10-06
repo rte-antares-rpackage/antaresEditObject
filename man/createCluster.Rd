@@ -22,7 +22,7 @@ createCluster(
 createClusterRES(
   area,
   cluster_name,
-  group = "Other",
+  group = default_group(opts),
   ...,
   time_series = NULL,
   add_prefix = TRUE,

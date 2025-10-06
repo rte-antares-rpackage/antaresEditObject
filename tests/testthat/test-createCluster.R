@@ -325,27 +325,6 @@ test_that("Allow thermal dynamic `group`",{
                "toto")
 })
 
-test_that("Allow thermal dynamic `group`",{
-  # default with group
-  createCluster(area = area_test_clust, 
-                cluster_name = "dynamic_grp", 
-                group = "toto")
-  
-  # read properties
-  opts_ <- simOptions()
-  st_path <- file.path("input",
-                       "thermal", 
-                       "clusters", 
-                       area_test_clust, 
-                       "list")
-  
-  st_file <- readIni(pathIni = st_path)
-  
-  # group has no restrictions
-  expect_equal(st_file[[names(st_file)]][["group"]], 
-               "toto")
-})
-
 test_that("Allow Renewables dynamic `group`",{
   # Renewables cluster
   createClusterRES(

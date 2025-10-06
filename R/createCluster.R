@@ -262,12 +262,25 @@ createCluster <- function(area,
   }
 }
 
+#' default group by version 
+#'
+#' @param opts 
+#' @noRd
+
+default_group <- function(opts) {
+  if(opts$antaresVersion<930){
+    "Other RES 1"
+  } else {
+    "Other"
+  }
+}
+
 #' @export
 #' 
 #' @rdname createCluster
 createClusterRES <- function(area, 
                              cluster_name, 
-                             group = "Other",
+                             group = default_group(opts),
                              ...,
                              time_series = NULL,
                              add_prefix = TRUE, 
