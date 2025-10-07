@@ -68,3 +68,52 @@ test_that("updateGeneralSettings() : check appearance of property custom-scenari
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
+# >= v930 ----
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "st-storage9.3", 
+              antares_version = "9.3"))
+
+test_that("Properties removed", {
+  lifecycle::expect_deprecated(
+    updateGeneralSettings(
+      refreshtimeseries = 100), 
+    regexp = "The `refreshtimeseries` argument"
+  )
+  
+  lifecycle::expect_deprecated(
+    updateGeneralSettings(refreshintervalload = 100), 
+    regexp = "The `refreshintervalload` argument"
+  )
+  
+  lifecycle::expect_deprecated(
+    updateGeneralSettings(refreshintervalhydro = 100), 
+    regexp = "The `refreshintervalhydro` argument"
+  )
+  lifecycle::expect_deprecated(
+    updateGeneralSettings(refreshintervalwind = 100), 
+    regexp = "The `refreshintervalwind` argument"
+  )
+  lifecycle::expect_deprecated(
+    updateGeneralSettings(refreshintervalthermal = 100), 
+    regexp = "The `refreshintervalthermal` argument"
+  )
+  lifecycle::expect_deprecated(
+    updateGeneralSettings(refreshintervalsolar = 100), 
+    regexp = "The `refreshintervalsolar` argument"
+  )
+  # read general parameters
+  parameters <- readIni("settings/generaldata")
+  keys <- c(
+    "refreshtimeseries",
+    "refreshintervalload",
+    "refreshintervalhydro",
+    "refreshintervalwind",
+    "refreshintervalthermal",
+    "refreshintervalsolar"
+  )
+  
+  expect_false(any(keys %in% names(parameters[["general"]])))
+})
+
+deleteStudy()

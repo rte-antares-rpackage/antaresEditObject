@@ -153,11 +153,60 @@ updateGeneralSettings <- function(mode = NULL,
     geographic.trimming = geographic.trimming,
     thematic.trimming = thematic.trimming
   )
-  
   new_params <- dropNulls(x = new_params)
   new_params <- lapply(X = new_params, FUN = .format_ini_rhs)
   names(new_params) <- sapply(names(new_params), dicoGeneralSettings, USE.NAMES = FALSE)  
-  
+  # >= 9.3.0 : do not write these parameters in generaldata.ini
+  if (opts[["antaresVersion"]] >= 930) {
+    if (!is.null(refreshtimeseries)) {
+      lifecycle::deprecate_warn(
+        when = "9.3",
+        what = "antaresEditObject::updateGeneralSettings(refreshtimeseries)",
+        details = "This parameter is no longer supported for Antares >= 9.3; the value will be ignored and not written to generaldata.ini"
+      )
+      new_params$refreshtimeseries <- NULL
+    }
+    if (!is.null(refreshintervalload)) {
+      lifecycle::deprecate_warn(
+        when = "9.3",
+        what = "antaresEditObject::updateGeneralSettings(refreshintervalload)",
+        details = "This parameter is no longer supported for Antares >= 9.3; the value will be ignored and not written to generaldata.ini"
+      )
+      new_params$refreshintervalload<- NULL
+    }
+    if (!is.null(refreshintervalhydro)) {
+      lifecycle::deprecate_warn(
+        when = "9.3",
+        what = "antaresEditObject::updateGeneralSettings(refreshintervalhydro)",
+        details = "This parameter is no longer supported for Antares >= 9.3; the value will be ignored and not written to generaldata.ini"
+      )
+      new_params$refreshintervalhydro <- NULL
+    }
+    if (!is.null(refreshintervalwind)) {
+      lifecycle::deprecate_warn(
+        when = "9.3",
+        what = "antaresEditObject::updateGeneralSettings(refreshintervalwind)",
+        details = "This parameter is no longer supported for Antares >= 9.3; the value will be ignored and not written to generaldata.ini"
+      )
+      new_params$refreshintervalwind <- NULL
+    }
+    if (!is.null(refreshintervalthermal)) {
+      lifecycle::deprecate_warn(
+        when = "9.3",
+        what = "antaresEditObject::updateGeneralSettings(refreshintervalthermal)",
+        details = "This parameter is no longer supported for Antares >= 9.3; the value will be ignored and not written to generaldata.ini"
+      )
+      new_params$refreshintervalthermal <- NULL
+    }
+    if (!is.null(refreshintervalsolar)) {
+      lifecycle::deprecate_warn(
+        when = "9.3",
+        what = "antaresEditObject::updateGeneralSettings(refreshintervalsolar)",
+        details = "This parameter is no longer supported for Antares >= 9.3; the value will be ignored and not written to generaldata.ini"
+      )
+      new_params$refreshintervalsolar <- NULL
+    }
+  }
   res <- update_generaldata_by_section(opts = opts, section = "general", new_params = new_params)
   
   invisible(res)
