@@ -126,6 +126,15 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
       
       # add new section and initiate with value "daily" to keep legacy behavior
       gen_data_file <- readIni("settings/generaldata")
+      # >= 9.3.0 : do not write these parameters in generaldata.ini
+      if ( antares_version >=9.3) {
+        gen_data_file$general[["refreshtimeseries"]] <- NULL
+        gen_data_file$general[["refreshintervalload"]] <- NULL
+        gen_data_file$general[["refreshintervalhydro"]] <- NULL
+        gen_data_file$general[["refreshintervalwind"]] <- NULL
+        gen_data_file$general[["refreshintervalthermal"]] <- NULL
+        gen_data_file$general[["refreshintervalsolar"]] <- NULL
+      }
       new_section <- list(
         "compatibility" = list("hydro-pmax" = "daily"))
       gen_data_file <- append(gen_data_file, new_section)

@@ -135,6 +135,17 @@ test_that("Check dimension TS input",{
   )
 })
 
+test_that("Check TS class",{
+  bad_class <- list(matrix(3, nrow = 8760, ncol = 1))
+  expect_error(
+    createClusterST(
+      area = area_test_clust, 
+      cluster_name = "wrong_ts_class", 
+      cost_injection = bad_class), 
+    regexp = "The object must be of class matrix, data\\.frame, or data\\.table"
+  )
+})
+
 test_that("Prefix is working?",{
   # default with prefix
   createClusterST(
@@ -841,8 +852,215 @@ test_that("Add new TS constraint", {
 deleteStudy()
 
 
+# >=9.3 ---- 
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "st-storage9.3", 
+              antares_version = "9.3"))
 
+# default area with st cluster
+area_test_clust = "al" 
+createArea(name = area_test_clust)
 
+# Add new parameters  ----
+# global var 
+list_value_930 <- c("cost-injection", 
+                    "cost-withdrawal", 
+                    "cost-level", 
+                    "cost-variation-injection", 
+                    "cost-variation-withdrawal")
 
+test_that("Default values",{
+  # default call 
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "default_prop")
+  
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "clusters", 
+                           area_test_clust,
+                           "list")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_prop <- read_ini[[paste(area_test_clust, 
+                                 "default_prop",
+                                 sep = "_")]]
+  
+  # test default values
+  expect_equal(
+    target_prop[setdiff(names(target_prop), 
+                        c("name", "group"))], 
+    storage_values_default())
+})
 
+# "allow-overflow"
+all_params <- storage_values_default()
+test_that("Wrong type/values",{
+  # value
+  all_params[["allow-overflow"]] <- 0.9
+  
+  expect_error(
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "err", 
+                    storage_parameters = all_params), 
+    regexp = "does not inherit from class logical"
+  )
+})
 
+test_that("Add right values",{
+  # add new parameters 
+  all_params <- storage_values_default()
+  all_params[["allow-overflow"]] <- TRUE
+  
+  # default with new parameters 
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "new_properties", 
+                  storage_parameters = all_params)
+  
+  # read prop
+  path_st_ini <- file.path("input", 
+                           "st-storage", 
+                           "clusters", 
+                           area_test_clust,
+                           "list")
+  
+  read_ini <- antaresRead::readIni(path_st_ini)
+  target_prop <- read_ini[[paste(area_test_clust, 
+                                 "new_properties",
+                                 sep = "_")]]
+  
+  # test params created if identical with .ini read 
+  expect_equal(
+    target_prop[setdiff(names(target_prop), 
+                        c("name", "group"))], 
+    all_params)
+})
+## New TS dimension ----
+test_that("Wrong TS dim",{
+  # like 8.6, these TS are dim [8760;1]
+  bad_ts <- matrix(3, 8760*2, ncol = 2)
+  
+  # default with bad TS (just test 2 param)
+  expect_error(
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "wrong_ts_dimRR", 
+                    cost_injection = bad_ts), 
+    regexp = "Input data for cost_injection must be 8760\\*N \\(N>=1\\)"
+  )
+  expect_error(
+    createClusterST(area = area_test_clust, 
+                    cluster_name = "wrong_ts_dim", 
+                    cost_withdrawal = bad_ts), 
+    regexp = "Input data for cost_withdrawal must be 8760\\*N \\(N>=1\\)"
+  )
+})
+
+test_that("Add right TS dim",{
+  good_ts <- matrix(0.7, 8760,2)
+  
+  # default with new optional TS
+  createClusterST(area = area_test_clust, 
+                  cluster_name = "good_ts_value", 
+                  cost_injection = good_ts, 
+                  cost_withdrawal = good_ts, 
+                  cost_level = good_ts, 
+                  cost_variation_injection = good_ts,
+                  cost_variation_withdrawal = good_ts)
+  
+  # read series 
+  opts_ <- simOptions()
+  path_ts <- file.path(opts_$inputPath, 
+                       "st-storage",
+                       "series",
+                       area_test_clust,
+                       "al_good_ts_value",
+                       paste0(list_value_930, 
+                              ".txt"))
+  
+  files_series <- lapply(path_ts, 
+                         data.table::fread) 
+  
+  # test all value not equal to 0 (default)
+  values_files_series <- sapply(files_series, 
+                                sum)
+  expect_true(sum(values_files_series)>0)
+})
+
+test_that("Add new TS constraint dim", {
+  # /!\ you can add ts only with properties
+  
+  # given
+  name_no_prefix <- "add_ts"
+  
+  constraints_properties <- list(
+    "withdrawal-2"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-2"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  good_ts <- matrix(0.7, 8760,3)
+  constraints_ts <- list(
+    "withdrawal-2"=good_ts,
+    "netting-2"=good_ts)
+  
+  # when
+  createClusterST(area = area_test_clust, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties, 
+                  constraints_ts = constraints_ts)
+  
+  # read ts
+  opts_ <- simOptions()
+  ts_path <- file.path(opts_$inputPath, 
+                       "st-storage", 
+                       "constraints", 
+                       area_test_clust,
+                       paste0(area_test_clust, "_",name_no_prefix),
+                       paste0("rhs_", names(constraints_ts), ".txt"))
+  
+  # exist ?
+  expect_true(all(
+    file.exists(ts_path)
+  ))
+  
+  dim <- lapply(ts_path, function(x) {
+    file_ts <- data.table::fread(input = x)
+    dim(file_ts)
+  })
+  
+  # All files must have the same dimensions
+  expect_equal(dim[[1]], dim[[2]])
+  # Each file must have exactly 8760 rows
+  expect_equal(dim[[1]][1], 8760)
+ # Each file must have at least 1 column (N >= 1)
+  expect_gte(dim[[1]][2], 1)
+  
+  
+  test_that("Ovewrite TS not permiss", {
+    expect_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties, 
+                      constraints_ts = constraints_ts)
+    )
+  })
+  
+  test_that("Ovewrite permiss", {
+    expect_no_error(
+      createClusterST(area = area_test_clust, 
+                      cluster_name = name_no_prefix, 
+                      constraints_properties = constraints_properties, 
+                      overwrite = TRUE)
+    )
+  })
+})
+
+deleteStudy()

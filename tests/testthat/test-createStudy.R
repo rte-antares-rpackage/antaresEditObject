@@ -1,6 +1,33 @@
 #Copyright © 2019 RTE Réseau de transport d’électricité
 
 # create ----
+## V9.3----
+test_that("Init v9.3 version study", {
+  path <- file.path(tempdir(), "tests_v930")
+  suppressWarnings(
+    opts <- createStudy(path, antares_version = "9.3")
+  )
+  properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
+  
+  # version
+  expect_identical(properties$antares$version, 9.3)
+  
+  # test new values in generaldata
+  prop_gen <- readIni("settings/generaldata")
+  
+  keys <- c(
+    "refreshtimeseries",
+    "refreshintervalload",
+    "refreshintervalhydro",
+    "refreshintervalwind",
+    "refreshintervalthermal",
+    "refreshintervalsolar"
+  )
+  
+  expect_false(any(keys %in% names(prop_gen[["general"]])))
+  
+  unlink(path, recursive = TRUE)
+})
 
   ## V9.2----
 test_that("Init v9.2 version study", {
