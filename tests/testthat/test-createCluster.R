@@ -348,4 +348,39 @@ test_that("Allow Renewables dynamic `group`",{
                "toto")
 })
 
+test_that("default group of the version 930", {
+  #Version 930
+  createClusterRES(
+    area = area_test_clust,
+    cluster_name = "res_default_v930"
+  )
+  
+  st_path <- file.path("input", "renewables", "clusters", area_test_clust, "list")
+  st_file <- readIni(pathIni = st_path)
+  expect_equal(st_file[["al_res_default_v930"]][["group"]], "Other")
+ 
+})
+deleteStudy()
+
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "Thermal_Res_9.2", 
+              antares_version = "9.2"))
+
+# default area with st cluster
+area_test_clust = "al" 
+createArea(name = area_test_clust)
+
+test_that("default group of the version 920", {
+  #Version 920
+  createClusterRES(
+    area = area_test_clust,
+    cluster_name = "res_default_v920"
+  )
+  
+  st_path <- file.path("input", "renewables", "clusters", area_test_clust, "list")
+  st_file <- readIni(pathIni = st_path)
+  expect_equal(st_file[["al_res_default_v920"]][["group"]], "Other RES 1")
+})
+
 deleteStudy()

@@ -11,7 +11,7 @@
 #'  - thermal cluster, one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2, Other 3, 
 #'  Other 4(**dynamic name for Antares version >= 9.3**).
 #'  - renewable cluster, one of: Wind Onshore, Wind Offshore, Solar Thermal, Solar PV, Solar Rooftop, Other RES 1, Other RES 2, Other RES 3, 
-#'  Other RES 4(**dynamic name for Antares version >= 9.3**).
+#'  Other RES 4(**dynamic name for Antares version >= 9.3. Default group by version: Other RES 1 if <930, Other if >=930**).
 #' @param ... Parameters to write in the Ini file. Careful!
 #'  Some parameters must be set as `integers` to avoid warnings in Antares, for example, 
 #'  to set `unitcount`, you'll have to use `unitcount = 1L`.
