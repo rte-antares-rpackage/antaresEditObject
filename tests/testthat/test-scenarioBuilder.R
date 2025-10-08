@@ -691,4 +691,40 @@ test_that("Add new 'hfl' equivalent to 'hl'", {
   expect_equal(my_coef, values_newSB_hfl)
 })
 
+# v930----
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "scenariobuilder9.3", 
+              antares_version = "9.3"))
+
+
+
+# default area with st cluster
+area_test = "al" 
+lapply(area_test, createArea)
+
+
+test_that("Add new 'sts' equivalent to 'sct apports'", {
+  # nb coeff equivalent to nb areas
+  createClusterST(area = area_test, 
+                  cluster_name = "default_prop")
+  
+  opts <- simOptions()
+  
+  # one constraint => nb areas must be equal to nb coeff
+  ldata <- scenarioBuilder(
+    n_scenario = 10,
+    n_mc = 10,
+    areas = area_test
+  )
+  
+  updateScenarioBuilder(ldata = ldata,
+                        series = "sts")
+  
+  newSB <- readScenarioBuilder(as_matrix = FALSE)
+  expect_true("sts" %in% names(newSB))
+  
+  values_newSB_sts <- unique(unlist(newSB[["sts"]], use.names = FALSE))
+
+})
 deleteStudy()
