@@ -292,3 +292,95 @@ test_that("transform_list_to_json_for_createCluster() : body is in an expected f
   expect_true(inherits(x = body, what = "json"))
   expect_equal(sort(names(jsonlite::fromJSON(body))), c("enabled", "group", "lawForced", "unitCount"))
 })
+
+# v930 ----
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "Thermal_Res_9.3", 
+              antares_version = "9.3"))
+
+# default area with st cluster
+area_test_clust = "al" 
+createArea(name = area_test_clust)
+
+# TEST dynamic groups ----
+test_that("Allow thermal dynamic `group`",{
+  # default with group
+  createCluster(area = area_test_clust, 
+                  cluster_name = "dynamic_grp", 
+                  group = "toto")
+  
+  # read properties
+  opts_ <- simOptions()
+  st_path <- file.path("input",
+                       "thermal", 
+                       "clusters", 
+                       area_test_clust, 
+                       "list")
+  
+  st_file <- readIni(pathIni = st_path)
+  
+  # group has no restrictions
+  expect_equal(st_file[[names(st_file)]][["group"]], 
+               "toto")
+})
+
+test_that("Allow Renewables dynamic `group`",{
+  # Renewables cluster
+  createClusterRES(
+    area = area_test_clust,
+    cluster_name = "dynamic_grp_res",
+    group = "toto"
+  )
+  
+  # read properties
+  opts_ <- simOptions()
+  st_path <- file.path("input",
+                       "renewables", 
+                       "clusters", 
+                       area_test_clust, 
+                       "list")
+  
+  st_file <- readIni(pathIni = st_path)
+  
+  # group has no restrictions
+  expect_equal(st_file[[names(st_file)]][["group"]], 
+               "toto")
+})
+
+test_that("default group of the version 930", {
+  #Version 930
+  createClusterRES(
+    area = area_test_clust,
+    cluster_name = "res_default_v930"
+  )
+  
+  st_path <- file.path("input", "renewables", "clusters", area_test_clust, "list")
+  st_file <- readIni(pathIni = st_path)
+  expect_equal(st_file[["al_res_default_v930"]][["group"]], "Other")
+ 
+})
+deleteStudy()
+
+suppressWarnings(
+  createStudy(path = tempdir(), 
+              study_name = "Thermal_Res_9.2", 
+              antares_version = "9.2"))
+
+# default area with st cluster
+area_test_clust = "al" 
+createArea(name = area_test_clust)
+
+test_that("default group of the version 920", {
+  #Version 920
+  createClusterRES(
+    area = area_test_clust,
+    cluster_name = "res_default_v920"
+  )
+  
+  st_path <- file.path("input", "renewables", "clusters", area_test_clust, "list")
+  st_file <- readIni(pathIni = st_path)
+  expect_equal(st_file[["al_res_default_v920"]][["group"]], "Other RES 1")
+})
+
+deleteStudy()
