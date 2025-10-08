@@ -74,7 +74,7 @@ Create a new thermal or RES (renewable energy source) cluster."><meta name="robo
 <span><span class="fu">createClusterRES</span><span class="op">(</span></span>
 <span>  <span class="va">area</span>,</span>
 <span>  <span class="va">cluster_name</span>,</span>
-<span>  group <span class="op">=</span> <span class="st">"Other RES 1"</span>,</span>
+<span>  group <span class="op">=</span> <span class="fu">default_group</span><span class="op">(</span><span class="va">opts</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  time_series <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_prefix <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -96,8 +96,10 @@ Create a new thermal or RES (renewable energy source) cluster."><meta name="robo
 
 
 <dt id="arg-group">group<a class="anchor" aria-label="anchor" href="#arg-group"></a></dt>
-<dd><p>Group of the cluster, depends on cluster type:</p><ul><li><p>thermal cluster, one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2, Other 3, Other 4.</p></li>
-<li><p>renewable cluster, one of: Wind Onshore, Wind Offshore, Solar Thermal, Solar PV, Solar Rooftop, Other RES 1, Other RES 2, Other RES 3, Other RES 4.</p></li>
+<dd><p>Group of the cluster, depends on cluster type:</p><ul><li><p>thermal cluster, one of: Gas, Hard coal, Lignite, Mixed fuel, Nuclear, Oil, Other, Other 2, Other 3,
+Other 4(<strong>dynamic name for Antares version &gt;= 9.3</strong>).</p></li>
+<li><p>renewable cluster, one of: Wind Onshore, Wind Offshore, Solar Thermal, Solar PV, Solar Rooftop, Other RES 1, Other RES 2, Other RES 3,
+Other RES 4(<strong>dynamic name for Antares version &gt;= 9.3. Default group by version: Other RES 1 if &lt;930, Other if &gt;=930</strong>).</p></li>
 </ul></dd>
 
 
