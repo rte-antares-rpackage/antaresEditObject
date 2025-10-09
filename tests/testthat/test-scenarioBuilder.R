@@ -743,4 +743,43 @@ test_that("Add new 'hfl' to scenariobuilder of sts", {
   expect_true("sts" %in% names(newSB))
   
 })
+
+
+test_that("Add new 'sta'equivalent to 'sct contraintes'", {
+  
+  name_no_prefix <- "add_constraints"
+  
+  constraints_properties <- list(
+    "withdrawal-1"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,3,5]", 
+                "[120,121,122,123,124,125,126,127,128]")
+    ),
+    "netting-1"=list(
+      variable = "netting",
+      operator = "less",
+      hours = c("[1, 168]")
+    ))
+  
+  # creat cluster
+  createClusterST(area = area_test, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+
+  ldata <- scenarioBuilder(
+    n_scenario = 5,
+    n_mc = 5,
+    areas = area_test
+  )
+  
+  updateScenarioBuilder(ldata = ldata,
+                        series = "sta")
+  
+  newSB <- readScenarioBuilder(as_matrix = FALSE)
+  expect_true("sta" %in% names(newSB))
+  
+})
+
+
 deleteStudy()
