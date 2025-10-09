@@ -262,9 +262,9 @@ scenarioBuilder <- function(n_scenario = 1,
 #' @export
 create_scb_referential_series_type <- function(){
   
-  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc", "hfl")
+  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc", "hfl","sts")
   choices <- c("load", "hydro", "wind", "solar", "thermal", "renewables", 
-               "ntc", "hydrolevels", "binding", "hydro final level")
+               "ntc", "hydrolevels", "binding", "hydro final level", "sct apports")
   
   # Check data consistency
   len_series_to_write <- length(series_to_write)  
@@ -476,6 +476,9 @@ updateScenarioBuilder <- function(ldata,
       if (isTRUE("hfl" %in% series) & isTRUE(opts$antaresVersion < 920))
         stop("updateScenarioBuilder: cannot use series='hfl' with Antares < 9.2", 
              call. = FALSE)
+      if (isTRUE("sts" %in% series) & isTRUE(opts$antaresVersion < 930))
+        stop("updateScenarioBuilder: cannot use series='sts' with Antares < 9.3", 
+             call. = FALSE)
       series <- ref_series[ref_series$choices %in% choices & ref_series$type == "w", "series"]
     } else {
       stop("If 'ldata' isn't a named list, you must specify which serie(s) to use!", call. = FALSE)
@@ -502,6 +505,9 @@ updateScenarioBuilder <- function(ldata,
            call. = FALSE)
     if (isTRUE("hfl" %in% series) & isTRUE(opts$antaresVersion < 920))
       stop("updateScenarioBuilder: cannot use series='hfl' with Antares < 9.2", 
+           call. = FALSE)
+    if (isTRUE("sts" %in% series) & isTRUE(opts$antaresVersion < 930))
+      stop("updateScenarioBuilder: cannot use series='sts' with Antares < 9.3", 
            call. = FALSE)
     sbuild <- lapply(
       X = series,
@@ -673,10 +679,23 @@ listify_sb <- function(mat,
     )
   }
   
+  # Sts
+  if (identical(series, "sts")) {
+    if (is.null(clusters_areas))
+      clusters_areas <- readClusterSTDesc(opts = opts)
+    dtsb <- merge(
+      x = dtsb, 
+      y = clusters_areas[, .SD, .SDcols = c("area", "cluster")],
+      by.x = "rn",
+      by.y = "area", 
+      allow.cartesian = TRUE
+    )
+  }
+  
   dtsb <- dtsb[order(rn, variable)]
   
   lsb <- as.list(as.character(dtsb$value))
-  if (series %in% c("r", "t")) {
+  if (series %in% c("r", "t","sts")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
   } else if (series %in% c("ntc")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$to, dtsb$variable, sep = ",")
