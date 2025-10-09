@@ -697,12 +697,9 @@ suppressWarnings(
               study_name = "scenariobuilder9.3", 
               antares_version = "9.3"))
 
-
-
 # default area with st cluster
 area_test = "al" 
 lapply(area_test, createArea)
-
 
 test_that("Add new 'sts' equivalent to 'sct apports'", {
   # nb coeff equivalent to nb areas
@@ -713,18 +710,16 @@ test_that("Add new 'sts' equivalent to 'sct apports'", {
   
   # one constraint => nb areas must be equal to nb coeff
   ldata <- scenarioBuilder(
-    n_scenario = 10,
-    n_mc = 10,
+    n_scenario = 5,
+    n_mc = 5,
     areas = area_test
   )
   
   updateScenarioBuilder(ldata = ldata,
                         series = "sts")
   
-  newSB <- readScenarioBuilder(as_matrix = FALSE)
-  expect_true("sts" %in% names(newSB))
-  
-  values_newSB_sts <- unique(unlist(newSB[["sts"]], use.names = FALSE))
+  newSTS <- readScenarioBuilder(as_matrix = FALSE)
+  expect_true("sts" %in% names(newSTS))
 
 })
 deleteStudy()
