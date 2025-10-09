@@ -702,13 +702,9 @@ area_test = "al"
 lapply(area_test, createArea)
 
 test_that("Add new 'sts' equivalent to 'sct apports'", {
-  # nb coeff equivalent to nb areas
   createClusterST(area = area_test, 
                   cluster_name = "default_prop")
-  
   opts <- simOptions()
-  
-  # one constraint => nb areas must be equal to nb coeff
   ldata <- scenarioBuilder(
     n_scenario = 5,
     n_mc = 5,
@@ -721,5 +717,30 @@ test_that("Add new 'sts' equivalent to 'sct apports'", {
   newSTS <- readScenarioBuilder(as_matrix = FALSE)
   expect_true("sts" %in% names(newSTS))
 
+})
+
+test_that("Add new 'hfl' to scenariobuilder of sts", {
+
+  # hfl
+  # nb coeff equivalent to nb areas
+  my_coef <- runif(length(getAreas()))
+  
+  opts <- simOptions()
+  
+  # one constraint => nb areas must be equal to nb coeff
+  ldata <- scenarioBuilder(
+    n_scenario = 10,
+    n_mc = 10,
+    areas = area_test,
+    coef_hydro_levels = my_coef
+  )
+  
+  updateScenarioBuilder(ldata = ldata,
+                        series = "hfl")
+  
+  newSB <- readScenarioBuilder(as_matrix = FALSE)
+  expect_true("hfl" %in% names(newSB))
+  expect_true("sts" %in% names(newSB))
+  
 })
 deleteStudy()
