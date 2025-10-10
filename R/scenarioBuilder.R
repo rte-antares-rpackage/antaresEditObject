@@ -1,3 +1,4 @@
+utils::globalVariables(c('full_path','cluster_name'))
 #' @title Read, create, update & deduplicate scenario builder
 #' 
 #' @description 
@@ -609,8 +610,7 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
 #' @param opts Simulation options.
 #'
 #' @importFrom data.table as.data.table melt := .SD
-#' @importFrom antaresRead readClusterDesc getLinks
-#' @importFrom antaresRead readClusterSTDesc getLinks
+#' @importFrom antaresRead readClusterDesc getLinks readClusterSTDesc
 #' @importFrom utils packageVersion getFromNamespace
 #' @noRd
 listify_sb <- function(mat,
