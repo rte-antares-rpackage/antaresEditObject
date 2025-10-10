@@ -610,6 +610,7 @@ clearScenarioBuilder <- function(ruleset = "Default Ruleset",
 #'
 #' @importFrom data.table as.data.table melt := .SD
 #' @importFrom antaresRead readClusterDesc getLinks
+#' @importFrom antaresRead readClusterSTDesc getLinks
 #' @importFrom utils packageVersion getFromNamespace
 #' @noRd
 listify_sb <- function(mat,
