@@ -808,7 +808,6 @@ test_that("Add another'sta'to an existing one", {
   
   newSB <- readScenarioBuilder(as_matrix = FALSE)
   expect_true("sta" %in% names(newSB))
-  
 })
 
 deleteStudy()
