@@ -781,5 +781,34 @@ test_that("Add new 'sta'equivalent to 'sct contraintes'", {
   
 })
 
+test_that("Add another'sta'to an existing one", {
+  
+  name_no_prefix <- "second_constraints"
+  
+  constraints_properties <- list(
+    "test"=list(
+      variable = "withdrawal",
+      operator = "equal",
+      hours = c("[1,50,20]")
+    ))
+  
+  # creat cluster
+  createClusterST(area = area_test, 
+                  cluster_name = name_no_prefix, 
+                  constraints_properties = constraints_properties)
+  
+  ldata <- scenarioBuilder(
+    n_scenario = 3,
+    n_mc = 3,
+    areas = area_test
+  )
+  
+  updateScenarioBuilder(ldata = ldata,
+                        series = "sta")
+  
+  newSB <- readScenarioBuilder(as_matrix = FALSE)
+  expect_true("sta" %in% names(newSB))
+  
+})
 
 deleteStudy()
