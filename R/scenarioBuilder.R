@@ -696,55 +696,65 @@ listify_sb <- function(mat,
   # Sta
   if (identical(series, "sta")) {
     if (is.null(clusters_areas)){
-      # Root folder that contains /<area>/<cluster>/additional_constraints/*.ini
-      path <- file.path(opts$inputPath, "st-storage", "constraints")
+      if (is_api_study(opts = opts)){
+        table_type <- "st-storages-additional-constraints"
       
-      # List all files under the root (both full paths and relative paths)
-      current_files <- data.table(
-        full_path    = list.files(path, recursive = TRUE, full.names = TRUE),
-        content_path = list.files(path, recursive = TRUE)
-      )
-      
-      # Split the relative path into parts: area / cluster / file
-      parts <- tstrsplit(current_files$content_path, "/", fixed = TRUE)
-      df_structured <- data.table(
-        full_path    = current_files$full_path,
-        area         = parts[[1]],
-        cluster_name = parts[[2]],
-        file         = parts[[3]]
-      )
-      
-      # Group by area for easier traversal (optional, just for structure)
-      df_by_area <- split(df_structured, df_structured$area)
-      
-      # Extract constraint names from .ini files (section names)
-      list_constraints <- lapply(names(df_by_area), function(area_name) {
-        df <- df_by_area[[area_name]]
-        
-        # Keep only .ini files inside additional_constraints folders
-        df_ini <- df[grepl("\\.ini$", file, ignore.case = TRUE)]
-        if (nrow(df_ini) == 0) return(NULL)
-        
-        clusters <- unique(df_ini$cluster_name)
-        
-        do.call(rbind, lapply(clusters, function(cl) {
-          ini_paths <- df_ini[cluster_name == cl, full_path]
-          if (!length(ini_paths)) return(NULL)
+        body_json <- api_get(
+          opts = opts,
+          endpoint = paste0(opts$study_id, "/table-mode/", table_type),
+          query = list(columns = "")
+        )
+        cluster_constraints=build_st_constraints_names_df(body_json)
+        }else{
+          # Root folder that contains /<area>/<cluster>/additional_constraints/*.ini
+          path <- file.path(opts$inputPath, "st-storage", "constraints")
           
-          # A cluster can have one or multiple .ini files
-          constraint_names <- unlist(lapply(ini_paths, function(p) names(readIniFile(p))))
-          if (!length(constraint_names)) return(NULL)
-          
-          data.table(
-            area       = area_name,
-            cluster    = cl,
-            constraint = constraint_names
+          # List all files under the root (both full paths and relative paths)
+          current_files <- data.table(
+            full_path    = list.files(path, recursive = TRUE, full.names = TRUE),
+            content_path = list.files(path, recursive = TRUE)
           )
-        }))
-      })
-      # Final result: one row per constraint
-      cluster_constraints <- rbindlist(list_constraints, use.names = TRUE, fill = TRUE)
-      
+          
+          # Split the relative path into parts: area / cluster / file
+          parts <- tstrsplit(current_files$content_path, "/", fixed = TRUE)
+          df_structured <- data.table(
+            full_path    = current_files$full_path,
+            area         = parts[[1]],
+            cluster_name = parts[[2]],
+            file         = parts[[3]]
+          )
+          
+          # Group by area for easier traversal (optional, just for structure)
+          df_by_area <- split(df_structured, df_structured$area)
+          
+          # Extract constraint names from .ini files (section names)
+          list_constraints <- lapply(names(df_by_area), function(area_name) {
+            df <- df_by_area[[area_name]]
+            
+            # Keep only .ini files inside additional_constraints folders
+            df_ini <- df[grepl("\\.ini$", file, ignore.case = TRUE)]
+            if (nrow(df_ini) == 0) return(NULL)
+            
+            clusters <- unique(df_ini$cluster_name)
+            
+            do.call(rbind, lapply(clusters, function(cl) {
+              ini_paths <- df_ini[cluster_name == cl, full_path]
+              if (!length(ini_paths)) return(NULL)
+              
+              # A cluster can have one or multiple .ini files
+              constraint_names <- unlist(lapply(ini_paths, function(p) names(readIniFile(p))))
+              if (!length(constraint_names)) return(NULL)
+              
+              data.table(
+                area       = area_name,
+                cluster    = cl,
+                constraint = constraint_names
+              )
+            }))
+          })
+          # Final result: one row per constraint
+          cluster_constraints <- rbindlist(list_constraints, use.names = TRUE, fill = TRUE)
+        }
     }
       
     dtsb <- merge(
@@ -840,3 +850,30 @@ deduplicateScenarioBuilder <- function(ruleset = "Default Ruleset",
   writeIni(listData = newSB, pathIni = pathSB, overwrite = TRUE, default_ext = ".dat")
   cat("\u2713", "Scenario Builder deduplicated\n")
 }
+
+# Returns 'y' if 'x' is NULL, otherwise returns 'x'
+`%||%` <- function(x, y) if (is.null(x)) y else x
+#' Returns the name of the additional constraint
+#'
+#' @param body_json 
+#' @noRd
+build_st_constraints_names_df <- function(body_json) {
+  keys <- names(body_json)
+  if (is.null(keys) || length(keys) == 0) {
+    return(data.frame(
+      area = character(),
+      cluster = character(),
+      constraint = character(),
+      stringsAsFactors = FALSE
+    ))
+  }
+  
+  parts <- strsplit(keys, " / ", fixed = TRUE)
+  
+  area <-   vapply(parts, function(p) trimws(if (length(p) >= 1) p[1] else NA_character_), character(1))
+  cluster <- vapply(parts, function(p) trimws(if (length(p) >= 2) p[2] else NA_character_), character(1))
+  constraint <- vapply(parts, function(p) trimws(if (length(p) >= 3) p[3] else NA_character_), character(1))
+  
+  unique(data.table(area = area, cluster = cluster, constraint = constraint))
+}
+
