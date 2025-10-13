@@ -13,7 +13,7 @@ NEW FEATURES :
   - **Suppression of properties** (refreshtimeseries,refreshintervalload, refreshintervalhydro, refreshintervalwind, refreshintervalthermal, refreshintervalsolar from settings/generaldata.ini)
 * `createCluster()` :   
  - **Dynamic groups** (The group parameter is now dynamic and has no restrictions. The default group value for Renewable depends on the version: Other RES 1 if < 930, Other if >= 930).
-* `updateScenarioBuilder()` New type of series "sts" ("sct apports level") is available
+* `updateScenarioBuilder()` New types of series "sts" and "sta" ("sct apports level" and "sct contraintes") is available
 
 # antaresEditObject 0.9.2.9000
 (cf. Antares v9.2 changelog)

@@ -1,3 +1,4 @@
+utils::globalVariables(c('full_path','cluster_name'))
 #' @title Read, create, update & deduplicate scenario builder
 #' 
 #' @description 
@@ -262,9 +263,9 @@ scenarioBuilder <- function(n_scenario = 1,
 #' @export
 create_scb_referential_series_type <- function(){
   
-  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc", "hfl","sts")
+  series_to_write <- c("l", "h", "w", "s", "t", "r", "ntc", "hl", "bc", "hfl","sts","sta")
   choices <- c("load", "hydro", "wind", "solar", "thermal", "renewables", 
-               "ntc", "hydrolevels", "binding", "hydro final level", "sct apports")
+               "ntc", "hydrolevels", "binding", "hydro final level", "sct apports", "sct contraintes")
   
   # Check data consistency
   len_series_to_write <- length(series_to_write)  
@@ -476,7 +477,7 @@ updateScenarioBuilder <- function(ldata,
       if (isTRUE("hfl" %in% series) & isTRUE(opts$antaresVersion < 920))
         stop("updateScenarioBuilder: cannot use series='hfl' with Antares < 9.2", 
              call. = FALSE)
-      if (isTRUE("sts" %in% series) & isTRUE(opts$antaresVersion < 930))
+      if (any(series %in% c("sts", "sta")) & isTRUE(opts$antaresVersion < 930))
         stop("updateScenarioBuilder: cannot use series='sts' with Antares < 9.3", 
              call. = FALSE)
       series <- ref_series[ref_series$choices %in% choices & ref_series$type == "w", "series"]
@@ -506,7 +507,7 @@ updateScenarioBuilder <- function(ldata,
     if (isTRUE("hfl" %in% series) & isTRUE(opts$antaresVersion < 920))
       stop("updateScenarioBuilder: cannot use series='hfl' with Antares < 9.2", 
            call. = FALSE)
-    if (isTRUE("sts" %in% series) & isTRUE(opts$antaresVersion < 930))
+    if (any(series %in% c("sts", "sta")) & isTRUE(opts$antaresVersion < 930))
       stop("updateScenarioBuilder: cannot use series='sts' with Antares < 9.3", 
            call. = FALSE)
     sbuild <- lapply(
@@ -692,6 +693,68 @@ listify_sb <- function(mat,
     )
   }
   
+  # Sta
+  if (identical(series, "sta")) {
+    if (is.null(clusters_areas)){
+      # Root folder that contains /<area>/<cluster>/additional_constraints/*.ini
+      path <- file.path(opts$inputPath, "st-storage", "constraints")
+      
+      # List all files under the root (both full paths and relative paths)
+      current_files <- data.table(
+        full_path    = list.files(path, recursive = TRUE, full.names = TRUE),
+        content_path = list.files(path, recursive = TRUE)
+      )
+      
+      # Split the relative path into parts: area / cluster / file
+      parts <- tstrsplit(current_files$content_path, "/", fixed = TRUE)
+      df_structured <- data.table(
+        full_path    = current_files$full_path,
+        area         = parts[[1]],
+        cluster_name = parts[[2]],
+        file         = parts[[3]]
+      )
+      
+      # Group by area for easier traversal (optional, just for structure)
+      df_by_area <- split(df_structured, df_structured$area)
+      
+      # Extract constraint names from .ini files (section names)
+      list_constraints <- lapply(names(df_by_area), function(area_name) {
+        df <- df_by_area[[area_name]]
+        
+        # Keep only .ini files inside additional_constraints folders
+        df_ini <- df[grepl("\\.ini$", file, ignore.case = TRUE)]
+        if (nrow(df_ini) == 0) return(NULL)
+        
+        clusters <- unique(df_ini$cluster_name)
+        
+        do.call(rbind, lapply(clusters, function(cl) {
+          ini_paths <- df_ini[cluster_name == cl, full_path]
+          if (!length(ini_paths)) return(NULL)
+          
+          # A cluster can have one or multiple .ini files
+          constraint_names <- unlist(lapply(ini_paths, function(p) names(readIniFile(p))))
+          if (!length(constraint_names)) return(NULL)
+          
+          data.table(
+            area       = area_name,
+            cluster    = cl,
+            constraint = constraint_names
+          )
+        }))
+      })
+      # Final result: one row per constraint
+      cluster_constraints <- rbindlist(list_constraints, use.names = TRUE, fill = TRUE)
+      
+    }
+      
+    dtsb <- merge(
+      x = dtsb, 
+      y = cluster_constraints[, .SD, .SDcols = c("area", "cluster", "constraint")],
+      by.x = "rn",
+      by.y = "area", 
+      allow.cartesian = TRUE
+    )
+  }
   dtsb <- dtsb[order(rn, variable)]
   
   lsb <- as.list(as.character(dtsb$value))
@@ -699,6 +762,8 @@ listify_sb <- function(mat,
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster, sep = ",")
   } else if (series %in% c("ntc")) {
     names(lsb) <- paste(series, dtsb$rn, dtsb$to, dtsb$variable, sep = ",")
+  }else if (series %in% c("sta")) {
+    names(lsb) <- paste(series, dtsb$rn, dtsb$variable, dtsb$cluster,dtsb$constraint, sep = ",")
   } else {
     names(lsb) <- paste(series, dtsb$rn, dtsb$variable, sep = ",")
   }
