@@ -147,7 +147,7 @@ Read, create, update &amp;amp; deduplicate scenario builder."><meta name="robots
 <dt id="arg-ldata">ldata<a class="anchor" aria-label="anchor" href="#arg-ldata"></a></dt>
 <dd><p>A <code>matrix</code> obtained with <code>scenarioBuilder</code>,
 or a named list of matrices obtained with <code>scenarioBuilder</code>, names must be
-'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc' or 'hfl', depending on the series to update.</p></dd>
+'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc', 'hfl', 'sts' or 'sta', depending on the series to update.</p></dd>
 
 
 <dt id="arg-series">series<a class="anchor" aria-label="anchor" href="#arg-series"></a></dt>
@@ -187,6 +187,8 @@ Default is to read existing links and update them all.</p></dd>
 <li><p>t or thermal</p></li>
 <li><p>w or wind</p></li>
 <li><p>hfl or hydro final level</p></li>
+<li><p>sts or sct apports</p></li>
+<li><p>sta or sct contraintes</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -273,6 +275,9 @@ Default is to read existing links and update them all.</p></dd>
 <span class="r-in"><span>  h <span class="op">=</span> <span class="va">hydro_sb</span>,</span></span>
 <span class="r-in"><span>  s <span class="op">=</span> <span class="va">solar_sb</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># for binding constraints (study version &gt;= 9.3.0)</span></span></span>
+<span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"sts"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">updateScenarioBuilder</span><span class="op">(</span>ldata <span class="op">=</span> <span class="va">sbuilder</span>, series <span class="op">=</span> <span class="st">"sta"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Deduplicate scenario builder</span></span></span>
 <span class="r-in"><span></span></span>
