@@ -105,6 +105,9 @@ utils::globalVariables(c('full_path','cluster_name'))
 #'   h = hydro_sb,
 #'   s = solar_sb
 #' ))
+#' # for binding constraints (study version >= 9.3.0)
+#' updateScenarioBuilder(ldata = sbuilder, series = "sts")
+#' updateScenarioBuilder(ldata = sbuilder, series = "sta")
 #' 
 #' # Deduplicate scenario builder
 #' 
@@ -417,7 +420,7 @@ extract_el <- function(l, indice) {
 
 #' @param ldata A `matrix` obtained with `scenarioBuilder`, 
 #'  or a named list of matrices obtained with `scenarioBuilder`, names must be 
-#'  'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc' or 'hfl', depending on the series to update.
+#'  'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc', 'hfl', 'sts' or 'sta', depending on the series to update.
 #' @param series Name(s) of the serie(s) to update if `ldata` is a single `matrix`.
 #' @param clusters_areas A `data.table` with two columns `area` and `cluster`
 #'  to identify area/cluster couple to update for thermal or renewable series.
@@ -443,6 +446,8 @@ extract_el <- function(l, indice) {
 #'  - t or thermal
 #'  - w or wind
 #'  - hfl or hydro final level
+#'  - sts or sct apports
+#'  - sta or sct contraintes
 #' 
 #' @export
 #' 
