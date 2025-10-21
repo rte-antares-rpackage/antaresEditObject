@@ -72,7 +72,7 @@ deduplicateScenarioBuilder(
 
 \item{ldata}{A \code{matrix} obtained with \code{scenarioBuilder},
 or a named list of matrices obtained with \code{scenarioBuilder}, names must be
-'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc' or 'hfl', depending on the series to update.}
+'l', 'h', 'w', 's', 't', 'r', 'ntc', 'hl', 'bc', 'hfl', 'sts' or 'sta', depending on the series to update.}
 
 \item{series}{Name(s) of the serie(s) to update if \code{ldata} is a single \code{matrix}.}
 
@@ -113,6 +113,8 @@ For a single matrix, value of series can be :
 \item t or thermal
 \item w or wind
 \item hfl or hydro final level
+\item sts or sct apports
+\item sta or sct contraintes
 }
 }
 \examples{
@@ -194,6 +196,9 @@ updateScenarioBuilder(ldata = list(
   h = hydro_sb,
   s = solar_sb
 ))
+# for binding constraints (study version >= 9.3.0)
+updateScenarioBuilder(ldata = sbuilder, series = "sts")
+updateScenarioBuilder(ldata = sbuilder, series = "sta")
 
 # Deduplicate scenario builder
 
