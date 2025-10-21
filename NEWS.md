@@ -15,6 +15,11 @@ NEW FEATURES :
  - **Dynamic groups** (The group parameter is now dynamic and has no restrictions. The default group value for Renewable depends on the version: Other RES 1 if < 930, Other if >= 930).
 * `updateScenarioBuilder()` New types of series "sts" and "sta" ("sct apports level" and "sct contraintes") is available
 
+BUGFIXES :    
+
+* `createBindingConstraint()` do not allow to create a binding constraint if a cluster referenced in a coefficient does not exist.
+
+
 # antaresEditObject 0.9.2.9000
 (cf. Antares v9.2 changelog)
 
