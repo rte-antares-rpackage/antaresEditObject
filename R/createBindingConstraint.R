@@ -866,8 +866,11 @@ switch_to_list_name_operator_870 <- function(operator) {
 
 .check_bc_validity_coefficients <- function(coefficients, reference, type) {
   
+  type_elements <- list("links" = list("stop_msg" = "link(s)", "pattern" = "%"),
+                        "thermal" = list("stop_msg" = "cluster(s)", "pattern" = "\\.")
+                       )
+  
   if (type == "links") {
-    pattern_coefficientsToControl <- "%"
     reference <- as.character(reference)
     reference <- gsub(pattern = " - ", replacement = "%", x = reference)
     
@@ -882,21 +885,17 @@ switch_to_list_name_operator_870 <- function(operator) {
       resLinks[[i]] <- paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
     }
     reference <- c(reference, as.character(resLinks))
-    pattern_stop_msg <- "link(s)"
   } else if (type == "thermal") {
-    pattern_coefficientsToControl <- "\\."
-    reference <- reference[,c("area", "cluster")]
     reference <- paste0(reference$area, ".", reference$cluster)
-    pattern_stop_msg <- "cluster(s)"
   }
   
-  coefficientsToControl <- coefficients[grep(pattern_coefficientsToControl, names(coefficients))]
+  coefficientsToControl <- coefficients[grep(type_elements[[type]][["pattern"]], names(coefficients))]
   
   if(length(coefficientsToControl) > 0) {
     if (!all(names(coefficientsToControl) %in% reference)) {
       badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% reference]
       badcoef <- paste(shQuote(badcoef), collapse = ", ")
-      stop(paste0(badcoef, " : is or are not valid ", pattern_stop_msg))
+      stop(paste0(badcoef, " : is or are not valid ", type_elements[[type]][["stop_msg"]]))
     }
   }
 }
