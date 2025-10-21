@@ -113,7 +113,6 @@ createDistrict <- function(name,
 }
 
 
-
 #' @title Remove a district
 #'
 #' @param name District's name.
@@ -146,23 +145,26 @@ removeDistrict <- function(name, opts = simOptions()) {
                default_endpoint = "v1/studies"
                )
     
-    cli_alert_success("Endpoint {.emph {'Delete district'}} {.emph 
-                           {.strong {name}}} success")
-                           
-    return(update_api_opts(opts))
+    cli_alert_success("Endpoint {.emph {'Delete district'}} {.emph {.strong {name}}} success")
+    
+    return(update_api_opts(opts = opts))
   }
   
   inputPath <- opts[["inputPath"]]
   assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  # Read previous sets
   sets_path <- file.path(inputPath, "areas", "sets.ini")
   prev_params <- readIniFile(file = sets_path)
-  if (name %in% names(prev_params)) {
-    prev_params[[name]] <- NULL
+  
+  existing_districts <- names(prev_params)
+  idx_match <- grep(pattern = paste0("^",name,"$"), x = existing_districts, ignore.case = TRUE)
+  
+  if (length(idx_match) == 1) {
+    district_to_delete <- existing_districts[idx_match]
+    prev_params[[district_to_delete]] <- NULL
     writeIni(listData = prev_params, pathIni = sets_path, overwrite = TRUE)
   } else {
-    warning("No district was removed. Please provide the exact name of the district.")
+    warning("No district was removed.")
   }
   
   suppressWarnings({
