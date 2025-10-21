@@ -743,6 +743,7 @@ createBindingConstraintBulk <- function(constraints,
                                         opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
+  assertthat::assert_that(isFALSE(is_api_study(opts = opts)), msg = "createBindingConstraintBulk() is not available in API mode.")
   
   if(opts[["antaresVersion"]] >= 870) {
     # check matrix dimension
