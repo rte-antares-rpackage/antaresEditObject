@@ -16,13 +16,56 @@ test_that("editBindingConstraint v710", {
   data_hourly <- matrix(data = rep(15, 8760 * 3), ncol = 3)
   data_daily <- matrix(data = rep(15, 365 * 3), ncol = 3)
   
+  expect_error(
+    editBindingConstraint(name = bc_names[1], 
+                          values = data_hourly, 
+                          timeStep = "hourly",
+                          operator = "less", 
+                          coefficients = list("a%c"= 1.75, # not a link
+                                              "b%psp out"= 2,
+                                              "a%a_offshore"= "2%-5"
+                                              ),
+                          opts = simOptions()
+    )
+    , regexp = "not valid link"
+  )
+
+  expect_error(
+    editBindingConstraint(name = bc_names[1], 
+                          values = data_hourly, 
+                          timeStep = "hourly",
+                          operator = "less", 
+                          coefficients = list("a.ccgt_old"= 1.75, # not a cluster
+                                              "b.nuclear"= 2, # not a cluster
+                                              "a.base"= "2%-5"
+                                              ),
+                          opts = simOptions()
+    )
+    , regexp = "not valid cluster"
+  )
+  
+  # Links are controlled first
+  expect_error(
+    editBindingConstraint(name = bc_names[1],
+                          values = data_hourly,
+                          timeStep = "hourly", 
+                          operator = "less",
+                          coefficients = list("a%c"= 1.75, # not a link
+                                              "b.nuclear"= 2, # not a cluster
+                                              "a.base"= "2%-5"
+                                              ),
+                          opts = simOptions()
+    )
+    , regexp = "not valid link"
+  )
+  
   editBindingConstraint(name = bc_names[1], 
                         values = data_hourly, 
                         timeStep = "hourly",
                         operator = "less", 
                         coefficients = list("b%psp in"= 1.75,
-                                         "b%psp out"= 2,
-                                         "a%a_offshore"= "2%-5"),
+                                            "b%psp out"= 2,
+                                            "a%a_offshore"= "2%-5"),
                         opts = simOptions())
   
   bc_modified <- antaresRead::readBindingConstraints()
@@ -67,7 +110,7 @@ scenar_values_daily <- list(lt= lt_data,
                              eq= eq_data)
 
 ## default group ----
-test_that("editBindingConstraint paramater one by one", {
+test_that("editBindingConstraint parameter one by one", {
   
   name_bc <- "bc_minimal"
   createBindingConstraint(name = name_bc)
