@@ -15,7 +15,7 @@ editBindingConstraint(
   filter_synthesis = NULL,
   coefficients = NULL,
   group = NULL,
-  opts = antaresRead::simOptions()
+  opts = simOptions()
 )
 }
 \arguments{

@@ -16,7 +16,7 @@ createBindingConstraint(
   coefficients = NULL,
   group = NULL,
   overwrite = FALSE,
-  opts = antaresRead::simOptions()
+  opts = simOptions()
 )
 }
 \arguments{
