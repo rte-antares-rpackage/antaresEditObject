@@ -18,6 +18,7 @@ NEW FEATURES :
 BUGFIXES :    
 
 * `createBindingConstraint()` do not allow to create a binding constraint if a cluster referenced in a coefficient does not exist.
+* `editBindingConstraint()` do not allow to edit a binding constraint if a cluster referenced in a coefficient does not exist.
 
 
 # antaresEditObject 0.9.2.9000
