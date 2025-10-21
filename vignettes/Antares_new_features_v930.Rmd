@@ -310,6 +310,43 @@ updateScenarioBuilder(ldata = ldata,
 readScenarioBuilder(as_matrix = FALSE) #true
 ```
 
+## Thematic
+
+In settings/generaldata.ini, in section variables selection, the following variables were removed:
+
+- *variables selection/NUCLEAR*
+- *variables selection/LIGNITE*
+- *variables selection/COAL*
+- *variables selection/BATTERY*
+- *variables selection/GAS*
+- *variables selection/OIL*
+- *variables selection/MIX. FUEL*
+- *variables selection/MISC. DTG*
+- *variables selection/MISC. DTG 2*
+- *variables selection/MISC. DTG 3*
+- *variables selection/MISC. DTG 4*
+They're replaced by the dynamic variable DISPATCH. GEN.
+
+The following variables were removed:
+
+- *variables selection/WIND OFFSHORE*
+- *variables selection/WIND ONSHORE*
+- *variables selection/SOLAR CONCRT.*
+- *variables selection/SOLAR PV*
+- *variables selection/SOLAR ROOFT*
+- *variables selection/RENW. 1*
+- *variables selection/RENW. 2*
+- *variables selection/RENW. 3*
+- *variables selection/RENW. 4*
+They're replaced by the dynamic variable RENEWABLE GEN.
+
+```{r}
+#List of variables version >=9.3
+vector_select_vars= list_thematic_variables()
+#Add all variables
+list_thematic=setThematicTrimming(selection_variables = vector_select_vars$col_name[68:72])
+```
+
 
 ```{r delete study, include=FALSE}
 # Delete study
