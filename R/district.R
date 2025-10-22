@@ -212,6 +212,7 @@ transform_list_to_json_for_district_parameters <- function(district_parameters) 
 #' @param arg A name from a list of parameters
 #'
 #' @return The corresponding endpoint input.
+#' @noRd
 rename_district_parameters_for_endpoint <- function(arg) {
   
   if (length(arg) > 1) { 

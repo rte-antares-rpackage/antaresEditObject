@@ -13,7 +13,7 @@ createDistrict(
   remove_area = NULL,
   output = FALSE,
   overwrite = FALSE,
-  opts = antaresRead::simOptions()
+  opts = simOptions()
 )
 }
 \arguments{
@@ -51,4 +51,7 @@ createDistrict(
   remove_area = c("fr", "be")
 )
 }
+}
+\seealso{
+\code{\link[=removeDistrict]{removeDistrict()}}
 }
