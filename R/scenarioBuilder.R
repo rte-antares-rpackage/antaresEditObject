@@ -167,10 +167,10 @@ scenarioBuilder <- function(n_scenario = 1,
 }
 
 # Private function of scenarioBuilder()
-  # <v870 paradigm 
+# <v870 paradigm 
 .manage_parameter <- function(..., opts){
   args <- list(...)
-    
+  
   # automatic parameter management 
   if (is.null(args$areas)) {
     args$areas <- antaresRead::getAreas(opts = opts)
@@ -217,7 +217,7 @@ scenarioBuilder <- function(n_scenario = 1,
 }
 
 # Private function of scenarioBuilder()
-  # >=v870 paradigm 
+# >=v870 paradigm 
 .manage_parameter_bc <- function(..., opts){
   args <- list(...)
   
@@ -226,7 +226,7 @@ scenarioBuilder <- function(n_scenario = 1,
     args$group_bc <- readBindingConstraints(opts = opts)
     args$group_bc <- sapply(group_bc, function(x){
       x$properties$group
-      })
+    })
   }
   else 
     group_bc <- unique(c(args$group_bc, args$group_bc_rand))
@@ -281,7 +281,7 @@ create_scb_referential_series_type <- function(){
   ref_series <- data.frame("series" = c(series_to_write, choices),
                            "choices" = rep(choices, 2),
                            "type" = c(rep("w",len_series_to_write), rep("r",len_choices))
-                          )
+  )
   return(ref_series)
 }
 
@@ -299,7 +299,7 @@ create_scb_referential_series_type <- function(){
 readScenarioBuilder <- function(ruleset = "Default Ruleset",
                                 as_matrix = TRUE,
                                 opts = antaresRead::simOptions()) {
-assertthat::assert_that(inherits(opts, "simOptions"))
+  assertthat::assert_that(inherits(opts, "simOptions"))
   
   # read existing scenariobuilder.dat
   if (is_api_study(opts)) {
@@ -325,7 +325,7 @@ assertthat::assert_that(inherits(opts, "simOptions"))
   }
   if (is.null(sb))
     return(list())
- 
+  
   types <- extract_el(sb, 1)
   sbt <- split(x = sb, f = types)
   if (is_active_RES(opts)) {
@@ -352,7 +352,7 @@ assertthat::assert_that(inherits(opts, "simOptions"))
             years = as.numeric(years) + 1,
             values = unlist(x, use.names = FALSE)
           )
-   
+          
           SB <- dcast(data = SB, 
                       formula = group ~ years, 
                       value.var = "values")
@@ -363,13 +363,15 @@ assertthat::assert_that(inherits(opts, "simOptions"))
           x
       }else{
         areas <- extract_el(x, 2)
-        if (type %in% c("t", "r")) {
+        if (type %in% c("t", "r","sts")) {
           clusters <- extract_el(x, 4)
           areas <- paste(areas, clusters, sep = "_")
           # all_areas <- areas # for the moment
           if (type == "t") {
             clusdesc <- readClusterDesc(opts = opts)
-          } else {
+          }else if (type == "sts") {
+            clusdesc <- readClusterSTDesc(opts = opts)
+          }else {
             if (packageVersion("antaresRead") < "2.2.8")
               stop("You need to install a more recent version of antaresRead (>2.2.8)", call. = FALSE)
             if (!exists("readClusterResDesc", where = "package:antaresRead", mode = "function"))
@@ -378,7 +380,23 @@ assertthat::assert_that(inherits(opts, "simOptions"))
             clusdesc <- read_cluster_res_desc(opts = opts)
           }
           all_areas <- paste(clusdesc$area, clusdesc$cluster, sep = "_")
-        } else {
+          }else if (type == "sta") {
+            if (is_api_study(opts)) {
+              body_json <- api_get(
+                opts = opts,
+                endpoint = paste0(opts$study_id, "/table-mode/st-storages-additional-constraints"),
+                query = list(columns = "")
+              )
+              clusdesc <- build_st_constraints_names_df(body_json)   # <- fourni plus bas
+            } else {
+              clusdesc <- read_constraints_name_disc(opts = opts)    # <- version filesystem
+            }
+            
+            constraints <- extract_el(x, 5)
+            clusters    <- extract_el(x, 4)
+            areas       <- paste(areas, clusters, constraints, sep = "_")
+            all_areas   <- paste(clusdesc$area, clusdesc$cluster, clusdesc$constraint, sep = "_")
+          } else {
           all_areas <- getAreas(opts = opts)
         }
         if (type %in% c("ntc")) {
@@ -406,7 +424,7 @@ assertthat::assert_that(inherits(opts, "simOptions"))
           x
         }
       }
-    
+      
     }
   )
 }
@@ -703,65 +721,20 @@ listify_sb <- function(mat,
     if (is.null(clusters_areas)){
       if (is_api_study(opts = opts)){
         table_type <- "st-storages-additional-constraints"
-      
+        
         body_json <- api_get(
           opts = opts,
           endpoint = paste0(opts$study_id, "/table-mode/", table_type),
           query = list(columns = "")
         )
         cluster_constraints=build_st_constraints_names_df(body_json)
-        }else{
-          # Root folder that contains /<area>/<cluster>/additional_constraints/*.ini
-          path <- file.path(opts$inputPath, "st-storage", "constraints")
-          
-          # List all files under the root (both full paths and relative paths)
-          current_files <- data.table(
-            full_path    = list.files(path, recursive = TRUE, full.names = TRUE),
-            content_path = list.files(path, recursive = TRUE)
-          )
-          
-          # Split the relative path into parts: area / cluster / file
-          parts <- tstrsplit(current_files$content_path, "/", fixed = TRUE)
-          df_structured <- data.table(
-            full_path    = current_files$full_path,
-            area         = parts[[1]],
-            cluster_name = parts[[2]],
-            file         = parts[[3]]
-          )
-          
-          # Group by area for easier traversal (optional, just for structure)
-          df_by_area <- split(df_structured, df_structured$area)
-          
-          # Extract constraint names from .ini files (section names)
-          list_constraints <- lapply(names(df_by_area), function(area_name) {
-            df <- df_by_area[[area_name]]
-            
-            # Keep only .ini files inside additional_constraints folders
-            df_ini <- df[grepl("\\.ini$", file, ignore.case = TRUE)]
-            if (nrow(df_ini) == 0) return(NULL)
-            
-            clusters <- unique(df_ini$cluster_name)
-            
-            do.call(rbind, lapply(clusters, function(cl) {
-              ini_paths <- df_ini[cluster_name == cl, full_path]
-              if (!length(ini_paths)) return(NULL)
-              
-              # A cluster can have one or multiple .ini files
-              constraint_names <- unlist(lapply(ini_paths, function(p) names(readIniFile(p))))
-              if (!length(constraint_names)) return(NULL)
-              
-              data.table(
-                area       = area_name,
-                cluster    = cl,
-                constraint = constraint_names
-              )
-            }))
-          })
-          # Final result: one row per constraint
-          cluster_constraints <- rbindlist(list_constraints, use.names = TRUE, fill = TRUE)
-        }
+      }else{
+        cluster_constraints <-read_constraints_name_disc(opts = opts)
+      }
     }
-      
+    
+    cluster_constraints=unique(cluster_constraints)
+    dtsb=unique(dtsb)
     dtsb <- merge(
       x = dtsb, 
       y = cluster_constraints[, .SD, .SDcols = c("area", "cluster", "constraint")],
@@ -882,3 +855,58 @@ build_st_constraints_names_df <- function(body_json) {
   unique(data.table(area = area, cluster = cluster, constraint = constraint))
 }
 
+#' Read constraint names in disc mode
+#'
+#' @param  
+#' @noRd
+read_constraints_name_disc <- function(opts= antaresRead::simOptions()){
+  # Root folder that contains /<area>/<cluster>/additional_constraints/*.ini
+  path <- file.path(opts$inputPath, "st-storage", "constraints")
+  
+  # List all files under the root (both full paths and relative paths)
+  current_files <- data.table(
+    full_path    = list.files(path, recursive = TRUE, full.names = TRUE),
+    content_path = list.files(path, recursive = TRUE)
+  )
+  
+  # Split the relative path into parts: area / cluster / file
+  parts <- tstrsplit(current_files$content_path, "/", fixed = TRUE)
+  df_structured <- data.table(
+    full_path    = current_files$full_path,
+    area         = parts[[1]],
+    cluster_name = parts[[2]],
+    file         = parts[[3]]
+  )
+  
+  # Group by area for easier traversal (optional, just for structure)
+  df_by_area <- split(df_structured, df_structured$area)
+  
+  # Extract constraint names from .ini files (section names)
+  list_constraints <- lapply(names(df_by_area), function(area_name) {
+    df <- df_by_area[[area_name]]
+    
+    # Keep only .ini files inside additional_constraints folders
+    df_ini <- df[grepl("\\.ini$", file, ignore.case = TRUE)]
+    if (nrow(df_ini) == 0) return(NULL)
+    
+    clusters <- unique(df_ini$cluster_name)
+    
+    do.call(rbind, lapply(clusters, function(cl) {
+      ini_paths <- df_ini[cluster_name == cl, full_path]
+      if (!length(ini_paths)) return(NULL)
+      
+      # A cluster can have one or multiple .ini files
+      constraint_names <- unlist(lapply(ini_paths, function(p) names(readIniFile(p))))
+      if (!length(constraint_names)) return(NULL)
+      
+      data.table(
+        area       = area_name,
+        cluster    = cl,
+        constraint = constraint_names
+      )
+    }))
+  })
+  # Final result: one row per constraint
+  cluster_constraints <- rbindlist(list_constraints, use.names = TRUE, fill = TRUE)
+  return(cluster_constraints)
+}
