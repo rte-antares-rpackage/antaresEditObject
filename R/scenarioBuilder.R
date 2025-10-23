@@ -387,9 +387,9 @@ readScenarioBuilder <- function(ruleset = "Default Ruleset",
                 endpoint = paste0(opts$study_id, "/table-mode/st-storages-additional-constraints"),
                 query = list(columns = "")
               )
-              clusdesc <- build_st_constraints_names_df(body_json)   # <- fourni plus bas
+              clusdesc <- build_st_constraints_names_df(body_json)  
             } else {
-              clusdesc <- read_constraints_name_disc(opts = opts)    # <- version filesystem
+              clusdesc <- read_constraints_name_disc(opts = opts) 
             }
             
             constraints <- extract_el(x, 5)
