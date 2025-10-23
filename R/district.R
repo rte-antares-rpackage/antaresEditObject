@@ -12,7 +12,7 @@
 #' @param output Logical, compute the results for the district or not?
 #' @param overwrite Logical, should the district be overwritten if already exist?
 #' 
-#' @seealso [removeDistrict()]
+#' @seealso [editDistrict()], [removeDistrict()]
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom antaresRead simOptions setSimulationPath getDistricts getAreas api_post
@@ -79,12 +79,12 @@ createDistrict <- function(name,
   
   # API block
   if (is_api_study(opts = opts)) {
-    # caption is an extra input and not permitted by the endpoint
-    new_district[["caption"]] <- NULL
     new_district[["name"]] <- name
+    
     if (with_add_area) {
       new_district[["areas"]] <- add_area
     }
+    
     if (with_remove_area) {
       new_district[["areas"]] <- remove_area
     }
@@ -133,11 +133,99 @@ createDistrict <- function(name,
 }
 
 
+#' @title Edit a district in an Antares study
+#'
+#' @inheritParams createDistrict
+#'
+#' @template opts
+#' 
+#' @seealso [createDistrict()], [removeDistrict()]
+#'
+#' @importFrom antaresRead simOptions getDistricts getAreas api_put
+#' @importFrom assertthat assert_that
+#' @importFrom cli cli_alert_success
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' editDistrict(
+#'   name = "my_existing_district",
+#'   comments = "This is my district",
+#'   add_area = c("area1", "area3", "area5"),
+#'   opts = simOptions()
+#' )
+#' }
+editDistrict <- function(name, 
+                         caption = NULL, 
+                         comments = NULL,
+                         apply_filter = NULL,
+                         add_area = NULL, 
+                         remove_area = NULL,
+                         output = NULL, 
+                         opts = simOptions()) {
+  
+  assert_that(inherits(opts, "simOptions"))
+  assert_that(tolower(name) %in% getDistricts(opts = opts), msg = paste0("No district ", name, " in the study."))
+  
+  with_add_area <- !is.null(add_area)
+  with_remove_area <- !is.null(remove_area)
+  all_areas <- getAreas(opts = opts)
+  
+  if (with_add_area & with_remove_area) {
+    assert_that(xor(with_add_area, with_remove_area), msg = "You can not use 'add_area' and 'remove_area' at the same time")
+  }
+  if (with_add_area) {
+    assert_that(length(setdiff(add_area, all_areas)) == 0, msg = "Invalid area in 'add_area'")
+  }
+  if (with_remove_area) {
+    assert_that(length(setdiff(remove_area, all_areas)) == 0, msg = "Invalid area in 'remove_area'")
+  }
+  if (!is.null(output)) {
+    assert_that(inherits(output, "logical"))
+  }
+  if (!is.null(apply_filter)) {
+    assert_that(apply_filter %in% c("none", "add-all", "remove-all"), msg = "apply_filter is not an allowed value")
+  }
+  
+  new_district <- list(
+    "caption" = caption,
+    "comments" = comments,
+    "apply-filter" = apply_filter,
+    "output" = output
+  )
+  
+  if (is_api_study(opts = opts)) {
+    
+    if (with_add_area) {
+      new_district[["areas"]] <- add_area
+    }
+    
+    if (with_remove_area) {
+      new_district[["areas"]] <- remove_area
+    }
+    
+    body <- transform_list_to_json_for_district_parameters(district_parameters = new_district)
+    
+    result <- api_put(opts = opts,
+                      endpoint = file.path(opts[["study_id"]], "districts", tolower(name)),
+                      default_endpoint = "v1/studies",
+                      body = body
+                      )
+    
+    cli_alert_success("Endpoint edit {.emph {.strong district}} {.emph {.strong {name}}} success") 
+    
+    return(update_api_opts(opts = opts))
+  }
+  
+}
+
+
 #' @title Remove a district
 #'
 #' @param name District's name.
 #'
-#' @seealso [createDistrict()]
+#' @seealso [createDistrict()], [editDistrict()]
 #'
 #' @template opts
 #'
@@ -200,6 +288,8 @@ removeDistrict <- function(name, opts = simOptions()) {
 transform_list_to_json_for_district_parameters <- function(district_parameters) {
 
   assert_that(inherits(x = district_parameters, what = "list"))
+  # caption is an extra input and not permitted by the endpoint
+  district_parameters[["caption"]] <- NULL
   district_parameters <- dropNulls(district_parameters)
   names(district_parameters) <- sapply(names(district_parameters), rename_district_parameters_for_endpoint, USE.NAMES = FALSE) 
   
@@ -219,9 +309,9 @@ rename_district_parameters_for_endpoint <- function(arg) {
     stop("'arg' must be length one")
   }
   
-  antares_params <- as.list(c("name", "comments", "output", "apply_filter", "areas"))
+  antares_params <- as.list(c("name", "caption", "comments", "output", "apply_filter", "areas"))
   
-  names(antares_params) <- c("name", "comments", "output", "apply-filter", "areas")
+  names(antares_params) <- c("name", "caption", "comments", "output", "apply-filter", "areas")
   
   antares_params[[arg]]
 }
