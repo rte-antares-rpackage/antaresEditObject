@@ -54,7 +54,9 @@ createDistrict <- function(name,
   with_remove_area <- !is.null(remove_area)
   all_areas <- getAreas(opts = opts)
   
-  assert_that(xor(with_add_area, with_remove_area), msg = "You can not use 'add_area' and 'remove_area' at the same time")
+  if (with_add_area & with_remove_area) {
+    stop("You can not use 'add_area' and 'remove_area' at the same time")
+  }
   if (with_add_area) {
     assert_that(length(setdiff(add_area, all_areas)) == 0, msg = "Invalid area in 'add_area'")
     assert_that(apply_filter %in% c("remove-all", "none"), msg = "You have to use 'add_area' with 'apply_filter' set to remove-all")
@@ -173,7 +175,7 @@ editDistrict <- function(name,
   all_areas <- getAreas(opts = opts)
   
   if (with_add_area & with_remove_area) {
-    assert_that(xor(with_add_area, with_remove_area), msg = "You can not use 'add_area' and 'remove_area' at the same time")
+    stop("You can not use 'add_area' and 'remove_area' at the same time")
   }
   if (with_add_area) {
     assert_that(length(setdiff(add_area, all_areas)) == 0, msg = "Invalid area in 'add_area'")
