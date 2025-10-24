@@ -70,8 +70,32 @@ sapply(studies, function(study) {
       remove_area = areas
     )
     
+    createDistrict(
+      name = "MyDistrict2", 
+      apply_filter = "remove-all", 
+      add_area = areas,
+      output = TRUE
+    )
+    
     expect_true("mydistrict" %in% antaresRead::getDistricts())
-  })
+    expect_true("mydistrict2" %in% antaresRead::getDistricts())
+    
+    sets <- readIniFile(file = file.path(opts[["inputPath"]], "areas", "sets.ini"))
+    
+    sets_f <- sets[["MyDistrict"]]
+    expect_true("output" %in% names(sets_f))
+    expect_false(sets_f[["output"]])
+    expect_true("apply-filter" %in% names(sets_f))
+    expect_equal(sets_f[["apply-filter"]], "add-all")
+    expect_equal(length(sets_f[names(sets_f) == "-"]), length(areas))
+    
+    sets_f <- sets[["MyDistrict2"]]
+    expect_true("output" %in% names(sets_f))
+    expect_true(sets_f[["output"]])
+    expect_true("apply-filter" %in% names(sets_f))
+    expect_equal(sets_f[["apply-filter"]], "remove-all")
+    expect_equal(length(sets_f[names(sets_f) == "+"]), length(areas))
+  }) 
   
   test_that("Remove a district", {
     
