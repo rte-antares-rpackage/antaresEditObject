@@ -108,21 +108,30 @@ createDistrict <- function(name,
   inputPath <- opts[["inputPath"]]
   assert_that(!is.null(inputPath) && file.exists(inputPath))
 
-  new_district <- c(
-    new_district,
-    setNames(as.list(add_area), rep_len("+", length(add_area))),
-    setNames(as.list(remove_area), rep_len("-", length(remove_area)))
-  )
+  if (with_add_area) {
+    new_district <- c(
+      new_district,
+      setNames(as.list(add_area), rep_len("+", length(add_area)))
+    )
+  }
+  
+  if (with_remove_area) {
+    new_district <- c(
+      new_district,
+      setNames(as.list(remove_area), rep_len("-", length(remove_area)))
+    )
+  } 
+  new_district <- dropNulls(new_district)
   
   # Read previous sets
   sets_path <- file.path(inputPath, "areas", "sets.ini")
   if (file.exists(sets_path)) {
     sets_params <- readIniFile(file = sets_path)
     sets_names <- names(sets_params)
-    sets_params[[name]] <- dropNulls(new_district)
+    sets_params[[name]] <- new_district
   } else {
     sets_params <- list()
-    sets_params[[name]] <- dropNulls(new_district)
+    sets_params[[name]] <- new_district
   }
   writeIni(listData = sets_params, pathIni = sets_path, overwrite = TRUE)
   
@@ -219,7 +228,7 @@ editDistrict <- function(name,
     
     return(update_api_opts(opts = opts))
   }
-  
+
 }
 
 
