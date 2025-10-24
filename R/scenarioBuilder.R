@@ -857,7 +857,9 @@ build_st_constraints_names_df <- function(body_json) {
 
 #' Read constraint names in disc mode
 #'
-#' @param  
+#' @param opts
+#'   List of simulation parameters returned by the function
+#'   [antaresRead::setSimulationPath()]
 #' @noRd
 read_constraints_name_disc <- function(opts= antaresRead::simOptions()){
   # Root folder that contains /<area>/<cluster>/additional_constraints/*.ini
