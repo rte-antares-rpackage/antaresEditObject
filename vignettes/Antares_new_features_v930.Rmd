@@ -209,8 +209,8 @@ res=read_storages_constraints()
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-library(listviewer)
-jsonedit(res, mode = "view", options = list(collapsed = 1))
+library(data.tree)
+as.Node(res)
 ```
 
 ### Remove clusters

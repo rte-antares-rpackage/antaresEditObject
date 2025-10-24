@@ -52,5 +52,5 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
-    listviewer
+    data.tree
 VignetteBuilder: knitr
