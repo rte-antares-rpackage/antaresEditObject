@@ -52,5 +52,7 @@ Suggests:
     covr,
     knitr,
     rmarkdown,
-    listviewer
+    data.tree
 VignetteBuilder: knitr
+Remotes:
+    rte-antares-rpackage/antaresRead
