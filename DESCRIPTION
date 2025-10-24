@@ -54,3 +54,5 @@ Suggests:
     rmarkdown,
     data.tree
 VignetteBuilder: knitr
+Remotes:
+    rte-antares-rpackage/antaresRead

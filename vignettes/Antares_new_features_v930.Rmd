@@ -307,7 +307,7 @@ ldata <- scenarioBuilder(
 updateScenarioBuilder(ldata = ldata,
                       series = "sta")
   
-readScenarioBuilder(as_matrix = FALSE) #true
+readScenarioBuilder(as_matrix = TRUE) 
 ```
 
 ## Thematic
@@ -345,6 +345,7 @@ They're replaced by the dynamic variable RENEWABLE GEN.
 vector_select_vars= list_thematic_variables()
 #Add all variables
 list_thematic=setThematicTrimming(selection_variables = vector_select_vars$col_name[68:72])
+list_thematic$parameters$`variables selection`
 ```
 
 
