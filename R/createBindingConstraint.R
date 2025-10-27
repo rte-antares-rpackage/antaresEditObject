@@ -42,8 +42,9 @@ utils::globalVariables(c('V2', 'dim_study', 'dim_input', 'name_group'))
 #' 
 #' @name createBindingConstraint
 #' 
-#' @importFrom antaresRead getLinks setSimulationPath readIniFile
+#' @importFrom antaresRead getLinks readClusterDesc setSimulationPath readIniFile simOptions
 #' @importFrom utils write.table
+#' @importFrom assertthat assert_that
 #'
 #' @examples
 #' \dontrun{
@@ -111,10 +112,10 @@ createBindingConstraint <- function(name,
                                     coefficients = NULL,
                                     group = NULL,
                                     overwrite = FALSE,
-                                    opts = antaresRead::simOptions()) {
+                                    opts = simOptions()) {
   
   # check input parameters
-  assertthat::assert_that(inherits(opts, "simOptions"))
+  assert_that(inherits(opts, "simOptions"))
   
   timeStep <- match.arg(arg = timeStep)
   operator <- match.arg(arg = operator)
@@ -139,7 +140,7 @@ createBindingConstraint <- function(name,
   }
   
   # API block
-  if (is_api_study(opts)) {
+  if (is_api_study(opts = opts)) {
     
     # reformat coefficients offset values
     coefficients <- .check_format_offset(coefficients = coefficients)
@@ -171,7 +172,7 @@ createBindingConstraint <- function(name,
     values_operator <- switch_to_list_name_operator_870(operator = operator)
     
     if(!is.null(values)){
-      assertthat::assert_that(inherits(values, "list"))
+      assert_that(inherits(values, "list"))
       ##
       # check "values" according to "operator"
       ##
@@ -210,7 +211,8 @@ createBindingConstraint <- function(name,
     coefficients,
     group,
     overwrite,
-    links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
+    links = getLinks(opts = opts, namesOnly = TRUE),
+    clusters = readClusterDesc(opts = opts),
     output_operator = values_operator,
     opts = opts
   )
@@ -220,7 +222,7 @@ createBindingConstraint <- function(name,
   
   # Maj simulation
   suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
+    res <- setSimulationPath(path = opts$studyPath, simulation = "input")
   })
   
   invisible(res)
@@ -365,6 +367,7 @@ createBindingConstraint_ <- function(bindingConstraints,
                                      group,
                                      overwrite,
                                      links,
+                                     clusters,
                                      output_operator = NULL,
                                      opts) {
   
@@ -400,29 +403,24 @@ createBindingConstraint_ <- function(bindingConstraints,
   
   # Check coefficients
   if (!is.null(coefficients)) {
-    links <- as.character(links)
-    links <- gsub(pattern = " - ", replacement = "%", x = links)
     
-    #for obscure reasons R CMD check inverse alphabetic order for coefficients
-    #test for createPSP() are OK for devools::test() but not for devtools::check()
-    #these lines are here to correct this behaviour
-    #see https://github.com/r-lib/testthat/issues/144
-    #and https://github.com/r-lib/testthat/issues/86
-    #set Sys.setenv("R_TESTS" = "") do nothing
-    resLinks <- strsplit(links, "%")
-    for(i in seq_along(resLinks)){
-      resLinks[[i]] <- paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
+    has_links_coefs <- length(grep("%", names(coefficients))) > 0
+    has_clusters_coefs <- length(grep("\\.", names(coefficients))) > 0
+    
+    if (has_links_coefs) {
+      if (length(links) > 0) {
+        .check_bc_validity_coefficients(coefficients = coefficients, reference = links, type = "links")
+      } else {
+        stop("You are trying to create a binding constraint with a link coefficient but you have no link in your study.")
+      }    
     }
-    links <- c(links, as.character(resLinks))
     
-    #Only coef which % are links
-    coefficientsToControl <- coefficients[grep("%", names(coefficients))]
-    if(length(coefficientsToControl) > 0) {
-      if (!all(names(coefficientsToControl) %in% links)) {
-        badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% links]
-        badcoef <- paste(shQuote(badcoef), collapse = ", ")
-        stop(paste0(badcoef, " : is or are not valid link(s)"))
-      }
+    if (has_clusters_coefs) {
+      if (nrow(clusters) > 0) {
+        .check_bc_validity_coefficients(coefficients = coefficients, reference = clusters, type = "thermal")
+      } else {
+        stop("You are trying to create a binding constraint with a cluster coefficient but you have no cluster in your study.")
+      }    
     }
   }
   
@@ -745,6 +743,7 @@ createBindingConstraintBulk <- function(constraints,
                                         opts = antaresRead::simOptions()) {
   
   assertthat::assert_that(inherits(opts, "simOptions"))
+  assertthat::assert_that(isFALSE(is_api_study(opts = opts)), msg = "createBindingConstraintBulk() is not available in API mode.")
   
   if(opts[["antaresVersion"]] >= 870) {
     # check matrix dimension
@@ -763,6 +762,7 @@ createBindingConstraintBulk <- function(constraints,
         opts = opts, 
         bindingConstraints = bindingConstraints,
         links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
+        clusters = readClusterDesc(opts = opts),
         output_operator = values_operator
       )
     ))
@@ -861,4 +861,41 @@ switch_to_list_name_operator_870 <- function(operator) {
   }
   
   return(res)
+}
+
+
+.check_bc_validity_coefficients <- function(coefficients, reference, type) {
+  
+  type_elements <- list("links" = list("stop_msg" = "link(s)", "pattern" = "%"),
+                        "thermal" = list("stop_msg" = "cluster(s)", "pattern" = "\\.")
+                       )
+  
+  if (type == "links") {
+    reference <- as.character(reference)
+    reference <- gsub(pattern = " - ", replacement = "%", x = reference)
+    
+    #for obscure reasons R CMD check inverse alphabetic order for coefficients
+    #test for createPSP() are OK for devools::test() but not for devtools::check()
+    #these lines are here to correct this behaviour
+    #see https://github.com/r-lib/testthat/issues/144
+    #and https://github.com/r-lib/testthat/issues/86
+    #set Sys.setenv("R_TESTS" = "") do nothing
+    resLinks <- strsplit(reference, "%")
+    for(i in seq_along(resLinks)){
+      resLinks[[i]] <- paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
+    }
+    reference <- c(reference, as.character(resLinks))
+  } else if (type == "thermal") {
+    reference <- paste0(reference$area, ".", reference$cluster)
+  }
+  
+  coefficientsToControl <- coefficients[grep(type_elements[[type]][["pattern"]], names(coefficients))]
+  
+  if(length(coefficientsToControl) > 0) {
+    if (!all(names(coefficientsToControl) %in% reference)) {
+      badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% reference]
+      badcoef <- paste(shQuote(badcoef), collapse = ", ")
+      stop(paste0(badcoef, " : is or are not valid ", type_elements[[type]][["stop_msg"]]))
+    }
+  }
 }

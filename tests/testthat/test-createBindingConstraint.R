@@ -176,13 +176,90 @@ sapply(studies, function(study) {
     
     expect_error(
       createBindingConstraint(
-        name = "badcoeffs",
+        name = "badcoeffs_links",
         timeStep = "weekly", 
         values = matrix(data = rep(0, 365 * 3), ncol = 3),
         coefficients =  c("psp in%z" = 12, "b%null" = 0, "de%fr" = 0.5)
       ), regexp = "not valid link"
     )
+
+    expect_error(
+      createBindingConstraint(
+        name = "badcoeffs_clusters",
+        timeStep = "weekly", 
+        values = matrix(data = rep(0, 365 * 3), ncol = 3),
+        coefficients =  c("a.fake_cluster" = 0.1, "b.other_cluster" = 0.2, "c.my_cluster" = 0.3)
+      ), regexp = "not valid cluster"
+    )
     
+    # Links are controlled first
+    expect_error(
+      createBindingConstraint(
+        name = "badcoeffs_links_clusters",
+        timeStep = "weekly", 
+        values = matrix(data = rep(0, 365 * 3), ncol = 3),
+        coefficients =  c("a.fake_cluster" = 0.1, "b.other_cluster" = 0.2, "c.my_cluster" = 0.3, "psp in%z" = 12, "b%null" = 0, "de%fr" = 0.5)
+      ), regexp = "not valid link"
+    )
+    
+    val_cstr1 <- matrix(data = rep(22, 365 * 3), ncol = 3)
+    val_cstr2 <- matrix(data = rep(33, 365 * 3), ncol = 3)
+    
+    lst_cstr <- list(
+      list(
+        name = "cstr1", 
+        id = "cstr1",
+        values = val_cstr1, 
+        enabled = TRUE, 
+        timeStep = "hourly",
+        operator = "greater",
+        coefficients = list("a.base" = 1),
+        overwrite = TRUE
+      ),
+      list(
+        name = "cstr2", 
+        id = "cstr2",
+        values = val_cstr2, 
+        enabled = TRUE, 
+        timeStep = "hourly",
+        operator = "greater",
+        coefficients = list("b.fake_nuclear" = 1), # Not a cluster
+        overwrite = TRUE
+      )
+    )  
+    
+    expect_error(
+      createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions())
+      , regexp = "not valid cluster"
+    )
+    
+    lst_cstr <- list(
+      list(
+        name = "cstr1", 
+        id = "cstr1",
+        values = val_cstr1, 
+        enabled = TRUE, 
+        timeStep = "hourly",
+        operator = "greater",
+        coefficients = list("a%c" = 1), # Not a link
+        overwrite = TRUE
+      ),
+      list(
+        name = "cstr2", 
+        id = "cstr2",
+        values = val_cstr2, 
+        enabled = TRUE, 
+        timeStep = "hourly",
+        operator = "greater",
+        coefficients = list("b%c" = 1),
+        overwrite = TRUE
+      )
+    )  
+    
+    expect_error(
+      createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions())
+      , regexp = "not valid link"
+    )
   })
   
   test_that("Create a new binding constraint with coefficients not ordered alphabetically", {
@@ -201,7 +278,7 @@ sapply(studies, function(study) {
   test_that("Create a new binding constraint with cluster coefficients (not with %)", {
     
     coefs <- antaresRead::readBindingConstraints()[[1]]$coefs
-    coefs <- c(coefs, "at.it" = 1)
+    coefs <- c(coefs, "a.base" = 1)
     createBindingConstraint(
       name = "coeffs",
       timeStep = "weekly", 
@@ -944,3 +1021,104 @@ test_that("Control of matrix dimension is not dependent of the order in the list
 
 # remove temporary study ----
 deleteStudy()
+
+
+test_that("Control that you can not create a binding constraint link/cluster with no link/cluster in your study", {
+  
+  suppressWarnings(opts <- createStudy(path = pathstd, study_name = "study_no_link_no_cluster", antares_version = "8.8.0"))
+  
+  createArea(name = "zone1", opts = simOptions())
+  createArea(name = "zone2", opts = simOptions())
+  createArea(name = "zone3", opts = simOptions())
+  
+  expect_error(
+    createBindingConstraint(name = "myconstraint_link", 
+                            enabled = TRUE, 
+                            timeStep = "hourly",
+                            operator = "less",
+                            coefficients = list("area1%area2" = 1, "area1%area3" = 2),
+                            opts = simOptions()
+                            ),
+    regexp = "You are trying to create a binding constraint with a link coefficient but you have no link in your study."                                  
+  )
+
+  expect_error(
+    createBindingConstraint(name = "myconstraint_cluster", 
+                            enabled = TRUE, 
+                            timeStep = "hourly",
+                            operator = "less",
+                            coefficients = list("area1.cluster1" = 1, "area2.cluster2" = 2),
+                            opts = simOptions()
+                            ),
+    regexp = "You are trying to create a binding constraint with a cluster coefficient but you have no cluster in your study."                                  
+  )
+  
+  val_cstr1 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(555, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1)
+                    )
+  val_cstr2 <- list("lt" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "eq" = matrix(data = rep(0, 8760 * 1), ncol = 1),
+                    "gt" = matrix(data = rep(777, 8760 * 1), ncol = 1)
+                    )
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("zone1%zone2" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("zone1%zone2" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )  
+  
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()),
+    regexp = "You are trying to create a binding constraint with a link coefficient but you have no link in your study."
+  )
+  
+  lst_cstr <- list(
+    list(
+      name = "cstr1", 
+      id = "cstr1",
+      values = val_cstr1, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("zone1.nuclear" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      ),
+    list(
+      name = "cstr2", 
+      id = "cstr2",
+      values = val_cstr2, 
+      enabled = TRUE, 
+      timeStep = "hourly",
+      operator = "greater",
+      coefficients = list("zone2.nuclear" = 1),
+      group= "group_bulk_123",
+      overwrite = TRUE
+      )
+  )  
+  
+  expect_error(
+    createBindingConstraintBulk(constraints = lst_cstr, opts = simOptions()),
+    regexp = "You are trying to create a binding constraint with a cluster coefficient but you have no cluster in your study."
+  )
+  
+})
