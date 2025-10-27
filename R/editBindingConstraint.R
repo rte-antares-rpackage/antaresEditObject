@@ -28,8 +28,10 @@
 #' 
 #' @export
 #' 
-#' @importFrom antaresRead getLinks setSimulationPath
+#' @importFrom antaresRead getLinks setSimulationPath readClusterDesc simOptions readIniFile
 #' @importFrom utils write.table
+#' @importFrom assertthat assert_that
+#' @importFrom data.table as.data.table fwrite
 #'
 #' @examples
 #' \dontrun{
@@ -84,11 +86,11 @@ editBindingConstraint <- function(name,
                                   filter_synthesis = NULL,
                                   coefficients = NULL,
                                   group = NULL,
-                                  opts = antaresRead::simOptions()) {
-  assertthat::assert_that(inherits(opts, "simOptions"))
+                                  opts = simOptions()) {
+  assert_that(inherits(opts, "simOptions"))
   
   ## API block ----
-  if (is_api_study(opts)) {
+  if (is_api_study(opts = opts)) {
     # reformat coefficients offset values
     coefficients <- .check_format_offset(coefficients = coefficients)
     
@@ -169,15 +171,11 @@ editBindingConstraint <- function(name,
     
     # check group values (depend of "operator")
     if(!is.null(values)){
-      if(!is.null(operator))
-        values_operator <- switch(operator,
-                                  less = "lt",
-                                  equal = "eq",
-                                  greater = "gt",
-                                  both = c("lt", "gt"))
-      else
+      if(!is.null(operator)) {
+        values_operator <- switch_to_list_name_operator_870(operator = operator)
+      } else {
         stop("To modify the 'values' you must enter the 'operator' parameter (e.g operator = \"both\")")
-      
+      }
       group_values_meta_check(group_value = group, 
                               values_data = values,
                               operator_check = operator,
@@ -198,23 +196,17 @@ editBindingConstraint <- function(name,
   
   if(!is.null(coefficients)){
     
-    links <- antaresRead::getLinks(opts = opts, namesOnly = TRUE)
-    links <- as.character(links)
-    links <- gsub(pattern = " - ", replacement = "%", x = links)
-    resLinks <- strsplit(links, "%")
+    has_links_coefs <- length(grep("%", names(coefficients))) > 0
+    has_clusters_coefs <- length(grep("\\.", names(coefficients))) > 0
     
-    for(i in seq_along(resLinks)){
-      resLinks[[i]] <- paste(resLinks[[i]][2], resLinks[[i]][1], sep = "%")
+    if (has_links_coefs) {
+      links <- getLinks(opts = opts, namesOnly = TRUE)
+      .check_bc_validity_coefficients(coefficients = coefficients, reference = links, type = "links")
     }
-    links <- c(links, as.character(resLinks))
     
-    coefficientsToControl <- coefficients[grep("%", names(coefficients))]
-    if(length(coefficientsToControl) > 0) {
-      if (!all(names(coefficientsToControl) %in% links)) {
-        badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% links]
-        badcoef <- paste(shQuote(badcoef), collapse = ", ")
-        stop(paste0(badcoef, " : is/are not valid link(s)"))
-      }
+    if (has_clusters_coefs) {
+      clusters <- readClusterDesc(opts = opts)
+      .check_bc_validity_coefficients(coefficients = coefficients, reference = clusters, type = "thermal")
     }
     
     for(i in names(coefficients)){
@@ -257,7 +249,7 @@ editBindingConstraint <- function(name,
              function(x, 
                       df_ts= values){
                target_name <- df[x, "code_file"]
-               fwrite(x = data.table::as.data.table(df_ts[[target_name]]), 
+               fwrite(x = as.data.table(df_ts[[target_name]]), 
                       file = df[x, "path_file"], 
                       col.names = FALSE, 
                       row.names = FALSE, 

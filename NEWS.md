@@ -12,8 +12,13 @@ NEW FEATURES :
   - **New dimension of time series** (all matrices will be of (8760, N), noting that N >= 1)
   - **Suppression of properties** (refreshtimeseries,refreshintervalload, refreshintervalhydro, refreshintervalwind, refreshintervalthermal, refreshintervalsolar from settings/generaldata.ini)
 * `createCluster()` :   
- - **Dynamic groups** (The group parameter is now dynamic and has no restrictions. The default group value for Renewable depends on the version: Other RES 1 if < 930, Other if >= 930).
+  - **Dynamic groups** (The group parameter is now dynamic and has no restrictions. The default group value for Renewable depends on the version: Other RES 1 if < 930, Other if >= 930).
 * `updateScenarioBuilder()` New types of series "sts" and "sta" ("sct apports level" and "sct contraintes") is available
+
+BUGFIXES :    
+
+* `createBindingConstraint()/editBindingConstraint()` do not allow to create/edit a binding constraint if a cluster referenced in a coefficient does not exist.
+
 
 # antaresEditObject 0.9.2.9000
 (cf. Antares v9.2 changelog)
