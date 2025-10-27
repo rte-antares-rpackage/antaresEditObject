@@ -96,11 +96,76 @@ sapply(studies, function(study) {
     expect_equal(sets_f[["apply-filter"]], "remove-all")
     expect_equal(length(sets_f[names(sets_f) == "+"]), length(areas))
   }) 
+
+  test_that("Edit a district", {
+  
+    areas <- sort(sample(x = getOption("antares")$areaList, size = 2))
+    
+    expect_error(  
+      editDistrict(
+        name = "not_a_district",
+        add_area = areas
+      )
+      , regexp = "No district not_a_district in the study."
+    )
+    
+    expect_error(  
+      editDistrict(
+        name = "MyDistrict", 
+        apply_filter = "remove-all", 
+        remove_area = areas,
+        add_area = areas
+      )
+      , regexp = "You can not use 'add_area' and 'remove_area' at the same time"
+    )
+    
+    expect_error(  
+      editDistrict(
+        name = "MyDistrict", 
+        apply_filter = "remove-all", 
+        remove_area = c(areas, "fake_area")
+      )
+      , regexp = "Invalid area in 'remove_area'"
+    )
+
+    expect_error(  
+      editDistrict(
+        name = "MyDistrict", 
+        apply_filter = "remove-all", 
+        add_area = c(areas, "fake_area")
+      )
+      , regexp = "Invalid area in 'add_area'"
+    )
+    
+    editDistrict(name = "MyDistrict",
+                 output = TRUE,
+                 comments = "my comment",
+                 opts = simOptions()
+                 )
+    
+    new_areas <- sample(x = getOption("antares")$areaList, size = 4)
+    editDistrict(name = "MyDistrict2",
+                 add_area = new_areas,
+                 opts = simOptions()
+                 )
+    sets <- readIniFile(file = file.path(opts[["inputPath"]], "areas", "sets.ini"))
+    
+    sets_f <- sets[["MyDistrict"]]
+    expect_true("output" %in% names(sets_f))
+    expect_true(sets_f[["output"]])
+    expect_true("comments" %in% names(sets_f))
+    expect_equal(sets_f[["comments"]], "my comment")
+    
+    sets_f <- sets[["MyDistrict2"]]
+    expect_true("output" %in% names(sets_f))
+    expect_true(sets_f[["output"]])
+    expect_equal(length(sets_f[names(sets_f) == "+"]), length(new_areas))
+  })
   
   test_that("Remove a district", {
     
     removeDistrict(
-      name = "MyDistrict", 
+      name = "MyDistrIcT", 
       opts = simOptions()
     )
     
