@@ -229,6 +229,40 @@ editDistrict <- function(name,
     return(update_api_opts(opts = opts))
   }
 
+  if (with_add_area) {
+    new_district <- c(
+      new_district,
+      setNames(as.list(add_area), rep_len("+", length(add_area)))
+    )
+  }
+  
+  if (with_remove_area) {
+    new_district <- c(
+      new_district,
+      setNames(as.list(remove_area), rep_len("-", length(remove_area)))
+    )
+  }  
+  new_district <- dropNulls(new_district)
+  
+  if (length(new_district) > 0) {
+    
+    sets_path <- file.path(opts[["inputPath"]], "areas", "sets.ini")
+    sets_params <- readIniFile(file = sets_path)
+    
+    district_params <- sets_params[[name]]
+    # keys '+' and '-' can be multiple. Treat them in a different way
+    multiple_keys <- c("+", "-")    
+    district_params <- .append_multiple_keys_to_list(prevList = district_params, newList = new_district, keys = multiple_keys)
+    sets_params[[name]] <- modifyList(x = district_params, val = new_district[!names(new_district) %in% multiple_keys])
+
+    writeIni(listData = sets_params, pathIni = sets_path, overwrite = TRUE)
+  }
+  
+  suppressWarnings({
+    res <- setSimulationPath(path = opts[["studyPath"]], simulation = "input")
+  })
+  
+  invisible(res)  
 }
 
 
@@ -325,4 +359,24 @@ rename_district_parameters_for_endpoint <- function(arg) {
   names(antares_params) <- c("name", "caption", "comments", "output", "apply-filter", "areas")
   
   antares_params[[arg]]
+}
+
+
+.append_multiple_keys_to_list <- function(prevList, newList, keys) {
+  
+  keys <- intersect(keys, names(newList))
+  
+  if (length(keys) > 0) {
+    prevList <- sapply(keys,
+                       FUN = function(key) {
+                         prevList[names(prevList) == key] <- NULL
+                         append(prevList, newList[names(newList) == key])
+                       },
+                       USE.NAMES = FALSE,
+                       simplify = FALSE
+    )
+    prevList <- unlist(prevList, recursive = FALSE)    
+  }
+  
+  return(prevList)
 }
