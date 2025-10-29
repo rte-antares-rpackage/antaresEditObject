@@ -337,8 +337,20 @@ transform_list_to_json_for_district_parameters <- function(district_parameters) 
   district_parameters[["caption"]] <- NULL
   district_parameters <- dropNulls(district_parameters)
   names(district_parameters) <- sapply(names(district_parameters), rename_district_parameters_for_endpoint, USE.NAMES = FALSE) 
-  
-  return(toJSON(district_parameters, auto_unbox = TRUE))
+  # If areas is a single value, auto_unbox = TRUE can lead to error. So we unbox each value except areas.
+  district_parameters <- sapply(names(district_parameters),
+                                FUN = function(el) {
+                                  if (el != "areas") {
+                                    return(unbox(district_parameters[[el]]))
+                                  } else {
+                                    return(district_parameters[[el]])
+                                  }
+                                },
+                                USE.NAMES = TRUE,
+                                simplify = FALSE
+  )
+   
+  return(toJSON(district_parameters))
 }
 
 
