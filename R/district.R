@@ -329,7 +329,7 @@ removeDistrict <- function(name, opts = simOptions()) {
 
 
 #' @importFrom assertthat assert_that
-#' @importFrom jsonlite toJSON
+#' @importFrom jsonlite toJSON unbox
 transform_list_to_json_for_district_parameters <- function(district_parameters) {
 
   assert_that(inherits(x = district_parameters, what = "list"))
