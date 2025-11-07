@@ -1,5 +1,10 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
+# antaresEditObject 0.9.4.9000
+
+### Breaking changes  :  
+  - `editBindingConstraint()` : Remove some coefficients from a binding constraint in disk mode  
+
 
 # antaresEditObject 0.9.3
 (cf. Antares v9.3 changelog)

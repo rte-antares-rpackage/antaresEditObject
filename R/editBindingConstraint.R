@@ -209,9 +209,18 @@ editBindingConstraint <- function(name,
       .check_bc_validity_coefficients(coefficients = coefficients, reference = clusters, type = "thermal")
     }
     
-    for(i in names(coefficients)){
-      bindingConstraints[[bc_update_pos]][[i]] <- coefficients[i]
+    bc_properties <- c("name", "id", "enabled", "type", "operator", "filter-year-by-year", "filter-synthesis", "group", "comments")
+    names_coefs <- setdiff(names(bindingConstraints[[bc_update_pos]]), bc_properties)
+    removed_coefs <- setdiff(names_coefs, names(coefficients))
+    
+    if (length(removed_coefs) > 0) {
+      bindingConstraints[[bc_update_pos]][removed_coefs] <- NULL
+			warning("These coefficients will be removed from the binding constraint : \n", paste0(removed_coefs, collapse = "\n"))
     }
+    if (!is.list(coefficients)) {
+      coefficients <- as.list(coefficients)
+    }
+    bindingConstraints[[bc_update_pos]] <- modifyList(x = bindingConstraints[[bc_update_pos]], val = coefficients, keep.null = FALSE)
   }
   
   # write txt files
