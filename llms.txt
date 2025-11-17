@@ -1,0 +1,341 @@
+# antaresEditObject ![](reference/figures/antares_simulator.png)
+
+  
+
+> Edit an Antares study before running a simulation.
+
+## Installation
+
+Install from CRAN:
+
+``` r
+install.packages("antaresEditObject")
+```
+
+Or install dev version from GitHub:
+
+``` r
+remotes::install_github("rte-antares-rpackage/antaresEditObject", build_vignettes = TRUE)
+```
+
+## Goal
+
+This package allows to edit an Antares study. Methods are provided to
+create (and remove) areas, links between them, thermal clusters and
+binding constraints. These steps may be useful before running an Antares
+simulation.
+
+See website for more documentation:
+<https://rte-antares-rpackage.github.io/antaresEditObject/>
+
+## Usage
+
+Usage of the package is detailed in the vignette:
+[`vignette("antaresEditObject")`](articles/antaresEditObject.md).
+
+# Package index
+
+## All functions
+
+- [`activateRES()`](activateRES.md) : Activate RES in an Antares study
+
+- [`activateST()`](activateST.md) : Activate st-storage in an Antares
+  study
+
+- [`add_week_number_column_to_ts()`](add_week_number_column_to_ts.md) :
+  Add week number column to a data.time of time series type
+
+- [`adequacyOptions()`](adequacyOptions.md) : Adequacy patch parameters
+  for creating an area
+
+- [`api_patch()`](api_patch.md) : API methods
+
+- [`backupStudy()`](backupStudy.md) : Create a backup with an Antares
+  Study
+
+- [`is_antares_v7()`](check-version.md)
+  [`is_antares_v820()`](check-version.md) : Is study an Antares v7 study
+  ?
+
+- [`checkRemovedArea()`](checkRemovedArea.md) : Seek for a removed area
+
+- [`check_consistency_reservoir_values()`](check_consistency_reservoir_values.md)
+  : For a given area, check consistency between reservoir and reservoir
+  capacity values
+
+- [`check_mingen_vs_hydro_storage()`](check_mingen_vs_hydro_storage.md)
+  : Check if mingen data and hydro storage data are consistent
+
+- [`check_mingen_vs_maxpower()`](check_mingen_vs_maxpower.md) : Check if
+  mingen data and maxpower data are consistent
+
+- [`cleanUpOutput()`](cleanUpOutput.md) : Clean up output based on
+  geographic trimming
+
+- [`computeOtherFromHourlyMulti()`](computeOtherFromHourlyMulti.md) :
+  Compute daily, weekly, monthly and annual mc-ind from hourly data
+  multiyear. (new)
+
+- [`computeOtherFromHourlyYear()`](computeOtherFromHourlyYear.md) :
+  Compute daily, weekly, monthly and annual mc-ind from hourly data for
+  one year. (new)
+
+- [`computeTimeStampFromHourly()`](computeTimeStampFromHourly.md) :
+  Compute daily, weekly, monthly and annual mc-ind from hourly data.
+
+- [`convertConfigToAdq()`](convertConfigToAdq.md) : Read adequacy patch
+  config.yml into Antares (v8.5+)
+
+- [`copyOutput()`](copyOutput.md) : Copy of the output files of an
+  Antares study
+
+- [`copyStudyWeb()`](copyStudyWeb.md) : Import physical study to Antares
+  Web (managed study)
+
+- [`createStudy()`](create-study.md)
+  [`createStudyAPI()`](create-study.md) : Create an empty Antares study
+
+- [`createArea()`](createArea.md) : Create an area in an Antares study
+
+- [`createBindingConstraint()`](createBindingConstraint.md) : Create a
+  binding constraint
+
+- [`createBindingConstraintBulk()`](createBindingConstraintBulk.md)
+  **\[experimental\]** : Create multiple binding constraint at once.
+
+- [`createCluster()`](createCluster.md)
+  [`createClusterRES()`](createCluster.md) : Create a cluster
+
+- [`createClusterBulk()`](createClusterBulk.md) : Create serial thermal
+  cluster
+
+- [`createClusterST()`](createClusterST.md) : Create a short-term
+  storage cluster
+
+- [`createDSR()`](createDSR.md) [`getCapacityDSR()`](createDSR.md)
+  [`editDSR()`](createDSR.md) : Create a Demand Side Response (DSR)
+
+- [`createDistrict()`](createDistrict.md) : Create a district
+
+- [`createLink()`](createLink.md) : Create a link between two areas
+
+- [`createPSP()`](createPSP.md) [`getCapacityPSP()`](createPSP.md)
+  [`editPSP()`](createPSP.md) : Create a Pumped Storage Power plant
+  (PSP)
+
+- [`create_scb_referential_series_type()`](create_scb_referential_series_type.md)
+  : Create the correspondence data frame between the symbol and the type
+  in scenario builder
+
+- [`deleteStudy()`](deleteStudy.md) : Delete a study or a simulation
+
+- [`detect_pattern_in_binding_constraint()`](detect_pattern_in_binding_constraint.md)
+  : Detect a pattern in a binding constraint coefficient
+
+- [`dicoAdequacySettings()`](dicoAdequacySettings.md) :
+
+  Correspondence between arguments of `updateAdequacySettings` and
+  actual Antares parameters.
+
+- [`dicoGeneralSettings()`](dicoGeneralSettings.md) :
+
+  Correspondence between arguments of `updateGeneralSettings` and actual
+  Antares parameters.
+
+- [`dicoOptimizationSettings()`](dicoOptimizationSettings.md) :
+
+  Correspondence between arguments of `updateOptimizationSettings` and
+  actual Antares parameters.
+
+- [`dicoOutputSettings()`](dicoOutputSettings.md) :
+
+  Correspondence between arguments of `updateOutputSettings` and actual
+  Antares parameters.
+
+- [`.api_command_execute_edit_area()`](dot-api_command_execute_edit_area.md)
+  : Edit area's parameters in API mode.
+
+- [`.api_command_execute_edit_area_ui()`](dot-api_command_execute_edit_area_ui.md)
+  : Edit area's ui in API mode.
+
+- [`.format_ini_rhs()`](dot-format_ini_rhs.md) : Format a value to a
+  suitable format to rhs in an .ini file.
+
+- [`.format_playlist_weights()`](dot-format_playlist_weights.md) :
+  Generate playlist_year_weight section in the appropriate format.
+
+- [`.format_ui_data_by_mode()`](dot-format_ui_data_by_mode.md) :
+  Generate the data for the ui part by study mode.
+
+- [`.initializeLinksArea()`](dot-initializeLinksArea.md) : Initialize
+  links data for a new area. For disk mode only.
+
+- [`.initializeRenewablesArea()`](dot-initializeRenewablesArea.md) :
+  Initialize renewables data for a new area. For disk mode only.
+
+- [`.initializeThermalArea()`](dot-initializeThermalArea.md) :
+  Initialize thermal data for a new area. For disk mode only.
+
+- [`.split_nodalOptimization_by_target()`](dot-split_nodalOptimization_by_target.md)
+  : Split list nodalOptimization by target file.
+
+- [`editArea()`](editArea.md) : Edit an area in an Antares study
+
+- [`editBindingConstraint()`](editBindingConstraint.md) : Update an
+  existing binding constraint
+
+- [`editCluster()`](editCluster.md) [`editClusterRES()`](editCluster.md)
+  : Edit an existing cluster
+
+- [`editClusterST()`](editClusterST.md) : Edit a short-term storage
+  cluster
+
+- [`editLink()`](editLink.md) : Edit a link between two areas
+
+- [`fill_empty_hydro_ini_file()`](fill_empty_hydro_ini_file.md) : Write
+  default values in hydro.ini file if the section is empty
+
+- [`fill_empty_hydro_ts_file()`](fill_empty_hydro_ts_file.md) :
+
+  Write default input time series if `mingen.txt` or/and `mod.txt` is
+  empty
+
+- [`filteringOptions()`](filteringOptions.md) : Output profile options
+  for creating an area
+
+- [`getJobLogs()`](getJobLogs.md) : Retrieve job log from API
+
+- [`getJobs()`](getJobs.md) : Retrieve API jobs
+
+- [`get_default_hydro_ini_values()`](get_default_hydro_ini_values.md) :
+  Get default hydro.ini values
+
+- [`get_type_check_mingen_vs_hydrostorage()`](get_type_check_mingen_vs_hydrostorage.md)
+  : Get the type of control to execute using the 3 necessary booleans
+
+- [`get_type_check_mingen_vs_hydrostorage_to_trigger()`](get_type_check_mingen_vs_hydrostorage_to_trigger.md)
+  : Get the type of control to execute between mingen data and hydro
+  storage data
+
+- [`get_type_check_mingen_vs_maxpower_to_trigger()`](get_type_check_mingen_vs_maxpower_to_trigger.md)
+  : Get the type of control to execute between mingen data and maxpower
+  data
+
+- [`importZipStudyWeb()`](importZipStudyWeb.md) : Import a local study
+  to Antares Web
+
+- [`list_pollutants_values()`](list_pollutants_values.md) : Output
+  pollutants list for thermal clusters
+
+- [`mockSimulationAPI()`](mockSimulationAPI.md) : Mock API usage
+
+- [`nodalOptimizationOptions()`](nodalOptimizationOptions.md) : Nodal
+  optimization parameters for creating an area
+
+- [`getPlaylist()`](playlist.md) [`setPlaylist()`](playlist.md) : Get
+  the playlist of an Antares study
+
+- [`propertiesLinkOptions()`](propertiesLinkOptions.md) : Properties for
+  creating a link
+
+- [`removeArea()`](removeArea.md) : Remove an area from an Antares study
+
+- [`removeBindingConstraint()`](removeBindingConstraint.md) : Remove a
+  Binding Constraint
+
+- [`removeCluster()`](removeCluster.md)
+  [`removeClusterRES()`](removeCluster.md)
+  [`removeClusterST()`](removeCluster.md) : Remove a cluster
+
+- [`removeDistrict()`](removeDistrict.md) : Remove a district
+
+- [`removeLink()`](removeLink.md) : Remove a link between two areas
+
+- [`replicate_missing_ts()`](replicate_missing_ts.md) : Replicate a
+  data.table as many times as needed to get the same number of time
+  series between 2 data.tables
+
+- [`rollback_to_previous_data()`](rollback_to_previous_data.md) :
+  Rollback to previous hydro data if the data is not consistent
+
+- [`runSimulation()`](runSimulation.md) : Run an Antares Simulation
+
+- [`runTsGenerator()`](runTsGenerator.md) : Run Time-Series Generator
+
+- [`scenarioBuilder()`](scenario-builder.md)
+  [`readScenarioBuilder()`](scenario-builder.md)
+  [`updateScenarioBuilder()`](scenario-builder.md)
+  [`clearScenarioBuilder()`](scenario-builder.md)
+  [`deduplicateScenarioBuilder()`](scenario-builder.md) : Read, create,
+  update & deduplicate scenario builder
+
+- [`searchStudy()`](searchStudy.md) : Search study in AntaREST
+
+- [`setAPImode()`](setAPImode.md) : Set API mode
+
+- [`setSolverPath()`](setSolverPath.md) : Set path to Antares Solver
+
+- [`setThematicTrimming()`](setThematicTrimming.md) : Set the thematic
+  trimming of an Antares Study
+
+- [`storage_values_default()`](storage_values_default.md) : Short Term
+  Storage Property List
+
+- [`updateAdequacySettings()`](updateAdequacySettings.md) : Update
+  adequacy parameters of an Antares study
+
+- [`updateGeneralSettings()`](updateGeneralSettings.md) : Update general
+  parameters of an Antares study
+
+- [`updateInputSettings()`](updateInputSettings.md) : Update input
+  parameters of an Antares study
+
+- [`updateOptimizationSettings()`](updateOptimizationSettings.md) :
+  Update optimization parameters of an Antares study
+
+- [`updateOutputSettings()`](updateOutputSettings.md) : Update output
+  parameters of an Antares study
+
+- [`update_generaldata_by_section()`](update_generaldata_by_section.md)
+  : Update a specific section in generaldata.ini file
+
+- [`getVariantCommands()`](variant-commands.md)
+  [`writeVariantCommands()`](variant-commands.md) : Get API commands
+  generated
+
+- [`createVariant()`](variant.md) [`useVariant()`](variant.md) : Create
+  a study's variant
+
+- [`writeIni()`](write-ini.md) [`writeIniFile()`](write-ini.md)
+  [`writeIniAPI()`](write-ini.md) : Write configuration options in file
+  or API
+
+- [`writeEconomicOptions()`](writeEconomicOptions.md) : Write Economic
+  Options
+
+- [`writeHydroValues()`](writeHydroValues.md) : Write Hydro Values
+
+- [`writeIniHydro()`](writeIniHydro.md) : Edit hydro.ini values
+
+- [`writeInputTS()`](writeInputTS.md) : Write input time series
+
+- [`writeMiscGen()`](writeMiscGen.md) : Write Misc Gen data
+
+- [`writeOutputValues()`](writeOutputValues.md) : Write output value for
+  Antares
+
+- [`writeSeriesPrepro()`](writeSeriesPrepro.md) : Write prepro data
+
+- [`writeWaterValues()`](writeWaterValues.md) : Write water values
+
+# Articles
+
+### All vignettes
+
+- [Antares new features v8.6.0](Antares_new_features_v860.md):
+- [Antares new features v9.2](Antares_new_features_v920.md):
+- [Antares new features v9.3](Antares_new_features_v930.md):
+- [User guide](antaresEditObject.md):
+- [Variant management with API](api-variant-management.md):
+- [Renewables Energy Sources](renewables-energy-sources.md):
+- [Scenario Builder](scenario-builder.md):

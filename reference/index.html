@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">antaresEditObject</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.9.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.9.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +21,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Antares_new_features_v860.html">Antares new features v8.6.0</a></li>
     <li><a class="dropdown-item" href="../articles/Antares_new_features_v920.html">Antares new features v9.2</a></li>
+    <li><a class="dropdown-item" href="../articles/Antares_new_features_v930.html">Antares new features v9.3</a></li>
     <li><a class="dropdown-item" href="../articles/api-variant-management.html">Variant management with API</a></li>
     <li><a class="dropdown-item" href="../articles/renewables-energy-sources.html">Renewables Energy Sources</a></li>
     <li><a class="dropdown-item" href="../articles/scenario-builder.html">Scenario Builder</a></li>
@@ -51,8 +52,7 @@
 
 
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -63,577 +63,673 @@
 
         </dt>
         <dd>Activate RES in an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="activateST.html">activateST()</a></code>
 
         </dt>
         <dd>Activate st-storage in an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="add_week_number_column_to_ts.html">add_week_number_column_to_ts()</a></code>
 
         </dt>
         <dd>Add week number column to a data.time of time series type</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="adequacyOptions.html">adequacyOptions()</a></code>
 
         </dt>
         <dd>Adequacy patch parameters for creating an area</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="api_patch.html">api_patch()</a></code>
 
         </dt>
         <dd>API methods</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="backupStudy.html">backupStudy()</a></code>
 
         </dt>
         <dd>Create a backup with an Antares Study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="check-version.html">is_antares_v7()</a></code> <code><a href="check-version.html">is_antares_v820()</a></code>
 
         </dt>
         <dd>Is study an Antares v7 study ?</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="checkRemovedArea.html">checkRemovedArea()</a></code>
 
         </dt>
         <dd>Seek for a removed area</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="check_consistency_reservoir_values.html">check_consistency_reservoir_values()</a></code>
 
         </dt>
         <dd>For a given area, check consistency between reservoir and reservoir capacity values</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="check_mingen_vs_hydro_storage.html">check_mingen_vs_hydro_storage()</a></code>
 
         </dt>
         <dd>Check if mingen data and hydro storage data are consistent</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="check_mingen_vs_maxpower.html">check_mingen_vs_maxpower()</a></code>
 
         </dt>
         <dd>Check if mingen data and maxpower data are consistent</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="cleanUpOutput.html">cleanUpOutput()</a></code>
 
         </dt>
         <dd>Clean up output based on geographic trimming</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="computeOtherFromHourlyMulti.html">computeOtherFromHourlyMulti()</a></code>
 
         </dt>
         <dd>Compute daily, weekly, monthly and annual mc-ind from hourly data multiyear. (new)</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="computeOtherFromHourlyYear.html">computeOtherFromHourlyYear()</a></code>
 
         </dt>
         <dd>Compute daily, weekly, monthly and annual mc-ind from hourly data for one year. (new)</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="computeTimeStampFromHourly.html">computeTimeStampFromHourly()</a></code>
 
         </dt>
         <dd>Compute daily, weekly, monthly and annual mc-ind from hourly data.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="convertConfigToAdq.html">convertConfigToAdq()</a></code>
 
         </dt>
         <dd>Read adequacy patch config.yml into Antares (v8.5+)</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="copyOutput.html">copyOutput()</a></code>
 
         </dt>
         <dd>Copy of the output files of an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="copyStudyWeb.html">copyStudyWeb()</a></code>
 
         </dt>
         <dd>Import physical study to Antares Web (managed study)</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="create-study.html">createStudy()</a></code> <code><a href="create-study.html">createStudyAPI()</a></code>
 
         </dt>
         <dd>Create an empty Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createArea.html">createArea()</a></code>
 
         </dt>
         <dd>Create an area in an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createBindingConstraint.html">createBindingConstraint()</a></code>
 
         </dt>
         <dd>Create a binding constraint</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createBindingConstraintBulk.html">createBindingConstraintBulk()</a></code>
           <span class="badge lifecycle lifecycle-experimental">experimental</span>
         </dt>
         <dd>Create multiple binding constraint at once.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createCluster.html">createCluster()</a></code> <code><a href="createCluster.html">createClusterRES()</a></code>
 
         </dt>
         <dd>Create a cluster</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createClusterBulk.html">createClusterBulk()</a></code>
 
         </dt>
         <dd>Create serial thermal cluster</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createClusterST.html">createClusterST()</a></code>
 
         </dt>
         <dd>Create a short-term storage cluster</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createDSR.html">createDSR()</a></code> <code><a href="createDSR.html">getCapacityDSR()</a></code> <code><a href="createDSR.html">editDSR()</a></code>
 
         </dt>
         <dd>Create a Demand Side Response (DSR)</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createDistrict.html">createDistrict()</a></code>
 
         </dt>
         <dd>Create a district</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createLink.html">createLink()</a></code>
 
         </dt>
         <dd>Create a link between two areas</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="createPSP.html">createPSP()</a></code> <code><a href="createPSP.html">getCapacityPSP()</a></code> <code><a href="createPSP.html">editPSP()</a></code>
 
         </dt>
         <dd>Create a Pumped Storage Power plant (PSP)</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="create_scb_referential_series_type.html">create_scb_referential_series_type()</a></code>
 
         </dt>
         <dd>Create the correspondence data frame between the symbol and the type in scenario builder</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="deleteStudy.html">deleteStudy()</a></code>
 
         </dt>
         <dd>Delete a study or a simulation</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="detect_pattern_in_binding_constraint.html">detect_pattern_in_binding_constraint()</a></code>
 
         </dt>
         <dd>Detect a pattern in a binding constraint coefficient</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dicoAdequacySettings.html">dicoAdequacySettings()</a></code>
 
         </dt>
         <dd>Correspondence between arguments of <code>updateAdequacySettings</code> and actual Antares parameters.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dicoGeneralSettings.html">dicoGeneralSettings()</a></code>
 
         </dt>
         <dd>Correspondence between arguments of <code>updateGeneralSettings</code> and actual Antares parameters.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dicoOptimizationSettings.html">dicoOptimizationSettings()</a></code>
 
         </dt>
         <dd>Correspondence between arguments of <code>updateOptimizationSettings</code> and actual Antares parameters.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dicoOutputSettings.html">dicoOutputSettings()</a></code>
 
         </dt>
         <dd>Correspondence between arguments of <code>updateOutputSettings</code> and actual Antares parameters.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-api_command_execute_edit_area.html">.api_command_execute_edit_area()</a></code>
 
         </dt>
         <dd>Edit area's parameters in API mode.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-api_command_execute_edit_area_ui.html">.api_command_execute_edit_area_ui()</a></code>
 
         </dt>
         <dd>Edit area's ui in API mode.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-format_ini_rhs.html">.format_ini_rhs()</a></code>
 
         </dt>
         <dd>Format a value to a suitable format to rhs in an .ini file.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-format_playlist_weights.html">.format_playlist_weights()</a></code>
 
         </dt>
         <dd>Generate playlist_year_weight section in the appropriate format.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-format_ui_data_by_mode.html">.format_ui_data_by_mode()</a></code>
 
         </dt>
         <dd>Generate the data for the ui part by study mode.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-initializeLinksArea.html">.initializeLinksArea()</a></code>
 
         </dt>
         <dd>Initialize links data for a new area. For disk mode only.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-initializeRenewablesArea.html">.initializeRenewablesArea()</a></code>
 
         </dt>
         <dd>Initialize renewables data for a new area. For disk mode only.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-initializeThermalArea.html">.initializeThermalArea()</a></code>
 
         </dt>
         <dd>Initialize thermal data for a new area. For disk mode only.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="dot-split_nodalOptimization_by_target.html">.split_nodalOptimization_by_target()</a></code>
 
         </dt>
         <dd>Split list nodalOptimization by target file.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="editArea.html">editArea()</a></code>
 
         </dt>
         <dd>Edit an area in an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="editBindingConstraint.html">editBindingConstraint()</a></code>
 
         </dt>
         <dd>Update an existing binding constraint</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="editCluster.html">editCluster()</a></code> <code><a href="editCluster.html">editClusterRES()</a></code>
 
         </dt>
         <dd>Edit an existing cluster</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="editClusterST.html">editClusterST()</a></code>
 
         </dt>
         <dd>Edit a short-term storage cluster</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="editLink.html">editLink()</a></code>
 
         </dt>
         <dd>Edit a link between two areas</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="fill_empty_hydro_ini_file.html">fill_empty_hydro_ini_file()</a></code>
 
         </dt>
         <dd>Write default values in hydro.ini file if the section is empty</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="fill_empty_hydro_ts_file.html">fill_empty_hydro_ts_file()</a></code>
 
         </dt>
         <dd>Write default input time series if <code>mingen.txt</code> or/and <code>mod.txt</code> is empty</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="filteringOptions.html">filteringOptions()</a></code>
 
         </dt>
         <dd>Output profile options for creating an area</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="getJobLogs.html">getJobLogs()</a></code>
 
         </dt>
         <dd>Retrieve job log from API</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="getJobs.html">getJobs()</a></code>
 
         </dt>
         <dd>Retrieve API jobs</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_default_hydro_ini_values.html">get_default_hydro_ini_values()</a></code>
 
         </dt>
         <dd>Get default hydro.ini values</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_type_check_mingen_vs_hydrostorage.html">get_type_check_mingen_vs_hydrostorage()</a></code>
 
         </dt>
         <dd>Get the type of control to execute using the 3 necessary booleans</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_type_check_mingen_vs_hydrostorage_to_trigger.html">get_type_check_mingen_vs_hydrostorage_to_trigger()</a></code>
 
         </dt>
         <dd>Get the type of control to execute between mingen data and hydro storage data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_type_check_mingen_vs_maxpower_to_trigger.html">get_type_check_mingen_vs_maxpower_to_trigger()</a></code>
 
         </dt>
         <dd>Get the type of control to execute between mingen data and maxpower data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="importZipStudyWeb.html">importZipStudyWeb()</a></code>
 
         </dt>
         <dd>Import a local study to Antares Web</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="list_pollutants_values.html">list_pollutants_values()</a></code>
 
         </dt>
         <dd>Output pollutants list for thermal clusters</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="mockSimulationAPI.html">mockSimulationAPI()</a></code>
 
         </dt>
         <dd>Mock API usage</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="nodalOptimizationOptions.html">nodalOptimizationOptions()</a></code>
 
         </dt>
         <dd>Nodal optimization parameters for creating an area</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="playlist.html">getPlaylist()</a></code> <code><a href="playlist.html">setPlaylist()</a></code>
 
         </dt>
         <dd>Get the playlist of an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="propertiesLinkOptions.html">propertiesLinkOptions()</a></code>
 
         </dt>
         <dd>Properties for creating a link</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeArea.html">removeArea()</a></code>
 
         </dt>
         <dd>Remove an area from an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeBindingConstraint.html">removeBindingConstraint()</a></code>
 
         </dt>
         <dd>Remove a Binding Constraint</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeCluster.html">removeCluster()</a></code> <code><a href="removeCluster.html">removeClusterRES()</a></code> <code><a href="removeCluster.html">removeClusterST()</a></code>
 
         </dt>
         <dd>Remove a cluster</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeDistrict.html">removeDistrict()</a></code>
 
         </dt>
         <dd>Remove a district</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="removeLink.html">removeLink()</a></code>
 
         </dt>
         <dd>Remove a link between two areas</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="replicate_missing_ts.html">replicate_missing_ts()</a></code>
 
         </dt>
         <dd>Replicate a data.table as many times as needed to get the same number of time series between 2 data.tables</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="rollback_to_previous_data.html">rollback_to_previous_data()</a></code>
 
         </dt>
         <dd>Rollback to previous hydro data if the data is not consistent</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="runSimulation.html">runSimulation()</a></code>
 
         </dt>
         <dd>Run an Antares Simulation</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="runTsGenerator.html">runTsGenerator()</a></code>
 
         </dt>
         <dd>Run Time-Series Generator</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="scenario-builder.html">scenarioBuilder()</a></code> <code><a href="scenario-builder.html">readScenarioBuilder()</a></code> <code><a href="scenario-builder.html">updateScenarioBuilder()</a></code> <code><a href="scenario-builder.html">clearScenarioBuilder()</a></code> <code><a href="scenario-builder.html">deduplicateScenarioBuilder()</a></code>
 
         </dt>
         <dd>Read, create, update &amp; deduplicate scenario builder</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="searchStudy.html">searchStudy()</a></code>
 
         </dt>
         <dd>Search study in AntaREST</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="setAPImode.html">setAPImode()</a></code>
 
         </dt>
         <dd>Set API mode</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="setSolverPath.html">setSolverPath()</a></code>
 
         </dt>
         <dd>Set path to Antares Solver</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="setThematicTrimming.html">setThematicTrimming()</a></code>
 
         </dt>
         <dd>Set the thematic trimming of an Antares Study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="storage_values_default.html">storage_values_default()</a></code>
 
         </dt>
         <dd>Short Term Storage Property List</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="updateAdequacySettings.html">updateAdequacySettings()</a></code>
 
         </dt>
         <dd>Update adequacy parameters of an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="updateGeneralSettings.html">updateGeneralSettings()</a></code>
 
         </dt>
         <dd>Update general parameters of an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="updateInputSettings.html">updateInputSettings()</a></code>
 
         </dt>
         <dd>Update input parameters of an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="updateOptimizationSettings.html">updateOptimizationSettings()</a></code>
 
         </dt>
         <dd>Update optimization parameters of an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="updateOutputSettings.html">updateOutputSettings()</a></code>
 
         </dt>
         <dd>Update output parameters of an Antares study</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="update_generaldata_by_section.html">update_generaldata_by_section()</a></code>
 
         </dt>
         <dd>Update a specific section in generaldata.ini file</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="variant-commands.html">getVariantCommands()</a></code> <code><a href="variant-commands.html">writeVariantCommands()</a></code>
 
         </dt>
         <dd>Get API commands generated</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="variant.html">createVariant()</a></code> <code><a href="variant.html">useVariant()</a></code>
 
         </dt>
         <dd>Create a study's variant</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="write-ini.html">writeIni()</a></code> <code><a href="write-ini.html">writeIniFile()</a></code> <code><a href="write-ini.html">writeIniAPI()</a></code>
 
         </dt>
         <dd>Write configuration options in file or API</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeEconomicOptions.html">writeEconomicOptions()</a></code>
 
         </dt>
         <dd>Write Economic Options</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeHydroValues.html">writeHydroValues()</a></code>
 
         </dt>
         <dd>Write Hydro Values</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeIniHydro.html">writeIniHydro()</a></code>
 
         </dt>
         <dd>Edit hydro.ini values</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeInputTS.html">writeInputTS()</a></code>
 
         </dt>
         <dd>Write input time series</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeMiscGen.html">writeMiscGen()</a></code>
 
         </dt>
         <dd>Write Misc Gen data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeOutputValues.html">writeOutputValues()</a></code>
 
         </dt>
         <dd>Write output value for Antares</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeSeriesPrepro.html">writeSeriesPrepro()</a></code>
 
         </dt>
         <dd>Write prepro data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="writeWaterValues.html">writeWaterValues()</a></code>
 
@@ -648,7 +744,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">antaresEditObject</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.9.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.9.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,6 +21,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/Antares_new_features_v860.html">Antares new features v8.6.0</a></li>
     <li><a class="dropdown-item" href="../articles/Antares_new_features_v920.html">Antares new features v9.2</a></li>
+    <li><a class="dropdown-item" href="../articles/Antares_new_features_v930.html">Antares new features v9.3</a></li>
     <li><a class="dropdown-item" href="../articles/api-variant-management.html">Variant management with API</a></li>
     <li><a class="dropdown-item" href="../articles/renewables-energy-sources.html">Renewables Energy Sources</a></li>
     <li><a class="dropdown-item" href="../articles/scenario-builder.html">Scenario Builder</a></li>
@@ -44,11 +45,38 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/v0.9.2/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/rte-antares-rpackage/antaresEditObject/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.9.2" id="antareseditobject-092">antaresEditObject 0.9.2<a class="anchor" aria-label="anchor" href="#antareseditobject-092"></a></h2><p class="text-muted">CRAN release: 2025-09-24</p>
+<h2 class="pkg-version" data-toc-text="0.9.3" id="antareseditobject-093">antaresEditObject 0.9.3<a class="anchor" aria-label="anchor" href="#antareseditobject-093"></a></h2>
+<p>(cf. Antares v9.3 changelog)</p>
+<p>NEW FEATURES :</p>
+<ul><li>
+<code><a href="../reference/createClusterST.html">createClusterST()</a></code>/<code><a href="../reference/editClusterST.html">editClusterST()</a></code> :
+<ul><li>
+<strong>New properties</strong> (<em>allow-overflow</em>, see list of properties according to study version of Antares with <code><a href="../reference/storage_values_default.html">storage_values_default()</a></code>)</li>
+</ul></li>
+<li>
+<code><a href="../reference/createClusterST.html">createClusterST()</a></code>/<code><a href="../reference/editClusterST.html">editClusterST()</a></code> :
+<ul><li>
+<strong>New dimension of time series</strong> (all matrices will be of (8760, N), noting that N &gt;= 1)</li>
+<li>
+<strong>Suppression of properties</strong> (refreshtimeseries,refreshintervalload, refreshintervalhydro, refreshintervalwind, refreshintervalthermal, refreshintervalsolar from settings/generaldata.ini)</li>
+</ul></li>
+<li>
+<code><a href="../reference/createCluster.html">createCluster()</a></code> :
+<ul><li>
+<strong>Dynamic groups</strong> (The group parameter is now dynamic and has no restrictions. The default group value for Renewable depends on the version: Other RES 1 if &lt; 930, Other if &gt;= 930).</li>
+</ul></li>
+<li>
+<code><a href="../reference/scenario-builder.html">updateScenarioBuilder()</a></code> New types of series “sts” and “sta” (“sct apports level” and “sct contraintes”) is available</li>
+</ul><p>BUGFIXES :</p>
+<ul><li>
+<code>createBindingConstraint()/editBindingConstraint()</code> do not allow to create/edit a binding constraint if a cluster referenced in a coefficient does not exist.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9.2.9000" id="antareseditobject-0929000">antaresEditObject 0.9.2.9000<a class="anchor" aria-label="anchor" href="#antareseditobject-0929000"></a></h2>
 <p>(cf. Antares v9.2 changelog)</p>
 <p>NEW FEATURES :</p>
 <ul><li>
@@ -85,7 +113,7 @@
 <li>Add new function <code><a href="../reference/setThematicTrimming.html">setThematicTrimming()</a></code> to set the thematic trimming in file <code>generaldata.ini</code>
 </li>
 </ul><div class="section level4">
-<h4 id="breaking-changes--0-9-2">Breaking changes :<a class="anchor" aria-label="anchor" href="#breaking-changes--0-9-2"></a></h4>
+<h4 id="breaking-changes--0-9-2-9000">Breaking changes :<a class="anchor" aria-label="anchor" href="#breaking-changes--0-9-2-9000"></a></h4>
 <ul><li>
 <code><a href="../reference/createClusterST.html">createClusterST()</a></code> : For a study &lt; <em>v9.2</em>, execution will be STOP if <code>group</code> is not included in list (see doc)<br></li>
 <li>
@@ -95,7 +123,7 @@
 <code><a href="../reference/scenario-builder.html">clearScenarioBuilder()</a></code> in API mode, updates correctly with empty data (<code><a href="https://rdrr.io/r/base/Paren.html" class="external-link">{}</a></code>)</li>
 </ul></div>
 <div class="section level4">
-<h4 id="doc--0-9-2">DOC :<a class="anchor" aria-label="anchor" href="#doc--0-9-2"></a></h4>
+<h4 id="doc--0-9-2-9000">DOC :<a class="anchor" aria-label="anchor" href="#doc--0-9-2-9000"></a></h4>
 <p>A new article exposing new features of Antares Simulator v9.2 is available <a href="https://rte-antares-rpackage.github.io/antaresEditObject/dev/articles/Antares_new_features_v920.html" class="external-link">here</a></p>
 </div>
 </div>
@@ -516,7 +544,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
