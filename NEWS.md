@@ -45,6 +45,7 @@ NEW FEATURES (other) :
 * `editBindingConstraint()` : control the dimensions of the matrix only if a time series is provided by the user for optimization
 * `.createCluster()` uses a specific endpoint to write cluster's metadata and commands to write matrix
 * Add new function `setThematicTrimming()` to set the thematic trimming in file `generaldata.ini`
+* `createStudy()`* adds `author` in `study.antares` file
 
 
 ### Breaking changes  :  
