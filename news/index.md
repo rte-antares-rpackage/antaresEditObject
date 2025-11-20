@@ -82,6 +82,8 @@ NEW FEATURES (other) :
 - Add new function
   [`setThematicTrimming()`](../reference/setThematicTrimming.md) to set
   the thematic trimming in file `generaldata.ini`
+- [`createStudy()`](../reference/create-study.md)\* adds `author` in
+  `study.antares` file
 
 #### Breaking changes :
 

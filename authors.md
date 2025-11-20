@@ -35,7 +35,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/rte-antares-rpackage/antaresEditObject/blob/v0.9.3/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/rte-antares-rpackage/antaresEditObject/blob/master/DESCRIPTION)
 
 Vargas T (2025). *antaresEditObject: Edit an 'Antares' Simulation*. R
 package version 0.9.3,
