@@ -2,6 +2,8 @@
 
 ## antaresEditObject 0.9.3
 
+CRAN release: 2025-11-17
+
 (cf. Antares v9.3 changelog)
 
 NEW FEATURES :
