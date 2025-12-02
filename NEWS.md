@@ -1,6 +1,13 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
 
+# antaresEditObject 0.9.4.9000
+
+BUGFIXES :    
+
+* `.get_version_solver_from_path_solver()` get solver version by running command line instead of searching in the path.
+
+
 # antaresEditObject 0.9.3
 (cf. Antares v9.3 changelog)
 

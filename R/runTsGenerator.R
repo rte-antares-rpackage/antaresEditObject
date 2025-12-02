@@ -38,13 +38,9 @@ runTsGenerator <- function(path_solver = getOption("antares.solver"),
   }
   # a few checks
   assertthat::assert_that(file.exists(path_solver))
-
   
   ##Test version of antares solver
-  solver <- unlist(gsub("-solver.exe", "", path_solver))
-  solver <- strsplit(solver, "antares-")[[1]]
-  solver <- solver[[length(solver)]]
-  version_solver <- substr(solver, 1, 1)
+  version_solver <- .get_version_solver_from_path_solver(path_solver = path_solver)
   version_study <- substr(opts$antaresVersion,1,1)
   
   if(version_solver != version_study){
