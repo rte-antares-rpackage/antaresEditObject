@@ -90,7 +90,8 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
     data = list(
       version = version_to_write,
       study_name = study_name,
-      date_created = floor(as.numeric(Sys.time()))
+      date_created = floor(as.numeric(Sys.time())),
+      author = Sys.getenv("USERNAME")
     )
   )
   
