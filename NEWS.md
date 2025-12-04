@@ -1,6 +1,15 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
 
+# antaresEditObject 0.9.4.9000
+
+
+NEW FEATURES :
+
+* `createDistrict()` uses a specific endpoint to create the district
+* `editDistrict()` allows the user to edit a district
+
+
 # antaresEditObject 0.9.3
 (cf. Antares v9.3 changelog)
 
@@ -14,8 +23,6 @@ NEW FEATURES :
 * `createCluster()` :   
   - **Dynamic groups** (The group parameter is now dynamic and has no restrictions. The default group value for Renewable depends on the version: Other RES 1 if < 930, Other if >= 930).
 * `updateScenarioBuilder()` New types of series "sts" and "sta" ("sct apports level" and "sct contraintes") is available
-* `createDistrict()` uses a specific endpoint to create the district
-* `editDistrict()` allows the user to edit a district
 
 
 BUGFIXES :    
