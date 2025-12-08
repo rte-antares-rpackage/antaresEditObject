@@ -7,7 +7,7 @@
 NEW FEATURES :
 
 * `createDistrict()` uses a specific endpoint to create the district
-* `editDistrict()` allows the user to edit a district
+* `editDistrict()` allows the user to edit a district. Use of a specific endpoint in API mode.
 
 
 # antaresEditObject 0.9.3
