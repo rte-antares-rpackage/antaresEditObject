@@ -27,5 +27,5 @@ removeDistrict(
 }
 }
 \seealso{
-\code{\link[=createDistrict]{createDistrict()}}
+\code{\link[=createDistrict]{createDistrict()}}, \code{\link[=editDistrict]{editDistrict()}}
 }
