@@ -155,6 +155,9 @@
 - [`editClusterST()`](editClusterST.md) : Edit a short-term storage
   cluster
 
+- [`editDistrict()`](editDistrict.md) : Edit a district in an Antares
+  study
+
 - [`editLink()`](editLink.md) : Edit a link between two areas
 
 - [`fill_empty_hydro_ini_file()`](fill_empty_hydro_ini_file.md) : Write

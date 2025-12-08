@@ -1,20 +1,18 @@
-# Create a district
+# Edit a district in an Antares study
 
-Allows selecting a set of areas so as to bundle them together in a
-"district".
+Edit a district in an Antares study
 
 ## Usage
 
 ``` r
-createDistrict(
+editDistrict(
   name,
   caption = NULL,
   comments = NULL,
-  apply_filter = c("none", "add-all", "remove-all"),
+  apply_filter = NULL,
   add_area = NULL,
   remove_area = NULL,
-  output = FALSE,
-  overwrite = FALSE,
+  output = NULL,
   opts = simOptions()
 )
 ```
@@ -51,10 +49,6 @@ createDistrict(
 
   Logical, compute the results for the district or not?
 
-- overwrite:
-
-  Logical, should the district be overwritten if already exist?
-
 - opts:
 
   List of simulation parameters returned by the function
@@ -66,17 +60,18 @@ An updated list containing various information about the simulation.
 
 ## See also
 
-[`editDistrict()`](editDistrict.md),
+[`createDistrict()`](createDistrict.md),
 [`removeDistrict()`](removeDistrict.md)
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-createDistrict(
-  name = "mydistrict",
-  apply_filter = "add-all",
-  remove_area = c("fr", "be")
+editDistrict(
+  name = "my_existing_district",
+  comments = "This is my district",
+  add_area = c("area1", "area3", "area5"),
+  opts = simOptions()
 )
 } # }
 ```

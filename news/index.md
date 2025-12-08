@@ -1,5 +1,14 @@
 # Changelog
 
+## antaresEditObject 0.9.4.9000
+
+NEW FEATURES :
+
+- [`createDistrict()`](../reference/createDistrict.md) uses a specific
+  endpoint to create the district
+- [`editDistrict()`](../reference/editDistrict.md) allows the user to
+  edit a district. Use of a specific endpoint in API mode.
+
 ## antaresEditObject 0.9.3
 
 CRAN release: 2025-11-17

@@ -25,7 +25,8 @@ An updated list containing various information about the simulation.
 
 ## See also
 
-[`createDistrict()`](createDistrict.md)
+[`createDistrict()`](createDistrict.md),
+[`editDistrict()`](editDistrict.md)
 
 ## Examples
 
