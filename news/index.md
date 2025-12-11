@@ -9,6 +9,11 @@ NEW FEATURES :
 - [`editDistrict()`](../reference/editDistrict.md) allows the user to
   edit a district. Use of a specific endpoint in API mode.
 
+OPTIMIZATION :
+
+- [`createBindingConstraintBulk()`](../reference/createBindingConstraintBulk.md)
+  reads links and clusters of the study once
+
 ## antaresEditObject 0.9.3
 
 CRAN release: 2025-11-17
