@@ -668,7 +668,7 @@ group_values_meta_check <- function(group_value,
 #' @template opts
 #' @family binding constraints functions
 #'
-#' @importFrom antaresRead getLinks setSimulationPath readIniFile
+#' @importFrom antaresRead getLinks setSimulationPath readIniFile readClusterDesc
 #' 
 #' @details 
 #' According to Antares version, usage may vary :
@@ -753,6 +753,9 @@ createBindingConstraintBulk <- function(constraints,
   pathIni <- file.path(opts$inputPath, "bindingconstraints", "bindingconstraints.ini")
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
+  all_links <- getLinks(opts = opts, namesOnly = TRUE)
+  all_clusters <- readClusterDesc(opts = opts)
+  
   for (i in seq_along(constraints)) {
     values_operator <- switch_to_list_name_operator_870(operator = constraints[[i]][["operator"]])
     
@@ -761,8 +764,8 @@ createBindingConstraintBulk <- function(constraints,
       list(
         opts = opts, 
         bindingConstraints = bindingConstraints,
-        links = antaresRead::getLinks(opts = opts, namesOnly = TRUE),
-        clusters = readClusterDesc(opts = opts),
+        links = all_links,
+        clusters = all_clusters,
         output_operator = values_operator
       )
     ))

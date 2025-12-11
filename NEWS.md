@@ -9,6 +9,10 @@ NEW FEATURES :
 * `createDistrict()` uses a specific endpoint to create the district
 * `editDistrict()` allows the user to edit a district. Use of a specific endpoint in API mode.
 
+OPTIMIZATION : 
+
+* `createBindingConstraintBulk()` reads links and clusters of the study once
+
 
 # antaresEditObject 0.9.3
 (cf. Antares v9.3 changelog)
