@@ -28,7 +28,7 @@
 #' 
 #' @export
 #' 
-#' @importFrom antaresRead getLinks setSimulationPath readClusterDesc simOptions readIniFile
+#' @importFrom antaresRead getLinks setSimulationPath simOptions readIniFile
 #' @importFrom utils write.table
 #' @importFrom assertthat assert_that
 #' @importFrom data.table as.data.table fwrite
@@ -205,7 +205,7 @@ editBindingConstraint <- function(name,
     }
     
     if (has_clusters_coefs) {
-      clusters <- readClusterDesc(opts = opts)
+      clusters <- .list_clusters_for_binding_constraints(opts = opts)
       .check_bc_validity_coefficients(coefficients = coefficients, reference = clusters, type = "thermal")
     }
     

@@ -9,6 +9,11 @@ NEW FEATURES :
 * `createDistrict()` uses a specific endpoint to create the district
 * `editDistrict()` allows the user to edit a district. Use of a specific endpoint in API mode.
 
+ENHANCEMENT :
+
+* `createBindingConstraint()`/`editBindingCOnstraint()` : remove depency to `readClusterDesc()` from antaresRead package
+
+
 OPTIMIZATION : 
 
 * `createBindingConstraintBulk()` reads links and clusters of the study once
