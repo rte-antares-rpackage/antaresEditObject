@@ -893,10 +893,11 @@ switch_to_list_name_operator_870 <- function(operator) {
   }
   
   coefficientsToControl <- coefficients[grep(type_elements[[type]][["pattern"]], names(coefficients))]
+  coefs_names <- tolower(names(coefficientsToControl))
   
-  if(length(coefficientsToControl) > 0) {
-    if (!all(names(coefficientsToControl) %in% reference)) {
-      badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% reference]
+  if(length(coefs_names) > 0) {
+    if (!all(coefs_names %in% reference)) {
+      badcoef <- coefs_names[!coefs_names %in% reference]
       badcoef <- paste(shQuote(badcoef), collapse = ", ")
       stop(paste0(badcoef, " : is or are not valid ", type_elements[[type]][["stop_msg"]]))
     }
