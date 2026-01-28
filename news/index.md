@@ -9,6 +9,11 @@ NEW FEATURES :
 - [`editDistrict()`](../reference/editDistrict.md) allows the user to
   edit a district. Use of a specific endpoint in API mode.
 
+BUGFIXES :
+
+- `.get_version_solver_from_path_solver()` get solver version by running
+  command line instead of searching in the path.
+
 OPTIMIZATION :
 
 - [`createBindingConstraintBulk()`](../reference/createBindingConstraintBulk.md)

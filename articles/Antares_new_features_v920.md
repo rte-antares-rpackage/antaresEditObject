@@ -374,7 +374,7 @@ updateAdequacySettings(
 #> `updateAdequacySettings()` is deprecated as of antaresEditObject 2.9.2.
 #> ℹ This parameter are no longer supported for an Antares version >= '9.2', the
 #>   values will be ignored.
-#> This warning is displayed once every 8 hours.
+#> This warning is displayed once per session.
 #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 #> generated.
 updateAdequacySettings(enable_first_step = FALSE)
@@ -382,7 +382,7 @@ updateAdequacySettings(enable_first_step = FALSE)
 #> of antaresEditObject 2.9.2.
 #> ℹ This parameter are no longer supported for an Antares version >= '9.2', the
 #>   values will be ignored.
-#> This warning is displayed once every 8 hours.
+#> This warning is displayed once per session.
 #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 #> generated.
 ```
