@@ -3,7 +3,6 @@
 
 # antaresEditObject 0.9.4.9000
 
-
 NEW FEATURES :
 
 * `createDistrict()` uses a specific endpoint to create the district
@@ -13,6 +12,9 @@ ENHANCEMENT :
 
 * `createBindingConstraint()`/`editBindingCOnstraint()` : remove depency to `readClusterDesc()` from antaresRead package
 
+BUGFIXES :    
+
+* `.get_version_solver_from_path_solver()` get solver version by running command line instead of searching in the path.
 
 OPTIMIZATION : 
 

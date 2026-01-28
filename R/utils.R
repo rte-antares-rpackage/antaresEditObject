@@ -208,3 +208,14 @@ update_generaldata_by_section <- function(opts, section, new_params) {
   }
   return(update_opts(opts = opts))
 }
+
+
+.get_version_solver_from_path_solver <- function(path_solver) {
+  
+  cmd <- '"%s" --version'
+  cmd <- sprintf(cmd, path_solver)
+  output_cmd <- system(command = cmd, intern = TRUE)
+  solver_version <- output_cmd[length(output_cmd)]
+  
+  return(substr(x = solver_version, start = 1, stop = 1))
+}
