@@ -9,6 +9,13 @@ NEW FEATURES :
 - [`editDistrict()`](../reference/editDistrict.md) allows the user to
   edit a district. Use of a specific endpoint in API mode.
 
+ENHANCEMENT :
+
+- [`createBindingConstraint()`](../reference/createBindingConstraint.md)/`editBindingCOnstraint()`
+  : remove depency to
+  [`readClusterDesc()`](https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html)
+  from antaresRead package
+
 BUGFIXES :
 
 - `.get_version_solver_from_path_solver()` get solver version by running
