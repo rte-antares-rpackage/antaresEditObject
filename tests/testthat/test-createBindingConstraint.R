@@ -20,6 +20,17 @@ sapply(studies, function(study) {
     )
     
     expect_true("myconstraint" %in% names(antaresRead::readBindingConstraints()))
+    
+    createBindingConstraint(
+      name = "myconstraint_coef_no_lower", 
+      values = matrix(data = rep(0, 8760 * 3), ncol = 3), 
+      enabled = FALSE,
+      coefficients =  c("a.BaSe" = 0.1, "c.PeaK" = 0.3),      
+      timeStep = "hourly",
+      operator = "both"
+    )
+    
+    expect_true("myconstraint_coef_no_lower" %in% names(antaresRead::readBindingConstraints()))
   })
   
   

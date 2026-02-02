@@ -42,7 +42,7 @@ utils::globalVariables(c('V2', 'dim_study', 'dim_input', 'name_group'))
 #' 
 #' @name createBindingConstraint
 #' 
-#' @importFrom antaresRead getLinks readClusterDesc setSimulationPath readIniFile simOptions
+#' @importFrom antaresRead getLinks setSimulationPath readIniFile simOptions
 #' @importFrom utils write.table
 #' @importFrom assertthat assert_that
 #'
@@ -212,7 +212,7 @@ createBindingConstraint <- function(name,
     group,
     overwrite,
     links = getLinks(opts = opts, namesOnly = TRUE),
-    clusters = readClusterDesc(opts = opts),
+    clusters = .list_clusters_for_binding_constraints(opts = opts),
     output_operator = values_operator,
     opts = opts
   )
@@ -668,7 +668,7 @@ group_values_meta_check <- function(group_value,
 #' @template opts
 #' @family binding constraints functions
 #'
-#' @importFrom antaresRead getLinks setSimulationPath readIniFile readClusterDesc
+#' @importFrom antaresRead getLinks setSimulationPath readIniFile
 #' 
 #' @details 
 #' According to Antares version, usage may vary :
@@ -754,7 +754,7 @@ createBindingConstraintBulk <- function(constraints,
   bindingConstraints <- readIniFile(pathIni, stringsAsFactors = FALSE)
   
   all_links <- getLinks(opts = opts, namesOnly = TRUE)
-  all_clusters <- readClusterDesc(opts = opts)
+  all_clusters <- .list_clusters_for_binding_constraints(opts = opts)
   
   for (i in seq_along(constraints)) {
     values_operator <- switch_to_list_name_operator_870(operator = constraints[[i]][["operator"]])
@@ -893,12 +893,43 @@ switch_to_list_name_operator_870 <- function(operator) {
   }
   
   coefficientsToControl <- coefficients[grep(type_elements[[type]][["pattern"]], names(coefficients))]
+  coefs_names <- tolower(names(coefficientsToControl))
   
-  if(length(coefficientsToControl) > 0) {
-    if (!all(names(coefficientsToControl) %in% reference)) {
-      badcoef <- names(coefficientsToControl)[!names(coefficientsToControl) %in% reference]
+  if(length(coefs_names) > 0) {
+    if (!all(coefs_names %in% reference)) {
+      badcoef <- coefs_names[!coefs_names %in% reference]
       badcoef <- paste(shQuote(badcoef), collapse = ", ")
       stop(paste0(badcoef, " : is or are not valid ", type_elements[[type]][["stop_msg"]]))
     }
   }
+}
+
+
+#' @importFrom antaresRead readIniFile
+.list_clusters_for_binding_constraints <- function(opts) {
+  
+  path <- file.path(opts[["inputPath"]], "thermal", "clusters")
+  areas <- data.frame("area" = list.files(path))
+  areas$path <- file.path(path, areas$area, "list.ini")
+  areas$file_size <- sapply(areas$path, file.size)
+  areas_fi <- areas[areas$file_size > 0,]
+  
+  all_clusters <- data.frame("area" = c(), "cluster" = c())
+  if (nrow(areas_fi) > 0) {
+    clusters_by_area <- apply(areas_fi[,c("area","path")],
+                              MARGIN = 1,
+                              FUN = function(row) {
+                                iniFile <- readIniFile(file = as.character(row[2]))
+                                cl_names <- sapply(X = iniFile, "[[", "name")
+                                cl_names <- unname(cl_names)
+                                df_cl_names <- data.frame("area" = rep(as.character(row[1]), length(cl_names)), "cluster" = cl_names)
+                                return(df_cl_names)
+                              }
+    )
+    all_clusters <- do.call("rbind", clusters_by_area)
+    all_clusters$area <- tolower(all_clusters$area)
+    all_clusters$cluster <- tolower(all_clusters$cluster)
+  }
+  
+  return(all_clusters)
 }
