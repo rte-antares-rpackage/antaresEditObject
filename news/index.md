@@ -1,6 +1,6 @@
 # Changelog
 
-## antaresEditObject 0.9.4.9000
+## antaresEditObject 1.0.0
 
 NEW FEATURES :
 
