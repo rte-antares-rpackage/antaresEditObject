@@ -70,3 +70,6 @@ devtools::check(manual = TRUE,
 ```
 No more "Found the following (possibly) invalid URLs"
 
+# antaresEditObject 1.0.0
+we decide to change major number because Antares change system version number ...
+
