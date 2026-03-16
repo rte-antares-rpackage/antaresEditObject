@@ -10,6 +10,7 @@ importZipStudyWeb(
   zipfile_name,
   delete_zipfile = TRUE,
   folder_destination = NULL,
+  compression_level = 5,
   opts = antaresRead::simOptions()
 )
 }
@@ -24,6 +25,9 @@ importZipStudyWeb(
 
 \item{folder_destination}{Folder of the study in Antares Web.}
 
+\item{compression_level}{"int" A number between 1 and 9 (quality of compression only used for \code{.zip} archive).
+See details below for more information (default to 5, fast and good compression).}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
 }
@@ -32,4 +36,7 @@ An updated list containing various information about the simulation.
 }
 \description{
 Import a local study to Antares Web
+}
+\details{
+Parameter \code{compression_level} is used with function \code{\link[=backupStudy]{backupStudy()}}
 }
