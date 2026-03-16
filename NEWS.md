@@ -4,7 +4,9 @@
 
 # antaresEditObject 1.0.0.9000
 
+ENHANCEMENT :
 
+* `importZipStudyWeb()` zip study with new package `zip`instead of `utils::zip` (more faster)
 
 # antaresEditObject 1.0.0
 
