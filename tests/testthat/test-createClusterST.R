@@ -531,19 +531,17 @@ test_that("Wrong type/values",{
     createClusterST(area = area_test_clust, 
                     cluster_name = "err", 
                     storage_parameters = all_params), 
-    regexp = "x does not inherit from class numeric"
+    regexp = 'list_values\\[\\[\\"efficiencywithdrawal\\"\\]\\] does not inherit from class numeric'
   )
   
   # value
   all_params[["efficiencywithdrawal"]] <- 2.89
   
-  expect_error(
+  expect_no_error(
     createClusterST(area = area_test_clust, 
                     cluster_name = "err", 
-                    storage_parameters = all_params), 
-    regexp = "efficiencywithdrawal must be in range 0-1"
+                    storage_parameters = all_params)
   )
- 
   
   # "penalize-variation-injection"
   all_params <- storage_values_default()

@@ -600,8 +600,9 @@ createClusterST <- function(area,
                                        "logical"))
   
   if (opts$antaresVersion >= 920){
-    .is_ratio(list_values[["efficiencywithdrawal"]], 
-              "efficiencywithdrawal")
+    if(!is.null(list_values[["efficiencywithdrawal"]])){
+      assertthat::assert_that(inherits(list_values[["efficiencywithdrawal"]], "numeric"))
+    }
     if(!is.null(list_values[["penalize-variation-injection"]]))
       assertthat::assert_that(inherits(list_values[["penalize-variation-injection"]], 
                                        "logical"))

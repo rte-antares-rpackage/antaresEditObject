@@ -1,6 +1,14 @@
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
 
+# antaresEditObject 1.0.1.9000
+
+
+BUGFIXES :    
+
+* `.st_mandatory_params()` property efficiencywithdrawal is not a ratio and can be greater than 1.
+
+
 # antaresEditObject 1.0.0
 
 NEW FEATURES :
