@@ -119,16 +119,14 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
   # update actual template for 'generaldata.ini' (>=9.2)
     # as.numeric_version() is not efficient for 2 digits ... 
   if(is_new_version){
-    antares_version <- as.numeric(
-      as.character(antares_version))
-    
-    if (antares_version >= 9.2){
+    antares_version <- as.numeric(as.character(antares_version))
+    if (antares_version >= 9.2) {
       updateOptimizationSettings(shedding.policy = "accurate shave peaks")
-      
       # add new section and initiate with value "daily" to keep legacy behavior
       gen_data_file <- readIni("settings/generaldata")
-      # >= 9.3.0 : do not write these parameters in generaldata.ini
-      if ( antares_version >=9.3) {
+      gen_data_file[["other preferences"]][["initial-reservoir-levels"]] <- NULL
+      # >= 9.3.0 : remove these parameters in generaldata.ini
+      if (antares_version >= 9.3) {
         gen_data_file$general[["refreshtimeseries"]] <- NULL
         gen_data_file$general[["refreshintervalload"]] <- NULL
         gen_data_file$general[["refreshintervalhydro"]] <- NULL
