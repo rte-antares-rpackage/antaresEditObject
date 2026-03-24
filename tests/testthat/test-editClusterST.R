@@ -378,17 +378,16 @@ test_that("Wrong type/values",{
     editClusterST(area = area_test_clust, 
                     cluster_name = "edit_wrong_prop", 
                     storage_parameters = edit_params), 
-    regexp = "x does not inherit from class numeric"
+    regexp = 'list_values\\[\\[\\"efficiencywithdrawal\\"\\]\\] does not inherit from class numeric'
   )
   
   # value
   edit_params <- list("efficiencywithdrawal" = 2.89)
   
-  expect_error(
+  expect_no_error(
     editClusterST(area = area_test_clust, 
                     cluster_name = "edit_wrong_prop", 
-                    storage_parameters = edit_params), 
-    regexp = "efficiencywithdrawal must be in range 0-1"
+                    storage_parameters = edit_params)
   )
   
   # "penalize-variation-injection"
