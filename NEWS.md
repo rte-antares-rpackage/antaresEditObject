@@ -1,8 +1,12 @@
+# antaresEditObject (development version)
+
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
+# antaresEditObject 1.0.0.9000
 
-# antaresEditObject 1.0.1.9000
+ENHANCEMENT :
 
+* `importZipStudyWeb()` zip study with new package `zip`instead of `utils::zip` (more faster)
 
 BUGFIXES :    
 

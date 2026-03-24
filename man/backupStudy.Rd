@@ -6,9 +6,10 @@
 \usage{
 backupStudy(
   backupfile,
-  what = "study",
+  what = c("study", "input"),
+  compression_level = 5,
   opts = antaresRead::simOptions(),
-  extension = ".zip"
+  extension = c(".zip", ".tar.gz")
 )
 }
 \arguments{
@@ -18,10 +19,13 @@ either the name of the study or 'input' according argument \code{what}.}
 \item{what}{Which folder to save, \code{input} for the input folder
 or \code{study} for the whole study.}
 
+\item{compression_level}{"int" A number between 1 and 9 (quality of compression only used for \code{.zip} archive).
+See details below for more information (default to 5, fast and good compression).}
+
 \item{opts}{List of simulation parameters returned by the function
 \code{antaresRead::setSimulationPath}}
 
-\item{extension}{Defaut is \code{.zip}.}
+\item{extension}{Default is \code{.zip}.}
 }
 \value{
 The path of the backup
@@ -31,8 +35,12 @@ The path of the backup
 
 Save an Antares Study or only inputs in a \code{.tar.gz} or \code{.zip} file
 }
+\details{
+Parameter \code{compression_level} is used with function \code{\link[zip:zip]{zip::zip()}}
+}
 \examples{
 \dontrun{
+
 backupStudy()
 }
 }

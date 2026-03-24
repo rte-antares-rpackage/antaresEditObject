@@ -56,7 +56,12 @@ copyStudyWeb <- function(opts = antaresRead::simOptions(), host, token,
 #' @param zipfile_name Name of the zipfile of the study.
 #' @param delete_zipfile Should the zipfile be deleted after upload.
 #' @param folder_destination Folder of the study in Antares Web.
+#' @param compression_level "int" A number between 1 and 9 (quality of compression only used for `.zip` archive). 
+#' See details below for more information (default to 5, fast and good compression).
 #'
+#'
+#' @details
+#' Parameter `compression_level` is used with function [backupStudy()] 
 #' @template opts
 #'
 #' @importFrom antaresRead setSimulationPathAPI api_post simOptions
@@ -64,21 +69,27 @@ copyStudyWeb <- function(opts = antaresRead::simOptions(), host, token,
 #' 
 #' @export
 #'
-importZipStudyWeb <- function(host, token, zipfile_name, delete_zipfile = TRUE, folder_destination = NULL, opts = antaresRead::simOptions()) {
-  
-  # Dstination folder
-  dir_study <- dirname(opts$studyPath)
+importZipStudyWeb <- function(host, 
+                              token, 
+                              zipfile_name, 
+                              delete_zipfile = TRUE, 
+                              folder_destination = NULL, 
+                              compression_level = 5,
+                              opts = antaresRead::simOptions()) {
   
   # Zip the study
-  zipfile <- backupStudy(zipfile_name, what = "study", opts = opts, extension = ".zip") 
-  zipfile_path <- file.path(dir_study, zipfile)
+  zipfile <- backupStudy(zipfile_name, 
+                         what = "study", 
+                         compression_level = compression_level,
+                         opts = opts, 
+                         extension = ".zip") 
   
   # Import the study
   studyId <- api_post(
     opts = list(host = host, token = token),
     endpoint = "_import",
     default_endpoint = "v1/studies",
-    body = list(study = upload_file(zipfile_path)),
+    body = list(study = upload_file(zipfile)),
     encode = "multipart"
   )
   
@@ -92,7 +103,7 @@ importZipStudyWeb <- function(host, token, zipfile_name, delete_zipfile = TRUE, 
   }
   
   if (delete_zipfile) {
-    file.remove(zipfile_path)
+    file.remove(zipfile)
   }
   
   return(invisible(opts))
