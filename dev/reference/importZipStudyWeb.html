@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">antaresEditObject</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.0.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@
 <span>  <span class="va">zipfile_name</span>,</span>
 <span>  delete_zipfile <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  folder_destination <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  compression_level <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -89,6 +90,11 @@
 <dd><p>Folder of the study in Antares Web.</p></dd>
 
 
+<dt id="arg-compression-level">compression_level<a class="anchor" aria-label="anchor" href="#arg-compression-level"></a></dt>
+<dd><p>"int" A number between 1 and 9 (quality of compression only used for <code>.zip</code> archive).
+See details below for more information (default to 5, fast and good compression).</p></dd>
+
+
 <dt id="arg-opts">opts<a class="anchor" aria-label="anchor" href="#arg-opts"></a></dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
@@ -97,6 +103,10 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An updated list containing various information about the simulation.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Parameter <code>compression_level</code> is used with function <code><a href="backupStudy.html">backupStudy()</a></code></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -9,9 +9,10 @@ Save an Antares Study or only inputs in a `.tar.gz` or `.zip` file
 ``` r
 backupStudy(
   backupfile,
-  what = "study",
+  what = c("study", "input"),
+  compression_level = 5,
   opts = antaresRead::simOptions(),
-  extension = ".zip"
+  extension = c(".zip", ".tar.gz")
 )
 ```
 
@@ -27,6 +28,12 @@ backupStudy(
   Which folder to save, `input` for the input folder or `study` for the
   whole study.
 
+- compression_level:
+
+  "int" A number between 1 and 9 (quality of compression only used for
+  `.zip` archive). See details below for more information (default to 5,
+  fast and good compression).
+
 - opts:
 
   List of simulation parameters returned by the function
@@ -34,16 +41,22 @@ backupStudy(
 
 - extension:
 
-  Defaut is `.zip`.
+  Default is `.zip`.
 
 ## Value
 
 The path of the backup
 
+## Details
+
+Parameter `compression_level` is used with function
+[`zip::zip()`](https://r-lib.github.io/zip/reference/zip.html)
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
+
 backupStudy()
 } # }
 ```

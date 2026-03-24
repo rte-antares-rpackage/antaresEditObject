@@ -38,13 +38,13 @@ Source:
 [`DESCRIPTION`](https://github.com/rte-antares-rpackage/antaresEditObject/blob/master/DESCRIPTION)
 
 Vargas T (2026). *antaresEditObject: Edit an 'Antares' Simulation*. R
-package version 1.0.1.9000,
+package version 1.0.0.9000,
 <https://github.com/rte-antares-rpackage/antaresEditObject>.
 
     @Manual{,
       title = {antaresEditObject: Edit an 'Antares' Simulation},
       author = {Tatiana Vargas},
       year = {2026},
-      note = {R package version 1.0.1.9000},
+      note = {R package version 1.0.0.9000},
       url = {https://github.com/rte-antares-rpackage/antaresEditObject},
     }
