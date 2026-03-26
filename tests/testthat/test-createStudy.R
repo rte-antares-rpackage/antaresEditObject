@@ -53,8 +53,14 @@ test_that("Init v9.2 version study", {
     "daily"
   )
   
+  keys <- c("initial-reservoir-levels")
+  
+  expect_false(any(keys %in% names(prop_gen[["other preferences"]])))
+  
   unlink(path, recursive = TRUE)
 })
+
+
   ## v9.0----
 test_that("Create a new v9.0 study", {
   path <- file.path(tempdir(), "tests_createStudy")
