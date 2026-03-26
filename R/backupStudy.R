@@ -9,80 +9,119 @@
 #' either the name of the study or 'input' according argument \code{what}.
 #' @param what Which folder to save, \code{input} for the input folder
 #'  or \code{study} for the whole study.
+#' @param compression_level "int" A number between 1 and 9 (quality of compression only used for `.zip` archive). 
+#' See details below for more information (default to 5, fast and good compression).   
 #' @param opts
 #'   List of simulation parameters returned by the function
 #'   \code{antaresRead::setSimulationPath}
-#' @param extension Defaut is \code{.zip}.
+#' @param extension Default is \code{.zip}.
+#'
+#' @details
+#' Parameter `compression_level` is used with function [zip::zip()] 
 #'
 #' @return The path of the backup
 #' @export
 #' 
 #' @importFrom utils tar
 #' @importFrom assertthat assert_that
+#' @importFrom zip zip
 #'
 #' @examples
 #' \dontrun{
+#' 
 #' backupStudy()
 #' }
-backupStudy <- function(backupfile, what = "study", 
-                        opts = antaresRead::simOptions(), extension = ".zip") {
+backupStudy <- function(
+    backupfile,
+    what = c("study", "input"),
+    compression_level = 5,
+    opts = antaresRead::simOptions(),
+    extension = c(".zip", ".tar.gz")
+) {
+  what <- match.arg(what)
+  extension <- match.arg(extension)
   
-  assertthat::assert_that(what %in% c("study", "input"))  
-  assertthat::assert_that(inherits(opts, "simOptions"))
-  assertthat::assert_that(extension %in% c(".tar.gz", ".zip"))
+  stopifnot(inherits(opts, "simOptions"))
   api_not_implemented(opts)
-  assertthat::assert_that(!is.null(opts$studyPath) && dir.exists(opts$studyPath))
+  
+  target <- switch(
+    what,
+    study = opts$studyPath,
+    input = opts$inputPath
+  )
   
   if (missing(backupfile))
-    backupfile <- ifelse(what == "study", opts$studyPath, what)
+    backupfile <- basename(target)
   
-  # backupfile <- file.path(dirname(opts$studyPath), paste0(backupfile, ".tar.gz"))
+  archive_name <- paste0(backupfile, extension)
   
-  curr_wd <- getwd()
-  if (what == "study") {
-    zip_dir <- dirname(opts$studyPath)
-    zip_files <-  basename(opts$studyPath)
+  existing_archive <- file.path(dirname(target), paste0(backupfile, extension))
+  if (file.exists(existing_archive))
+    stop("Archive already exists: ", archive_name, call. = FALSE)
+  
+  if (extension == ".zip") {
+    zip::zip(
+      zipfile = archive_name,
+      files = basename(target),
+      root = dirname(target),
+      compression_level = compression_level
+    )
+    
   } else {
-    zip_dir <- dirname(opts$inputPath)
-    zip_files <-  basename(opts$inputPath)
+    tarfile_path <- file.path(dirname(target), archive_name)
+    
+    old_wd <- setwd(dirname(target))
+    on.exit(setwd(old_wd), add = TRUE)
+    
+    utils::tar(
+      tarfile = archive_name,
+      files = basename(target),
+      compression = "gzip"
+    )
+    
   }
-  setwd(zip_dir)
   
-  if (file.exists(paste0(backupfile, extension))) stop("Backup already exists in this folder.")
-  tryCatch(
-    if (extension == ".tar.gz")
-      utils::tar(tarfile = paste0(backupfile, ".tar.gz"), files = zip_files, compression = "gzip")
-    else utils::zip(zipfile = paste0(backupfile, ".zip"), files = zip_files)
-    , error = function(e) {
-      stop("Could not write ", shQuote(paste0(backupfile, extension)), " [", e$message, "]")
-    }
-    , finally = {
-      setwd(curr_wd)
-  })
-  
-  return (paste0(backupfile, extension))
-  
+  existing_archive
 }
-# backupSimulation <- function(backupfile, opts = antaresRead::simOptions()) {
+
+
+# backupStudy_old <- function(backupfile, what = "study", 
+#                             opts = antaresRead::simOptions(), extension = ".zip") {
 #   
-#   if (missing(backupfile)) 
-#     backupfile <- paste0(opts$studyName, "_backup")
+#   assertthat::assert_that(what %in% c("study", "input"))  
+#   assertthat::assert_that(inherits(opts, "simOptions"))
+#   assertthat::assert_that(extension %in% c(".tar.gz", ".zip"))
+#   api_not_implemented(opts)
+#   assertthat::assert_that(!is.null(opts$studyPath) && dir.exists(opts$studyPath))
 #   
-#   backupfile <- file.path(dirname(opts$studyPath), paste0(backupfile, ".tar.gz"))
+#   if (missing(backupfile))
+#     backupfile <- ifelse(what == "study", opts$studyPath, what)
 #   
-#   res <- tryCatch({
-#     tar(
-#       tarfile = backupfile,
-#       files = opts$studyPath,
-#       compression = "gzip"
-#     )
-#     TRUE
-#   }, error = function(e) FALSE)
+#   # backupfile <- file.path(dirname(opts$studyPath), paste0(backupfile, ".tar.gz"))
 #   
-#   if (res) {
-#     cat(paste0("Backup successfully created ! (", backupfile, ")"), "\n")
+#   curr_wd <- getwd()
+#   if (what == "study") {
+#     zip_dir <- dirname(opts$studyPath)
+#     zip_files <-  basename(opts$studyPath)
 #   } else {
-#     cat("Failed to create backup", "\n")
+#     zip_dir <- dirname(opts$inputPath)
+#     zip_files <-  basename(opts$inputPath)
 #   }
-#   return(res)
+#   setwd(zip_dir)
+#   
+#   if (file.exists(paste0(backupfile, extension))) stop("Backup already exists in this folder.")
+#   tryCatch(
+#     if (extension == ".tar.gz")
+#       utils::tar(tarfile = paste0(backupfile, ".tar.gz"), files = zip_files, compression = "gzip")
+#     else utils::zip(zipfile = paste0(backupfile, ".zip"), files = zip_files)
+#     , error = function(e) {
+#       stop("Could not write ", shQuote(paste0(backupfile, extension)), " [", e$message, "]")
+#     }
+#     , finally = {
+#       setwd(curr_wd)
+#     })
+#   
+#   return (paste0(backupfile, extension))
+#   
 # }
+
