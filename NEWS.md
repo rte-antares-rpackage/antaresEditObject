@@ -7,6 +7,7 @@
 ENHANCEMENT :
 
 * `importZipStudyWeb()` zip study with new package `zip`instead of `utils::zip` (more faster)
+* `createLink()`/ `editLink()` check the number of rows of dataLink and tsLink if provided
 
 BUGFIXES :    
 
