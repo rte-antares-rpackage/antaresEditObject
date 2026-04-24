@@ -7,6 +7,7 @@
 ENHANCEMENT :
 
 * `importZipStudyWeb()` zip study with new package `zip`instead of `utils::zip` (more faster)
+* `updateOptimizationSettings()` add missing properties and update possible values by property
 
 BUGFIXES :    
 

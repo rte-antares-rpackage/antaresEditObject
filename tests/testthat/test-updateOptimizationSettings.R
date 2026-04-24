@@ -19,7 +19,9 @@ sapply(studies, function(study) {
     updateOptimizationSettings(power.fluctuations = "minimize excursions")
     expect_equal(getOption("antares")$parameters$`other preferences`$`power-fluctuations`, "minimize excursions")
     
-    expect_error( updateOptimizationSettings(unit.commitment.mode = "unknown"))
+    expect_error(updateOptimizationSettings(unit.commitment.mode = "unknown"), 
+                 regexp = " is not an authorized value"
+                 )
     
   })
   
@@ -42,7 +44,14 @@ test_that("solver.log parameter available only if version >= 8.8", {
   ant_version <- "8.8.0"
   st_test <- paste0("my_study_880_", paste0(sample(letters,5),collapse = ""))
   suppressWarnings(opts <- createStudy(path = pathstd, study_name = st_test, antares_version = ant_version))
-  updateOptimizationSettings(solver.log = "true")
+  updateOptimizationSettings(solver.log = "true", opts = opts)
   expect_true(getOption("antares")$parameters$optimization$`solver-log`)
+  
+  expect_error(updateOptimizationSettings(include.unfeasible.problem.behavior = "unauthorized-value", opts = opts),
+               regexp = " is not an authorized value"
+              )
+  updateOptimizationSettings(include.unfeasible.problem.behavior = "error-dry", opts = opts)
+  expect_equal(getOption("antares")$parameters$optimization$`include-unfeasible-problem-behavior`, "error-dry")
+  
   unlink(x = opts$studyPath, recursive = TRUE)
 })

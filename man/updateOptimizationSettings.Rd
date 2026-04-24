@@ -24,6 +24,11 @@ updateOptimizationSettings(
   number.of.cores.mode = NULL,
   renewable.generation.modelling = NULL,
   day.ahead.reserve.management = NULL,
+  include.exportstructure = NULL,
+  include.unfeasible.problem.behavior = NULL,
+  hydro.heuristic.policy = NULL,
+  hydro.pricing.mode = NULL,
+  accurate.shave.peaks.include.short.term.storage = NULL,
   opts = antaresRead::simOptions()
 )
 }
@@ -59,13 +64,23 @@ null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-fo
 
 \item{shedding.policy}{shave peaks (accurate shave peaks for study >= v9.2)or minimize duration}
 
-\item{unit.commitment.mode}{fast or accurate}
+\item{unit.commitment.mode}{fast, accurate or milp}
 
 \item{number.of.cores.mode}{minimum, low, medium, high or maximum}
 
 \item{renewable.generation.modelling}{aggregated or clusters}
 
 \item{day.ahead.reserve.management}{global}
+
+\item{include.exportstructure}{true or false}
+
+\item{include.unfeasible.problem.behavior}{warning-dry, warning-verbose, error-dry or error-verbose}
+
+\item{hydro.heuristic.policy}{accommodate rule curves or maximize generation}
+
+\item{hydro.pricing.mode}{fast or accurate}
+
+\item{accurate.shave.peaks.include.short.term.storage}{true or false}
 
 \item{opts}{List of simulation parameters returned by the function
 \code{\link[antaresRead:setSimulationPath]{antaresRead::setSimulationPath()}}}
@@ -87,4 +102,7 @@ updateOptimizationSettings(
 )
 
 }
+}
+\seealso{
+\href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/#optimization-parameters}{Optimization parameters}
 }
