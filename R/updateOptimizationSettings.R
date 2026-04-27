@@ -77,14 +77,9 @@ updateOptimizationSettings <- function(simplex.range = NULL,
                                        opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  bad_value_msg <- " is not an authorized value"
-  
-	# check inputs
+  # check inputs
   if (!is.null(simplex.range)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "simplex.range")
-    assertthat::assert_that(simplex.range %in% dico_optimization[["values"]],
-                            msg = paste0(simplex.range, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "simplex.range", value = simplex.range)
   }
   
   if (!is.null(transmission.capacities))
@@ -101,73 +96,43 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     }
   
   if (!is.null(include.constraints)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.constraints")
-    assertthat::assert_that(include.constraints %in% dico_optimization[["values"]],
-                            msg = paste0(include.constraints, bad_value_msg)
-                          )
+    .check_property_value_optimization_settings(property = "include.constraints", value = include.constraints)
   }
   
   if (!is.null(include.hurdlecosts)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.hurdlecosts")
-    assertthat::assert_that(include.hurdlecosts %in% dico_optimization[["values"]],
-                            msg = paste0(include.hurdlecosts, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.hurdlecosts", value = include.hurdlecosts)
   }
   
   if (!is.null(include.tc.min.stable.power)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.tc.min.stable.power")
-    assertthat::assert_that(include.tc.min.stable.power %in% dico_optimization[["values"]],
-                            msg = paste0(include.tc.min.stable.power, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.tc.min.stable.power", value = include.tc.min.stable.power)
   }
   
   if (!is.null(include.tc.min.up.down.time)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.tc.min.up.down.time")
-    assertthat::assert_that(include.tc.min.up.down.time %in% dico_optimization[["values"]],
-                            msg = paste0(include.tc.min.up.down.time, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.tc.min.up.down.time", value = include.tc.min.up.down.time)
   }
   
   if (!is.null(include.dayahead)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.dayahead")
-    assertthat::assert_that(include.dayahead %in% dico_optimization[["values"]],
-                            msg = paste0(include.dayahead, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.dayahead", value = include.dayahead)
   }
   
   if (!is.null(include.strategicreserve)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.strategicreserve")
-    assertthat::assert_that(include.strategicreserve %in% dico_optimization[["values"]],
-                            msg = paste0(include.strategicreserve, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.strategicreserve", value = include.strategicreserve)
   }
   
   if (!is.null(include.spinningreserve)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.spinningreserve")
-    assertthat::assert_that(include.spinningreserve %in% dico_optimization[["values"]],
-                            msg = paste0(include.spinningreserve, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.spinningreserve", value = include.spinningreserve)
   }
   
   if (!is.null(include.primaryreserve)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.primaryreserve")
-    assertthat::assert_that(include.primaryreserve %in% dico_optimization[["values"]],
-                            msg = paste0(include.primaryreserve, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.primaryreserve", value = include.primaryreserve)
   }
   
   if (!is.null(include.exportstructure)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.exportstructure")
-    assertthat::assert_that(include.exportstructure %in% dico_optimization[["values"]],
-                            msg = paste0(include.exportstructure, bad_value_msg)
-                            )
+    .check_property_value_optimization_settings(property = "include.exportstructure", value = include.exportstructure)
   }
   
   if (!is.null(include.unfeasible.problem.behavior)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "include.unfeasible.problem.behavior")
-    assertthat::assert_that(include.unfeasible.problem.behavior %in% dico_optimization[["values"]],
-                            msg = paste0(include.unfeasible.problem.behavior, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "include.unfeasible.problem.behavior", value = include.unfeasible.problem.behavior)
   }
   
   if (!is.null(include.exportmps)){
@@ -185,24 +150,15 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     if (opts$antaresVersion < 880) {
       stop("updateOptimizationSettings: solver.log parameter is only available if using Antares >= 8.8.0", call. = FALSE)
     }
-    dico_optimization <- dicoOptimizationSettings(arg = "solver.log")    
-    assertthat::assert_that(solver.log %in% dico_optimization[["values"]],
-                            msg = paste0(solver.log, bad_value_msg)
-                            )
+    .check_property_value_optimization_settings(property = "solver.log", value = solver.log)    
   }
   
   if (!is.null(power.fluctuations)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "power.fluctuations")
-    assertthat::assert_that(power.fluctuations %in% dico_optimization[["values"]],
-                            msg = paste0(power.fluctuations, bad_value_msg)
-                            )
+    .check_property_value_optimization_settings(property = "power.fluctuations", value = power.fluctuations)
   }
   
   if (!is.null(shedding.strategy)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "shedding.strategy")
-    assertthat::assert_that(shedding.strategy %in% dico_optimization[["values"]],
-                            msg = paste0(shedding.strategy, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "shedding.strategy", value = shedding.strategy)
   }
   
   if (!is.null(shedding.policy)){
@@ -217,55 +173,34 @@ updateOptimizationSettings <- function(simplex.range = NULL,
   }
   
   if (!is.null(unit.commitment.mode)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "unit.commitment.mode")
-    assertthat::assert_that(unit.commitment.mode %in% dico_optimization[["values"]],
-                            msg = paste0(unit.commitment.mode, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "unit.commitment.mode", value = unit.commitment.mode)
   }
   
   if (!is.null(number.of.cores.mode)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "number.of.cores.mode")
-    assertthat::assert_that(number.of.cores.mode %in% dico_optimization[["values"]],
-                            msg = paste0(number.of.cores.mode, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "number.of.cores.mode", value = number.of.cores.mode)
   }
   
   if (!is.null(renewable.generation.modelling)) {
     if (opts$antaresVersion < 810) {
       stop("updateOptimizationSettings: renewable.generation.modelling parameter is only available if using Antares >= 8.1.0", call. = FALSE)
     }
-    dico_optimization <- dicoOptimizationSettings(arg = "renewable.generation.modelling")
-    assertthat::assert_that(renewable.generation.modelling %in% dico_optimization[["values"]],
-                            msg = paste0(renewable.generation.modelling, bad_value_msg)
-                            )
+    .check_property_value_optimization_settings(property = "renewable.generation.modelling", value = renewable.generation.modelling)
   }
   
   if (!is.null(day.ahead.reserve.management)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "day.ahead.reserve.management")
-    assertthat::assert_that(day.ahead.reserve.management %in% dico_optimization[["values"]],
-                            msg = paste0(day.ahead.reserve.management, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "day.ahead.reserve.management", value = day.ahead.reserve.management)
   }
   
   if (!is.null(hydro.heuristic.policy)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "hydro.heuristic.policy")
-    assertthat::assert_that(hydro.heuristic.policy %in% dico_optimization[["values"]],
-                            msg = paste0(hydro.heuristic.policy, bad_value_msg)
-                            )
+    .check_property_value_optimization_settings(property = "hydro.heuristic.policy", value = hydro.heuristic.policy)
   }
   
   if (!is.null(hydro.pricing.mode)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "hydro.pricing.mode")
-    assertthat::assert_that(hydro.pricing.mode %in% dico_optimization[["values"]],
-                            msg = paste0(hydro.pricing.mode, bad_value_msg)
-                           )
+    .check_property_value_optimization_settings(property = "hydro.pricing.mode", value = hydro.pricing.mode)
   }
   
   if (!is.null(accurate.shave.peaks.include.short.term.storage)) {
-    dico_optimization <- dicoOptimizationSettings(arg = "accurate.shave.peaks.include.short.term.storage")
-    assertthat::assert_that(accurate.shave.peaks.include.short.term.storage %in% dico_optimization[["values"]],
-                            msg = paste0(accurate.shave.peaks.include.short.term.storage, bad_value_msg)
-                            )
+    .check_property_value_optimization_settings(property = "accurate.shave.peaks.include.short.term.storage", value = accurate.shave.peaks.include.short.term.storage)
   }
   
   new_params_optimization <- dropNulls(list(
@@ -284,6 +219,7 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     include.exportstructure = include.exportstructure,
     include.unfeasible.problem.behavior = include.unfeasible.problem.behavior
   ))
+  
   for (i in seq_along(new_params_optimization)) {
     new_params_optimization[[i]] <- as.character(new_params_optimization[[i]])
     names(new_params_optimization)[i] <- dicoOptimizationSettings(names(new_params_optimization)[i])[["property"]]
@@ -458,3 +394,12 @@ dicoOptimizationSettings <- function(arg) {
   antares_params[[arg]]
 }
 
+
+#' @importFrom assertthat assert_that
+.check_property_value_optimization_settings <- function(property, value) {
+
+  dico_optimization <- dicoOptimizationSettings(arg = property)
+  assert_that(value %in% dico_optimization[["values"]],
+              msg = paste0(value, " is not an authorized value")
+             )
+}
