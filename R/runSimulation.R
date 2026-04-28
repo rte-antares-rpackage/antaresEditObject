@@ -69,7 +69,7 @@ runSimulation <- function(name,
     } else {
       status <- getJobs(run$job_id, opts = opts)
       while (is.null(status$completion_date) || is.na(status$completion_date)) {
-        Sys.sleep(1)
+        Sys.sleep(300)
         status <- getJobs(run$job_id, opts = opts)
       }
       if (isTRUE(show_output_on_console)) {
