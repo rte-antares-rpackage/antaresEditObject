@@ -47,10 +47,10 @@ editLink <- function(from,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   if (!is.null(filter_synthesis)) {
-    filter_synthesis <- paste(filter_synthesis, collapse = ", ")
+    filter_synthesis <- .format_ini_rhs(value = filter_synthesis)
   }
   if (!is.null(filter_year_by_year)) {
-    filter_year_by_year <- paste(filter_year_by_year, collapse = ", ")
+    filter_year_by_year <- .format_ini_rhs(value = filter_year_by_year)
   }
   
   propertiesLink <- dropNulls(list(
