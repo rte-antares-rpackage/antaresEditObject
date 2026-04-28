@@ -59,3 +59,26 @@ test_that("solver.log parameter available only if version >= 8.8, update multipl
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
+
+
+test_that("Check consistency of dictionary of the optimization settings", {
+  
+  keys <- c(  "simplex.range", "transmission.capacities"                        
+            , "include.constraints", "include.hurdlecosts"                            
+            , "include.tc.min.stable.power", "include.tc.min.up.down.time"                    
+            , "include.dayahead", "include.strategicreserve"                       
+            , "include.spinningreserve", "include.primaryreserve"                         
+            , "include.exportmps", "power.fluctuations"                             
+            , "shedding.strategy", "shedding.policy"                                
+            , "unit.commitment.mode", "number.of.cores.mode"                           
+            , "renewable.generation.modelling", "day.ahead.reserve.management"                   
+            , "solver.log", "include.exportstructure"                        
+            , "include.unfeasible.problem.behavior", "hydro.heuristic.policy"                         
+            , "hydro.pricing.mode", "accurate.shave.peaks.include.short.term.storage"
+  )
+  
+  values <- sapply(keys, FUN = dicoOptimizationSettings, simplify = FALSE)
+  properties <- sapply(values, "[[", "property")
+  expect_false(any(sapply(properties, is.null)))
+})
+
