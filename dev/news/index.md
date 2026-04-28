@@ -11,6 +11,9 @@ ENHANCEMENT :
 - [`importZipStudyWeb()`](../reference/importZipStudyWeb.md) zip study
   with new package `zip`instead of
   [`utils::zip`](https://rdrr.io/r/utils/zip.html) (more faster)
+- [`createLink()`](../reference/createLink.md)/
+  [`editLink()`](../reference/editLink.md) check the number of rows of
+  dataLink and tsLink if provided
 
 BUGFIXES :
 

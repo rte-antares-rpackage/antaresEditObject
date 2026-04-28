@@ -412,22 +412,20 @@ editLink(
   dataLink = matrix(data = c(rep(9, 8760*2), rep(6, 8760*6)), ncol = 8)
 )
 #> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
-#> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
-#> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
 getVariantCommands(last = 2)
 #> [
 #>   {
 #>     "action": "replace_matrix",
 #>     "args": {
-#>       "target": "input/links/area01/capacities/area02_direct",
-#>       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...
+#>       "target": "input/links/area01/capacities/area03_indirect",
+#>       "matrix": [[0],[0],[0],[0],[0],[0]] [truncated]...
 #>     }
 #>   },
 #>   {
 #>     "action": "replace_matrix",
 #>     "args": {
-#>       "target": "input/links/area01/capacities/area02_indirect",
-#>       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...
+#>       "target": "input/links/area01/area02_parameters",
+#>       "matrix": [[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6]] [truncated]...
 #>     }
 #>   }
 #> ]
@@ -444,8 +442,8 @@ getVariantCommands(last = TRUE)
 #>   {
 #>     "action": "replace_matrix",
 #>     "args": {
-#>       "target": "input/links/area01/capacities/area02_indirect",
-#>       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...
+#>       "target": "input/links/area01/area02_parameters",
+#>       "matrix": [[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6]] [truncated]...
 #>     }
 #>   }
 #> ]
@@ -465,8 +463,8 @@ getVariantCommands(last = TRUE)
 #>   {
 #>     "action": "replace_matrix",
 #>     "args": {
-#>       "target": "input/links/area01/capacities/area02_indirect",
-#>       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...
+#>       "target": "input/links/area01/area02_parameters",
+#>       "matrix": [[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6]] [truncated]...
 #>     }
 #>   }
 #> ]
@@ -504,15 +502,15 @@ getVariantCommands(last = 2)
 #>   {
 #>     "action": "replace_matrix",
 #>     "args": {
-#>       "target": "input/links/area01/capacities/area02_direct",
-#>       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...
+#>       "target": "input/links/area01/capacities/area03_indirect",
+#>       "matrix": [[0],[0],[0],[0],[0],[0]] [truncated]...
 #>     }
 #>   },
 #>   {
 #>     "action": "replace_matrix",
 #>     "args": {
-#>       "target": "input/links/area01/capacities/area02_indirect",
-#>       "matrix": [[9],[9],[9],[9],[9],[9]] [truncated]...
+#>       "target": "input/links/area01/area02_parameters",
+#>       "matrix": [[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6],[6,6,6,6,6,6]] [truncated]...
 #>     }
 #>   }
 #> ]
