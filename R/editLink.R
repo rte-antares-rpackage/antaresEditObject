@@ -105,9 +105,6 @@ editLink <- function(from,
   
   
   if (with_tsLink) {
-    stopifnot(
-      "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
-    )
     if (v820) {
       first_cols <- seq_len(NCOL(tsLink) / 2)
       last_cols <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
@@ -119,11 +116,8 @@ editLink <- function(from,
         indirect <- first_cols
       }
       tsLink <- as.data.table(tsLink)
-    } else {
-      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
-  
   
   # API block
   if (is_api_study(opts)) {
@@ -200,7 +194,6 @@ editLink <- function(from,
     return(invisible(opts))
   }
   
-  
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
@@ -248,7 +241,6 @@ editLink <- function(from,
     }
   }
   
-  
   if (with_tsLink) {
     if (v820) {
       dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
@@ -270,7 +262,6 @@ editLink <- function(from,
       )
     }
   }
-  
   
   # Maj simulation
   suppressWarnings({
