@@ -47,10 +47,10 @@ editLink <- function(from,
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   if (!is.null(filter_synthesis)) {
-    filter_synthesis <- paste(filter_synthesis, collapse = ", ")
+    filter_synthesis <- .format_ini_rhs(value = filter_synthesis)
   }
   if (!is.null(filter_year_by_year)) {
-    filter_year_by_year <- paste(filter_year_by_year, collapse = ", ")
+    filter_year_by_year <- .format_ini_rhs(value = filter_year_by_year)
   }
   
   propertiesLink <- dropNulls(list(
@@ -70,28 +70,20 @@ editLink <- function(from,
   v7 <- is_antares_v7(opts)
   v820 <- is_antares_v820(opts)
   
-  if (!is.null(dataLink)) {
-    if (v820) {
-      assertthat::assert_that(ncol(dataLink) == 8 | ncol(dataLink) == 6)
-    } else if (v7) {
-      assertthat::assert_that(ncol(dataLink) == 8)
-    } else {
-      assertthat::assert_that(ncol(dataLink) == 5)
-    }
+  # are time series provided by the user?
+  with_tsLink <- !is.null(tsLink)
+  with_dataLink <- !is.null(dataLink)
+  
+  if (with_dataLink) {
+    .control_dataLink_time_series_dimensions(dataLink = dataLink, v820 = v820, v7 = v7)
   }
   
-  if (!is.null(tsLink)) {
-    if (v820) {
-      stopifnot(
-        "tsLink must have an even number of columns: 2N" = identical(ncol(tsLink) %% 2, 0)
-      )
-    } else {
-      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
-    }
+  if (with_tsLink) {
+    .control_tsLink_time_series_dimensions(tsLink = tsLink, v820 = v820)
   }
   
-  if (v820 & (!is.null(dataLink) && ncol(dataLink) == 8)) {
-    if (!is.null(tsLink)) {
+  if (v820 & (with_dataLink && ncol(dataLink) == 8)) {
+    if (with_tsLink) {
       warning(
         "editLink: `tsLink` will be ignored since `dataLink` is provided with 8 columns."
       )
@@ -112,10 +104,7 @@ editLink <- function(from,
   check_area_name(to, opts)
   
   
-  if (!is.null(tsLink)) {
-    stopifnot(
-      "tsLink must have an even number of columns" = identical(ncol(tsLink) %% 2, 0)
-    )
+  if (with_tsLink) {
     if (v820) {
       first_cols <- seq_len(NCOL(tsLink) / 2)
       last_cols <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
@@ -127,11 +116,8 @@ editLink <- function(from,
         indirect <- first_cols
       }
       tsLink <- as.data.table(tsLink)
-    } else {
-      warning("tsLink will be ignored since Antares version < 820.", call. = FALSE)
     }
   }
-  
   
   # API block
   if (is_api_study(opts)) {
@@ -157,7 +143,7 @@ editLink <- function(from,
       )
     }
     
-    if (!is.null(dataLink)) {
+    if (with_dataLink) {
       if (v820){
         cmd <- api_command_generate(
           action = "replace_matrix",
@@ -179,7 +165,7 @@ editLink <- function(from,
       )
     }
     
-    if (v820 && !is.null(tsLink)) {
+    if (v820 && with_tsLink) {
       cmd <- api_command_generate(
         action = "replace_matrix",
         target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_direct")),
@@ -208,7 +194,6 @@ editLink <- function(from,
     return(invisible(opts))
   }
   
-  
   # Input path
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
@@ -230,7 +215,7 @@ editLink <- function(from,
     overwrite = TRUE
   )
   
-  if (!is.null(dataLink)) {
+  if (with_dataLink) {
     if (v820) {
       fwrite(
         x = as.data.table(dataLink), 
@@ -256,8 +241,7 @@ editLink <- function(from,
     }
   }
   
-  
-  if (!is.null(tsLink)) {
+  if (with_tsLink) {
     if (v820) {
       dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
       fwrite(
@@ -278,7 +262,6 @@ editLink <- function(from,
       )
     }
   }
-  
   
   # Maj simulation
   suppressWarnings({

@@ -55,6 +55,21 @@ test_that("Edit a link filters", {
     opts = opts_test
   ) 
   
+  expect_error(
+    editLink(from = "area1", to = "area3", tsLink = matrix(data = rep(0, 8759 * 2), ncol = 2), opts = opts_test),
+    regexp = "tsLink is an hourly data and must have 8760 rows"
+  )
+  
+  expect_error(
+    editLink(from = "area1", to = "area3", tsLink = matrix(data = rep(0, 8760 * 3), ncol = 3), opts = opts_test),
+    regexp = "tsLink must have an even number of columns"
+  )
+  
+  expect_error(
+    editLink(from = "area1", to = "area3", dataLink = matrix(data = rep(0, 8759 * 6), ncol = 6), opts = opts_test),
+    regexp = "dataLink is an hourly data and must have 8760 rows"
+  )
+  
   geo_after <- getGeographicTrimming(areas = "area1", opts = opts_test)
   geo_after_target_link <- geo_after[["links"]][["area1 - area3"]]
   
