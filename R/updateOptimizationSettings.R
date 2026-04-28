@@ -21,18 +21,25 @@
 #' @param power.fluctuations free modulations, minimize excursions or minimize ramping
 #' @param shedding.strategy share margins
 #' @param shedding.policy shave peaks (accurate shave peaks for study >= v9.2)or minimize duration
-#' @param unit.commitment.mode fast or accurate
+#' @param unit.commitment.mode fast, accurate or milp
 #' @param number.of.cores.mode minimum, low, medium, high or maximum
 #' @param renewable.generation.modelling aggregated or clusters
 #' @param day.ahead.reserve.management global
+#' @param include.exportstructure true or false
+#' @param include.unfeasible.problem.behavior warning-dry, warning-verbose, error-dry or error-verbose
+#' @param hydro.heuristic.policy accommodate rule curves or maximize generation
+#' @param hydro.pricing.mode fast or accurate
+#' @param accurate.shave.peaks.include.short.term.storage true or false
 #' 
 #' @template opts
+#'
+#' @seealso \href{https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/#optimization-parameters}{Optimization parameters}
 #'
 #' @export
 #'
 #' @importFrom utils modifyList
 #' @importFrom assertthat assert_that
-#' @importFrom antaresRead setSimulationPath
+#' @importFrom antaresRead setSimulationPath readIniFile
 #'
 #' @examples
 #' \dontrun{
@@ -62,12 +69,19 @@ updateOptimizationSettings <- function(simplex.range = NULL,
                                        number.of.cores.mode = NULL,
                                        renewable.generation.modelling = NULL,
                                        day.ahead.reserve.management = NULL,
+                                       include.exportstructure = NULL,
+                                       include.unfeasible.problem.behavior = NULL,
+                                       hydro.heuristic.policy = NULL,
+                                       hydro.pricing.mode = NULL,
+                                       accurate.shave.peaks.include.short.term.storage = NULL,
                                        opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   # check inputs
-  if (!is.null(simplex.range))
-    assertthat::assert_that(simplex.range %in% c("week", "day"))
+  if (!is.null(simplex.range)) {
+    .check_property_value_optimization_settings(property = "simplex.range", value = simplex.range)
+  }
+  
   if (!is.null(transmission.capacities))
     if (opts$antaresVersion >= 840){
       assertthat::assert_that(transmission.capacities %in% c("true", "false", "infinite",
@@ -80,22 +94,47 @@ updateOptimizationSettings <- function(simplex.range = NULL,
       assertthat::assert_that(transmission.capacities %in% c("true", "false", "infinite"))
       
     }
-  if (!is.null(include.constraints))
-    assertthat::assert_that(include.constraints %in% c("true", "false"))
-  if (!is.null(include.hurdlecosts))
-    assertthat::assert_that(include.hurdlecosts %in% c("true", "false"))
-  if (!is.null(include.tc.min.stable.power))
-    assertthat::assert_that(include.tc.min.stable.power %in% c("true", "false"))
-  if (!is.null(include.tc.min.up.down.time))
-    assertthat::assert_that(include.tc.min.up.down.time %in% c("true", "false"))
-  if (!is.null(include.dayahead))
-    assertthat::assert_that(include.dayahead %in% c("true", "false"))
-  if (!is.null(include.strategicreserve))
-    assertthat::assert_that(include.strategicreserve %in% c("true", "false"))
-  if (!is.null(include.spinningreserve))
-    assertthat::assert_that(include.spinningreserve %in% c("true", "false"))
-  if (!is.null(include.primaryreserve))
-    assertthat::assert_that(include.primaryreserve %in% c("true", "false"))
+  
+  if (!is.null(include.constraints)) {
+    .check_property_value_optimization_settings(property = "include.constraints", value = include.constraints)
+  }
+  
+  if (!is.null(include.hurdlecosts)) {
+    .check_property_value_optimization_settings(property = "include.hurdlecosts", value = include.hurdlecosts)
+  }
+  
+  if (!is.null(include.tc.min.stable.power)) {
+    .check_property_value_optimization_settings(property = "include.tc.min.stable.power", value = include.tc.min.stable.power)
+  }
+  
+  if (!is.null(include.tc.min.up.down.time)) {
+    .check_property_value_optimization_settings(property = "include.tc.min.up.down.time", value = include.tc.min.up.down.time)
+  }
+  
+  if (!is.null(include.dayahead)) {
+    .check_property_value_optimization_settings(property = "include.dayahead", value = include.dayahead)
+  }
+  
+  if (!is.null(include.strategicreserve)) {
+    .check_property_value_optimization_settings(property = "include.strategicreserve", value = include.strategicreserve)
+  }
+  
+  if (!is.null(include.spinningreserve)) {
+    .check_property_value_optimization_settings(property = "include.spinningreserve", value = include.spinningreserve)
+  }
+  
+  if (!is.null(include.primaryreserve)) {
+    .check_property_value_optimization_settings(property = "include.primaryreserve", value = include.primaryreserve)
+  }
+  
+  if (!is.null(include.exportstructure)) {
+    .check_property_value_optimization_settings(property = "include.exportstructure", value = include.exportstructure)
+  }
+  
+  if (!is.null(include.unfeasible.problem.behavior)) {
+    .check_property_value_optimization_settings(property = "include.unfeasible.problem.behavior", value = include.unfeasible.problem.behavior)
+  }
+  
   if (!is.null(include.exportmps)){
     if (opts$antaresVersion >= 832){
       assertthat::assert_that(include.exportmps %in% c("true", "false",
@@ -106,19 +145,22 @@ updateOptimizationSettings <- function(simplex.range = NULL,
       assertthat::assert_that(include.exportmps %in% c("true", "false"))
     }
   }
-  if (!is.null(solver.log)){
-    if (opts$antaresVersion < 880){
+  
+  if (!is.null(solver.log)) {
+    if (opts$antaresVersion < 880) {
       stop("updateOptimizationSettings: solver.log parameter is only available if using Antares >= 8.8.0", call. = FALSE)
-    }  
-    assertthat::assert_that(solver.log %in% c("true", "false"))
+    }
+    .check_property_value_optimization_settings(property = "solver.log", value = solver.log)    
   }
   
-  if (!is.null(power.fluctuations))
-    assertthat::assert_that(
-      power.fluctuations %in% c("free modulations", "minimize excursions", "minimize ramping")
-    )
-  if (!is.null(shedding.strategy))
-    assertthat::assert_that(shedding.strategy %in% c("share margins"))
+  if (!is.null(power.fluctuations)) {
+    .check_property_value_optimization_settings(property = "power.fluctuations", value = power.fluctuations)
+  }
+  
+  if (!is.null(shedding.strategy)) {
+    .check_property_value_optimization_settings(property = "shedding.strategy", value = shedding.strategy)
+  }
+  
   if (!is.null(shedding.policy)){
     if(opts$antaresVersion>=920)
       assertthat::assert_that(
@@ -129,18 +171,37 @@ updateOptimizationSettings <- function(simplex.range = NULL,
         shedding.policy %in% 
           c("shave peaks", "minimize duration"))
   }
-  if (!is.null(unit.commitment.mode))
-    assertthat::assert_that(unit.commitment.mode %in% c("fast", "accurate"))
-  if (!is.null(number.of.cores.mode))
-    assertthat::assert_that(number.of.cores.mode %in% c("minimum", "low", "medium", "high", "maximum"))
-  if (!is.null(renewable.generation.modelling)) {
-    if (opts$antaresVersion < 810)
-      stop("updateOptimizationSettings: renewable.generation.modelling parameter is only available if using Antares >= 8.1.0", call. = FALSE)
-    assertthat::assert_that(renewable.generation.modelling %in% c("aggregated", "clusters"))
-  }
-  if (!is.null(day.ahead.reserve.management))
-    assertthat::assert_that(day.ahead.reserve.management %in% c("global"))
   
+  if (!is.null(unit.commitment.mode)) {
+    .check_property_value_optimization_settings(property = "unit.commitment.mode", value = unit.commitment.mode)
+  }
+  
+  if (!is.null(number.of.cores.mode)) {
+    .check_property_value_optimization_settings(property = "number.of.cores.mode", value = number.of.cores.mode)
+  }
+  
+  if (!is.null(renewable.generation.modelling)) {
+    if (opts$antaresVersion < 810) {
+      stop("updateOptimizationSettings: renewable.generation.modelling parameter is only available if using Antares >= 8.1.0", call. = FALSE)
+    }
+    .check_property_value_optimization_settings(property = "renewable.generation.modelling", value = renewable.generation.modelling)
+  }
+  
+  if (!is.null(day.ahead.reserve.management)) {
+    .check_property_value_optimization_settings(property = "day.ahead.reserve.management", value = day.ahead.reserve.management)
+  }
+  
+  if (!is.null(hydro.heuristic.policy)) {
+    .check_property_value_optimization_settings(property = "hydro.heuristic.policy", value = hydro.heuristic.policy)
+  }
+  
+  if (!is.null(hydro.pricing.mode)) {
+    .check_property_value_optimization_settings(property = "hydro.pricing.mode", value = hydro.pricing.mode)
+  }
+  
+  if (!is.null(accurate.shave.peaks.include.short.term.storage)) {
+    .check_property_value_optimization_settings(property = "accurate.shave.peaks.include.short.term.storage", value = accurate.shave.peaks.include.short.term.storage)
+  }
   
   new_params_optimization <- dropNulls(list(
     simplex.range = simplex.range,
@@ -154,11 +215,14 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     include.spinningreserve = include.spinningreserve,
     include.primaryreserve = include.primaryreserve,
     include.exportmps = include.exportmps,
-    solver.log = solver.log
+    solver.log = solver.log,
+    include.exportstructure = include.exportstructure,
+    include.unfeasible.problem.behavior = include.unfeasible.problem.behavior
   ))
+  
   for (i in seq_along(new_params_optimization)) {
     new_params_optimization[[i]] <- as.character(new_params_optimization[[i]])
-    names(new_params_optimization)[i] <- dicoOptimizationSettings(names(new_params_optimization)[i])
+    names(new_params_optimization)[i] <- dicoOptimizationSettings(names(new_params_optimization)[i])[["property"]]
   }
   
   new_params_others <- dropNulls(list(
@@ -168,11 +232,14 @@ updateOptimizationSettings <- function(simplex.range = NULL,
     unit.commitment.mode = unit.commitment.mode,
     number.of.cores.mode = number.of.cores.mode,
     renewable.generation.modelling = renewable.generation.modelling,
-    day.ahead.reserve.management = day.ahead.reserve.management
+    day.ahead.reserve.management = day.ahead.reserve.management,
+    hydro.heuristic.policy = hydro.heuristic.policy,
+    hydro.pricing.mode = hydro.pricing.mode,
+    accurate.shave.peaks.include.short.term.storage = accurate.shave.peaks.include.short.term.storage
   ))
   for (i in seq_along(new_params_others)) {
     new_params_others[[i]] <- as.character(new_params_others[[i]])
-    names(new_params_others)[i] <- dicoOptimizationSettings(names(new_params_others)[i])
+    names(new_params_others)[i] <- dicoOptimizationSettings(names(new_params_others)[i])[["property"]]
   }
   
   
@@ -231,9 +298,6 @@ updateOptimizationSettings <- function(simplex.range = NULL,
 }
 
 
-
-
-
 #' Correspondence between arguments of \code{updateOptimizationSettings} and actual Antares parameters.
 #'
 #' @param arg An argument from function \code{updateOptimizationSettings}.
@@ -245,56 +309,97 @@ updateOptimizationSettings <- function(simplex.range = NULL,
 #' @examples
 #' dicoGeneralSettings("year.by.year") # "year-by-year"
 dicoOptimizationSettings <- function(arg) {
-  if (length(arg) > 1)
+  
+  if (length(arg) > 1) {
     stop("'arg' must be length one")
+  }
   
-  
-  antares_params <- as.list(
-    c(
-      "simplex-range",
-      "transmission-capacities",
-      "include-constraints",
-      "include-hurdlecosts",
-      "include-tc-minstablepower",
-      "include-tc-min-ud-time",
-      "include-dayahead",
-      "include-strategicreserve",
-      "include-spinningreserve",
-      "include-primaryreserve",
-      "include-exportmps",
-      "power-fluctuations",
-      "shedding-strategy",
-      "shedding-policy",
-      "unit-commitment-mode",
-      "number-of-cores-mode",
-      "renewable-generation-modelling",
-      "day-ahead-reserve-management",
-      "solver-log"
-    )
-  )
-  
-  
-  names(antares_params) <- c(
-    "simplex.range",
-    "transmission.capacities",
-    "include.constraints",
-    "include.hurdlecosts",
-    "include.tc.min.stable.power",
-    "include.tc.min.up.down.time",
-    "include.dayahead",
-    "include.strategicreserve",
-    "include.spinningreserve",
-    "include.primaryreserve",
-    "include.exportmps",
-    "power.fluctuations",
-    "shedding.strategy",
-    "shedding.policy",
-    "unit.commitment.mode",
-    "number.of.cores.mode",
-    "renewable.generation.modelling",
-    "day.ahead.reserve.management",
-    "solver.log"
+  # properties with NULL as values have a more complex logic.
+  # So they are still computed in updateOptimizationSettings()
+  antares_params <- list(
+    "simplex.range" = list("property" = "simplex-range",
+                           "values" = c("week", "day")
+                          ),
+    "transmission.capacities" = list("property" = "transmission-capacities",
+                                     "values" = NULL
+                                    ),
+    "include.constraints" = list("property" = "include-constraints",
+                                 "values" = c("true", "false")
+                                 ),
+    "include.hurdlecosts" = list("property" = "include-hurdlecosts",
+                                 "values" = c("true", "false")
+                                ),
+    "include.tc.min.stable.power" = list("property" = "include-tc-minstablepower",
+                                         "values" = c("true", "false")
+                                        ),
+    "include.tc.min.up.down.time" = list("property" = "include-tc-min-ud-time",
+                                         "values" = c("true", "false")
+                                        ),
+    "include.dayahead" = list("property" = "include-dayahead",
+                              "values" = c("true", "false")
+                             ),
+    "include.strategicreserve" = list("property" = "include-strategicreserve",
+                                      "values" = c("true", "false")
+                                     ),
+    "include.spinningreserve" = list("property" = "include-spinningreserve",
+                                     "values" = c("true", "false")
+                                    ),
+    "include.primaryreserve" = list("property" = "include-primaryreserve",
+                                    "values" = c("true", "false")
+                                   ),
+    "include.exportmps" = list("property" = "include-exportmps",
+                               "values" = NULL
+                              ),
+    "power.fluctuations" = list("property" = "power-fluctuations",
+                                "values" = c("free modulations", "minimize excursions", "minimize ramping")
+                               ),
+    "shedding.strategy" = list("property" = "shedding-strategy",
+                               "values" = c("share margins")
+                              ),
+    "shedding.policy" = list("property" = "shedding-policy",
+                             "values" = NULL
+                            ),
+    "unit.commitment.mode" = list("property" = "unit-commitment-mode",
+                                  "values" = c("fast", "accurate", "milp")
+                                 ),
+    "number.of.cores.mode" = list("property" = "number-of-cores-mode",
+                                  "values" = c("minimum", "low", "medium", "high", "maximum")
+                                 ),
+    "renewable.generation.modelling" = list("property" = "renewable-generation-modelling",
+                                            "values" = c("aggregated", "clusters")
+                                           ),
+    "day.ahead.reserve.management" = list("property" = "day-ahead-reserve-management",
+                                          "values" = c("global")
+                                         ),
+    "solver.log" = list("property" = "solver-log",
+                        "values" = c("true", "false")
+                       ),
+    "include.exportstructure" = list("property" = "include-exportstructure",
+                                     "values" = c("true", "false")
+                                    ),
+    "include.unfeasible.problem.behavior" = list("property" = "include-unfeasible-problem-behavior",
+                                                 "values" = c("warning-dry", "warning-verbose", "error-dry", "error-verbose")
+                                                ),
+    "hydro.heuristic.policy" = list("property" = "hydro-heuristic-policy",
+                                    "values" = c("accommodate rule curves", "maximize generation")
+                                   ),
+    "hydro.pricing.mode" = list("property" = "hydro-pricing-mode",
+                                "values" = c("fast", "accurate")
+                               ),
+    "accurate.shave.peaks.include.short.term.storage" = list("property" = "accurate-shave-peaks-include-short-term-storage",
+                                                             "values" = c("true", "false")
+                                                            )
   )
   
   antares_params[[arg]]
+}
+
+
+#' @importFrom assertthat assert_that
+.check_property_value_optimization_settings <- function(property, value) {
+
+  dico_optimization <- dicoOptimizationSettings(arg = property)
+  assert_that(value %in% dico_optimization[["values"]],
+              msg = paste0(value, " is not an authorized value")
+             )
 }
