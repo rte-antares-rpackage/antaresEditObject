@@ -78,6 +78,11 @@ Update optimization parameters and other preferences of an Antares study"><meta 
 <span>  number.of.cores.mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  renewable.generation.modelling <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  day.ahead.reserve.management <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.exportstructure <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include.unfeasible.problem.behavior <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  hydro.heuristic.policy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  hydro.pricing.mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  accurate.shave.peaks.include.short.term.storage <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -148,7 +153,7 @@ null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-fo
 
 
 <dt id="arg-unit-commitment-mode">unit.commitment.mode<a class="anchor" aria-label="anchor" href="#arg-unit-commitment-mode"></a></dt>
-<dd><p>fast or accurate</p></dd>
+<dd><p>fast, accurate or milp</p></dd>
 
 
 <dt id="arg-number-of-cores-mode">number.of.cores.mode<a class="anchor" aria-label="anchor" href="#arg-number-of-cores-mode"></a></dt>
@@ -163,6 +168,26 @@ null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-fo
 <dd><p>global</p></dd>
 
 
+<dt id="arg-include-exportstructure">include.exportstructure<a class="anchor" aria-label="anchor" href="#arg-include-exportstructure"></a></dt>
+<dd><p>true or false</p></dd>
+
+
+<dt id="arg-include-unfeasible-problem-behavior">include.unfeasible.problem.behavior<a class="anchor" aria-label="anchor" href="#arg-include-unfeasible-problem-behavior"></a></dt>
+<dd><p>warning-dry, warning-verbose, error-dry or error-verbose</p></dd>
+
+
+<dt id="arg-hydro-heuristic-policy">hydro.heuristic.policy<a class="anchor" aria-label="anchor" href="#arg-hydro-heuristic-policy"></a></dt>
+<dd><p>accommodate rule curves or maximize generation</p></dd>
+
+
+<dt id="arg-hydro-pricing-mode">hydro.pricing.mode<a class="anchor" aria-label="anchor" href="#arg-hydro-pricing-mode"></a></dt>
+<dd><p>fast or accurate</p></dd>
+
+
+<dt id="arg-accurate-shave-peaks-include-short-term-storage">accurate.shave.peaks.include.short.term.storage<a class="anchor" aria-label="anchor" href="#arg-accurate-shave-peaks-include-short-term-storage"></a></dt>
+<dd><p>true or false</p></dd>
+
+
 <dt id="arg-opts">opts<a class="anchor" aria-label="anchor" href="#arg-opts"></a></dt>
 <dd><p>List of simulation parameters returned by the function
 <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">antaresRead::setSimulationPath()</a></code></p></dd>
@@ -171,6 +196,10 @@ null-for-all-links, infinite-for-all-links, null-for-physical-links, infinite-fo
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An updated list containing various information about the simulation.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><a href="https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/#optimization-parameters" class="external-link">Optimization parameters</a></p></div>
     </div>
 
     <div class="section level2">

@@ -14,6 +14,8 @@ ENHANCEMENT :
 - [`createLink()`](../reference/createLink.md)/
   [`editLink()`](../reference/editLink.md) check the number of rows of
   dataLink and tsLink if provided
+- [`updateOptimizationSettings()`](../reference/updateOptimizationSettings.md)
+  add missing properties and update possible values by property
 
 BUGFIXES :
 
