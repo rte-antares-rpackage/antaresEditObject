@@ -9,6 +9,7 @@ ENHANCEMENT :
 * `importZipStudyWeb()` zip study with new package `zip`instead of `utils::zip` (more faster)
 * `createLink()`/ `editLink()` check the number of rows of dataLink and tsLink if provided
 * `updateOptimizationSettings()` add missing properties and update possible values by property
+* `runSimulation()` poll each 300s instead of 1s to get the status of the job to avoid too many queries for Antares Web
 
 
 BUGFIXES :    

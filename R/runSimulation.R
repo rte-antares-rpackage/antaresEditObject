@@ -36,6 +36,8 @@
 #' 
 #' @importFrom assertthat assert_that
 #' @importFrom antaresRead simOptions api_post
+#' @importFrom jsonlite toJSON
+#'
 #' @export
 #' 
 ### Taken from antaresXpansion_0.5.2 ###
@@ -69,7 +71,7 @@ runSimulation <- function(name,
     } else {
       status <- getJobs(run$job_id, opts = opts)
       while (is.null(status$completion_date) || is.na(status$completion_date)) {
-        Sys.sleep(1)
+        Sys.sleep(300)
         status <- getJobs(run$job_id, opts = opts)
       }
       if (isTRUE(show_output_on_console)) {
@@ -99,16 +101,13 @@ runSimulation <- function(name,
       ), call. = FALSE)
     }
     
-    
     #Launch simulation
+    cmd <- '"%s" "%s" -n "%s" --%s'
     if (version_solver >= 6 & parallel) {
-      cmd <- '"%s" "%s" -n "%s" --%s --parallel'
-      cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
-    } else {
-      cmd <- '"%s" "%s" -n "%s" --%s'
-      cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
+      cmd <- paste(cmd, "--parallel")
     }
     
+    cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
     system(cmd, ignore.stdout = TRUE, wait = wait, show.output.on.console = show_output_on_console)
   }
 }
