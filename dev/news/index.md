@@ -16,6 +16,9 @@ ENHANCEMENT :
   dataLink and tsLink if provided
 - [`updateOptimizationSettings()`](../reference/updateOptimizationSettings.md)
   add missing properties and update possible values by property
+- [`runSimulation()`](../reference/runSimulation.md) poll each 300s
+  instead of 1s to get the status of the job to avoid too many queries
+  for Antares Web
 
 BUGFIXES :
 
