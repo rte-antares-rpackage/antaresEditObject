@@ -101,16 +101,13 @@ runSimulation <- function(name,
       ), call. = FALSE)
     }
     
-    
     #Launch simulation
+    cmd <- '"%s" "%s" -n "%s" --%s'
     if (version_solver >= 6 & parallel) {
-      cmd <- '"%s" "%s" -n "%s" --%s --parallel'
-      cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
-    } else {
-      cmd <- '"%s" "%s" -n "%s" --%s'
-      cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
+      cmd <- paste(cmd, "--parallel")
     }
     
+    cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
     system(cmd, ignore.stdout = TRUE, wait = wait, show.output.on.console = show_output_on_console)
   }
 }
