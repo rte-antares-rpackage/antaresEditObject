@@ -36,6 +36,8 @@
 #' 
 #' @importFrom assertthat assert_that
 #' @importFrom antaresRead simOptions api_post
+#' @importFrom jsonlite toJSON
+#'
 #' @export
 #' 
 ### Taken from antaresXpansion_0.5.2 ###
