@@ -225,7 +225,7 @@ api_command_execute <- function(command, opts, text_alert = "{msg_api}") {
     # test if task is terminated with success
     result_task_id_log <- result_task_id$result
     status <- isTRUE(result_task_id_log$success)
-    details_command <- jsonlite::fromJSON(result_task_id_log$return_value, 
+    details_command <- jsonlite::fromJSON(result_task_id_log$returnValue, 
                                           simplifyVector = FALSE)
     
     if(status){
