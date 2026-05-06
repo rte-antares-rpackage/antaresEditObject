@@ -1,6 +1,7 @@
 # Renewables Energy Sources
 
 ``` r
+
  # CRAN limite CPU usage
 data.table::setDTthreads(2)
 library(antaresEditObject)
@@ -13,6 +14,7 @@ start guide to use those new features.
 As always, setup the study you want to use:
 
 ``` r
+
 tmp <- tempfile()
 createStudy(path = tmp, study_name = "res-study")
 opts <- setSimulationPath(tmp)
@@ -23,6 +25,7 @@ opts <- setSimulationPath(tmp)
 First you need to activate RES functionality, to do so you can use:
 
 ``` r
+
 activateRES()
 ```
 
@@ -33,6 +36,7 @@ You can also update `renewable-generation-modelling` parameters manually
 with:
 
 ``` r
+
 updateOptimizationSettings(renewable.generation.modelling = "clusters")
 ```
 
@@ -42,6 +46,7 @@ Like thermal clusters, there’s equivalent functions to create, edit and
 remove RES clusters:
 
 ``` r
+
 # create an area to create a cluster in it
 createArea(name = "area51")
 
@@ -66,6 +71,7 @@ createClusterRES(
 Edit an existing cluster with:
 
 ``` r
+
 editClusterRES(
   area = "area51", 
   cluster_name = "ren02", 
@@ -77,6 +83,7 @@ editClusterRES(
 And remove a cluster with:
 
 ``` r
+
 removeClusterRES(area = "area51", cluster_name = "ren01")
 ```
 
@@ -86,6 +93,7 @@ There’s a new type of serie allowed in scenario builder for renewable
 clusters called `r`:
 
 ``` r
+
 readScenarioBuilder()
 ```
 
@@ -98,6 +106,7 @@ area51   1    2    3
 To update the scenario builder, you can use:
 
 ``` r
+
 # generate scenario
 sbuilder <- scenarioBuilder(n_scenario = 51)
 

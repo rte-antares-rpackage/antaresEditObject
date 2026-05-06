@@ -28,6 +28,11 @@ BUGFIXES :
   property `initial-reservoir-levels` in `generaldata/other preferences`
   is not needed. This property must be removed.
 
+BREAKING CHANGES :
+
+- `api_command_execute()` Since Antares Web 2.31.0, the endpoint
+  v1/tasks/ sends a property returnValue instead of return_value
+
 ## antaresEditObject 1.0.0
 
 CRAN release: 2026-02-03

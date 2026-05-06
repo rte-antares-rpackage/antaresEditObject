@@ -19,6 +19,7 @@ setSolverPath(path)
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 
 setSolverPath(path = "C:/antares/bin/antares-6.0-solver.exe")

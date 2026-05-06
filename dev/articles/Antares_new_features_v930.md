@@ -1,6 +1,7 @@
 # Antares new features v9.3
 
 ``` r
+
 library(antaresEditObject)
 #> Loading required package: antaresRead
 ```
@@ -12,6 +13,7 @@ Simulator](https://antares-simulator.readthedocs.io/en/latest/user-guide/04-migr
 ## Create new study v9.3
 
 ``` r
+
 dir_path <- tempdir()
 suppressWarnings(
   createStudy(path = dir_path, 
@@ -26,6 +28,7 @@ make the adjustment and we keep “930”.
 **Check version of my current study** :
 
 ``` r
+
 current_study_opts <- simOptions()
 current_study_opts$antaresVersion
 #> [1] 930
@@ -49,6 +52,7 @@ Initializes the study by updating the `generaldata.ini` file :
 We just need create *areas* to create *st-storages*.
 
 ``` r
+
 createArea(name = "fr")
 createArea(name = "it")
 ```
@@ -71,11 +75,13 @@ you can create or edit new clusters with new properties (see doc
 [`?createClusterST`](../reference/createClusterST.md)).
 
 ``` r
+
 # new properties (default values)
 rmarkdown::paged_table(as.data.frame(storage_values_default(), check.names = FALSE))
 ```
 
 ``` r
+
 # creation
 my_parameters <- storage_values_default()
 my_parameters$`allow-overflow` <- TRUE
@@ -98,6 +104,7 @@ rmarkdown::paged_table(tab)
 ```
 
 ``` r
+
 # edit properties of existing st-storage cluster
 my_parameters$`allow-overflow` <- FALSE
 
@@ -115,6 +122,7 @@ rmarkdown::paged_table(tab)
 All matrices will be of (8760, N), noting that N \>= 1
 
 ``` r
+
 # creation
 ratio_value <- matrix(0.7, 8760,2)
   
@@ -134,6 +142,7 @@ rmarkdown::paged_table(head(tab))
 ```
 
 ``` r
+
 # edit TS values of existing st-storage cluster
 new_ratio_value <- matrix(0.85, 8760,3)
 
@@ -154,6 +163,7 @@ rmarkdown::paged_table(head(tab))
 All RHS will be of (8760, N), noting that N \>= 1
 
 ``` r
+
 # Create
 good_ts <- matrix(0.7, nrow = 8760, ncol =3)
 createClusterST(area = "fr",
@@ -217,6 +227,7 @@ res=read_storages_constraints()
 Nothing has changed to remove clusters.
 
 ``` r
+
 # read cluster names
 levels(readClusterSTDesc()$cluster)
 #> [1] "fr_good_ts_value"      "fr_rhs_new_dimensions" "fr_test_storage"      
@@ -248,6 +259,7 @@ Antares Simulator v9.3 deletes some parameters:
 A message is displayed.
 
 ``` r
+
 # user messages
 updateGeneralSettings(
   refreshtimeseries = 100,
@@ -309,6 +321,7 @@ short-term storage additional constraints in the following format :
 sta,area,year,storage,constraint = TS number.
 
 ``` r
+
 #Add sts
 createClusterST(area = "fr",
                 cluster_name = "Scenario_builder_sts")
@@ -404,6 +417,7 @@ The following variables were removed:
   RENEWABLE GEN.
 
 ``` r
+
 #List of variables version >=9.3
 vector_select_vars= list_thematic_variables()
 #Add all variables

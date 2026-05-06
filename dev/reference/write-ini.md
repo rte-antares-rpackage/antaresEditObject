@@ -48,6 +48,7 @@ writeIniAPI(listData, pathIni, opts)
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 pathIni <- "D:/exemple_test/settings/generaldata.ini"
 generalSetting <- readIniFile(pathIni)

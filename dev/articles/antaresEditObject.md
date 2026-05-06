@@ -5,6 +5,7 @@
 First it’s necessary to load the package:
 
 ``` r
+
  # CRAN limite CPU usage
 data.table::setDTthreads(2)
 library(antaresEditObject)
@@ -13,12 +14,14 @@ library(antaresEditObject)
 You need to set the path to an Antares study in “input” mode:
 
 ``` r
+
 antaresRead::setSimulationPath(path = "path/to/study", simulation = "input")
 ```
 
 Or you can simply create a new study:
 
 ``` r
+
 createStudy("path/to/study")
 ```
 
@@ -27,6 +30,7 @@ createStudy("path/to/study")
 Before modifying your study, you can save it in an archive:
 
 ``` r
+
 backupStudy(what = "input")
 ```
 
@@ -37,6 +41,7 @@ This will create a `.tar.gz` file in your study folder.
 You can create a new area with:
 
 ``` r
+
 createArea(name = "myarea")
 
 # The new area should appear here:
@@ -58,6 +63,7 @@ There are two helper functions for area parameters:
 You can initialize a cluster with some parameters:
 
 ``` r
+
 createCluster(
   area = "myarea", 
   cluster_name = "myareacluster",
@@ -73,6 +79,7 @@ createCluster(
 You can also edit the settings of an existing cluster:
 
 ``` r
+
 editCluster(
   area = "myarea", 
   cluster_name = "myareacluster", 
@@ -83,6 +90,7 @@ editCluster(
 ## Create a new link
 
 ``` r
+
 createLink(
   from = "area1", 
   to = "area2", 
@@ -97,6 +105,7 @@ createLink(
 You can edit the settings of an existing link:
 
 ``` r
+
 editLink(
   from = "area1",
   to = "area2",
@@ -107,6 +116,7 @@ editLink(
 ## Create a binding constraint
 
 ``` r
+
 createBindingConstraint(
   name = "myconstraint", 
   values = matrix(data = c(rep(c(19200, 0, 0), each = 366)), ncol = 3), 
@@ -120,6 +130,7 @@ createBindingConstraint(
 ## Create several Pumped Storage Power plant (PSP)
 
 ``` r
+
 pspData <- data.frame(
   area = c("a", "b"), 
   installedCapacity = c(800,900)
@@ -134,6 +145,7 @@ createPSP(
 ## Create several Demand Side Response (DSR)
 
 ``` r
+
 dsrData <- data.frame(
   area = c("a", "b"),
   unit = c(10,20), 
@@ -151,6 +163,7 @@ For example, set the output of simulation year by year, and limit the
 number of Monte-Carlo years to 10:
 
 ``` r
+
 updateGeneralSettings(year.by.year = TRUE, nbyears = 10)
 ```
 
@@ -160,6 +173,7 @@ You can remove areas, links, clusters and binding constraints from input
 folder with `remove*` functions, e.g.:
 
 ``` r
+
 removeArea("myarea")
 ```
 
@@ -168,12 +182,14 @@ removeArea("myarea")
 First, update general settings to activate time series to generate:
 
 ``` r
+
 updateGeneralSettings(generate = "thermal")
 ```
 
 Then run TS-generator:
 
 ``` r
+
 runTsGenerator(
   path_solver = "C:/path/to/antares-solver.exe", 
   show_output_on_console = TRUE
@@ -185,6 +201,7 @@ runTsGenerator(
 Launch an Antares simulation from R:
 
 ``` r
+
 runSimulation(
   name = "myAwesomeSimulation", 
   mode = "economy",
@@ -199,6 +216,7 @@ To update an existing time series and write it, you can use the
 following commands :
 
 ``` r
+
 # Filepath of the study, version >= 820
 my_study <- file.path("", "", "")
 opts <- setSimulationPath(my_study, simulation ="input")
