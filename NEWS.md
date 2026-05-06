@@ -16,7 +16,11 @@ BUGFIXES :
 
 * `.st_mandatory_params()` property efficiencywithdrawal is not a ratio and can be greater than 1.
 * `createStudy()` Since Antares 9.2, property `initial-reservoir-levels` in `generaldata/other preferences` is not needed. This property must be removed.
+ 
 
+BREAKING CHANGES :
+
+* `api_command_execute()` Since Antares Web 2.31.0, the endpoint v1/tasks/<task_id> sends a property returnValue instead of return_value
 
 # antaresEditObject 1.0.0
 
