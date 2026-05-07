@@ -47,5 +47,23 @@ setThematicTrimming(selection_variables = vect_select_vars$variable)
 setThematicTrimming(selection_variables = vect_select_vars$variable, 
                     type_select = "suppr")
 
+##
+# Update a list of variables
+##
+
+opts <- setSimulationPath(path = path_study, simulation = "input")
+
+thematic <- antaresRead::getThematicTrimming(opts = opts)
+active <- thematic[thematic$status_selection == "active",]$variables
+
+# Add new variables to active variables
+to_add <- c("var1", "var2", "var3")
+new_list <- union(active, to_add)
+opts <- setThematicTrimming(selection_variables = new_list, type_select = "add", opts = opts)
+
+# Remove existing variables from active variables
+to_remove <- c("var1", "var2", "var3")
+new_list <- setdiff(active, to_remove)
+opts <- setThematicTrimming(selection_variables = new_list, type_select = "add", opts = opts)
 }
 }
