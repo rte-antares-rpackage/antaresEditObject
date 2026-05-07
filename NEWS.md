@@ -12,6 +12,11 @@ ENHANCEMENT :
 * `runSimulation()` poll each 300s instead of 1s to get the status of the job to avoid too many queries for Antares Web
 
 
+DOCUMENTATION :
+
+* `setThematicTrimming()` add example to show how to update a list of variables 
+
+
 BUGFIXES :    
 
 * `.st_mandatory_params()` property efficiencywithdrawal is not a ratio and can be greater than 1.
