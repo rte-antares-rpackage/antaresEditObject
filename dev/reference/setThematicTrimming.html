@@ -112,6 +112,24 @@ You can add or remove variables (use study version &gt;=v8.8).</p>
 <span class="r-in"><span><span class="fu">setThematicTrimming</span><span class="op">(</span>selection_variables <span class="op">=</span> <span class="va">vect_select_vars</span><span class="op">$</span><span class="va">variable</span>, </span></span>
 <span class="r-in"><span>                    type_select <span class="op">=</span> <span class="st">"suppr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span><span class="co"># Update a list of variables</span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path_study</span>, simulation <span class="op">=</span> <span class="st">"input"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">thematic</span> <span class="op">&lt;-</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/getThematicTrimming.html" class="external-link">getThematicTrimming</a></span><span class="op">(</span>opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">active</span> <span class="op">&lt;-</span> <span class="va">thematic</span><span class="op">[</span><span class="va">thematic</span><span class="op">$</span><span class="va">status_selection</span> <span class="op">==</span> <span class="st">"active"</span>,<span class="op">]</span><span class="op">$</span><span class="va">variables</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Add new variables to active variables</span></span></span>
+<span class="r-in"><span><span class="va">to_add</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">new_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">union</a></span><span class="op">(</span><span class="va">active</span>, <span class="va">to_add</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu">setThematicTrimming</span><span class="op">(</span>selection_variables <span class="op">=</span> <span class="va">new_list</span>, type_select <span class="op">=</span> <span class="st">"add"</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Remove existing variables from active variables</span></span></span>
+<span class="r-in"><span><span class="va">to_remove</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">new_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">active</span>, <span class="va">to_remove</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">opts</span> <span class="op">&lt;-</span> <span class="fu">setThematicTrimming</span><span class="op">(</span>selection_variables <span class="op">=</span> <span class="va">new_list</span>, type_select <span class="op">=</span> <span class="st">"add"</span>, opts <span class="op">=</span> <span class="va">opts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
