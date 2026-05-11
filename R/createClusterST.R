@@ -494,13 +494,14 @@ createClusterST <- function(area,
   previous_params <- readIniFile(file = path_clusters_ini)
   
   ## check cluster already exists ----
-  if (cluster_name %in% tolower(names(previous_params)) 
-      & !overwrite)
-    stop(paste(cluster_name, "already exist"))
+  cluster_exists <- cluster_name %in% tolower(names(previous_params))
+  if (cluster_exists & !overwrite) {
+    stop(paste(cluster_name, "already exists"))
+  }
   
   ## overwrite ----
   if (overwrite) {
-    if(cluster_name %in% tolower(names(previous_params))){
+    if (cluster_exists) {
       ind_cluster <- which(tolower(names(previous_params)) %in% 
                              cluster_name)[1]
       previous_params[[ind_cluster]] <- params_cluster
