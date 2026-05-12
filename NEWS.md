@@ -21,6 +21,7 @@ BUGFIXES :
 
 * `.st_mandatory_params()` property efficiencywithdrawal is not a ratio and can be greater than 1.
 * `createStudy()` Since Antares 9.2, property `initial-reservoir-levels` in `generaldata/other preferences` is not needed. This property must be removed.
+* `createLink()`/ `editLink()` booleans is.null(tsLink) and is.null(dataLink) can change inside the function (rollback to previous version)
  
 
 BREAKING CHANGES :

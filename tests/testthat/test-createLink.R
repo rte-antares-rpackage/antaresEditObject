@@ -109,6 +109,11 @@ test_that("Check if createLink() in version >= 8.2 writes time series link in th
   nb_cols <- length(dat_mat)
   mat_multi_scen <- matrix(data = rep(dat_mat, each = 8760), ncol = nb_cols)
   mat_multi_scen_inv <- matrix(data = rep(dat_mat_inv, each = 8760), ncol = nb_cols)
+  mat_ts_and_dataLink <- matrix(0, nrow = 8760L, ncol = 8)
+  mat_ts_and_dataLink[, 1] <- 100
+  mat_ts_and_dataLink[, 2] <- 100
+  mat_ts_and_dataLink[, 3] <- 0.5
+  mat_ts_and_dataLink[, 4] <- 0.5
   
   path_direct_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_direct.txt"))
   path_indirect_link_file <- file.path(opts$inputPath, "links", area, "capacities", paste0(area2,"_indirect.txt"))
@@ -175,6 +180,36 @@ test_that("Check if createLink() in version >= 8.2 writes time series link in th
                                            file = path_direct_link_file),
                as.data.table(mat_multi_scen[,seq((nb_cols/2)+1, nb_cols)]))
 
+  # dataLink and tsLink in one matrix
+  createLink(from = area, to = area2, opts = opts, dataLink = mat_ts_and_dataLink, overwrite = TRUE)
+  
+  # first column goes to direct file for capacities
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_ts_and_dataLink[,1]))
+  
+  # second column goes to indirect file for capacities
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_ts_and_dataLink[,2]))
+  
+  mat_ts_and_dataLink <- matrix(0, nrow = 8760L, ncol = 8)
+  mat_ts_and_dataLink[, 1] <- 200
+  mat_ts_and_dataLink[, 2] <- 200
+  mat_ts_and_dataLink[, 3] <- 0.5
+  mat_ts_and_dataLink[, 4] <- 0.5
+  
+  editLink(from = area, to = area2, opts = opts, dataLink = mat_ts_and_dataLink)
+
+  # first column goes to direct file for capacities
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_indirect_link_file),
+               as.data.table(mat_ts_and_dataLink[,1]))
+  
+  # second column goes to indirect file for capacities
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_direct_link_file),
+               as.data.table(mat_ts_and_dataLink[,2]))  
 })
 
 
