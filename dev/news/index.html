@@ -73,6 +73,8 @@
 <code>.st_mandatory_params()</code> property efficiencywithdrawal is not a ratio and can be greater than 1.</li>
 <li>
 <code><a href="../reference/create-study.html">createStudy()</a></code> Since Antares 9.2, property <code>initial-reservoir-levels</code> in <code>generaldata/other preferences</code> is not needed. This property must be removed.</li>
+<li>
+<code><a href="../reference/createLink.html">createLink()</a></code>/ <code><a href="../reference/editLink.html">editLink()</a></code> booleans is.null(tsLink) and is.null(dataLink) can change inside the function (rollback to previous version)</li>
 </ul><p>BREAKING CHANGES :</p>
 <ul><li>
 <code>api_command_execute()</code> Since Antares Web 2.31.0, the endpoint v1/tasks/<task_id> sends a property returnValue instead of return_value</task_id></li>
