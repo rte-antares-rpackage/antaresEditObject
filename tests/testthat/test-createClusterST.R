@@ -754,6 +754,123 @@ test_that("Add new binding constraint properties", {
     )
   })
   
+  test_that("Argument overwrite set to TRUE should remove/clear the previous data", {
+    cluster_name <- "cluster_to_overwrite"
+    good_ts <- matrix(0.7, 8760)
+    
+    # First run 
+    cstr1 <- "netting-2"
+    cstr2 <- "withdrawal-2"
+    
+    # Second run 
+    cstr3 <- "new_netting-2"
+    cstr4 <- "new_withdrawal-2"
+    cstr5 <- "new_netting-2"
+    
+    constraints_properties <- list(
+      "withdrawal-2" = list(
+        variable = "withdrawal",
+        operator = "equal",
+        hours = c("[1,3,5]", 
+                  "[120,121,122,123,124,125,126,127,128]")
+      ),
+      "netting-2" = list(
+        variable = "netting",
+        operator = "less",
+        hours = c("[1, 168]")
+      )
+    )
+    
+    constraints_ts <- list(
+        "withdrawal-2" = good_ts,
+        "netting-2" = good_ts
+    )
+    
+    # First run 
+    createClusterST(area = area_test_clust,
+                    cluster_name = cluster_name,
+                    group = "v1g",
+                    storage_parameters = storage_values_default(),
+                    add_prefix = TRUE,
+                    constraints_properties = constraints_properties,
+                    constraints_ts = constraints_ts,                  
+                    overwrite = TRUE,
+                    opts = simOptions()
+    )
+    
+    opts <- simOptions()    
+    cstr_path <- file.path(opts[["inputPath"]], 
+                           "st-storage", 
+                           "constraints", 
+                           area_test_clust, 
+                           paste0(area_test_clust,"_",cluster_name)
+                           )
+    
+    file_ts_cstr1 <- file.path(cstr_path, paste0("rhs_",cstr1,".txt"))
+    file_ts_cstr2 <- file.path(cstr_path, paste0("rhs_",cstr2,".txt"))
+    
+    expect_true(file.exists(file_ts_cstr1))
+    expect_true(file.exists(file_ts_cstr2))
+    
+    cstr_params <- readIniFile(file = file.path(cstr_path, "additional-constraints.ini"))
+    expect_equal(length(cstr_params), 2)
+    expect_true(all(c(cstr1, cstr2) %in% names(cstr_params)))
+  
+    # overwrite the cluster
+    constraints_properties_new <- list(
+      "new_withdrawal-2"=list(
+        variable = "withdrawal",
+        operator = "equal",
+        hours = c("[1,3,5]", 
+                  "[120,121,122,123,124,125,126,127,128]")
+      ),
+      "new_netting-2"=list(
+        variable = "netting",
+        operator = "less",
+        hours = c("[1, 168]")
+      ),
+      "new_netting-3"=list(
+        variable = "netting",
+        operator = "equal",
+        hours = c("[1, 168]")
+      )
+    )
+  
+    constraints_ts_new <- list(
+        "new_withdrawal-2" = good_ts,
+        "new_netting-2" = good_ts,
+        "new_netting-3" = good_ts
+    )
+    
+    # Second run with overwrite set to TRUE
+    createClusterST(area = area_test_clust,
+                    cluster_name = cluster_name,
+                    group = "v1g",
+                    storage_parameters = storage_values_default(),
+                    add_prefix = TRUE,
+                    constraints_properties = constraints_properties_new,
+                    constraints_ts = constraints_ts_new,                 
+                    overwrite = TRUE,
+                    opts = simOptions()
+    )
+    
+    file_ts_cstr3 <- file.path(cstr_path, paste0("rhs_",cstr3,".txt"))
+    file_ts_cstr4 <- file.path(cstr_path, paste0("rhs_",cstr4,".txt"))
+    file_ts_cstr5 <- file.path(cstr_path, paste0("rhs_",cstr5,".txt"))
+    
+    # Files file_ts_cstr1 and file_ts_cstr2 should be removed
+    expect_false(file.exists(file_ts_cstr1))
+    expect_false(file.exists(file_ts_cstr2))
+    
+    # Only files in constraints_properties_new should exist
+    expect_true(file.exists(file_ts_cstr3))
+    expect_true(file.exists(file_ts_cstr4))
+    expect_true(file.exists(file_ts_cstr5))
+    
+    cstr_params <- readIniFile(file = file.path(cstr_path, "additional-constraints.ini"))
+    expect_equal(length(cstr_params), 3)
+    expect_true(all(c(cstr3, cstr4, cstr5) %in% names(cstr_params)))
+  })
 })
 
 
