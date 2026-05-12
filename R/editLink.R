@@ -70,20 +70,16 @@ editLink <- function(from,
   v7 <- is_antares_v7(opts)
   v820 <- is_antares_v820(opts)
   
-  # are time series provided by the user?
-  with_tsLink <- !is.null(tsLink)
-  with_dataLink <- !is.null(dataLink)
-  
-  if (with_dataLink) {
+  if (!is.null(dataLink)) {
     .control_dataLink_time_series_dimensions(dataLink = dataLink, v820 = v820, v7 = v7)
   }
   
-  if (with_tsLink) {
+  if (!is.null(tsLink)) {
     .control_tsLink_time_series_dimensions(tsLink = tsLink, v820 = v820)
   }
   
-  if (v820 & (with_dataLink && ncol(dataLink) == 8)) {
-    if (with_tsLink) {
+  if (v820 & (!is.null(dataLink) && ncol(dataLink) == 8)) {
+    if (!is.null(tsLink)) {
       warning(
         "editLink: `tsLink` will be ignored since `dataLink` is provided with 8 columns."
       )
@@ -104,7 +100,7 @@ editLink <- function(from,
   check_area_name(to, opts)
   
   
-  if (with_tsLink) {
+  if (!is.null(tsLink)) {
     if (v820) {
       first_cols <- seq_len(NCOL(tsLink) / 2)
       last_cols <- setdiff(seq_len(NCOL(tsLink)), seq_len(NCOL(tsLink) / 2))
@@ -143,7 +139,7 @@ editLink <- function(from,
       )
     }
     
-    if (with_dataLink) {
+    if (!is.null(dataLink)) {
       if (v820){
         cmd <- api_command_generate(
           action = "replace_matrix",
@@ -165,7 +161,7 @@ editLink <- function(from,
       )
     }
     
-    if (v820 && with_tsLink) {
+    if (v820 && !is.null(tsLink)) {
       cmd <- api_command_generate(
         action = "replace_matrix",
         target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_direct")),
@@ -215,7 +211,7 @@ editLink <- function(from,
     overwrite = TRUE
   )
   
-  if (with_dataLink) {
+  if (!is.null(dataLink)) {
     if (v820) {
       fwrite(
         x = as.data.table(dataLink), 
@@ -241,7 +237,7 @@ editLink <- function(from,
     }
   }
   
-  if (with_tsLink) {
+  if (!is.null(tsLink)) {
     if (v820) {
       dir.create(file.path(inputPath, "links", from, "capacities"), showWarnings = FALSE)
       fwrite(
