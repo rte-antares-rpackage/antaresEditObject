@@ -95,24 +95,20 @@ createLink <- function(from,
   v7 <- is_antares_v7(opts)
   v820 <- is_antares_v820(opts)
   
-  # are time series provided by the user?
-  with_tsLink <- !is.null(tsLink)
-  with_dataLink <- !is.null(dataLink)
-  
-  if (with_dataLink) {
+  if (!is.null(dataLink)) {
     .control_dataLink_time_series_dimensions(dataLink = dataLink, v820 = v820, v7 = v7)
   }
   
-  if (with_tsLink) {
+  if (!is.null(tsLink)) {
     .control_tsLink_time_series_dimensions(tsLink = tsLink, v820 = v820)
   }
   
   # set initialization data if not provided
-  if (!with_dataLink) {
+  if (is.null(dataLink)) {
     dataLink <- .initialize_dataLink_time_series(v820 = v820, v7 = v7)
   } else {
     if (v820 & ncol(dataLink) == 8) {
-      if (with_tsLink) {
+      if (!is.null(tsLink)) {
         warning(
           "createLink: `tsLink` will be ignored since `dataLink` is provided with 8 columns."
         )
@@ -123,7 +119,7 @@ createLink <- function(from,
   }
   
   # set transmission capacities time series if not provided
-  if (!with_tsLink) {
+  if (is.null(tsLink)) {
     tsLink <- matrix(data = rep(0, 8760*2), ncol = 2)
   }
   tsLink <- data.table::as.data.table(tsLink)
