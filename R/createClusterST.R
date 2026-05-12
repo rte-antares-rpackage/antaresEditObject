@@ -755,8 +755,8 @@ storage_values_default <- function(opts = simOptions()) {
   
   ## write ts values ----
   # User can create a storage with a constraint cstr1 and cstr2.
-  # Then he can create the same storage with the parameter overwrite set to TRUE with a constraint cstr1 and cstr3 .
-  # Ensure that only constraints having an entry in additional_constraints.ini have a time series.
+  # Then he can create the same storage with the parameter overwrite set to TRUE with constraints cstr1 and cstr3.
+  # Ensure that only constraints having an entry in additional_constraints.ini have an associated time series.
   rhs_files <- list.files(dir_path, pattern = "rhs_.*\\.txt", full.names = TRUE)
   if (length(rhs_files) > 0) {
     sapply(rhs_files, FUN = file.remove)
