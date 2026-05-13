@@ -32,6 +32,9 @@ BUGFIXES :
 - [`createStudy()`](../reference/create-study.md) Since Antares 9.2,
   property `initial-reservoir-levels` in `generaldata/other preferences`
   is not needed. This property must be removed.
+- [`createClusterST()`](../reference/createClusterST.md) Ensure that if
+  a storage is created with overwrite set to TRUE, the storage is
+  overwritten
 - [`createLink()`](../reference/createLink.md)/
   [`editLink()`](../reference/editLink.md) booleans is.null(tsLink) and
   is.null(dataLink) can change inside the function (rollback to previous
