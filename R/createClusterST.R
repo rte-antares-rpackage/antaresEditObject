@@ -494,13 +494,14 @@ createClusterST <- function(area,
   previous_params <- readIniFile(file = path_clusters_ini)
   
   ## check cluster already exists ----
-  if (cluster_name %in% tolower(names(previous_params)) 
-      & !overwrite)
-    stop(paste(cluster_name, "already exist"))
+  cluster_exists <- cluster_name %in% tolower(names(previous_params))
+  if (cluster_exists & !overwrite) {
+    stop(paste(cluster_name, "already exists"))
+  }
   
   ## overwrite ----
-  if(overwrite){
-    if(cluster_name %in% tolower(names(previous_params))){
+  if (overwrite) {
+    if (cluster_exists) {
       ind_cluster <- which(tolower(names(previous_params)) %in% 
                              cluster_name)[1]
       previous_params[[ind_cluster]] <- params_cluster
@@ -558,8 +559,7 @@ createClusterST <- function(area,
     .add_storage_constraint(area = area, 
                             cluster_name = cluster_name, 
                             constraints_properties = constraints_properties, 
-                            constraints_ts = constraints_ts, 
-                            overwrite = overwrite, 
+                            constraints_ts = constraints_ts,  
                             opts = opts)
   
   # Update simulation options object
@@ -731,74 +731,37 @@ storage_values_default <- function(opts = simOptions()) {
                                     cluster_name, 
                                     constraints_properties, 
                                     constraints_ts, 
-                                    overwrite,
                                     opts){
   # constraints/<area id>/cluster/additional-constraints.ini
   
-  # create dir 
-  dir_path <- file.path(opts$inputPath, 
+  dir_path <- file.path(opts[["inputPath"]], 
                         "st-storage", 
                         "constraints", 
                         area, 
                         cluster_name)
+                      
   dir.create(dir_path, recursive = TRUE, showWarnings = FALSE)
   
   ## write properties ----
   
   # TODO check mandatory list params
   
-  # read previous content of ini (if exists)
-  path_contraint_ini <- file.path(dir_path, 
-                                  "additional-constraints.ini")
-  
-  if(file.exists(path_contraint_ini)){
-    previous_params <- readIniFile(file = path_contraint_ini)
-    
-    constraints_names <- names(constraints_properties)
-    
-    ## check constraint(s) already exist(s) ----
-    if (any(
-      constraints_names %in% 
-      tolower(names(previous_params)) & 
-      !overwrite))
-      stop(paste(constraints_names, " already exist "), 
-           call. = FALSE)
-    
-    ## overwrite prop ----
-    if(overwrite){
-      if(any(
-        constraints_names %in% tolower(names(previous_params))
-      )){
-        # insert/overwrite
-        ind_cluster <- which(tolower(names(previous_params)) %in% 
-                               constraints_names)
-        previous_params[ind_cluster] <- constraints_properties
-        constraints_properties <- previous_params
-        # names(previous_params)[ind_cluster] <- constraints_names
-      }else
-        constraints_properties <- append(previous_params, constraints_properties) 
-    }else
-      constraints_properties <- append(previous_params, constraints_properties)
-  }
   # write properties (all properties are overwritten)
   writeIni(
     listData = constraints_properties,
-    pathIni = path_contraint_ini,
+    pathIni = file.path(dir_path, "additional-constraints.ini"),
     overwrite = TRUE
   )
   
   ## write ts values ----
-  # check if ts already exist
-  if(!is.null(constraints_ts)){
-    ts_name <- paste0("rhs_", names(constraints_ts), ".txt")
-    path_ts_files <- file.path(dir_path, 
-                               ts_name)
-    
-    if(any(file.exists(path_ts_files))){
-      if(!overwrite)
-        stop(paste(constraints_names, " already exist "), 
-             call. = FALSE)
-    }
+  # User can create a storage with a constraint cstr1 and cstr2.
+  # Then he can create the same storage with the parameter overwrite set to TRUE with constraints cstr1 and cstr3.
+  # Ensure that only constraints having an entry in additional_constraints.ini have an associated time series.
+  rhs_files <- list.files(dir_path, pattern = "rhs_.*\\.txt", full.names = TRUE)
+  if (length(rhs_files) > 0) {
+    sapply(rhs_files, FUN = file.remove)
+  }
+  if (!is.null(constraints_ts)) {
     lapply(names(constraints_ts), 
            function(x){
              fwrite(
