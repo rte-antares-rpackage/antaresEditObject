@@ -1,6 +1,7 @@
 # Antares new features v8.6.0
 
 ``` r
+
  # CRAN limite CPU usage
 data.table::setDTthreads(2)
 library(antaresEditObject)
@@ -23,6 +24,7 @@ There are 3 new features :
 ## Create new study
 
 ``` r
+
 dir_path <- tempdir()
 createStudy(path = dir_path, 
             study_name = "test860", 
@@ -34,6 +36,7 @@ createStudy(path = dir_path,
 ## Create area
 
 ``` r
+
 createArea(name = "fr")
 createArea(name = "it")
 ```
@@ -49,6 +52,7 @@ By default you can call function only with two parameters (`area`,
 `cluster_name`).
 
 ``` r
+
 inflows_data <- matrix(3, 8760)
 ratio_values <- matrix(0.7, 8760)
 
@@ -76,6 +80,7 @@ createClusterST(area = "it",
 Now you can see informations in simulation options.
 
 ``` r
+
 opts <- simOptions()
 opts$areasWithSTClusters
 #> [1] "fr" "it"
@@ -88,6 +93,7 @@ specific function
 [`readClusterSTDesc()`](https://rte-antares-rpackage.github.io/antaresRead/reference/readClusterDesc.html).
 
 ``` r
+
 tab <- readClusterSTDesc()
 rmarkdown::paged_table(tab)
 ```
@@ -105,6 +111,7 @@ each function parameter):
 - upper-rule-curve.txt
 
 ``` r
+
 data_st_storage <- readInputTS(st_storage = "all")
 #> Importing st-storage
 #>   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%
@@ -121,6 +128,7 @@ you value for each name file.
 It is possible to edit parameters values and data values like you want.
 
 ``` r
+
 # edit parameters values 
 list_params_st <- storage_values_default()
 list_params_st$efficiency <- 0.5
@@ -142,6 +150,7 @@ rmarkdown::paged_table(tab)
 
 ``` r
 
+
 # read data
 data_st_storage <- readInputTS(st_storage = "all")
 #> Importing st-storage
@@ -155,6 +164,7 @@ Creating or editing st-storage are done, you can also remove clusters
 from study.
 
 ``` r
+
 # remove cluster
 removeClusterST(area = "fr", 
                 cluster_name = "test_storage", 
@@ -170,12 +180,14 @@ The area `fr` is deleted cause we created only one cluster
 `test_storage`.
 
 ``` r
+
 # control removed parameters
 tab <- readClusterSTDesc()
 rmarkdown::paged_table(head(tab))
 ```
 
 ``` r
+
 
 # control removed data
 data_st_storage <- readInputTS(st_storage = "all")
@@ -185,6 +197,7 @@ rmarkdown::paged_table(head(data_st_storage))
 ```
 
 ``` r
+
 
 unique(data_st_storage$area)
 #> [1] "it"
@@ -204,6 +217,7 @@ default, parameters are set to NULL, you can initialize all parameters
 with value or customize parameters.
 
 ``` r
+
 # create cluster with pollutants
 
 # pollutants
@@ -220,6 +234,7 @@ createCluster(area = "fr",
 ```
 
 ``` r
+
 # read parameters
 param_th_cluster <- readClusterDesc()
 rmarkdown::paged_table(param_th_cluster)
@@ -228,6 +243,7 @@ rmarkdown::paged_table(param_th_cluster)
 Let’s see how to edit 3 parameters **nh3, nox, pm2_5**.
 
 ``` r
+
 # editing
 edit_param_pollutants <- list_pollutants_values(multi_values = 0.3)[1:3]
 
@@ -267,6 +283,7 @@ will describe steps to edit `mingen.txt`.
 **Initial values :**
 
 ``` r
+
 # see hydro parameters 
 path_file_hydro <- file.path("input", "hydro", "hydro.ini")
 hydro_ini_values <- readIni(pathIni = path_file_hydro)
@@ -299,6 +316,7 @@ hydro_ini_values[hydro_params]
 **Steps to create mingen file :**
 
 ``` r
+
 # Initialize mingen data (time series)
 mingen_data = matrix(0.06,8760,5)
 
@@ -316,6 +334,7 @@ suppressWarnings(
 ```
 
 ``` r
+
 # 2 - edit maxpower 
 maxpower_data <- matrix(6,365,4)
 suppressWarnings(
@@ -331,6 +350,7 @@ suppressWarnings(
 ```
 
 ``` r
+
 # 3 - edit mingen
 suppressWarnings(
   writeInputTS(area = "fr", type = "mingen", 
@@ -350,6 +370,7 @@ suppressWarnings(
 Now we can read time series.
 
 ``` r
+
 # read input time series
 read_ts_file <- readInputTS(mingen = "all")
 #> Importing mingen

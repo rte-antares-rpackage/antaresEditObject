@@ -9,12 +9,14 @@
 Install from CRAN:
 
 ``` r
+
 install.packages("antaresEditObject")
 ```
 
 Or install dev version from GitHub:
 
 ``` r
+
 remotes::install_github("rte-antares-rpackage/antaresEditObject", build_vignettes = TRUE)
 ```
 

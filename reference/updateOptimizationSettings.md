@@ -27,6 +27,11 @@ updateOptimizationSettings(
   number.of.cores.mode = NULL,
   renewable.generation.modelling = NULL,
   day.ahead.reserve.management = NULL,
+  include.exportstructure = NULL,
+  include.unfeasible.problem.behavior = NULL,
+  hydro.heuristic.policy = NULL,
+  hydro.pricing.mode = NULL,
+  accurate.shave.peaks.include.short.term.storage = NULL,
   opts = antaresRead::simOptions()
 )
 ```
@@ -99,7 +104,7 @@ updateOptimizationSettings(
 
 - unit.commitment.mode:
 
-  fast or accurate
+  fast, accurate or milp
 
 - number.of.cores.mode:
 
@@ -113,6 +118,26 @@ updateOptimizationSettings(
 
   global
 
+- include.exportstructure:
+
+  true or false
+
+- include.unfeasible.problem.behavior:
+
+  warning-dry, warning-verbose, error-dry or error-verbose
+
+- hydro.heuristic.policy:
+
+  accommodate rule curves or maximize generation
+
+- hydro.pricing.mode:
+
+  fast or accurate
+
+- accurate.shave.peaks.include.short.term.storage:
+
+  true or false
+
 - opts:
 
   List of simulation parameters returned by the function
@@ -121,6 +146,11 @@ updateOptimizationSettings(
 ## Value
 
 An updated list containing various information about the simulation.
+
+## See also
+
+[Optimization
+parameters](https://antares-simulator.readthedocs.io/en/latest/user-guide/solver/04-parameters/#optimization-parameters)
 
 ## Examples
 

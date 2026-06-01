@@ -1,6 +1,7 @@
 # Variant management with API
 
 ``` r
+
  # CRAN limite CPU usage
 data.table::setDTthreads(2)
 library(antaresEditObject)
@@ -18,6 +19,7 @@ API.
 First we need to declare which study we are going to use:
 
 ``` r
+
 antaresRead::setSimulationPathAPI(
   host = "http://localhost:8080",
   study_id = "70a08fae-da67-444a-b2ed-df4c0f956a31", 
@@ -30,6 +32,7 @@ Then we can create a new variant from our study or use one created
 through the web interface:
 
 ``` r
+
 # Create new variant
 createVariant("variant-1")
 
@@ -42,6 +45,7 @@ we are offline or if we just want to generate API commands to be use
 afterwards:
 
 ``` r
+
 mockSimulationAPI()
 ```
 
@@ -56,6 +60,7 @@ mockSimulationAPI()
   are also internally recorded if needed).
 
 ``` r
+
 setAPImode("async")
 # or
 setAPImode("sync")
@@ -73,12 +78,14 @@ Variant commands generated after calling functions like
 time with:
 
 ``` r
+
 getVariantCommands()
 ```
 
 Last command generated can be viewed with:
 
 ``` r
+
 getVariantCommands(last = TRUE)
 # or use a numeric to get the last N commands
 getVariantCommands(last = 3)
@@ -87,12 +94,14 @@ getVariantCommands(last = 3)
 You can also filter type of commands with:
 
 ``` r
+
 getVariantCommands(actions = "create_area")
 ```
 
 Export commands with:
 
 ``` r
+
 writeVariantCommands("path/to/commands.json")
 ```
 
@@ -109,6 +118,7 @@ documentation:
 Create a new area:
 
 ``` r
+
 createArea(name = "area01")
 #> ℹ Command create_area registered, see all commands with `getVariantCommands()`
 #> ℹ Command update_area_ui registered, see all commands with `getVariantCommands()`
@@ -213,6 +223,7 @@ getVariantCommands()
 Create a second area with some default parameters:
 
 ``` r
+
 createArea(
   name = "area04", 
   filtering = filteringOptions(filter_synthesis = c("hourly", "daily"))
@@ -354,6 +365,7 @@ getVariantCommands()
 You can also edit an area or remove it:
 
 ``` r
+
 createArea(name = "area000")
 #> ℹ Command create_area registered, see all commands with `getVariantCommands()`
 #> ℹ Command update_area_ui registered, see all commands with `getVariantCommands()`
@@ -376,6 +388,7 @@ getVariantCommands(last = TRUE)
 Create a new link between two areas like this:
 
 ``` r
+
 createLink(from = "area01", to = "area02")
 #> ℹ Command create_link registered, see all commands with `getVariantCommands()`
 #> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
@@ -406,6 +419,7 @@ getVariantCommands(last = 2)
 Edit an existing link with:
 
 ``` r
+
 editLink(
   from = "area01", 
   to = "area02",
@@ -436,6 +450,7 @@ getVariantCommands(last = 2)
 Remove a link with:
 
 ``` r
+
 removeLink(from = "area01", to = "area03")
 #> Link doesn't exist
 #> NULL
@@ -456,6 +471,7 @@ getVariantCommands(last = TRUE)
 Create a new cluster with:
 
 ``` r
+
 createCluster(
   area = "area01", 
   cluster_name = "clus01"
@@ -475,6 +491,7 @@ getVariantCommands(last = TRUE)
 With more parameters:
 
 ``` r
+
 createCluster(
   area = "area01", 
   cluster_name = "clus02",
@@ -521,6 +538,7 @@ getVariantCommands(last = 2)
 Edit a cluster with:
 
 ``` r
+
 createCluster(
   area = "area02", 
   cluster_name = "clus02"
@@ -538,6 +556,7 @@ Remove a cluster with
 with endpoint and no longer uses an api command ):
 
 ``` r
+
 createCluster(
   area = "area02", 
   cluster_name = "clus000"
@@ -554,6 +573,7 @@ getVariantCommands(last = TRUE)
 Create a new binding constraint with:
 
 ``` r
+
 createBindingConstraint(
   name = "myconstraint",
   values = NULL,
@@ -594,6 +614,7 @@ remove one with
 Update general settings:
 
 ``` r
+
 updateGeneralSettings(mode = "Adequacy", generate = c("thermal", "hydro"))
 #> ℹ Command update_config registered, see all commands with `getVariantCommands()`
 getVariantCommands(last = 2)
@@ -618,6 +639,7 @@ getVariantCommands(last = 2)
 Update input settings:
 
 ``` r
+
 updateInputSettings(import = c("hydro", "thermal"))
 #> ℹ Command update_config registered, see all commands with `getVariantCommands()`
 getVariantCommands(last = TRUE)
@@ -635,6 +657,7 @@ getVariantCommands(last = TRUE)
 Update optimization settings:
 
 ``` r
+
 updateOptimizationSettings(
   simplex.range = "week",
   power.fluctuations = "minimize ramping"
@@ -663,6 +686,7 @@ getVariantCommands(last = 2)
 Update output settings:
 
 ``` r
+
 updateOutputSettings(
   synthesis = TRUE,
   storenewset = FALSE,
@@ -687,6 +711,7 @@ Read data from scenario builder (here’s it’s empty since we’re mocking
 the API):
 
 ``` r
+
 readScenarioBuilder()
 #> list()
 ```
@@ -696,6 +721,7 @@ parameters must be set explicitly, otherwise thez are retrieved from the
 study.
 
 ``` r
+
 my_scenario <- scenarioBuilder(n_scenario = 3, areas = c("area01", "area02"), n_mc = 10)
 my_scenario
 #>        [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -706,6 +732,7 @@ my_scenario
 Then you can update the scenario builder itself:
 
 ``` r
+
 updateScenarioBuilder(ldata = my_scenario, series = "load")
 #> ℹ Command update_config registered, see all commands with `getVariantCommands()`
 getVariantCommands(last = TRUE)
@@ -725,6 +752,7 @@ getVariantCommands(last = TRUE)
 Write input time series:
 
 ``` r
+
 writeInputTS("area01", type = "solar", data = matrix(rep(4, 8760*2), nrow = 8760))
 #> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
 getVariantCommands(last = TRUE)
@@ -742,6 +770,7 @@ getVariantCommands(last = TRUE)
 Write water values:
 
 ``` r
+
 writeWaterValues("area01", data = matrix(rep(0, 365*101), nrow = 365))
 #> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
 getVariantCommands(last = TRUE)

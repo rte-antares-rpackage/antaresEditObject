@@ -1,6 +1,7 @@
 # Scenario Builder
 
 ``` r
+
  # CRAN limite CPU usage
 data.table::setDTthreads(2)
 library(antaresEditObject)
@@ -10,6 +11,7 @@ library(antaresEditObject)
 First let’s create a new study with some areas and clusters:
 
 ``` r
+
 path <- tempdir()
 createStudy(path = path, study_name = "my-study")
 #> Warning: Parameter 'horizon' is missing or inconsistent with 'january.1st' and 'leapyear'. Assume correct year is 2018.
@@ -75,6 +77,7 @@ readClusterDesc()
 We can read scenario builder data with:
 
 ``` r
+
 readScenarioBuilder()
 #> list()
 ```
@@ -82,6 +85,7 @@ readScenarioBuilder()
 Currently it’s empty. We need to create rules before updating data:
 
 ``` r
+
 # All areas
 scenarioBuilder(n_scenario = 3)
 #>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -111,6 +115,7 @@ scenarioBuilder(n_scenario = 3, areas_rand = "earth")
 Now we can update the scenario builder data:
 
 ``` r
+
 my_scenario <- scenarioBuilder(n_scenario = 3)
 
 # for load serie
@@ -126,6 +131,7 @@ once you can do:
 - with same scenario data:
 
 ``` r
+
 my_scenario <- scenarioBuilder(n_scenario = 3)
 
 updateScenarioBuilder(
@@ -137,6 +143,7 @@ updateScenarioBuilder(
 - with differents scenario:
 
 ``` r
+
 load_scenario <- scenarioBuilder(n_scenario = 3)
 hydro_scenario <- scenarioBuilder(n_scenario = 4)
 solar_scenario <- scenarioBuilder(n_scenario = 5)
@@ -151,6 +158,7 @@ updateScenarioBuilder(ldata = list(
 If you read scenario builder now, wet got:
 
 ``` r
+
 readScenarioBuilder()
 #> $h
 #>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -171,6 +179,7 @@ For thermal and renewables series, default behavior is to set rules to
 each clusters in the area :
 
 ``` r
+
 my_scenario <- scenarioBuilder(n_scenario = 3)
 
 updateScenarioBuilder(
@@ -190,6 +199,7 @@ readScenarioBuilder()$t
 We can specify specific clusters with:
 
 ``` r
+
 updateScenarioBuilder(
   ldata = my_scenario, 
   series = "thermal",
@@ -211,6 +221,7 @@ For NTC serie (Antares \>= 8.2.0), it writes the scenario for all links
 :
 
 ``` r
+
 updateScenarioBuilder(
   ldata = my_scenario, 
   series = "ntc"
@@ -225,6 +236,7 @@ readScenarioBuilder()$ntc
 For writing scenario for a specific link you can do:
 
 ``` r
+
 updateScenarioBuilder(
   ldata = my_scenario, 
   series = "ntc",
@@ -238,5 +250,6 @@ readScenarioBuilder()$ntc
 Finally, you can remove all scenarios from a ruleset with:
 
 ``` r
+
 clearScenarioBuilder()
 ```

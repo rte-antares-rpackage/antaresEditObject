@@ -11,6 +11,7 @@ importZipStudyWeb(
   zipfile_name,
   delete_zipfile = TRUE,
   folder_destination = NULL,
+  compression_level = 5,
   opts = antaresRead::simOptions()
 )
 ```
@@ -37,6 +38,12 @@ importZipStudyWeb(
 
   Folder of the study in Antares Web.
 
+- compression_level:
+
+  "int" A number between 1 and 9 (quality of compression only used for
+  `.zip` archive). See details below for more information (default to 5,
+  fast and good compression).
+
 - opts:
 
   List of simulation parameters returned by the function
@@ -45,3 +52,8 @@ importZipStudyWeb(
 ## Value
 
 An updated list containing various information about the simulation.
+
+## Details
+
+Parameter `compression_level` is used with function
+[`backupStudy()`](backupStudy.md)

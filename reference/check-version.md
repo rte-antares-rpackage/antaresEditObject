@@ -24,6 +24,7 @@ a logical, `TRUE` if study is v7 or above, `FALSE` otherwise.
 ## Examples
 
 ``` r
+
 if (FALSE) { # \dontrun{
 # setSimulationPath
 

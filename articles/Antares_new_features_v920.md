@@ -1,6 +1,7 @@
 # Antares new features v9.2
 
 ``` r
+
 library(antaresEditObject)
 #> Loading required package: antaresRead
 ```
@@ -12,6 +13,7 @@ Simulator](https://antares-simulator.readthedocs.io/en/latest/user-guide/04-migr
 ## Create new study v9.2
 
 ``` r
+
 dir_path <- tempdir()
 suppressWarnings(
   createStudy(path = dir_path, 
@@ -26,6 +28,7 @@ make the adjustment and we keep “920”.
 **Check version of my current study** :
 
 ``` r
+
 current_study_opts <- simOptions()
 current_study_opts$antaresVersion
 #> [1] 920
@@ -45,6 +48,7 @@ Initializes the study by updating the `generaldata.ini` file :
 We just need create *areas* to create *st-storages*.
 
 ``` r
+
 createArea(name = "fr")
 createArea(name = "it")
 ```
@@ -70,6 +74,7 @@ Default `group` is still “Other1” and now you can **create/edit** your
 own group name (*only for version study \>= 9.2*).
 
 ``` r
+
 # creation
 createClusterST(area = "fr", 
                 cluster_name = "test_storage", 
@@ -95,11 +100,13 @@ you can create or edit new clusters with new properties (see doc
 [`?createClusterST`](../reference/createClusterST.md)).
 
 ``` r
+
 # new properties (default values)
 rmarkdown::paged_table(as.data.frame(storage_values_default(), check.names = FALSE))
 ```
 
 ``` r
+
 # creation
 my_parameters <- storage_values_default()
 my_parameters$efficiencywithdrawal <- 0.5
@@ -124,6 +131,7 @@ rmarkdown::paged_table(tab)
 ```
 
 ``` r
+
 # edit properties of existing st-storage cluster
 my_parameters$efficiencywithdrawal <- 0.9
 my_parameters$`penalize-variation-injection` <- FALSE
@@ -141,7 +149,7 @@ rmarkdown::paged_table(tab)
 ### New optional **time series**
 
 We have five new *.txt* files containing one series of dimension
-$N = 8760,P = 1$ :
+$`{N=8760, P=1}`$ :
 
 - cost-injection.txt  
 - cost-withdrawal.txt
@@ -150,6 +158,7 @@ $N = 8760,P = 1$ :
 - cost-variation-withdrawal.txt
 
 ``` r
+
 # creation
 ratio_value <- matrix(0.7, 8760)
   
@@ -169,6 +178,7 @@ rmarkdown::paged_table(head(tab))
 ```
 
 ``` r
+
 # edit TS values of existing st-storage cluster
 new_ratio_value <- matrix(0.85, 8760)
 
@@ -210,6 +220,7 @@ rhs_test element containing a numeric vector of hourly values (length
 #### Properties
 
 ``` r
+
 # Create 
 createClusterST(area = "fr",
                 cluster_name = "Additional_Properties",
@@ -268,6 +279,7 @@ editClusterST (area = "fr",
 #### Values
 
 ``` r
+
 # Create
 good_ts <- matrix(0.7, nrow = 8760, ncol = 1)
 createClusterST(area = "fr",
@@ -334,6 +346,7 @@ res=read_storages_constraints()
 Nothing has changed to remove clusters.
 
 ``` r
+
 # read cluster names
 levels(readClusterSTDesc()$cluster)
 #> [1] "fr_additional_properties" "fr_additional_values"    
@@ -367,6 +380,7 @@ For the `[other preferences]` section, the `initial-reservoir-levels`
 parameter is not explicitly used by a dedicated function.
 
 ``` r
+
 # user messages
 updateAdequacySettings(
     set_to_null_ntc_between_physical_out_for_first_step = FALSE)
@@ -394,6 +408,7 @@ level’. This new feature is similar to `hl` (‘hydro levels’) and is used
 in the same way with the ‘coef_hydro_levels’ parameter.
 
 ``` r
+
 # the number of coeff is equivalent to the number of areas
   my_coef <- runif(length(getAreas()))
   

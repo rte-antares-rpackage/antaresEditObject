@@ -1,6 +1,53 @@
 # Changelog
 
+## antaresEditObject (development version)
+
+> Copyright © 2016 RTE Reseau de transport d’electricite
+
+## antaresEditObject 1.0.1
+
+ENHANCEMENT :
+
+- [`importZipStudyWeb()`](../reference/importZipStudyWeb.md) zip study
+  with new package `zip`instead of
+  [`utils::zip`](https://rdrr.io/r/utils/zip.html) (more faster)
+- [`createLink()`](../reference/createLink.md)/
+  [`editLink()`](../reference/editLink.md) check the number of rows of
+  dataLink and tsLink if provided
+- [`updateOptimizationSettings()`](../reference/updateOptimizationSettings.md)
+  add missing properties and update possible values by property
+- [`runSimulation()`](../reference/runSimulation.md) poll each 300s
+  instead of 1s to get the status of the job to avoid too many queries
+  for Antares Web
+
+DOCUMENTATION :
+
+- [`setThematicTrimming()`](../reference/setThematicTrimming.md) add
+  example to show how to update a list of variables
+
+BUGFIXES :
+
+- `.st_mandatory_params()` property efficiencywithdrawal is not a ratio
+  and can be greater than 1.
+- [`createStudy()`](../reference/create-study.md) Since Antares 9.2,
+  property `initial-reservoir-levels` in `generaldata/other preferences`
+  is not needed. This property must be removed.
+- [`createClusterST()`](../reference/createClusterST.md) Ensure that if
+  a storage is created with overwrite set to TRUE, the storage is
+  overwritten
+- [`createLink()`](../reference/createLink.md)/
+  [`editLink()`](../reference/editLink.md) booleans is.null(tsLink) and
+  is.null(dataLink) can change inside the function (rollback to previous
+  version)
+
+BREAKING CHANGES :
+
+- `api_command_execute()` Since Antares Web 2.31.0, the endpoint
+  v1/tasks/ sends a property returnValue instead of return_value
+
 ## antaresEditObject 1.0.0
+
+CRAN release: 2026-02-03
 
 NEW FEATURES :
 
