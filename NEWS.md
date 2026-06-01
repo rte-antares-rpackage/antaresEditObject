@@ -2,7 +2,7 @@
 
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
-# antaresEditObject 1.0.0.9000
+# antaresEditObject 1.0.1
 
 ENHANCEMENT :
 
