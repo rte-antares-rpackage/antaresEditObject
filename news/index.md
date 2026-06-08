@@ -6,6 +6,8 @@
 
 ## antaresEditObject 1.0.1
 
+CRAN release: 2026-06-01
+
 ENHANCEMENT :
 
 - [`importZipStudyWeb()`](../reference/importZipStudyWeb.md) zip study
