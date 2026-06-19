@@ -22,6 +22,8 @@
 #'   Logical. If `TRUE` the ANTARES simulation will be run in parallel mode (Work
 #'   only with ANTARES v6.0.0 or more). In that case, the number of cores used by the simulation
 #'   is the one set in advanced_settings/simulation_cores (see ANTARES interface).
+#' @param launcher
+#'   Character. In API mode, the id of the launcher.
 #' @param ... Additional arguments (API only), such as `nb_cpu`, `time_limit`, ...
 #'  See API documentation for all available options.
 #' @param opts
@@ -46,20 +48,31 @@ runSimulation <- function(name,
                           path_solver = getOption("antares.solver"), 
                           wait = TRUE, 
                           show_output_on_console = FALSE, 
-                          parallel = TRUE, 
+                          parallel = TRUE,
+                          launcher = NULL,                          
                           ...,
                           opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   if (is_api_study(opts)) {
     updateGeneralSettings(mode = mode, opts = opts)
+    
+    endpoint <- paste0("launcher/run/", opts[["study_id"]])
+    if (!is.null(launcher)) {
+      launchers <- .get_available_launchers(opts = opts)
+      launchers <- sapply(launchers[["launchers"]], "[[", "id")
+      assertthat::assert_that(launcher %in% launchers, msg = "Please provide a valid launcher.")
+      endpoint <- paste0(endpoint, "?launcher=", launcher)     
+    }
+    
     run <- api_post(
       opts = opts, 
-      endpoint = paste0("launcher/run/", opts$study_id), 
+      endpoint = endpoint, 
       default_endpoint = "v1",
       body = jsonlite::toJSON(list(output_suffix = name, ...), auto_unbox = TRUE),
       encode = "raw"
     )
+    
     if (is.null(run$job_id)) {
       cli::cli_alert_danger("No job id returned by API, something went wrong.")
       return(run)
@@ -110,4 +123,15 @@ runSimulation <- function(name,
     cmd <- sprintf(cmd, path_solver, opts$studyPath, name, mode)
     system(cmd, ignore.stdout = TRUE, wait = wait, show.output.on.console = show_output_on_console)
   }
+}
+
+
+#' @importFrom antaresRead api_get
+.get_available_launchers <- function(opts) {
+  
+  return(antaresRead::api_get(opts = opts, 
+                              endpoint = "launcher/launchers",
+                              default_endpoint = "v1"
+                             )
+  )
 }
