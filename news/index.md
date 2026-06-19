@@ -4,6 +4,13 @@
 
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
+## antaresEditObject 1.0.2.9000
+
+NEW FEATURES :
+
+- [`runSimulation()`](../reference/runSimulation.md) in API mode, allow
+  the user to choose the launcher for the simulation
+
 ## antaresEditObject 1.0.1
 
 CRAN release: 2026-06-01

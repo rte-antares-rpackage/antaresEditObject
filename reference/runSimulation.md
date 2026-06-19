@@ -14,6 +14,7 @@ runSimulation(
   wait = TRUE,
   show_output_on_console = FALSE,
   parallel = TRUE,
+  launcher = NULL,
   ...,
   opts = antaresRead::simOptions()
 )
@@ -50,6 +51,10 @@ runSimulation(
   (Work only with ANTARES v6.0.0 or more). In that case, the number of
   cores used by the simulation is the one set in
   advanced_settings/simulation_cores (see ANTARES interface).
+
+- launcher:
+
+  Character. In API mode, the id of the launcher.
 
 - ...:
 
