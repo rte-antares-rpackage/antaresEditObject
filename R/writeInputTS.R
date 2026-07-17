@@ -12,7 +12,7 @@
 #'  
 #'  
 #' @param type Serie to write: `"load"`, `"hydroROR"`, `"hydroSTOR"`,
-#'  `"wind"`, `"solar"`, `"tsLink"` or `"mingen"`.
+#'  `"wind"`, `"solar"`, `"tsLink"`, `"mingen"` , `"minReservoirLevels"`, `"avgReservoirLevels"` or `"maxReservoirLevels"`.
 #'  
 #'  If type == `"mingen"`, `"antaresVersion"` should be >= 860.
 #'  Refers to note section below.
@@ -58,7 +58,7 @@
 #'
 #' }
 writeInputTS <- function(data, 
-                         type = c("load", "hydroROR", "hydroSTOR", "mingen", "wind", "solar", "tsLink"),
+                         type = c("load", "hydroROR", "hydroSTOR", "mingen", "wind", "solar", "tsLink", "minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels"),
                          area = NULL, 
                          link = NULL,
                          overwrite = TRUE, 
@@ -78,6 +78,13 @@ writeInputTS <- function(data,
     stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
   }
   
+  assertthat::assert_that(opts$antaresVersion >= 101000 & type %in% c("minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels"),
+                          msg = paste0(type, " available for antares version >= 10.1"))
+  
+  if (type %in% c("minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels")) {
+    message("Be careful to check consistency of scenarization between your hydro time series")  
+  }
+  
   # Data validation
   if (!is.null(area) & !is.null(link)) {
     stop("Cannot use area and link simultaneously.")
@@ -87,7 +94,7 @@ writeInputTS <- function(data,
     if (NROW(data) != 8760)
       stop("'data' must be a 8760*N matrix.", call. = FALSE)
     
-  } else if(type %in% "hydroSTOR") {
+  } else if(type %in% c("hydroSTOR", "minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels")) {
     if (is_antares_v7(opts)) {
       if (NROW(data) != 365)
         stop("'data' must be a 365*N matrix.", call. = FALSE)
@@ -244,6 +251,12 @@ writeInputTS <- function(data,
     path <- file.path(inputPath, "hydro", "series", area, "mod.txt")
   } else if (type == "mingen") {
     path <- file.path(inputPath, "hydro", "series", area, "mingen.txt")
+  } else if (type == "minReservoirLevels") {
+    path <- file.path(inputPath, "hydro", "series", area, "minDailyReservoirLevels.txt")
+  } else if (type == "avgReservoirLevels") {
+    path <- file.path(inputPath, "hydro", "series", area, "avgDailyReservoirLevels.txt")
+  } else if (type == "maxReservoirLevels") {
+    path <- file.path(inputPath, "hydro", "series", area, "maxDailyReservoirLevels.txt")
   }
   
   if (isTRUE(file.size(path) > 0) && !overwrite)
