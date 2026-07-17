@@ -136,6 +136,9 @@ createStudy <- function(path, study_name = "my_study", antares_version = "8.2.0"
       }
       new_section <- list(
         "compatibility" = list("hydro-pmax" = "daily"))
+      if (antares_version >= 10.1) {
+        new_section[["compatibility"]][["hydro-rule-curves"]] <- "single"
+      }
       gen_data_file <- append(gen_data_file, new_section)
       
       writeIni(listData = gen_data_file, 
