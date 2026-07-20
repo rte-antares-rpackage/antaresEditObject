@@ -1,6 +1,25 @@
 #Copyright © 2019 RTE Réseau de transport d’électricité
 
 # create ----
+## V10.1----
+test_that("Init v10.1 version study", {
+  path <- file.path(tempdir(), "tests_v101")
+  suppressWarnings(
+    opts <- createStudy(path, antares_version = "10.1")
+  )
+  properties <- antaresRead:::readIniFile(file.path(path, "study.antares"))
+  
+  # version
+  expect_identical(properties$antares$version, 10.1)
+  
+  # test new values in generaldata
+  prop_gen <- readIni("settings/generaldata")
+  
+  expect_equal(prop_gen[["compatibility"]][["hydro-rule-curves"]], "single")
+  
+  unlink(path, recursive = TRUE)
+})
+
 ## V9.3----
 test_that("Init v9.3 version study", {
   path <- file.path(tempdir(), "tests_v930")
