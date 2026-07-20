@@ -6,7 +6,8 @@
 \usage{
 writeInputTS(
   data,
-  type = c("load", "hydroROR", "hydroSTOR", "mingen", "wind", "solar", "tsLink"),
+  type = c("load", "hydroROR", "hydroSTOR", "mingen", "wind", "solar", "tsLink",
+    "minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels"),
   area = NULL,
   link = NULL,
   overwrite = TRUE,
@@ -20,7 +21,7 @@ In this latter case \code{"hydroSTOR"} data must have either be 365 rows
 (Antares v7) or 12 rows (v6 and earlier).}
 
 \item{type}{Serie to write: \code{"load"}, \code{"hydroROR"}, \code{"hydroSTOR"},
-\code{"wind"}, \code{"solar"}, \code{"tsLink"} or \code{"mingen"}.
+\code{"wind"}, \code{"solar"}, \code{"tsLink"}, \code{"mingen"} , \code{"minReservoirLevels"}, \code{"avgReservoirLevels"} or \code{"maxReservoirLevels"}.
 
 If type == \code{"mingen"}, \code{"antaresVersion"} should be >= 860.
 Refers to note section below.}
@@ -51,6 +52,8 @@ The \code{mingen.txt} file can be created under two conditions:
 \item The number of columns must be equal to either \code{1} or the number in \code{mod.txt}
 \item If the \code{mod.txt} file is empty or has one column, then there is no dimension constraint
 }
+
+Types \code{"minReservoirLevels"}, \code{"avgReservoirLevels"} and \code{"maxReservoirLevels"} are available since \strong{Antares 10.1}. Time series used if property hydro-rule-curves in settings/generaldata is set to \code{scenarized}.
 }
 \section{Warning}{
 
