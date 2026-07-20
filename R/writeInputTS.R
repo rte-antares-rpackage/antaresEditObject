@@ -25,10 +25,12 @@
 #' 
 #' @note
 #' For an **Antares version >= 860**, the `mingen.txt` file is created.
-#' 
+#'
 #' The `mingen.txt` file can be created under two conditions:   
 #'   - The number of columns must be equal to either `1` or the number in `mod.txt`  
 #'   - If the `mod.txt` file is empty or has one column, then there is no dimension constraint
+#'
+#' Types `"minReservoirLevels"`, `"avgReservoirLevels"` and `"maxReservoirLevels"` are available since **Antares 10.1**. Time series used if property hydro-rule-curves in settings/generaldata is set to `scenarized`.
 #'   
 #' @template opts
 #'
