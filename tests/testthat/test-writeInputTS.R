@@ -705,3 +705,38 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
   
   unlink(x = opts$studyPath, recursive = TRUE)
 })
+
+
+test_that("writeInputTS() for type in 10.1 :  minReservoirLevels, avgReservoirLevels, maxReservoirLevels", {
+  
+  ant_version <- "9.3"
+  st_test <- paste0("my_study_930_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = tempdir(), study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  opts <- createArea(area)
+  opts <- setSimulationPath(opts[["studyPath"]], simulation = "input")
+  
+  mat <- matrix(data = c(0.1, 0.2), nrow = 365, ncol = 2)
+  
+  expect_error(
+      writeInputTS(area = area, data = mat, type = "minReservoirLevels", opts = opts),
+      regexp = "minReservoirLevels available for antares version >= 10.1"
+  )
+  
+  unlink(x = opts[["studyPath"]], recursive = TRUE)
+  
+  ant_version <- "10.1"
+  st_test <- paste0("my_study_101_", paste0(sample(letters,5),collapse = ""))
+  suppressWarnings(opts <- createStudy(path = tempdir(), study_name = st_test, antares_version = ant_version))
+  area <- "zone51"
+  opts <- createArea(area)
+  opts <- setSimulationPath(opts[["studyPath"]], simulation = "input")
+  path_minReservoirLevels_file <- file.path(opts[["inputPath"]], "hydro", "series", area, "minDailyReservoirLevels.txt")
+  writeInputTS(area = area, data = mat, type = "minReservoirLevels", opts = opts)
+  expect_equal(antaresRead:::fread_antares(opts = opts,
+                                           file = path_minReservoirLevels_file),
+               as.data.table(mat)
+  )
+  
+  unlink(x = opts[["studyPath"]], recursive = TRUE)
+})
