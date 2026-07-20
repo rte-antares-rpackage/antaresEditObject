@@ -48,54 +48,17 @@ updateCompatibilitySettings <- function(hydro.pmax = NULL,
     .check_property_value_compatibility_settings(property = "hydro.rule.curves", value = hydro.rule.curves)
   }
   
-  new_params_compatibility <- dropNulls(list(
+  new_params <- dropNulls(list(
     hydro.pmax = hydro.pmax,
     hydro.rule.curves = hydro.rule.curves
   ))
   
-  for (i in seq_along(new_params_compatibility)) {
-    new_params_compatibility[[i]] <- as.character(new_params_compatibility[[i]])
-    names(new_params_compatibility)[i] <- dicoCompatibilitySettings(names(new_params_compatibility)[i])[["property"]]
+  for (i in seq_along(new_params)) {
+    new_params[[i]] <- as.character(new_params[[i]])
+    names(new_params)[i] <- dicoCompatibilitySettings(names(new_params)[i])[["property"]]
   }
   
-  
-  # API block
-  if (is_api_study(opts)) {
-    
-    if (length(new_params_compatibility) > 0) {
-      writeIni(
-        listData = new_params_compatibility,
-        pathIni = "settings/generaldata/compatibility",
-        opts = opts
-      )
-    }
-    
-    return(update_api_opts(opts))
-  }
-  
-  
-  # read
-  generaldatapath <- file.path(opts$studyPath, "settings", "generaldata.ini")
-  generaldata <- readIniFile(file = generaldatapath)
-  
-  # previous parameters
-  l_compatibility <- generaldata$compatibility
-  
-  l_compatibility <- utils::modifyList(x = l_compatibility, val = new_params_compatibility)
-  
-  generaldata$compatibility <- l_compatibility
-  
-  # write
-  writeIni(
-    listData = generaldata,
-    pathIni = generaldatapath,
-    overwrite = TRUE
-  )
-  
-  # Maj simulation
-  suppressWarnings({
-    res <- antaresRead::setSimulationPath(path = opts$studyPath, simulation = "input")
-  })
+  res <- update_generaldata_by_section(opts = opts, section = "compatibility", new_params = new_params)
   
   invisible(res)
 }
