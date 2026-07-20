@@ -73,16 +73,18 @@ writeInputTS <- function(data,
   
   assertthat::assert_that(inherits(opts, "simOptions"))
   
+  reservoir_level <- type %in% c("minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels")
   #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
   if (type == "mingen" & (opts$antaresVersion < 860 )){
     stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
   }
   
-  assertthat::assert_that(opts$antaresVersion >= 101000 & type %in% c("minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels"),
-                          msg = paste0(type, " available for antares version >= 10.1"))
+  if (reservoir_level & opts$antaresVersion < 101000){
+    stop(paste0(type, " available for antares version >= 10.1"), call. = FALSE)
+  }
   
-  if (type %in% c("minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels")) {
-    message("Be careful to check consistency of scenarization between your hydro time series")  
+  if (reservoir_level) {
+    message("Be careful to check consistency of the matrix between your hydro time series : min < avg < max")  
   }
   
   # Data validation
@@ -223,6 +225,12 @@ writeInputTS <- function(data,
       target_type <- sprintf("input/hydro/series/%s/mod", l_area)
     } else if (type == "mingen") {
       target_type <- sprintf("input/hydro/series/%s/mingen", l_area)
+    } else if (type == "minReservoirLevels") {
+      target_type <- sprintf("input/hydro/series/%s/mindailyreservoirlevels", l_area)
+    } else if (type == "avgReservoirLevels") {
+      target_type <- sprintf("input/hydro/series/%s/avgdailyreservoirlevels", l_area)
+    } else if (type == "maxReservoirLevels") {
+      target_type <- sprintf("input/hydro/series/%s/maxdailyreservoirlevels", l_area)
     }
     cmd <- api_command_generate(
         action = "replace_matrix",
