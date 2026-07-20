@@ -96,7 +96,7 @@ writeInputTS <- function(data,
     if (NROW(data) != 8760)
       stop("'data' must be a 8760*N matrix.", call. = FALSE)
     
-  } else if(type %in% c("hydroSTOR", "minReservoirLevels", "avgReservoirLevels", "maxReservoirLevels")) {
+  } else if(type == "hydroSTOR" || reservoir_level) {
     if (is_antares_v7(opts)) {
       if (NROW(data) != 365)
         stop("'data' must be a 365*N matrix.", call. = FALSE)
