@@ -53,7 +53,7 @@ The \code{mingen.txt} file can be created under two conditions:
 \item If the \code{mod.txt} file is empty or has one column, then there is no dimension constraint
 }
 
-Types \code{"minReservoirLevels"}, \code{"avgReservoirLevels"} and \code{"maxReservoirLevels"} are available since \strong{Antares 10.1}. Time series used if property hydro-rule-curves in settings/generaldata is set to \code{scenarized}.
+Types \code{"minReservoirLevels"}, \code{"avgReservoirLevels"} and \code{"maxReservoirLevels"} are available since \strong{Antares 10.1}. Time series used if property hydro-rule-curves in settings/generaldata is set to \code{scenarized}. The three time series should have data between 0 and 1 at a daily time step.
 }
 \section{Warning}{
 
