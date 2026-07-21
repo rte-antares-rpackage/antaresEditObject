@@ -742,7 +742,10 @@ test_that("writeInputTS() for type in 10.1 :  minReservoirLevels, avgReservoirLe
     regexp = "'data' must be a 365\\*N matrix."
   )
   path_minReservoirLevels_file <- file.path(opts[["inputPath"]], "hydro", "series", area, "minDailyReservoirLevels.txt")
-  writeInputTS(area = area, data = mat, type = "minReservoirLevels", opts = opts)
+  expect_message(
+    writeInputTS(area = area, data = mat, type = "minReservoirLevels", opts = opts),
+    regexp = "Please ensure that data minDailyReservoirLevels is less than maxDailyReservoirLevels for each time step and each time serie"
+  )
   expect_equal(antaresRead:::fread_antares(opts = opts,
                                            file = path_minReservoirLevels_file),
                as.data.table(mat)
