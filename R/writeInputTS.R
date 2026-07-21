@@ -30,7 +30,7 @@
 #'   - The number of columns must be equal to either `1` or the number in `mod.txt`  
 #'   - If the `mod.txt` file is empty or has one column, then there is no dimension constraint
 #'
-#' Types `"minReservoirLevels"`, `"avgReservoirLevels"` and `"maxReservoirLevels"` are available since **Antares 10.1**. Time series used if property hydro-rule-curves in settings/generaldata is set to `scenarized`.
+#' Types `"minReservoirLevels"`, `"avgReservoirLevels"` and `"maxReservoirLevels"` are available since **Antares 10.1**. Time series used if property hydro-rule-curves in settings/generaldata is set to `scenarized`. The three time series should have data between 0 and 1 at a daily time step.
 #'   
 #' @template opts
 #'
@@ -85,10 +85,6 @@ writeInputTS <- function(data,
     stop(paste0(type, " available for antares version >= 10.1"), call. = FALSE)
   }
   
-  if (reservoir_level) {
-    message("Be careful to check consistency of the matrix between your hydro time series : min < avg < max")  
-  }
-  
   # Data validation
   if (!is.null(area) & !is.null(link)) {
     stop("Cannot use area and link simultaneously.")
@@ -98,7 +94,7 @@ writeInputTS <- function(data,
     if (NROW(data) != 8760)
       stop("'data' must be a 8760*N matrix.", call. = FALSE)
     
-  } else if(type == "hydroSTOR" || reservoir_level) {
+  } else if(type == "hydroSTOR") {
     if (is_antares_v7(opts)) {
       if (NROW(data) != 365)
         stop("'data' must be a 365*N matrix.", call. = FALSE)
@@ -141,6 +137,10 @@ writeInputTS <- function(data,
     }
     
     
+  }
+  
+  if (reservoir_level) {
+    .control_reservoir_levels_time_series(data = data, area = area, type = type, opts = opts, enabled = FALSE)
   }
   
   # v860 - mingen dimension depends on file "mod.txt"
@@ -328,4 +328,57 @@ writeInputTS <- function(data,
   })
   
   invisible(res)
+}
+
+
+.control_reservoir_levels_time_series <- function(data, area, type, opts, enabled) {
+  
+  # Number of rows
+  if (NROW(data) != 365) {
+    stop("'data' must be a 365*N matrix.", call. = FALSE)
+  }
+  
+  # 0 <= data <= 1
+  expected_values <- all(data <= 1) & all(data >= 0)
+  if (!expected_values) {
+    stop("Each value of the time series must be between 0 and 1", call. = FALSE)
+  }    
+  
+  # min <= max
+  # this control is disabled cause the user can change the min data and make the data inconsistent but we do not want to stop him.
+  # the next step of his script should be to make the data consistent
+  # 1. Increase the min data and min data would be greater than max data (BAD)
+  # 2. Increase the max data and then the max data would be greater than min data (GOOD)
+  if (enabled & type %in% c("minReservoirLevels", "maxReservoirLevels")) {
+    lst_control <- list("minReservoirLevels" = list("filename" = "maxDailyReservoirLevels.txt"),
+                        "maxReservoirLevels" = list("filename" = "minDailyReservoirLevels.txt")
+                       )
+    
+    filename <- lst_control[[type]][["filename"]]
+    
+    path_file_control <- file.path(opts[["inputPath"]], "hydro", "series", area, filename)
+    if (file.exists(path_file_control)) {
+      prev_data <- antaresRead:::fread_antares(opts = opts, file = path_file_control)
+      
+      nb_cols_prev_data <- ncol(prev_data)
+      nb_cols_data <- ncol(data)
+      
+      if (nb_cols_data == 1 & nb_cols_prev_data > 1) {
+        data <- as.matrix(do.call(cbind,rep(data, each = nb_cols_prev_data)))
+      } else if (nb_cols_data > 1 & nb_cols_prev_data == 1) {
+        prev_data <- as.matrix(do.call(cbind,rep(prev_data, each = nb_cols_data)))
+      }
+      if (type == "minReservoirLevels") {
+        diff <- prev_data - data
+      } else if (type == "maxReservoirLevels") {
+        diff <- data - prev_data
+      }
+      
+      if (any(diff < 0)) {
+        stop("Data looks inconsistent : min should be less than max for each time step and each time serie")
+      }
+    }
+  } else {
+    message("Please ensure that data minDailyReservoirLevels is less than maxDailyReservoirLevels for each time step and each time serie")
+  }
 }
