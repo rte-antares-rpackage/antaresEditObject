@@ -719,8 +719,8 @@ test_that("writeInputTS() for type in 10.1 :  minReservoirLevels, avgReservoirLe
   mat <- matrix(data = c(0.1, 0.2), nrow = 365, ncol = 2)
   
   expect_error(
-      writeInputTS(area = area, data = mat, type = "minReservoirLevels", opts = opts),
-      regexp = "minReservoirLevels available for antares version >= 10.1"
+    writeInputTS(area = area, data = mat, type = "minReservoirLevels", opts = opts),
+    regexp = "minReservoirLevels available for antares version >= 10.1"
   )
   
   unlink(x = opts[["studyPath"]], recursive = TRUE)
@@ -731,6 +731,16 @@ test_that("writeInputTS() for type in 10.1 :  minReservoirLevels, avgReservoirLe
   area <- "zone51"
   opts <- createArea(area)
   opts <- setSimulationPath(opts[["studyPath"]], simulation = "input")
+  
+  expect_error(
+    writeInputTS(area = area, data = mat - 0.15, type = "minReservoirLevels", opts = opts),
+    regexp = "Each value of the time series must be between 0 and 1"
+  )
+  
+  expect_error(
+    writeInputTS(area = area, data = head(mat,364), type = "minReservoirLevels", opts = opts),
+    regexp = "'data' must be a 365\\*N matrix."
+  )
   path_minReservoirLevels_file <- file.path(opts[["inputPath"]], "hydro", "series", area, "minDailyReservoirLevels.txt")
   writeInputTS(area = area, data = mat, type = "minReservoirLevels", opts = opts)
   expect_equal(antaresRead:::fread_antares(opts = opts,
