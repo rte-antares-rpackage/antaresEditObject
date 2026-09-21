@@ -22,8 +22,8 @@
 #'   Logical. If `TRUE` the ANTARES simulation will be run in parallel mode (Work
 #'   only with ANTARES v6.0.0 or more). In that case, the number of cores used by the simulation
 #'   is the one set in advanced_settings/simulation_cores (see ANTARES interface).
-#' @param launcher
-#'   Character. In API mode, the id of the launcher.
+#' @param api_extra_options
+#'   Character. In API mode, a list containing the elements to configure the run. Please check define_api_extra_options().
 #' @param ... Additional arguments (API only), such as `nb_cpu`, `time_limit`, ...
 #'  See API documentation for all available options.
 #' @param opts
@@ -49,20 +49,18 @@ runSimulation <- function(name,
                           wait = TRUE, 
                           show_output_on_console = FALSE, 
                           parallel = TRUE,
-                          launcher = NULL,                          
+                          api_extra_options = define_api_extra_options(),                          
                           ...,
                           opts = antaresRead::simOptions()) {
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   if (is_api_study(opts)) {
+  
     updateGeneralSettings(mode = mode, opts = opts)
-    
     endpoint <- paste0("launcher/run/", opts[["study_id"]])
-    if (!is.null(launcher)) {
-      launchers <- .get_available_launchers(opts = opts)
-      launchers <- sapply(launchers[["launchers"]], "[[", "id")
-      assertthat::assert_that(launcher %in% launchers, msg = "Please provide a valid launcher.")
-      endpoint <- paste0(endpoint, "?launcher=", launcher)     
+    pattern_endpoint <- .generate_pattern_launcher_endpoint(api_extra_options = api_extra_options, opts = opts)
+    if (length(pattern_endpoint) > 0) {
+      endpoint <- paste0(endpoint, "?", paste0(pattern_endpoint, collapse = "&"))
     }
     
     run <- api_post(
@@ -134,4 +132,118 @@ runSimulation <- function(name,
                               default_endpoint = "v1"
                              )
   )
+}
+
+
+#' @importFrom antaresRead api_get
+.get_available_solver_presets <- function(opts) {
+  
+  return(antaresRead::api_get(opts = opts, 
+                              endpoint = "launcher/solver-presets",
+                              default_endpoint = "v1"
+                             )
+  )
+}
+
+#' @importFrom antaresRead api_get
+.get_antares_version_source <- function(opts) {
+  result <- antaresRead::api_get(opts = opts,
+                                 endpoint = opts[["study_id"]],
+                                 default_endpoint = "v1/studies"
+                                 )
+  return(result[["version"]])
+}
+
+
+#' Output profile options for running a simulation in API mode
+#'
+#' @param launcher Name of the launcher.
+#' @param solver_preset Name of the solver.
+#' @param solver_version Version of the solver.
+#' @param run_at When the simulation should be run. Format YYYY-MM-DD hh-mm-ss. Time provided in GMT.
+#'
+#' @return a named list
+#' @export
+#'
+#' @examples
+#' define_api_extra_options(
+#'   launcher="calin2opf",
+#'   solver_version="9.4"
+#' )
+define_api_extra_options <- function(launcher = NULL,
+                                     solver_preset = NULL,
+                                     solver_version = NULL,
+                                     run_at = NULL) {
+  list(
+    `launcher` = launcher,
+    `solver_preset` = solver_preset,
+    `solver_version` = solver_version,
+    `run_at` = run_at
+  )
+}
+
+
+#' @importFrom assertthat assert_that
+.generate_pattern_launcher_endpoint <- function(api_extra_options, opts) {
+  
+  pattern_endpoint <- c()
+  no_solver_version <- is.null(api_extra_options[["solver_version"]])
+  
+  if (!is.null(api_extra_options[["launcher"]])) {
+    launcher <- tolower(api_extra_options[["launcher"]])
+    launchers <- .get_available_launchers(opts = opts)
+    launchers <- sapply(launchers[["launchers"]], "[[", "id")
+    assertthat::assert_that(launcher %in% tolower(launchers),
+                            msg = "Please provide a valid launcher."
+                            )
+    pattern_endpoint <- c(pattern_endpoint, paste0("launcher=", launcher))     
+  }
+  
+  if (!is.null(api_extra_options[["solver_preset"]])) {
+    solver <- api_extra_options[["solver_preset"]]
+    solvers <- .get_available_solver_presets(opts = opts)
+    solvers <- sapply(solvers, function(x) {x[c("id", "name", "minAntaresVersion", "maxAntaresVersion")]}, simplify = FALSE)
+    available_solvers <- sapply(solvers,"[[", "name")
+    assertthat::assert_that(tolower(solver) %in% tolower(available_solvers),
+                            msg = "Please provide a valid solver."
+                            )
+    
+    solvers_fi <- Filter(function(x) tolower(x[["name"]]) == tolower(solver), solvers)
+    if (no_solver_version) {
+      version <- .get_antares_version_source(opts = opts)
+    } else {
+      version <- api_extra_options[["solver_version"]]
+    }
+    solvers_fi <- Filter(f = function(x) (is.null(x[["minAntaresVersion"]]) || as.numeric(version) >= as.numeric(x[["minAntaresVersion"]])
+                                          &&
+                                          is.null(x[["maxAntaresVersion"]]) || as.numeric(version) <= as.numeric(x[["maxAntaresVersion"]])
+                                         ),
+                         x = solvers_fi
+                        )
+    assertthat::assert_that(length(solvers_fi) == 1,
+                            msg = "Not able to detect an unique valid solver."
+                            )
+    
+    pattern_endpoint <- c(pattern_endpoint, paste0("solver_presets_id=", solvers_fi[[1]][["id"]]))      
+  }    
+  
+  if (!no_solver_version) {
+    version <- api_extra_options[["solver_version"]]
+    study_version <- .get_antares_version_source(opts = opts)
+    assertthat::assert_that(as.numeric(study_version) <= as.numeric(version),
+                            msg = "Please provide a solver version greater or equal to your study version."
+                            )
+    pattern_endpoint <- c(pattern_endpoint, paste0("version=", version))      
+  }
+
+  if (!is.null(api_extra_options[["run_at"]])) {
+    run_at <- api_extra_options[["run_at"]]
+    regex_date <- "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+    assertthat::assert_that(grepl(pattern = regex_date, x = run_at),
+                            msg = "run_at is not in the expected format YYYY-MM-DD hh:mm:ss"
+                            )
+    pattern_endpoint <- c(pattern_endpoint, paste0("run_at=", URLencode(run_at, reserved = TRUE)))      
+  }
+  
+  return(pattern_endpoint)
 }
