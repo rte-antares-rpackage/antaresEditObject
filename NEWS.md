@@ -6,7 +6,7 @@
 
 NEW FEATURES :
 
-* `runSimulation()` in API mode, allow the user to choose the launcher for the simulation
+* `runSimulation()` in API mode, allow the user to choose different options like the launcher or the solver
 
 
 # antaresEditObject 1.0.1
