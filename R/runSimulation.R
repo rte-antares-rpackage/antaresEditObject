@@ -52,6 +52,7 @@ runSimulation <- function(name,
                           api_extra_options = define_api_extra_options(),                          
                           ...,
                           opts = antaresRead::simOptions()) {
+  
   assertthat::assert_that(inherits(opts, "simOptions"))
   
   if (is_api_study(opts)) {
@@ -147,10 +148,12 @@ runSimulation <- function(name,
 
 #' @importFrom antaresRead api_get
 .get_antares_version_source <- function(opts) {
+  
   result <- antaresRead::api_get(opts = opts,
                                  endpoint = opts[["study_id"]],
                                  default_endpoint = "v1/studies"
                                  )
+  
   return(result[["version"]])
 }
 
