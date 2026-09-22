@@ -64,14 +64,14 @@ writeInputTS <- function(data,
                          overwrite = TRUE, 
                          opts = antaresRead::simOptions()) {
   
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
   type <- match.arg(type)
+  
   # No control on area possible for area with type = "tsLink"
   if (type != "tsLink") {
     check_area_name(area, opts)
   }
-  
-  
-  assertthat::assert_that(inherits(opts, "simOptions"))
   
   #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
   if (type == "mingen" & (opts$antaresVersion < 860 )){
@@ -82,6 +82,8 @@ writeInputTS <- function(data,
   if (!is.null(area) & !is.null(link)) {
     stop("Cannot use area and link simultaneously.")
   }
+  
+  api_study <- is_api_study(opts = opts)
   
   if (type %in% c("load", "hydroROR", "wind", "solar", "mingen")) {
     if (NROW(data) != 8760)
@@ -184,7 +186,7 @@ writeInputTS <- function(data,
     check_area_name(from, opts)
     check_area_name(to, opts)
     
-    if (!is_api_study(opts)) {
+    if (!api_study) {
       inputPath <- opts$inputPath
       tsLink_file <- file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
       if (file.exists(tsLink_file) & !overwrite) {
@@ -204,7 +206,7 @@ writeInputTS <- function(data,
   
   
   # API block
-  if (is_api_study(opts)) {
+  if (api_study) {
     
     l_area <- tolower(area)
     
