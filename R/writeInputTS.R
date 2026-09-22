@@ -195,7 +195,7 @@ writeInputTS <- function(data,
       }
     }
     
-    opts <- editLink(from = from, to = to, tsLink = data)
+    opts <- editLink(from = from, to = to, tsLink = data, opts = opts)
     return(invisible(opts))
   }
   
