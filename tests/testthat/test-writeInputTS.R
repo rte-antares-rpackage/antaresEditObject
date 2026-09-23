@@ -710,7 +710,7 @@ test_that("writeInputTS() in 8.6.0 : check if new data is written when control i
 test_that("general behaviour of .generate_targets_writeInputTS()", {
   
   ant_version <- "9.3"
-  st_test <- paste0("my_study_930_", paste0(sample(letters,5),collapse = ""))
+  st_test <- paste0("my_study_930_", paste0(sample(letters,5), collapse = ""))
   suppressWarnings(opts <- createStudy(path = tempdir(), study_name = st_test, antares_version = ant_version))
   area <- "zone51"
   opts <- createArea(name = area, opts = opts)
@@ -726,29 +726,33 @@ test_that("general behaviour of .generate_targets_writeInputTS()", {
     testthat::expect_equal(c("target_api", "target_disk"), sort(names(lst_meta_type)))
   }
   
+  inputPath <- opts[["inputPath"]]
+  
   lst_meta_type <- lst_meta[["load"]]
   testthat::expect_equal(lst_meta_type[["target_api"]], "input/load/series/load_zone51")
-  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(opts[["inputPath"]], "load", "series", "load_zone51.txt"))
+  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(inputPath, "load", "series", "load_zone51.txt"))
   
   lst_meta_type <- lst_meta[["wind"]]
   testthat::expect_equal(lst_meta_type[["target_api"]], "input/wind/series/wind_zone51")
-  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(opts[["inputPath"]], "wind", "series", "wind_zone51.txt"))
+  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(inputPath, "wind", "series", "wind_zone51.txt"))
 
   lst_meta_type <- lst_meta[["solar"]]
   testthat::expect_equal(lst_meta_type[["target_api"]], "input/solar/series/solar_zone51")
-  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(opts[["inputPath"]], "solar", "series", "solar_zone51.txt"))
+  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(inputPath, "solar", "series", "solar_zone51.txt"))
+  
+  hydroPath_area <- file.path(inputPath, "hydro", "series", "zone51")
   
   lst_meta_type <- lst_meta[["mingen"]]
   testthat::expect_equal(lst_meta_type[["target_api"]], "input/hydro/series/zone51/mingen")
-  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(opts[["inputPath"]], "hydro", "series", "zone51", "mingen.txt"))
+  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(hydroPath_area, "mingen.txt"))
   
   lst_meta_type <- lst_meta[["hydroROR"]]
   testthat::expect_equal(lst_meta_type[["target_api"]], "input/hydro/series/zone51/ror")
-  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(opts[["inputPath"]], "hydro", "series", "zone51", "ror.txt"))
+  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(hydroPath_area, "ror.txt"))
   
   lst_meta_type <- lst_meta[["hydroSTOR"]]
   testthat::expect_equal(lst_meta_type[["target_api"]], "input/hydro/series/zone51/mod")
-  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(opts[["inputPath"]], "hydro", "series", "zone51", "mod.txt"))
+  testthat::expect_equal(lst_meta_type[["target_disk"]], file.path(hydroPath_area, "mod.txt"))
   
   unlink(x = opts[["studyPath"]], recursive = TRUE)
 })
