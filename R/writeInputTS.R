@@ -88,16 +88,18 @@ writeInputTS <- function(data,
   targets_by_type <- targets[[type]]
   
   if (type %in% c("load", "hydroROR", "wind", "solar", "mingen")) {
-    if (NROW(data) != 8760)
+    if (NROW(data) != 8760) {
       stop("'data' must be a 8760*N matrix.", call. = FALSE)
-    
-  } else if(type %in% "hydroSTOR") {
-    if (is_antares_v7(opts)) {
-      if (NROW(data) != 365)
+    }  
+  } else if(type == "hydroSTOR") {
+    if (is_antares_v7(opts = opts)) {
+      if (NROW(data) != 365)  {
         stop("'data' must be a 365*N matrix.", call. = FALSE)
+      }
     } else {
-      if (NROW(data) != 12)
+      if (NROW(data) != 12)  {
         stop("'data' must be a 12*N matrix.", call. = FALSE)
+      }
     }
     
     # v860
@@ -203,9 +205,9 @@ writeInputTS <- function(data,
     return(invisible(opts))
   }
   
-  if (identical(type, "tsLink"))
+  if (identical(type, "tsLink")) {
     stop("type = \"tsLink\" can only be used if link argument is provided")
-  
+  }
   
   # API block
   if (api_study) {
