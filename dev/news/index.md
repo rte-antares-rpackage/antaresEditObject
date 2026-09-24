@@ -10,6 +10,9 @@ NEW FEATURES :
 
 - [`runSimulation()`](../reference/runSimulation.md) in API mode, allow
   the user to choose the launcher for the simulation
+- [`writeInputTS()`](../reference/writeInputTS.md) create a new function
+  `.generate_targets_writeInputTS()` to specify the destination path for
+  the data
 
 ## antaresEditObject 1.0.1
 
