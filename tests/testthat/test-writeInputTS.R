@@ -88,6 +88,45 @@ sapply(studies, function(study) {
                    opts = opts),
       regexp = "'arg'"
     )
+    
+    # Consistency between arguments
+    expect_error(
+      writeInputTS(area = area,
+                   link = "a - b",
+                   type = "load",
+                   data = M_hydrostor,
+                   overwrite = TRUE,
+                   opts = opts),
+      regexp = "Cannot use area and link simultaneously."
+    )
+    
+    expect_error(
+      writeInputTS(area = area,
+                   type = "tsLink",
+                   data = M_hydrostor,
+                   overwrite = TRUE,
+                   opts = opts),
+      regexp = "You must provide a link to use the type tsLink"
+    )
+
+    expect_error(
+      writeInputTS(link = "a - b",
+                   type = "load",
+                   data = M_hydrostor,
+                   overwrite = TRUE,
+                   opts = opts),
+      regexp = "You must provide an area to use the type load"
+    )
+    
+    expect_error(
+      writeInputTS(link = "a - b",
+                   type = "hydroROR",
+                   data = M_hydrostor,
+                   overwrite = TRUE,
+                   opts = opts),
+      regexp = "You must provide an area to use the type hydroROR"
+    )
+    
   })
   
   # remove temporary study
