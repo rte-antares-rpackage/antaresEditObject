@@ -68,19 +68,31 @@ writeInputTS <- function(data,
   
   type <- match.arg(type)
   
-  # No control on area possible for area with type = "tsLink"
-  if (type != "tsLink") {
-    check_area_name(area, opts)
-  }
-  
-  #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
-  if (type == "mingen" & (opts$antaresVersion < 860 )){
-    stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
-  }
+  no_area <- is.null(area)
+  no_link <- is.null(link)
   
   # Data validation
-  if (!is.null(area) & !is.null(link)) {
+  if (!no_area & !no_link) {
     stop("Cannot use area and link simultaneously.")
+  }
+  
+  # Consistency between provided arguments
+  if (type == "tsLink") {
+    if (no_link) {
+      stop("You must provide a link to use the type tsLink", call. = FALSE)
+    }
+  } else {
+    if (no_area) {
+      stop(paste("You must provide an area to use the type", type), call. = FALSE)
+    } else {
+      check_area_name(area, opts)
+    }    
+  }
+  
+  is_860 <- opts[["antaresVersion"]] >= 860
+  # mingen data can be written only for antaresVersion >= 860.
+  if (type == "mingen" & (!is_860)){
+    stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
   }
   
   api_study <- is_api_study(opts = opts)
@@ -106,7 +118,7 @@ writeInputTS <- function(data,
       # "mod.txt" dimension depends on file "mingen.txt". 
       # The file can be created only in version >= 8.6.0. 
       # We do not need to put version condition here.
-    if(opts$antaresVersion >= 860){
+    if (is_860) {
       path_mingen_file <- file.path(opts$inputPath,
                                     "hydro","series",area,"mingen.txt")
       
@@ -167,7 +179,7 @@ writeInputTS <- function(data,
   }
   
   # tsLink block (file & API)
-  if (!is.null(link)) {
+  if (!no_link) {
     stopifnot(
       "link must be a character, like 'area01%area02' or 'area01 - area02' or c('area01', 'area02')" = is.character(link)
     )
@@ -240,7 +252,7 @@ writeInputTS <- function(data,
       call. = FALSE
     )
   
-  should_check_mingen_data <- opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")
+  should_check_mingen_data <- is_860 & type %in% c("mingen", "hydroSTOR")
   # v860 - save the original data
   if (should_check_mingen_data) {
     filename <- switch(type,
