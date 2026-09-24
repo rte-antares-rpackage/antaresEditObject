@@ -64,43 +64,61 @@ writeInputTS <- function(data,
                          overwrite = TRUE, 
                          opts = antaresRead::simOptions()) {
   
-  type <- match.arg(type)
-  # No control on area possible for area with type = "tsLink"
-  if (type != "tsLink") {
-    check_area_name(area, opts)
-  }
-  
-  
   assertthat::assert_that(inherits(opts, "simOptions"))
   
-  #Check for version. 'mingen' data can be writed only for antaresVersion >= 860.
-  if (type == "mingen" & (opts$antaresVersion < 860 )){
-    stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
-  }
+  type <- match.arg(type)
+  
+  no_area <- is.null(area)
+  no_link <- is.null(link)
   
   # Data validation
-  if (!is.null(area) & !is.null(link)) {
+  if (!no_area & !no_link) {
     stop("Cannot use area and link simultaneously.")
   }
   
-  if (type %in% c("load", "hydroROR", "wind", "solar", "mingen")) {
-    if (NROW(data) != 8760)
-      stop("'data' must be a 8760*N matrix.", call. = FALSE)
-    
-  } else if(type %in% "hydroSTOR") {
-    if (is_antares_v7(opts)) {
-      if (NROW(data) != 365)
-        stop("'data' must be a 365*N matrix.", call. = FALSE)
+  # Consistency between provided arguments
+  if (type == "tsLink") {
+    if (no_link) {
+      stop("You must provide a link to use the type tsLink", call. = FALSE)
+    }
+  } else {
+    if (no_area) {
+      stop(paste("You must provide an area to use the type", type), call. = FALSE)
     } else {
-      if (NROW(data) != 12)
+      check_area_name(area, opts)
+    }    
+  }
+  
+  is_860 <- opts[["antaresVersion"]] >= 860
+  # mingen data can be written only for antaresVersion >= 860.
+  if (type == "mingen" & (!is_860)){
+    stop("antaresVersion should be >= v8.6.0 to write mingen 'data'.", call. = FALSE)
+  }
+  
+  api_study <- is_api_study(opts = opts)
+  targets <- .generate_targets_writeInputTS(area = area, opts = opts)
+  targets_by_type <- targets[[type]]
+  
+  if (type %in% c("load", "hydroROR", "wind", "solar", "mingen")) {
+    if (NROW(data) != 8760) {
+      stop("'data' must be a 8760*N matrix.", call. = FALSE)
+    }  
+  } else if(type == "hydroSTOR") {
+    if (is_antares_v7(opts = opts)) {
+      if (NROW(data) != 365)  {
+        stop("'data' must be a 365*N matrix.", call. = FALSE)
+      }
+    } else {
+      if (NROW(data) != 12)  {
         stop("'data' must be a 12*N matrix.", call. = FALSE)
+      }
     }
     
     # v860
       # "mod.txt" dimension depends on file "mingen.txt". 
       # The file can be created only in version >= 8.6.0. 
       # We do not need to put version condition here.
-    if(opts$antaresVersion >= 860){
+    if (is_860) {
       path_mingen_file <- file.path(opts$inputPath,
                                     "hydro","series",area,"mingen.txt")
       
@@ -161,7 +179,7 @@ writeInputTS <- function(data,
   }
   
   # tsLink block (file & API)
-  if (!is.null(link)) {
+  if (!no_link) {
     stopifnot(
       "link must be a character, like 'area01%area02' or 'area01 - area02' or c('area01', 'area02')" = is.character(link)
     )
@@ -184,7 +202,7 @@ writeInputTS <- function(data,
     check_area_name(from, opts)
     check_area_name(to, opts)
     
-    if (!is_api_study(opts)) {
+    if (!api_study) {
       inputPath <- opts$inputPath
       tsLink_file <- file.path(inputPath, "links", from, "capacities", paste0(to, "_direct.txt"))
       if (file.exists(tsLink_file) & !overwrite) {
@@ -195,34 +213,25 @@ writeInputTS <- function(data,
       }
     }
     
-    opts <- editLink(from = from, to = to, tsLink = data)
+    opts <- editLink(from = from, to = to, tsLink = data, opts = opts)
     return(invisible(opts))
   }
   
-  if (identical(type, "tsLink"))
+  if (identical(type, "tsLink")) {
     stop("type = \"tsLink\" can only be used if link argument is provided")
-  
+  }
   
   # API block
-  if (is_api_study(opts)) {
+  if (api_study) {
     
-    l_area <- tolower(area)
-    
-    if (type %in% c("load", "wind", "solar")) {
-      target_type <- sprintf("input/%s/series/%s_%s", type, type, l_area)
-    } else if (type == "hydroROR") {
-      target_type <- sprintf("input/hydro/series/%s/ror", l_area)
-    } else if (type == "hydroSTOR") {
-      target_type <- sprintf("input/hydro/series/%s/mod", l_area)
-    } else if (type == "mingen") {
-      target_type <- sprintf("input/hydro/series/%s/mingen", l_area)
-    }
     cmd <- api_command_generate(
         action = "replace_matrix",
-        target = target_type,
+        target = targets_by_type[["target_api"]],
         matrix = as.matrix(data)
     )
+    
     api_command_register(cmd, opts = opts)
+    
     `if`(
       should_command_be_executed(opts), 
       api_command_execute(cmd, opts = opts, text_alert = "Writing time-series: {msg_api}"),
@@ -236,23 +245,14 @@ writeInputTS <- function(data,
   inputPath <- opts$inputPath
   assertthat::assert_that(!is.null(inputPath) && file.exists(inputPath))
   
-  if (type %in% c("load", "wind", "solar")) {
-    path <- file.path(inputPath, type, "series", paste0(type, "_", tolower(area), ".txt"))
-  } else if (type == "hydroROR") {
-    path <- file.path(inputPath, "hydro", "series", area, "ror.txt")
-  } else if (type == "hydroSTOR") {
-    path <- file.path(inputPath, "hydro", "series", area, "mod.txt")
-  } else if (type == "mingen") {
-    path <- file.path(inputPath, "hydro", "series", area, "mingen.txt")
-  }
-  
+  path <- targets_by_type[["target_disk"]]
   if (isTRUE(file.size(path) > 0) && !overwrite)
     stop(
       "Time series already exist for this area. Use overwrite=TRUE if you want to overwrite them.",
       call. = FALSE
     )
   
-  should_check_mingen_data <- opts$antaresVersion >= 860 & type %in% c("mingen", "hydroSTOR")
+  should_check_mingen_data <- is_860 & type %in% c("mingen", "hydroSTOR")
   # v860 - save the original data
   if (should_check_mingen_data) {
     filename <- switch(type,
@@ -305,4 +305,40 @@ writeInputTS <- function(data,
   })
   
   invisible(res)
+}
+
+
+.generate_targets_writeInputTS <- function(area, opts) {
+
+  area <- tolower(area)
+  inputPath <- opts[["inputPath"]]
+  hydroPath <- file.path(inputPath, "hydro", "series", area)
+  
+  targets <- list("load" = list(
+                                 "target_api" = sprintf("input/load/series/load_%s", area),
+                                 "target_disk" = file.path(inputPath, "load", "series", paste0("load_", area, ".txt"))
+                                ),
+                   "wind" = list(
+                                 "target_api" = sprintf("input/wind/series/wind_%s", area),
+                                 "target_disk" = file.path(inputPath, "wind", "series", paste0("wind_", area, ".txt"))
+                                ),
+                   "solar" = list(
+                                  "target_api" = sprintf("input/solar/series/solar_%s", area),
+                                  "target_disk" = file.path(inputPath, "solar", "series", paste0("solar_", area, ".txt"))
+                                 ),
+                   "hydroROR" = list(
+                                     "target_api" = sprintf("input/hydro/series/%s/ror", area),
+                                     "target_disk" = file.path(hydroPath, "ror.txt")
+                                    ),
+                   "hydroSTOR" = list(
+                                      "target_api" = sprintf("input/hydro/series/%s/mod", area),
+                                      "target_disk" = file.path(hydroPath, "mod.txt")
+                                     ),
+                   "mingen" = list(
+                                   "target_api" = sprintf("input/hydro/series/%s/mingen", area),
+                                   "target_disk" = file.path(hydroPath, "mingen.txt")
+                                  )
+  )
+  
+  return(targets)
 }
