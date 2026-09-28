@@ -11,7 +11,14 @@ propertiesLinkOptions(
   asset_type = "ac",
   display_comments = TRUE,
   filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
-  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")
+  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual"),
+  use_phase_shifter = FALSE,
+  loop_flow = FALSE,
+  colorr = 112,
+  colorb = 112,
+  colorg = 112,
+  link_width = 1,
+  link_style = "plain"
 )
 ```
 
@@ -49,6 +56,34 @@ propertiesLinkOptions(
 
   Character, vector of time steps used in the output year-by-year, among
   `hourly`, `daily`, `weekly`, `monthly`, and `annual`
+
+- use_phase_shifter:
+
+  Logical.
+
+- loop_flow:
+
+  Logical.
+
+- colorr:
+
+  Integer, color of the line.
+
+- colorb:
+
+  Integer, color of the line.
+
+- colorg:
+
+  Integer, color of the line.
+
+- link_width:
+
+  Numeric, width of the line.
+
+- link_style:
+
+  Character, style of the line.
 
 ## Value
 

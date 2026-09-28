@@ -13,6 +13,8 @@ NEW FEATURES :
 - [`writeInputTS()`](../reference/writeInputTS.md) create a new function
   `.generate_targets_writeInputTS()` to specify the destination path for
   the data
+- [`propertiesLinkOptions()`](../reference/propertiesLinkOptions.md) add
+  the missing properties
 
 ## antaresEditObject 1.0.1
 

@@ -61,7 +61,14 @@
 <span>  asset_type <span class="op">=</span> <span class="st">"ac"</span>,</span>
 <span>  display_comments <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  filter_synthesis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>, <span class="st">"daily"</span>, <span class="st">"weekly"</span>, <span class="st">"monthly"</span>, <span class="st">"annual"</span><span class="op">)</span>,</span>
-<span>  filter_year_by_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>, <span class="st">"daily"</span>, <span class="st">"weekly"</span>, <span class="st">"monthly"</span>, <span class="st">"annual"</span><span class="op">)</span></span>
+<span>  filter_year_by_year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>, <span class="st">"daily"</span>, <span class="st">"weekly"</span>, <span class="st">"monthly"</span>, <span class="st">"annual"</span><span class="op">)</span>,</span>
+<span>  use_phase_shifter <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  loop_flow <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  colorr <span class="op">=</span> <span class="fl">112</span>,</span>
+<span>  colorb <span class="op">=</span> <span class="fl">112</span>,</span>
+<span>  colorg <span class="op">=</span> <span class="fl">112</span>,</span>
+<span>  link_width <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  link_style <span class="op">=</span> <span class="st">"plain"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,6 +103,34 @@ or another type of asset.</p></dd>
 
 <dt id="arg-filter-year-by-year">filter_year_by_year<a class="anchor" aria-label="anchor" href="#arg-filter-year-by-year"></a></dt>
 <dd><p>Character, vector of time steps used in the output year-by-year, among <code>hourly</code>, <code>daily</code>, <code>weekly</code>, <code>monthly</code>, and <code>annual</code></p></dd>
+
+
+<dt id="arg-use-phase-shifter">use_phase_shifter<a class="anchor" aria-label="anchor" href="#arg-use-phase-shifter"></a></dt>
+<dd><p>Logical.</p></dd>
+
+
+<dt id="arg-loop-flow">loop_flow<a class="anchor" aria-label="anchor" href="#arg-loop-flow"></a></dt>
+<dd><p>Logical.</p></dd>
+
+
+<dt id="arg-colorr">colorr<a class="anchor" aria-label="anchor" href="#arg-colorr"></a></dt>
+<dd><p>Integer, color of the line.</p></dd>
+
+
+<dt id="arg-colorb">colorb<a class="anchor" aria-label="anchor" href="#arg-colorb"></a></dt>
+<dd><p>Integer, color of the line.</p></dd>
+
+
+<dt id="arg-colorg">colorg<a class="anchor" aria-label="anchor" href="#arg-colorg"></a></dt>
+<dd><p>Integer, color of the line.</p></dd>
+
+
+<dt id="arg-link-width">link_width<a class="anchor" aria-label="anchor" href="#arg-link-width"></a></dt>
+<dd><p>Numeric, width of the line.</p></dd>
+
+
+<dt id="arg-link-style">link_style<a class="anchor" aria-label="anchor" href="#arg-link-style"></a></dt>
+<dd><p>Character, style of the line.</p></dd>
 
 </dl></div>
     <div class="section level2">
