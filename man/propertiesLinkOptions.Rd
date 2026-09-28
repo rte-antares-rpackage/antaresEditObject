@@ -10,7 +10,14 @@ propertiesLinkOptions(
   asset_type = "ac",
   display_comments = TRUE,
   filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
-  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")
+  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual"),
+  use_phase_shifter = FALSE,
+  loop_flow = FALSE,
+  colorr = 112,
+  colorb = 112,
+  colorg = 112,
+  link_width = 1,
+  link_style = "plain"
 )
 }
 \arguments{
@@ -30,6 +37,20 @@ or another type of asset.}
 \item{filter_synthesis}{Character, vector of time steps used in the output synthesis, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
 
 \item{filter_year_by_year}{Character, vector of time steps used in the output year-by-year, among \code{hourly}, \code{daily}, \code{weekly}, \code{monthly}, and \code{annual}}
+
+\item{use_phase_shifter}{Logical.}
+
+\item{loop_flow}{Logical.}
+
+\item{colorr}{Integer, color of the line.}
+
+\item{colorb}{Integer, color of the line.}
+
+\item{colorg}{Integer, color of the line.}
+
+\item{link_width}{Numeric, width of the line.}
+
+\item{link_style}{Character, style of the line.}
 }
 \value{
 A named list that can be used in \code{\link[=createLink]{createLink()}}.
