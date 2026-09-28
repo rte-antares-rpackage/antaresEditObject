@@ -8,6 +8,7 @@ NEW FEATURES :
 
 * `runSimulation()` in API mode, allow the user to choose the launcher for the simulation
 * `writeInputTS()` create a new function `.generate_targets_writeInputTS()` to specify the destination path for the data
+* `propertiesLinkOptions()` add the missing properties
 
 
 # antaresEditObject 1.0.1
