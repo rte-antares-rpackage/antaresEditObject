@@ -2,13 +2,17 @@
 
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
-# antaresEditObject 1.2.0.9000
+# antaresEditObject 1.1.0.9000
 
 NEW FEATURES :
 
 * `runSimulation()` in API mode, allow the user to choose the launcher for the simulation
-* `writeInputTS()` create a new function `.generate_targets_writeInputTS()` to specify the destination path for the data
 * `propertiesLinkOptions()` add the missing properties
+
+INTERNAL CHANGES :
+
+* `writeInputTS()` create a new function `.generate_targets_writeInputTS()` to specify the destination path for the data
+* `createLink()` use the endpoint instead of the command
 
 
 # antaresEditObject 1.0.1
