@@ -484,3 +484,62 @@ test_that("General behaviour of propertiesLinkOptions()", {
   testthat::expect_equal(custom_values[["filter-synthesis"]], "hourly, annual")
   testthat::expect_equal(custom_values[["filter-year-by-year"]], "hourly, daily, weekly, monthly, annual")
 })
+
+test_that("General behaviour of .generate_targets_createLink()", {
+  
+  from <- "zone1"
+  to <- "zone2"
+  matrix_params <- matrix(data = rep(c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), each = 8760), ncol = 6)
+  matrix_direct <- matrix(data = rep(c(1,3), each = 8760), ncol = 2)
+  matrix_indirect <- matrix(data = rep(c(2,4), each = 8760), ncol = 2)
+  
+  # >= 8.2
+  lst_matrix_links <- .generate_targets_createLink(from = from,
+                                                   to = to,
+                                                   ts_parameters = matrix_params,
+                                                   ts_direct = matrix_direct,
+                                                   ts_indirect = matrix_indirect,
+                                                   is_820 = TRUE
+                                                   )
+  
+  testthat::expect_true(inherits(x = lst_matrix_links, what = "list"))
+  testthat::expect_equal(length(lst_matrix_links), 3)
+  testthat::expect_equal(names(lst_matrix_links), c("parameters", "direct", "indirect"))
+  
+  testthat::expect_true(inherits(x = lst_matrix_links[["parameters"]], what = "list"))
+  testthat::expect_equal(length(lst_matrix_links[["parameters"]]), 2)
+  testthat::expect_equal(names(lst_matrix_links[["parameters"]]), c("target", "matrix"))
+  testthat::expect_equal(lst_matrix_links[["parameters"]][["target"]], "input/links/zone1/zone2_parameters")
+  testthat::expect_equal(lst_matrix_links[["parameters"]][["matrix"]], matrix_params)
+  
+  testthat::expect_true(inherits(x = lst_matrix_links[["direct"]], what = "list"))
+  testthat::expect_equal(length(lst_matrix_links[["direct"]]), 2)
+  testthat::expect_equal(names(lst_matrix_links[["direct"]]), c("target", "matrix"))
+  testthat::expect_equal(lst_matrix_links[["direct"]][["target"]], "input/links/zone1/capacities/zone2_direct")
+  testthat::expect_equal(lst_matrix_links[["direct"]][["matrix"]], matrix_direct)
+  
+  testthat::expect_true(inherits(x = lst_matrix_links[["indirect"]], what = "list"))
+  testthat::expect_equal(length(lst_matrix_links[["indirect"]]), 2)
+  testthat::expect_equal(names(lst_matrix_links[["indirect"]]), c("target", "matrix"))
+  testthat::expect_equal(lst_matrix_links[["indirect"]][["target"]], "input/links/zone1/capacities/zone2_indirect")
+  testthat::expect_equal(lst_matrix_links[["indirect"]][["matrix"]], matrix_indirect)
+  
+  # < 8.2
+  lst_matrix_links <- .generate_targets_createLink(from = from,
+                                                   to = to,
+                                                   ts_parameters = matrix_params,
+                                                   ts_direct = matrix_direct,
+                                                   ts_indirect = matrix_indirect,
+                                                   is_820 = FALSE
+                                                   )
+  
+  testthat::expect_true(inherits(x = lst_matrix_links, what = "list"))
+  testthat::expect_equal(length(lst_matrix_links), 1)
+  testthat::expect_equal(names(lst_matrix_links), "parameters")
+  
+  testthat::expect_true(inherits(x = lst_matrix_links[["parameters"]], what = "list"))
+  testthat::expect_equal(length(lst_matrix_links[["parameters"]]), 2)
+  testthat::expect_equal(names(lst_matrix_links[["parameters"]]), c("target", "matrix"))
+  testthat::expect_equal(lst_matrix_links[["parameters"]][["target"]], "input/links/zone1/zone2")
+  testthat::expect_equal(lst_matrix_links[["parameters"]][["matrix"]], matrix_params)
+})
