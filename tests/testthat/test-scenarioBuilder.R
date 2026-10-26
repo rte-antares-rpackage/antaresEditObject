@@ -39,8 +39,8 @@ sapply(studies, function(study) {
     
     sb <- structure(
       c("1", "rand", "rand", "2", "rand", "rand"),
-      .Dim = 3:2,
-      .Dimnames = list(c("fr", "it", "be"), NULL)
+      dim = 3:2,
+      dimnames = list(c("fr", "it", "be"), NULL)
     )
     
     expect_identical(sbuilder, sb)
@@ -58,8 +58,8 @@ sapply(studies, function(study) {
     
     sb <- structure(
       c("1", "rand", "1", "2", "rand", "2"),
-      .Dim = 3:2,
-      .Dimnames = list(c("fr", "it", "be"), NULL)
+      dim = 3:2,
+      dimnames = list(c("fr", "it", "be"), NULL)
     )
     
     expect_identical(sbuilder, sb)
@@ -84,15 +84,15 @@ sapply(studies, function(study) {
       list(
         l = structure(
           c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 
-            2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L), .Dim = c(9L, 2L), .Dimnames = list(
+            2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L), dim = c(9L, 2L), dimnames = list(
               c("a", "a_offshore", "b", "c", "hub", "psp in", "psp in-2", 
                 "psp out", "psp out-2"), NULL)
         ),
         t = structure(
           c(1L, 1L, 1L, 1L, 1L, NA, NA, NA, NA, NA, NA, NA, NA, 
             NA, NA, 2L, 2L, 2L, 2L, 2L, NA, NA, NA, NA, NA, NA, NA, NA, NA, 
-            NA), .Dim = c(15L, 2L),
-          .Dimnames = list(
+            NA), dim = c(15L, 2L),
+          dimnames = list(
             c("a_base", "a_base_must_run", 
               "a_peak", "a_peak_must_run_partial", "a_semi base", "b_base", 
               "b_peak", "b_semi base", "c_base", "c_peak", "c_semi base", "psp in-2_psp_in_2", 
@@ -397,8 +397,8 @@ test_that("scenarioBuilder() works as expected if n_mc is not a multiple of n_sc
         "1", "rand", "1", "1", "2", "rand", "2", "2", "3", "rand", "3", "3",
         "1", "rand", "1", "1"
         ),
-      .Dim = c(4L,10L),
-      .Dimnames = list(c("zone51", "zone52", "zone53", "zone54"), NULL)
+      dim = c(4L,10L),
+      dimnames = list(c("zone51", "zone52", "zone53", "zone54"), NULL)
   )
     
   expect_identical(sbuilder, sb)
@@ -450,8 +450,8 @@ test_that("updateScenarioBuilder() works as expected for ntc part", {
   
   sb_matrix_ntc_expected <- structure(
     c(rep(c(rep(1L,10),rep(2L,10)),5)),
-    .Dim = c(10L,10L),
-    .Dimnames = list(c("zone1%zone2", "zone1%zone3", "zone1%zone4", "zone1%zone5", "zone2%zone3",
+    dim = c(10L,10L),
+    dimnames = list(c("zone1%zone2", "zone1%zone3", "zone1%zone4", "zone1%zone5", "zone2%zone3",
                        "zone2%zone4", "zone2%zone5", "zone3%zone4", "zone3%zone5", "zone4%zone5"
     ),
     NULL

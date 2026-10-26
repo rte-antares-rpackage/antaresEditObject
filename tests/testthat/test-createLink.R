@@ -214,7 +214,22 @@ test_that("Check if createLink() in version >= 8.2 writes time series link in th
 
 
 # Delete expected files regardless alphabetical order ----
-test_that("removeLink() in 8.2.0 : check if the expected files are deleted/updated", {
+test_that("removeLink() in 8.2.0 : check if the expected files are deleted/updated and check behaviour of propertiesLinkOptions()", {
+  
+  all_properties <- c("hurdles-cost",
+                      "transmission-capacities",
+                      "asset-type",
+                      "display-comments",
+                      "filter-synthesis",
+                      "filter-year-by-year",
+                      "use-phase-shifter",
+                      "loop-flow",
+                      "colorr",
+                      "colorb",
+                      "colorg",
+                      "link-width",
+                      "link-style"
+                      )
   
   ant_version <- "8.2.0"
   st_test <- paste0("my_study_820_", paste0(sample(letters,5),collapse = ""))
@@ -229,16 +244,24 @@ test_that("removeLink() in 8.2.0 : check if the expected files are deleted/updat
   # with alphabetical order
   from <- min(area, area2)
   to <- max(area, area2)
-  createLink(from = from, to = to, opts = opts)
+  createLink(from = from,
+             to = to,
+             propertiesLink = propertiesLinkOptions(hurdles_cost = TRUE, filter_synthesis = c("hourly", "annual")),
+             opts = opts
+             )
   properties_links <- readIniFile(
     file = file.path(opts$inputPath, "links", from, "properties.ini")
   )
   
-  expect_true(paste(c(from,to), collapse = " - ") %in% levels(antaresRead::getLinks()))
-  expect_true(to %in% names(properties_links))
-  expect_true(file.exists(file.path(opts$inputPath, "links", from, paste0(to,"_parameters.txt"))))
-  expect_true(file.exists(file.path(opts$inputPath, "links", from, "capacities", paste0(to,"_direct.txt"))))
-  expect_true(file.exists(file.path(opts$inputPath, "links", from, "capacities", paste0(to,"_indirect.txt"))))
+  testthat::expect_equal(length(properties_links[[to]]), length(all_properties))
+  testthat::expect_true(all(all_properties %in% names(properties_links[[to]])))
+  testthat::expect_true(properties_links[[to]][["hurdles-cost"]])
+  testthat::expect_equal(properties_links[[to]][["filter-synthesis"]], "hourly, annual")
+  testthat::expect_true(paste(c(from,to), collapse = " - ") %in% levels(antaresRead::getLinks()))
+  testthat::expect_true(to %in% names(properties_links))
+  testthat::expect_true(file.exists(file.path(opts$inputPath, "links", from, paste0(to,"_parameters.txt"))))
+  testthat::expect_true(file.exists(file.path(opts$inputPath, "links", from, "capacities", paste0(to,"_direct.txt"))))
+  testthat::expect_true(file.exists(file.path(opts$inputPath, "links", from, "capacities", paste0(to,"_indirect.txt"))))
   
   removeLink(from = from, to = to, opts = opts)
   properties_links <- readIniFile(
@@ -419,3 +442,45 @@ test_that("General behaviour of .initialize_dataLink_time_series()", {
   expect_equal(dataLink, matrix(data = c(rep(1, 8760*2), rep(0, 8760*3)), ncol = 5))
 })
 
+
+test_that("General behaviour of propertiesLinkOptions()", {
+  
+  all_properties <- c("hurdles-cost",
+                      "transmission-capacities",
+                      "asset-type",
+                      "display-comments",
+                      "filter-synthesis",
+                      "filter-year-by-year",
+                      "use-phase-shifter",
+                      "loop-flow",
+                      "colorr",
+                      "colorb",
+                      "colorg",
+                      "link-width",
+                      "link-style"
+                      )
+
+  default_values <- propertiesLinkOptions()
+  testthat::expect_equal(length(default_values), length(all_properties))
+  testthat::expect_true(all(all_properties %in% names(default_values)))
+  
+  testthat::expect_false(default_values[["hurdles-cost"]])
+  testthat::expect_false(default_values[["use-phase-shifter"]])
+  testthat::expect_false(default_values[["loop-flow"]])
+  testthat::expect_equal(default_values[["transmission-capacities"]], "enabled")
+  testthat::expect_equal(default_values[["asset-type"]], "ac")
+  testthat::expect_equal(default_values[["filter-synthesis"]], "hourly, daily, weekly, monthly, annual")
+  testthat::expect_equal(default_values[["filter-year-by-year"]], "hourly, daily, weekly, monthly, annual")
+  
+  custom_values <- propertiesLinkOptions(hurdles_cost = TRUE, filter_synthesis = c("hourly", "annual"))
+  testthat::expect_equal(length(custom_values), length(all_properties))
+  testthat::expect_true(all(all_properties %in% names(custom_values)))
+  
+  testthat::expect_true(custom_values[["hurdles-cost"]])
+  testthat::expect_false(custom_values[["use-phase-shifter"]])
+  testthat::expect_false(custom_values[["loop-flow"]])
+  testthat::expect_equal(custom_values[["transmission-capacities"]], "enabled")
+  testthat::expect_equal(custom_values[["asset-type"]], "ac")
+  testthat::expect_equal(custom_values[["filter-synthesis"]], "hourly, annual")
+  testthat::expect_equal(custom_values[["filter-year-by-year"]], "hourly, daily, weekly, monthly, annual")
+})

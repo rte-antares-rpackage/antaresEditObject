@@ -268,7 +268,6 @@ createLink <- function(from,
 }
 
 
-
 #' Properties for creating a link
 #'
 #' @param hurdles_cost Logical, which is used to state whether (linear)
@@ -282,6 +281,13 @@ createLink <- function(from,
 #' @param display_comments Logical, display comments or not.
 #' @param filter_synthesis Character, vector of time steps used in the output synthesis, among `hourly`, `daily`, `weekly`, `monthly`, and `annual`
 #' @param filter_year_by_year Character, vector of time steps used in the output year-by-year, among `hourly`, `daily`, `weekly`, `monthly`, and `annual`
+#' @param use_phase_shifter Logical.
+#' @param loop_flow Logical.
+#' @param colorr Integer, color of the line.
+#' @param colorb Integer, color of the line.
+#' @param colorg Integer, color of the line.
+#' @param link_width Numeric, width of the line.
+#' @param link_style Character, style of the line.
 #'
 #' @return A named list that can be used in [createLink()].
 #' @export
@@ -299,14 +305,28 @@ propertiesLinkOptions <- function(hurdles_cost = FALSE,
                                   asset_type = "ac",
                                   display_comments = TRUE,
                                   filter_synthesis = c("hourly", "daily", "weekly", "monthly", "annual"),
-                                  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual")) {
+                                  filter_year_by_year = c("hourly", "daily", "weekly", "monthly", "annual"),
+                                  use_phase_shifter = FALSE,
+                                  loop_flow = FALSE,
+                                  colorr = 112,
+                                  colorb = 112,
+                                  colorg = 112,
+                                  link_width = 1,
+                                  link_style = "plain") {
   list(
     `hurdles-cost` = hurdles_cost,
     `transmission-capacities` = transmission_capacities,
     `asset-type` = asset_type,
     `display-comments` = display_comments,
     `filter-synthesis` = paste(filter_synthesis, collapse = ", "),
-    `filter-year-by-year` = paste(filter_year_by_year, collapse = ", ")
+    `filter-year-by-year` = paste(filter_year_by_year, collapse = ", "),
+    `use-phase-shifter` = use_phase_shifter,
+    `loop-flow` = loop_flow,
+    `colorr` = colorr,
+    `colorb` = colorb,
+    `colorg` = colorg,
+    `link-width` = link_width,
+    `link-style` = link_style
   )
 }
 
