@@ -4,7 +4,18 @@ test_that(".generate_pattern_launcher_endpoint() : generate a pattern for the la
   testthat::local_mocked_bindings(
     .get_antares_version_source = function(...) return(9.3),
     .get_available_launchers = function(...) {
-      return(list("launchers" = list(list("id" = "calin1opf"), list("id" = "calin2opf"), list("id" = "Azure"))))
+      return(list("launchers" = list(list("id" = "calin1opf",
+                                          "versions" = list("8.2", "8.6", "9.2", "9.3")
+                                          ),
+                                     list("id" = "calin2opf",
+                                          "versions" = list("8.2", "8.6", "9.2", "9.3", "9.4", "10.2")
+                                          ),
+                                     list("id" = "Azure",
+                                          "versions" = list("8.2", "8.6", "9.2", "9.3", "10.2")
+                                         )
+                                     )
+                  )
+            )
     },
     .get_available_solver_presets = function(...) {
       return(
@@ -75,6 +86,12 @@ test_that(".generate_pattern_launcher_endpoint() : generate a pattern for the la
     .generate_pattern_launcher_endpoint(api_extra_options = api_options, opts = list()),
     regexp = "Please provide a valid launcher."
   )
+  
+  api_options <- define_api_extra_options(launcher = "calin2opf", solver_version = "25.36")
+  testthat::expect_error(
+    .generate_pattern_launcher_endpoint(api_extra_options = api_options, opts = list()),
+    regexp = "Please provide an available launcher for the version 25.36"
+  )  
   
   api_options <- define_api_extra_options(launcher = "calin2opf")
   patt <- .generate_pattern_launcher_endpoint(api_extra_options = api_options, opts = list())
