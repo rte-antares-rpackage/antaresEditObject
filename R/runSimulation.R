@@ -195,9 +195,25 @@ define_api_extra_options <- function(launcher = NULL,
   if (!is.null(api_extra_options[["launcher"]])) {
     launcher <- tolower(api_extra_options[["launcher"]])
     launchers <- .get_available_launchers(opts = opts)
-    launchers <- sapply(launchers[["launchers"]], "[[", "id")
-    assertthat::assert_that(launcher %in% tolower(launchers),
+    launchers <- launchers[["launchers"]]
+    launchers_ids <- sapply(launchers, "[[", "id")
+    assertthat::assert_that(launcher %in% tolower(launchers_ids),
                             msg = "Please provide a valid launcher."
+                            )
+    launchers_versions <- sapply(launchers, "[[", "id")
+    assertthat::assert_that(launcher %in% tolower(launchers_versions),
+                            msg = "Please provide a valid launcher."
+                            )
+    idx_launcher <- Position(function(x) x[["id"]] == launcher, launchers)
+    launchers_fi <- launchers[[idx_launcher]]
+    available_versions <- unlist(launchers_fi[["versions"]])
+    if (no_solver_version) {
+      version <- .get_antares_version_source(opts = opts)
+    } else {
+      version <- api_extra_options[["solver_version"]]
+    }
+    assertthat::assert_that(version %in% available_versions,
+                            msg = paste0("Please provide an available launcher for the version ", version)
                             )
     pattern_endpoint <- c(pattern_endpoint, paste0("launcher=", launcher))     
   }
