@@ -250,7 +250,7 @@ define_api_extra_options <- function(launcher = NULL,
     version <- api_extra_options[["solver_version"]]
     study_version <- .get_antares_version_source(opts = opts)
     assertthat::assert_that(as.numeric(study_version) <= as.numeric(version),
-                            msg = "Please provide a solver version greater or equal to your study version."
+                            msg = "Please provide a solver version greater or equal than your study version."
                             )
     pattern_endpoint <- c(pattern_endpoint, paste0("version=", version))      
   }

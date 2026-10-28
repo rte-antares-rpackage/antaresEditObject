@@ -72,7 +72,7 @@ test_that(".generate_pattern_launcher_endpoint() : generate a pattern for the la
   api_options <- define_api_extra_options(solver_version = "9.2")
   testthat::expect_error(
     .generate_pattern_launcher_endpoint(api_extra_options = api_options, opts = list()),
-    regexp = "Please provide a solver version greater or equal to your study version."
+    regexp = "Please provide a solver version greater or equal than your study version."
   )
   
   api_options <- define_api_extra_options(solver_version = "9.4")
