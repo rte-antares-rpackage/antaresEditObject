@@ -65,7 +65,7 @@ Run an ANTARES study"><meta name="robots" content="noindex"></head><body>
 <span>  wait <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  show_output_on_console <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  launcher <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  api_extra_options <span class="op">=</span> <span class="fu"><a href="define_api_extra_options.html">define_api_extra_options</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/simOptions.html" class="external-link">simOptions</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -103,8 +103,8 @@ only with ANTARES v6.0.0 or more). In that case, the number of cores used by the
 is the one set in advanced_settings/simulation_cores (see ANTARES interface).</p></dd>
 
 
-<dt id="arg-launcher">launcher<a class="anchor" aria-label="anchor" href="#arg-launcher"></a></dt>
-<dd><p>Character. In API mode, the id of the launcher.</p></dd>
+<dt id="arg-api-extra-options">api_extra_options<a class="anchor" aria-label="anchor" href="#arg-api-extra-options"></a></dt>
+<dd><p>Character. In API mode, a list containing the elements to configure the run. Please check define_api_extra_options().</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

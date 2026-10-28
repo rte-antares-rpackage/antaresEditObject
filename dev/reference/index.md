@@ -92,6 +92,9 @@
   : Create the correspondence data frame between the symbol and the type
   in scenario builder
 
+- [`define_api_extra_options()`](define_api_extra_options.md) : Output
+  profile options for running a simulation in API mode
+
 - [`deleteStudy()`](deleteStudy.md) : Delete a study or a simulation
 
 - [`detect_pattern_in_binding_constraint()`](detect_pattern_in_binding_constraint.md)

@@ -14,7 +14,7 @@ runSimulation(
   wait = TRUE,
   show_output_on_console = FALSE,
   parallel = TRUE,
-  launcher = NULL,
+  api_extra_options = define_api_extra_options(),
   ...,
   opts = antaresRead::simOptions()
 )
@@ -52,9 +52,10 @@ runSimulation(
   cores used by the simulation is the one set in
   advanced_settings/simulation_cores (see ANTARES interface).
 
-- launcher:
+- api_extra_options:
 
-  Character. In API mode, the id of the launcher.
+  Character. In API mode, a list containing the elements to configure
+  the run. Please check define_api_extra_options().
 
 - ...:
 

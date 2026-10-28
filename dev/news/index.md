@@ -9,12 +9,15 @@
 NEW FEATURES :
 
 - [`runSimulation()`](../reference/runSimulation.md) in API mode, allow
-  the user to choose the launcher for the simulation
+  the user to choose different options like the launcher or the solver
+- [`propertiesLinkOptions()`](../reference/propertiesLinkOptions.md) add
+  the missing properties
+
+INTERNAL CHANGES :
+
 - [`writeInputTS()`](../reference/writeInputTS.md) create a new function
   `.generate_targets_writeInputTS()` to specify the destination path for
   the data
-- [`propertiesLinkOptions()`](../reference/propertiesLinkOptions.md) add
-  the missing properties
 
 ## antaresEditObject 1.0.1
 
