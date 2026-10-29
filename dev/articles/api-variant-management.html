@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">antaresEditObject</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -428,27 +428,36 @@ their documentation:</p>
 <p>Create a new link between two areas like this:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area01"</span>, to <span class="op">=</span> <span class="st">"area02"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_link</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/createLink.html">createLink</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"area01"</span>, to <span class="op">=</span> <span class="st">"area03"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">create_link</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Command <span style="font-style: italic;">replace_matrix</span> registered, see all commands with `getVariantCommands()`</span></span>
 <span><span class="fu"><a href="../reference/variant-commands.html">getVariantCommands</a></span><span class="op">(</span>last <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [</span></span>
 <span><span class="co">#&gt;   {</span></span>
-<span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
-<span><span class="co">#&gt;     "args": {</span></span>
-<span><span class="co">#&gt;       "target": "input/links/area01/capacities/area03_direct",</span></span>
-<span><span class="co">#&gt;       "matrix": [[0],[0],[0],[0],[0],[0]] [truncated]...</span></span>
-<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     "action": "update_area_ui",</span></span>
+<span><span class="co">#&gt;     "args": [</span></span>
+<span><span class="co">#&gt;       {</span></span>
+<span><span class="co">#&gt;         "area_id": "area000",</span></span>
+<span><span class="co">#&gt;         "area_ui": {</span></span>
+<span><span class="co">#&gt;           "x": 0,</span></span>
+<span><span class="co">#&gt;           "y": 0,</span></span>
+<span><span class="co">#&gt;           "layer_x": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "layer_y": {</span></span>
+<span><span class="co">#&gt;             "0": 0</span></span>
+<span><span class="co">#&gt;           },</span></span>
+<span><span class="co">#&gt;           "color_rgb": [230, 108, 44],</span></span>
+<span><span class="co">#&gt;           "layer_color": {</span></span>
+<span><span class="co">#&gt;             "0": "230, 108, 44"</span></span>
+<span><span class="co">#&gt;           }</span></span>
+<span><span class="co">#&gt;         },</span></span>
+<span><span class="co">#&gt;         "layer": "0"</span></span>
+<span><span class="co">#&gt;       }</span></span>
+<span><span class="co">#&gt;     ]</span></span>
 <span><span class="co">#&gt;   },</span></span>
 <span><span class="co">#&gt;   {</span></span>
-<span><span class="co">#&gt;     "action": "replace_matrix",</span></span>
+<span><span class="co">#&gt;     "action": "remove_area",</span></span>
 <span><span class="co">#&gt;     "args": {</span></span>
-<span><span class="co">#&gt;       "target": "input/links/area01/capacities/area03_indirect",</span></span>
-<span><span class="co">#&gt;       "matrix": [[0],[0],[0],[0],[0],[0]] [truncated]...</span></span>
+<span><span class="co">#&gt;       "id": "area000"</span></span>
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;   }</span></span>
 <span><span class="co">#&gt; ]</span></span></code></pre></div>

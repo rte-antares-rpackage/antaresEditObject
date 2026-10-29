@@ -390,27 +390,36 @@ Create a new link between two areas like this:
 ``` r
 
 createLink(from = "area01", to = "area02")
-#> ℹ Command create_link registered, see all commands with `getVariantCommands()`
-#> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
-#> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
 createLink(from = "area01", to = "area03")
-#> ℹ Command create_link registered, see all commands with `getVariantCommands()`
-#> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
-#> ℹ Command replace_matrix registered, see all commands with `getVariantCommands()`
 getVariantCommands(last = 2)
 #> [
 #>   {
-#>     "action": "replace_matrix",
-#>     "args": {
-#>       "target": "input/links/area01/capacities/area03_direct",
-#>       "matrix": [[0],[0],[0],[0],[0],[0]] [truncated]...
-#>     }
+#>     "action": "update_area_ui",
+#>     "args": [
+#>       {
+#>         "area_id": "area000",
+#>         "area_ui": {
+#>           "x": 0,
+#>           "y": 0,
+#>           "layer_x": {
+#>             "0": 0
+#>           },
+#>           "layer_y": {
+#>             "0": 0
+#>           },
+#>           "color_rgb": [230, 108, 44],
+#>           "layer_color": {
+#>             "0": "230, 108, 44"
+#>           }
+#>         },
+#>         "layer": "0"
+#>       }
+#>     ]
 #>   },
 #>   {
-#>     "action": "replace_matrix",
+#>     "action": "remove_area",
 #>     "args": {
-#>       "target": "input/links/area01/capacities/area03_indirect",
-#>       "matrix": [[0],[0],[0],[0],[0],[0]] [truncated]...
+#>       "id": "area000"
 #>     }
 #>   }
 #> ]

@@ -4,7 +4,7 @@
 
 > Copyright © 2016 RTE Reseau de transport d’electricite
 
-## antaresEditObject 1.2.0.9000
+## antaresEditObject 1.1.0.9000
 
 NEW FEATURES :
 
@@ -18,6 +18,8 @@ INTERNAL CHANGES :
 - [`writeInputTS()`](../reference/writeInputTS.md) create a new function
   `.generate_targets_writeInputTS()` to specify the destination path for
   the data
+- [`createLink()`](../reference/createLink.md) use the endpoint instead
+  of the command
 
 ## antaresEditObject 1.0.1
 
