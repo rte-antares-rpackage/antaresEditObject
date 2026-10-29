@@ -147,47 +147,26 @@ createLink <- function(from,
   
   
   # API block
-  if (is_api_study(opts)) {
-    cmd <- api_command_generate(
-      action = "create_link",
-      area1 = from,
-      area2 = to,
-      parameters = if (is_different(propertiesLink, propertiesLinkOptions())) propertiesLink else NULL,
-      series = dataLink
-    )
-    api_command_register(cmd, opts = opts)
-    `if`(
-      should_command_be_executed(opts), 
-      api_command_execute(cmd, opts = opts, text_alert = "{.emph create_link}: {msg_api}"),
-      cli_command_registered("create_link")
-    )
-    
-    if (v820) {
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_direct")),
-        matrix = as.matrix(tsLink[, .SD, .SDcols = direct])
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Writing transmission capacities (direct): {msg_api}"),
-        cli_command_registered("replace_matrix")
-      )
+  if (is_api_study(opts = opts)) {
+    if (!is_api_mocked(opts = opts)) {
+      body <- transform_list_to_json_for_createLink(link_parameters = propertiesLink,
+                                                    from = from,
+                                                    to = to
+                                                    )      
+      result <- api_post(opts = opts,
+                         endpoint = file.path(opts[["study_id"]], "links"),
+                         body = body,
+                         encode = "raw")
+      cli::cli_alert_success("Endpoint Create link success")
       
-      cmd <- api_command_generate(
-        action = "replace_matrix",
-        target = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_indirect")),
-        matrix = as.matrix(tsLink[, .SD, .SDcols = indirect])
-      )
-      api_command_register(cmd, opts = opts)
-      `if`(
-        should_command_be_executed(opts), 
-        api_command_execute(cmd, opts = opts, text_alert = "Writing transmission capacities (indirect): {msg_api}"),
-        cli_command_registered("replace_matrix")
-      )
+      .replace_matrix_link(from = from,
+                           to = to,
+                           ts_parameters = dataLink,
+                           ts_direct = tsLink[, .SD, .SDcols = direct],
+                           ts_indirect = tsLink[, .SD, .SDcols = indirect],
+                           opts = opts
+                           )
     }
-    
     return(update_api_opts(opts))
   }
   
@@ -392,4 +371,107 @@ propertiesLinkOptions <- function(hurdles_cost = FALSE,
   } else {
     return(matrix(data = c(rep(1, 8760*2), rep(0, 8760*3)), ncol = 5))
   }
+}
+
+
+#' Transform a user list to a json object to use in the endpoint of link creation
+#'
+#' @importFrom jsonlite toJSON
+#' @importFrom assertthat assert_that
+#'
+#' @param link_parameters a list containing the metadata of the link to create.
+#' @param from, to the two areas linked together.
+#'
+#' @return a json object
+#' @noRd
+transform_list_to_json_for_createLink <- function(link_parameters, from, to) {
+
+  assertthat::assert_that(inherits(x = link_parameters, what = "list"))
+
+  link_parameters <- list("area1" = from,
+                          "area2" = to, 
+                          "hurdlesCost" = link_parameters[["hurdles-cost"]],
+                          "transmissionCapacities" = link_parameters[["transmission-capacities"]],
+                          "assetType" = link_parameters[["asset-type"]],
+                          "displayComments" = link_parameters[["display-comments"]],
+                          "filterSynthesis" = link_parameters[["filter-synthesis"]],
+                          "filterYearByYear" = link_parameters[["filter-year-by-year"]],
+                          "usePhaseShifter" = link_parameters[["use-phase-shifter"]],
+                          "loopFlow" = link_parameters[["loop-flow"]],
+                          "colorr" = link_parameters[["colorr"]],
+                          "colorb" = link_parameters[["colorb"]],
+                          "colorg" = link_parameters[["colorg"]],
+                          "linkWidth" = link_parameters[["link-width"]],
+                          "linkStyle" = link_parameters[["link-style"]]
+                          )
+  
+  link_parameters <- dropNulls(link_parameters)
+
+  return(jsonlite::toJSON(link_parameters, auto_unbox = TRUE))
+}
+
+
+.generate_targets_createLink <- function(from, to, ts_parameters, ts_direct, ts_indirect, is_820) {
+  
+  if (is_820) {
+    return(
+      list(
+        "parameters" = 
+          list(
+            "target" = sprintf("input/links/%s/%s", from, paste0(to, "_parameters")),
+            "matrix" = as.matrix(ts_parameters)
+              ),
+        "direct" = 
+          list(
+            "target" = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_direct")),
+            "matrix" = as.matrix(ts_direct)
+              ),
+        "indirect" =  
+          list(
+            "target" = sprintf("input/links/%s/capacities/%s", from, paste0(to, "_indirect")),
+            "matrix" = as.matrix(ts_indirect)
+              )                       
+      )
+    )
+  } else {
+    return(
+      list(
+        "parameters" = 
+          list(
+            "target" = sprintf("input/links/%s/%s", from, to),
+            "matrix" = as.matrix(ts_parameters)
+              )                  
+      )
+    )
+  }
+}
+
+
+.replace_matrix_link <- function(from, to, ts_parameters, ts_direct, ts_indirect, opts) {
+  
+  ts_link_params <- .generate_targets_createLink(from = from,
+                                                 to = to, 
+                                                 ts_parameters = ts_parameters,
+                                                 ts_direct = ts_direct,
+                                                 ts_indirect = ts_indirect,
+                                                 is_820 = is_antares_v820(opts = opts)
+                                                )
+  
+  actions <- lapply(
+            X = seq_along(ts_link_params),
+            FUN = function(i) {
+              list(
+                target = ts_link_params[[i]][["target"]],
+                matrix = ts_link_params[[i]][["matrix"]]
+              )
+            }
+  )
+  actions <- setNames(actions, rep("replace_matrix", length(actions)))
+  cmd <- do.call(api_commands_generate, actions)
+  api_command_register(cmd, opts = opts)
+  `if`(
+    should_command_be_executed(opts = opts),
+    api_command_execute(cmd, opts = opts, text_alert = "Writing links's time series: {msg_api}"),
+    cli_command_registered("replace_matrix")
+  )  
 }
