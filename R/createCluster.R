@@ -264,7 +264,7 @@ createCluster <- function(area,
 
 #' default group by version 
 #'
-#' @param opts 
+#' @template opts
 #' @noRd
 
 default_group <- function(opts) {
