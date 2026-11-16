@@ -138,13 +138,17 @@ createClusterBulk <- function(cluster_object,
   invisible(res)
 }
 
-
+#' @title Internal function to create multiple clusters at once
+#'
 #' @param ... \code{list} named `list` of cluster parameter
 #' @param add_prefix \code{logical} prefix cluster name with area name
 #' @param area_zone \code{character} name of area to create cluster
 #' @param existing_params \code{list} existing cluster's parameters of study
 #' @template opts
+#'
 #' @importFrom data.table fwrite
+#'
+#' @noRd
 .createClusterBulk <- function(...,
                                area_zone,
                                add_prefix,
@@ -263,6 +267,3 @@ createClusterBulk <- function(cluster_object,
   return(list_params$parameter)
   
 }
-
-
-
