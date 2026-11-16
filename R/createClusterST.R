@@ -778,7 +778,7 @@ storage_values_default <- function(opts = simOptions()) {
 
 #' Check the class of the matrix
 #'
-#' @param x 
+#' @param x an R object that must be a matrix, a data.frame or a data.table
 #'
 #' @noRd
 .check_class <- function(x) {
@@ -791,8 +791,8 @@ storage_values_default <- function(opts = simOptions()) {
 
 #' Check the dimensions of the matrix
 #'
-#' @param in_vals 
-#' @param allow_multi 
+#' @param in_vals a named list of time series
+#' @template opts
 #'
 #' @noRd
 .check_dimension <- function(in_vals, opts) {
