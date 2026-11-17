@@ -833,7 +833,7 @@ deduplicateScenarioBuilder <- function(ruleset = "Default Ruleset",
 `%||%` <- function(x, y) if (is.null(x)) y else x
 #' Returns the name of the additional constraint
 #'
-#' @param body_json 
+#' @param body_json a named list provided by the endpoint /v1/studies/{uuid}/table-mode/{table_type}
 #' @noRd
 build_st_constraints_names_df <- function(body_json) {
   keys <- names(body_json)
